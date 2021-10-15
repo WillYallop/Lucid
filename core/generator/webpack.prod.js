@@ -2,8 +2,8 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    'route-generator':'./util/route-generator.ts',
-    'build-page': './util/build-page.ts'
+    'route-generator':'./src/util/route-generator.ts',
+    'build-page': './src/util/build-page.ts'
 
   },
   mode: 'production',
@@ -21,6 +21,6 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, './dist'),
+    path: path.resolve(__dirname, './util'),
   },
 };
