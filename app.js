@@ -3,8 +3,8 @@ const app = express();
 
 // Routers
 const apiRoutes = require('./core/api/routes/index');
-const appRoutes = require('./core/routes/app');
-const cmsRoutes = require('./core/routes/cms');
+const appRoutes = require('./core/theme/routes/app');
+const cmsRoutes = require('./core/theme/routes/cms');
 
 // Static files
 app.use('/dist/cms/scripts', express.static('./dist/cms/scripts'));
