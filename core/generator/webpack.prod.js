@@ -2,8 +2,8 @@ const path = require('path');
 
 module.exports = {
   entry: {
-    'route-generator':'./src/util/route-generator.ts',
-    'build-page': './src/util/build-page.ts'
+    'build-pages': './src/build-pages/main.ts',
+    'transfer-app': './src/transfer-app/main.ts' 
 
   },
   mode: 'production',

@@ -1,4 +1,4 @@
-import { generateText } from '../src/util/build-page';
+import { generateText } from '../src/build-pages/functions/test';
 
 test('should output name and age', () => {
     const text = generateText('Max', 29);
