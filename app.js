@@ -1,20 +1,29 @@
+require('dotenv').config();
 const express = require('express');
-const app = express();
+const connect = require('connect');
+const vhost = require('vhost');
+const ip = require("ip");
 
-// Routers
-const apiRoutes = require('./core/api/routes/index');
-const appRoutes = require('./core/theme/routes/app');
-const cmsRoutes = require('./core/theme/routes/cms');
+const apiRoutes = require('./core/api/routes/index');  // API Routers
+ 
+// Subdomain APPS
+const mainapp = connect();
+const api = connect();
+const admin = connect();
+const assets = connect();
 
-// Static files
-app.use('/dist/cms/scripts', express.static('./dist/cms/scripts'));
-app.use('/dist/app/scripts', express.static('./dist/app/scripts'));
-// Static assets
-app.use('/dist/assets', express.static('./dist/assets'));
+api.use('/', apiRoutes);
+mainapp.use('/', express.static(process.env.DIST_APP));
+admin.use('/', express.static(process.env.DIST_ADMIN));
+assets.use('/', express.static(process.env.DIST_ASSETS));
 
-// Routes
-app.use('/', appRoutes);
-app.use('/site-admin', cmsRoutes);
-app.use('/api', express.text(), apiRoutes);
+// create main app
+const app = connect();
 
-module.exports = app;
+app.use(vhost(`${process.env.DOMAIN}`, mainapp));
+app.use(vhost(`admin.${process.env.DOMAIN}`, admin));
+app.use(vhost(`api.${process.env.DOMAIN}`, api));
+app.use(vhost(`assets.${process.env.DOMAIN}`, assets));
+
+console.log(`${ip.address()}:${process.env.PORT || 80}`);
+app.listen(process.env.PORT || 80);
