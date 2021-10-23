@@ -6,7 +6,7 @@
 import Vue from 'vue'
 export default Vue.extend({
     computed: {
-        loadingState() {
+        loadingState(): boolean {
             return this.$store.state.coreLoading.loadingState
         }
     }

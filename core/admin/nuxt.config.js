@@ -31,9 +31,7 @@ export default {
     '~assets/scss/main.scss'
   ],
 
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
-  plugins: [
-  ],
+
 
   // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
@@ -49,6 +47,11 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/style-resources'
+  ],
+
+  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
+  plugins: [
+    './plugins/axios.js'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

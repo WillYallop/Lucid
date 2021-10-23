@@ -42,7 +42,6 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import axios from 'axios';
 
 export default Vue.extend({
   data() {
@@ -55,7 +54,7 @@ export default Vue.extend({
     }
   },
   mounted() {
-      axios.get('http://api.willpress.local/theme/templates')
+      this.$axios.get('http://api.willpress.local/theme/templates')
       .then((response) => {
         console.log(response.data);
         this.templateOptions = response.data;
@@ -67,7 +66,7 @@ export default Vue.extend({
   methods: {
     // 
     publishPages() {
-        axios.post('http://api.willpress.local/generate', {
+        this.$axios.post('http://api.willpress.local/generate', {
 
         })
         .then((response) => {
@@ -79,7 +78,7 @@ export default Vue.extend({
     },
     // Add new page
     addPage() {
-        axios.post('http://api.willpress.local/admin/page', {
+        this.$axios.post('http://api.willpress.local/admin/page', {
           template_name: this.templateName,
           page_name: this.pageName,
           page_slug: this.pageSlug
