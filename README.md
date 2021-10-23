@@ -21,7 +21,7 @@ Now it is running, you will want to point the IP that was logged, to the domain 
 
 ### Layouts
 
-A layout is a top level component. These should contain the basic building blocks of a web page, such as the head, standard meta data and your body tag. On top of this there are some WillPress specific tags such as {% LAYOUT_CONTENT %} and {% SEO_CONTENT %} which are used to inject the CMS data. For example:
+A layout is a top level component. These should contain the basic building blocks of a web page, such as the head, standard meta data and your body tag. On top of this there are some WillPress specific tags such as ```{% LAYOUT_CONTENT %}``` and ```{% SEO_CONTENT %}``` which are used to inject the CMS data. For example:
 
 ```html
 <!DOCTYPE html>
@@ -48,7 +48,7 @@ A layout is a top level component. These should contain the basic building block
 
 ### Templates
 
-Each time you create a page or post, you must pick a template. This is used to give you a bit more control over what the page should look like beyond the basic elements that the layout controls. This file can include a couple of WillPress specific tags, for instance the {% TEMPLATE_CONTENT %} and a custom include tag which can be configured in the "config/includes.json" file. (these includes have their own section on the CMS where you can configure data to be injected into them, all instances of this type of componenet will contain that same data - this is where they differ from standard componenet).
+Each time you create a page or post, you must pick a template. This is used to give you a bit more control over what the page should look like beyond the basic elements that the layout controls. This file can include a couple of WillPress specific tags, for instance the ```{% TEMPLATE_CONTENT %}``` and a custom include tag which can be configured in the "config/includes.json" file. (these includes have their own section on the CMS where you can configure data to be injected into them, all instances of this type of componenet will contain that same data - this is where they differ from standard componenet).
 
 An example template might look like this:
 
