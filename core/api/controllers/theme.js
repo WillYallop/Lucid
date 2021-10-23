@@ -48,6 +48,23 @@ exports.get_theme_posts = (req, res, next) => {
     for(let i = 0; i < configPostTypes.length; i++) {
         let post = configPostTypes[i];
 
+        // Check if the post has a valid post.name
+        if(typeof post.name != 'string') {
+            nonValidPosts.push({
+                postObject: post,
+                error: `Make sure your posts entries in post-types.json include a post.name of the type "string"!`
+            });
+            continue;
+        }
+        // Check if the post has a valid post.name
+        if(typeof post.template_name != 'string') {
+            nonValidPosts.push({
+                postObject: post,
+                error: `Make sure your posts entries in post-types.json include a post.template_name of the type "string"!`
+            });
+            continue;
+        }
+
         // Check if validPosts already contains a matching post name
         let foundMatch = validPosts.find(x => x.name === post.name);
         if(foundMatch) {
