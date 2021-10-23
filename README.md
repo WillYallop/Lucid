@@ -63,4 +63,4 @@ An example template might look like this:
 
 ### Posts
 
-Posts are a sub category of pages that can only use one template. Each post type you add, a new menu item will appear in the CMS where you can manage all of the pages for that post type. These can be edited at ``` themes/config/posts.json ```
+Posts are a sub category of pages that can only use one template. Each post type you add, a new menu item will appear in the CMS where you can manage all of the pages for that post type. These can be edited at ``` themes/config/post-types.json ```

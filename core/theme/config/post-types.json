@@ -2,5 +2,9 @@
     {
         "name": "Blogs",
         "template_name": "page.html"
+    },
+    {
+        "name": "Jobs",
+        "template_name": "page.html"
     }
 ]
