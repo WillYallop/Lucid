@@ -8,6 +8,17 @@
     justify-content: center;
     align-items: center;
     border-radius: 10px;
+    &.large {
+        height: 42px;
+        width: 42px;
+    }
+    .iconImg {
+        width: 20px;
+        height: 20px;
+        object-fit: contain;
+        opacity: 0.5;
+    }
+    // Colour specifics
     &._01-01 {
         background: map-get($map: $colours, $key: _01-01);
         &:hover {
@@ -32,10 +43,6 @@
             background: map-get($map: $colours, $key: _04-02);
         }
     }
-    .iconImg {
-        width: 20px;
-        height: 20px;
-        object-fit: contain;
-        opacity: 0.5;
-    }
 }
+
+// 
