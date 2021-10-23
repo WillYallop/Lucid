@@ -1,0 +1,8 @@
+// Contains style for buttons and a elements as visually most of the time they should be the same, unless the link is inline in some text.
+
+// Link reset
+a {
+   color: map-get($map: $text, $key: _01-01); 
+   text-decoration: none;
+}
+

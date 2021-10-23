@@ -1,5 +1,8 @@
-$background: #fff;
-$border: #EBEBEB;
+$background: #FFFFFF;
+$border: 2px solid #EBEBEB;
+$header-height: 60px;
+$padding: 15px;
+$animationSpeed: 0.2s;
 
 $text: (
     // Light mode
@@ -30,6 +33,10 @@ $colours: (
     _04-03: #7E6764, // contrast
 
     // ----------------------------------------------------------//
+    // Layout
+    _05-01: #FFFFFF, // nav/componenets
+
+    // ----------------------------------------------------------//
     // Other
-    _05-01: #D93939 // error
+    _06-01: #D93939 // error
 );
