@@ -1,23 +1,25 @@
 <template>
     <div>
-
         <GeneralMainSection class="_02-01"
         :title="'Pages'"
         :body="'Create and manage all of your page'">
-            <!-- Main -->
-            <template v-slot:headerButton>
+            <!-- Action Button -->
+            <template v-slot:actionButton>
                 <button class="iconMain large _02-01">
                     <img class="iconImg" src="@/assets/icons/plus.svg" alt="Pages">
                 </button>
             </template>
             <!-- Main -->
             <template v-slot:main>
+
+
+
+                <button @click="toggleLoading">Toggle Loading</button>
                 
+
+
             </template>
         </GeneralMainSection>
-
-
-        <button @click="toggleLoading">Toggle Loading</button>
     </div>
 </template>
 

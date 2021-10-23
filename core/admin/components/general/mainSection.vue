@@ -6,8 +6,8 @@
                 <h1>{{ this.title }}</h1>
                 <p v-if="body" class="bodyText">{{ this.body }}</p>
             </div>
-            <div class="btnCon">
-                 <slot name="headerButton"></slot>
+            <div class="actionButtonCon">
+                 <slot name="actionButton"></slot>
             </div>
         </header>
 
@@ -63,7 +63,7 @@ export default Vue.extend({
                 margin-bottom: 10px;
             }
         }
-        .btnCon {
+        .actionButtonCon {
 
         }
     }
