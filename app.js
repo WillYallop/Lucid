@@ -3,6 +3,7 @@ const express = require('express');
 const vhost = require('vhost');
 const morgan = require('morgan');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 
 
 
@@ -38,6 +39,17 @@ const app = express();
 // ------------------------------------
 
 app.use(morgan('dev'));
+app.use(bodyParser.urlencoded({extended: false}));
+//CORS
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+    if(req.method === 'OPTIONS') {
+        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+        return res.status(200).json({});
+    }
+    next();
+});
 
 
 
@@ -48,12 +60,14 @@ app.use(morgan('dev'));
 // Route imports
 const apiGeneratorRoutes = require('./core/api/routes/generate');
 const apiAdminRoutes = require('./core/api/routes/admin');
+const apiThemeRoutes = require('./core/api/routes/theme');
 const apiPageRoutes = require('./core/api/routes/page');
  
 // Routes
-api.use('/generate', express.text(), apiGeneratorRoutes);
-api.use('/admin', express.text(), apiAdminRoutes);
-api.use('/page', express.text(), apiPageRoutes);
+api.use('/generate', apiGeneratorRoutes);
+api.use('/admin', apiAdminRoutes);
+api.use('/theme', apiThemeRoutes);
+api.use('/page', apiPageRoutes);
 
 mainapp.use('/', express.static(process.env.DIST_APP));
 admin.use('/', express.static(process.env.DIST_ADMIN));
