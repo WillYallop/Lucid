@@ -1,1 +1,35 @@
 $background: #fff;
+$border: #EBEBEB;
+
+$text: (
+    // Light mode
+    _01-01: #262626, // titles
+    _01-02: #414141, // body
+    _01-03: #898989 // greyed out
+);
+
+$colours: (
+    // Accent colour for dashboard and main content
+    _01-01: #E2CDEC, // main
+    _01-02: #D6C2DF, // hover
+    _01-03: #786D7D, // contrast
+    // ----------------------------------------------------------//
+    // Accent colour for pages and posts content
+    _02-01: #B4ECE1, // main
+    _02-02: #ABE0D6, // hover
+    _02-03: #607D78,
+    // ----------------------------------------------------------//
+    // Accent colour for assets content
+    _03-01: #FDE1AF, // main
+    _03-02: #F0D6A6, // hover
+    _03-03: #86785D,
+    // ----------------------------------------------------------//
+    // Accent colours for themes and settings - core stuff
+    _04-01: #EEC2BC, // main
+    _04-02: #E2B8B2, // hover
+    _04-03: #7E6764, // contrast
+
+    // ----------------------------------------------------------//
+    // Other
+    _05-01: #D93939 // error
+);
