@@ -6,8 +6,8 @@ const bodyParser = require('body-parser');
 var jsonParser = bodyParser.json()
 
 // Controller
-const AdminController = require('../controllers/admin');
+const CmsController = require('../controllers/cms');
 
-router.post('/page', jsonParser, AdminController.add_new_page);
+router.post('/page', jsonParser, CmsController.add_new_page);
 
 module.exports = router;

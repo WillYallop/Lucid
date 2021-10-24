@@ -2,11 +2,11 @@
     <img v-if="loadingState" class="loadingIndicator" src="@/assets/images/logoIcon.svg" alt="Logo Icon Spinning">
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 export default Vue.extend({
     computed: {
-        loadingState(): boolean {
+        loadingState() {
             return this.$store.state.coreLoading.loadingState
         }
     }

@@ -19,7 +19,7 @@
     </section>
 </template>
 
-<script lang="ts">
+<script>
 import Vue from 'vue'
 export default Vue.extend({
     props: {
@@ -64,7 +64,7 @@ export default Vue.extend({
             }
         }
         .actionButtonCon {
-
+            width: auto;
         }
     }
     .sectionMain {

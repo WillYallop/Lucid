@@ -6,12 +6,12 @@ export default {
   target: 'static',
 
   generate: {
-    dir: '../../dist/admin'
+    dir: '../../dist/cms'
   },
 
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'admin',
+    title: 'CMS',
     htmlAttrs: {
       lang: 'en'
     },
@@ -38,8 +38,6 @@ export default {
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    // https://go.nuxtjs.dev/typescript
-    '@nuxt/typescript-build',
   ],
 
   // Modules: https://go.nuxtjs.dev/config-modules

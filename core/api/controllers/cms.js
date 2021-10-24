@@ -46,4 +46,3 @@ exports.add_new_page = (req, res, next) => {
         })
     })
 }
-

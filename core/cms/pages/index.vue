@@ -78,7 +78,7 @@ export default Vue.extend({
     },
     // Add new page
     addPage() {
-        this.$axios.post('http://api.willpress.local/admin/page', {
+        this.$axios.post('http://api.willpress.local/cms/page', {
           template_name: this.templateName,
           page_name: this.pageName,
           page_slug: this.pageSlug
