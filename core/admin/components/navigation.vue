@@ -24,6 +24,16 @@
                             Pages
                         </nuxt-link>
                     </li>
+
+                    <li v-for="post in posts" :key="post">
+                        <nuxt-link :to="{ path: 'pages', query: { post: post.toLowerCase() }}">
+                            <div class="iconMain _02-01">
+                                <img class="iconImg" src="@/assets/icons/page.svg" alt="Pages">
+                            </div>
+                            {{ post }}
+                        </nuxt-link>
+                    </li>
+
                 </div>
                 <!-- Media -->
                 <div class="navLinkSect">
@@ -69,11 +79,29 @@
     </nav>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
-    
-})
+
+<script>
+export default {
+    data() {
+        return {
+            posts: []
+        }
+    },
+    async fetch() {
+        this.$axios.get('http://api.willpress.local/theme/posts')
+        .then((response) => {
+          response.data.posts.forEach(post => {
+            this.posts.push(post.name)
+          });
+          response.data.failed.forEach(post => {
+            console.error(post.error);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+    },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -99,6 +127,7 @@ export default Vue.extend({
                     font-size: 16px;
                     color: map-get($map: $text, $key: _01-01);
                     opacity: 0.5;
+                    text-transform: capitalize;
                     &.nuxt-link-exact-active {
                         opacity: 1;
                     }
