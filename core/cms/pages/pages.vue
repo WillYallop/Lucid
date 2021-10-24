@@ -1,6 +1,6 @@
 <template>
     <div>
-        <GeneralMainSection class="_02-01"
+        <LayoutMainSection class="_02-01"
         :title="'Pages'"
         :body="'Create and manage all of your page'">
             <!-- Action Button -->
@@ -19,7 +19,7 @@
 
 
             </template>
-        </GeneralMainSection>
+        </LayoutMainSection>
     </div>
 </template>
 

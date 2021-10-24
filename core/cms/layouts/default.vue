@@ -1,14 +1,14 @@
 <template>
     <div>
-        <Header/>
+        <LayoutHeader/>
         <div class="siteContent">
-          <Navigation/>
+          <LayoutNavigation/>
           <main class="mainContent">
             <Nuxt/>
           </main>
         </div>
 
-      <GeneralLoading/>
+      <GeneralLoadingIndicator/>
 
     </div>
 </template>
