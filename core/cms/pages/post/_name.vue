@@ -1,7 +1,7 @@
 <template>
     <LayoutMainSection class="_02-01"
     :title="`Post - ${this.postName}`"
-    :body="'Create and manage all of your page'">
+    :body="'Create and manage all of your pages for this post type!'">
         <!-- Action Button -->
         <template v-slot:actionButton>
             <button class="iconMain large _02-01">

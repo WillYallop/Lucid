@@ -17,6 +17,7 @@
     "nuxt": "^2.15.7"
   },
   "devDependencies": {
+    "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/style-resources": "^1.2.1",
     "eslint-config-prettier": "^8.3.0",
     "node-sass": "^5.0.0",

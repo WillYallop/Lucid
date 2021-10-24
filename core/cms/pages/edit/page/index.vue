@@ -1,7 +1,7 @@
 <template>
     <LayoutMainSection class="_02-01"
-    :title="'Pages'"
-    :body="'Create and manage all of your page'">
+    :title="`Edit page`"
+    :body="'Edit page'">
         <!-- Action Button -->
         <template v-slot:actionButton>
             <button class="iconMain large _02-01">
@@ -21,15 +21,8 @@
     </LayoutMainSection>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
-    mounted() {
-        this.$store.dispatch('cmpa_loadMultiplePages', {
-            limit: 20,
-            skip: 0
-        });
-    },
+<script>
+export default {
     methods: {
         toggleLoading() {
             this.$store.dispatch('colo_toggleLoadingState', {
@@ -37,7 +30,7 @@ export default Vue.extend({
             })
         }
     }
-})
+}
 </script>
 
 <style lang="scss" scoped>

@@ -3,6 +3,8 @@ import PersistedState from 'vuex-persistedstate'
 
 // Modules - Core
 import coreLoading from './modules/core/loading'
+// Modules - CMS
+import cmsPages from './modules/cms/pages'
 
 
 export const state = () => ({
@@ -18,7 +20,8 @@ export const actions = {
 }
 
 export const modules = {
-    coreLoading
+    coreLoading,
+    cmsPages
 }
 
 export const plugins = [

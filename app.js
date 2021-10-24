@@ -61,13 +61,11 @@ app.use((req, res, next) => {
 const apiGeneratorRoutes = require('./core/api/routes/generate');
 const apiCmsRoutes = require('./core/api/routes/cms');
 const apiThemeRoutes = require('./core/api/routes/theme');
-const apiPageRoutes = require('./core/api/routes/page');
  
 // Routes
 api.use('/generate', apiGeneratorRoutes);
 api.use('/cms', apiCmsRoutes);
 api.use('/theme', apiThemeRoutes);
-api.use('/page', apiPageRoutes);
 
 mainapp.use('/', express.static(process.env.DIST_APP));
 cms.use('/', express.static(process.env.DIST_CMS));
