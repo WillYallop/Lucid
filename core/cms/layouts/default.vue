@@ -4,7 +4,7 @@
         <div class="siteContent">
           <LayoutNavigation/>
           <main class="mainContent">
-            <Nuxt keep-alive/>
+            <Nuxt/>
           </main>
         </div>
 
