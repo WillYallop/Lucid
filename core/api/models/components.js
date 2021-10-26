@@ -15,11 +15,11 @@ const ComponentSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    // This may change
     field_data: {
         type: Array
     }
 
-
 });
 
-module.exports = mongoose.model('pageComponents', ComponentSchema);
+module.exports = mongoose.model('components', ComponentSchema);

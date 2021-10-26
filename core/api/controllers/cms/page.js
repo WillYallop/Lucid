@@ -2,10 +2,10 @@ const { response } = require('express');
 const mongoose = require('mongoose');
 
 // Functions
-const pageCount = require('../functions/page-count');
+const pageCount = require('../../functions/page-count');
 
 // Models
-const Pages = require('../models/pages');
+const Pages = require('../../models/pages');
 
 // ------------------------------------ ------------------------------------
 // POST - add a new page
