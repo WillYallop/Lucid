@@ -54,10 +54,9 @@ export default Vue.extend({
     }
   },
   mounted() {
-      this.$axios.get('http://api.willpress.local/theme/templates')
+      this.$axios.get('http://api.willpress.local/cms/components/6171dab8daa89ce4371ceda9')
       .then((response) => {
         console.log(response.data);
-        this.templateOptions = response.data;
       })
       .catch((err) => {
         console.log(err);
