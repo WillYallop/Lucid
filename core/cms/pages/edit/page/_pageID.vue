@@ -11,8 +11,6 @@
         <!-- Main -->
         <template v-slot:main>
 
-            {{pageData.data}}
-
 
         </template>
     </LayoutMainSection>
@@ -20,27 +18,24 @@
 
 <script>
 export default {
-    async asyncData({ params, $axios, redirect }) {
+    async asyncData({ params, redirect, store }) {
         const pageID = params.pageID;
-        try {
-            if(pageID) {
-                let pageData = await $axios.get(`${process.env.API_URL}/cms/page/${pageID}`)
-
-                return { pageData }
+        if(pageID != undefined) {
+            try {
+                await store.dispatch('cmpa_loadSinglePage', pageID);
+                return {
+                    create: false
+                }
             }
-            else {
-                let pageData = 'create new page';
-                return { pageData }
+            catch(err) {
+                console.error(err);
+                redirect('/edit/page');
             }
         }
-        catch(err) {
-            console.error({
-                status: err.response.status,
-                title: 'Request Error',
-                source: `/edit/page/${pageID}`,
-                response: err.response
-            });
-            redirect('/edit/page');
+        else {
+            return {
+                create: true
+            }
         }
     },
     data() {

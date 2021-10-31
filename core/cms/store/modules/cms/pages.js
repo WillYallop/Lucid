@@ -1,12 +1,16 @@
 import axios from 'axios';
 
 const state = () => ({
-    pages: []
+    totalPages: undefined,
+    page: null
 })
   
 const mutations = {
-    cmpa_addPage(state, page) {
-        state.pages.push(page);
+    cmpa_setPage(state, page) {
+        state.page = page;
+    },
+    cmpa_setTotalPages(state, total) {
+        state.totalPages = total;
     }
 }
 
@@ -24,13 +28,22 @@ const actions = {
         })
     },
     // Load single page
-    cmpa_loadSinglePage({ state, commit }) {
-        axios.get(`${process.env.API_URL}/cms/page`)
-        .then((response) => {
-            console.log(response.data);
-        })
-        .catch((err) => {
-            console.log(err);
+    async cmpa_loadSinglePage({ commit }, pageID) {
+        return new Promise((resolve, reject) => {
+            axios.get(`${process.env.API_URL}/cms/page/${pageID}`)
+            .then((res) => {
+                commit('cmpa_setPage', res.data.data)
+                commit('cmpa_setTotalPages', res.data.meta.total_pages)
+                resolve(res.data)
+            })
+            .catch((err) => {
+                reject({
+                    status: err.response.status,
+                    title: 'Request Error',
+                    source: 'cmpa_loadSinglePage',
+                    response: err.response
+                })
+            })
         })
     }
 }
