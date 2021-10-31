@@ -73,17 +73,22 @@ exports.add_new_page = async (req, res, next) => {
 // ------------------------------------ ------------------------------------
 exports.get_single_page = async (req, res, next) => {
     try {
-
         let count = await pageCount();
-        let pageResponse = await Pages.findById(req.params.page_id);
+        let pageResponse = await Pages.findOne({ slug: req.params.slug });
 
-    
-        res.status(200).json({
-            meta: {
-                total_pages: count
-            },
-            data: pageResponse
-        })
+        if(!pageResponse) {
+            res.status(404).json({
+                error: `Page with slug ${req.params.slug} does not exists!`
+            })
+        } 
+        else {
+            res.status(200).json({
+                meta: {
+                    total_pages: count
+                },
+                data: pageResponse
+            })
+        }
     }
     catch(err) {
         res.status(500).json({

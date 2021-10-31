@@ -1,8 +1,10 @@
 $background: #FFFFFF;
-$border: 2px solid #EBEBEB;
+$borderColour: #EBEBEB;
+$border: 2px solid $borderColour;
 $header-height: 60px;
 $padding: 15px;
 $animationSpeed: 0.2s;
+$borderRadius: 10px;
 
 $text: (
     // Light mode
