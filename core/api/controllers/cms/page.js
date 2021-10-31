@@ -93,7 +93,7 @@ exports.get_single_page = async (req, res, next) => {
 // ------------------------------------ ------------------------------------
 // GET - get multiple pages
 // ------------------------------------ ------------------------------------
-exports.get_multiple_pages = (req, res, next) => {
+exports.get_multiple_pages = async (req, res, next) => {
     try {
         let queryLimit = parseInt(req.params.limit);
         let querySkip = parseInt(req.params.skip);
