@@ -10,118 +10,133 @@ const Pages = require('../../models/pages');
 // ------------------------------------ ------------------------------------
 // POST - add a new page
 // ------------------------------------ ------------------------------------
-exports.add_new_page = (req, res, next) => {
-    Pages.find({ page_slug: req.body.page_slug })
-    .then((response) => {
-       if(response.length) {
-            // Page exists
+exports.add_new_page = async (req, res, next) => {
+    try {
+        let pageSlugExists = await Pages.findOne({ slug: req.body.slug });
+        var count = await pageCount(); // Page count
+        if(pageSlugExists) {
             res.status(403).json({
-                exists: true
+                meta: {
+                    total_pages: count
+                },
+                data: {},
+                errors: [
+                    {
+                      status: '403',
+                      title:  'Page Exists',
+                      detail: 'A page with this slug exists already!'
+                    }
+                ]
             });
-       }
-       else {
-            // Get layout name from prewritten config
+        }
+        else {
             // Add page
             const page = new Pages({
                 _id: new mongoose.Types.ObjectId(),
                 template_name: req.body.template_name,
-                layout_name: 'default.html',
                 page_name: req.body.page_name,
-                page_slug: req.body.page_slug
+                slug: req.body.slug,
+                page_type: req.body.page_type,
+                parent_page: req.body.parent_page,
+                parent_page_id: req.body.parent_page_id,
+                author: req.body.author
             });
-            page
-            .save()
-            .then((response) => {
-                res.status(200).json({
-                    success: true,
-                    page: response
-                })
+            let savePageRes = await page.save();
+
+            res.status(200).json({
+                meta: {
+                    total_pages: count
+                },
+                data: savePageRes,
+                links: {
+                    self: {
+                        request_type: 'POST',
+                        query: `/cms/page`
+                    },
+                    get: {
+                        request_type: 'GET',
+                        query: `/cms/page/${savePageRes._id}`
+                    }
+                }
             })
-            .catch((err) => {
-                res.status(500).json({
-                    error: err
-                })
-            })
-        }       
-    })
-    .catch((err) => {
+        }
+    }
+    catch(err) {
         res.status(500).json({
             error: err
         })
-    })
+    }
 }
 
 // ------------------------------------ ------------------------------------
 // GET - get single pages
 // ------------------------------------ ------------------------------------
-exports.get_single_page = (req, res, next) => {
-
-    // Get page count
-    pageCount()
-    .then((count) => {
-
-        Pages.findOne({ is_post_type: false })
-        .then((response) => {
-            res.status(200).json({
-                meta: {
-                    totalPages: count
-                },
-                data: response
-            })
+exports.get_single_page = async (req, res, next) => {
+    try {
+        let count = await pageCount();
+        let pageResponse = await Pages.findOne({ _id: req.params.page_id });
+    
+        res.status(200).json({
+            meta: {
+                total_pages: count
+            },
+            data: pageResponse
         })
-        .catch((err) => {
-            res.status(500).json({
-                error: err
-            })
+    }
+    catch(err) {
+        res.status(500).json({
+            error: err
         })
-
-    })
+    }
 }
 
 // ------------------------------------ ------------------------------------
 // GET - get multiple pages
 // ------------------------------------ ------------------------------------
 exports.get_multiple_pages = (req, res, next) => {
-    var queryLimit = parseInt(req.params.limit);
-    var querySkip = parseInt(req.params.skip);
+    try {
+        let queryLimit = parseInt(req.params.limit);
+        let querySkip = parseInt(req.params.skip);
+        var next, prev;
 
-    Pages.find({ is_post_type: false })
-    .limit(queryLimit)
-    .skip(querySkip)
-    .then((response) => {
+        let count = await pageCount();
+        let pagesResponse = await Pages.find({ is_post_type: false }).limit(queryLimit).skip(querySkip)
 
-        // Get page count
-        pageCount()
-        .then((count) => {
-
-            var next, prev;
-            // Work out next
-            if(querySkip + queryLimit >= count) next = false;
-            else next = `/cms/page/${queryLimit}/${querySkip + queryLimit}`
-            // Work out prev
-            if(querySkip - queryLimit <= 0) prev = false;
-            else prev = `/cms/page/${queryLimit}/${querySkip - queryLimit}`
-
-            // Reponse
-            res.status(200).json({
-                meta: {
-                    totalPages: count
+        // Set the next and previouse query strings
+        if(querySkip + queryLimit >= count) next = false; // Work out next
+        else next = `/cms/page/${queryLimit}/${querySkip + queryLimit}`
+        if(querySkip - queryLimit <= 0) prev = false; // Work out prev
+        else prev = `/cms/page/${queryLimit}/${querySkip - queryLimit}`
+        
+        // Respond
+        res.status(200).json({
+            meta: {
+                total_pages: count
+            },
+            data: pagesResponse,
+            links: {
+                self: {
+                    request_type: 'GET',
+                    query: `/cms/page/${queryLimit}/${querySkip}`
                 },
-                data: response,
-                links: {
-                    self: `/cms/page/${queryLimit}/${querySkip}`,
-                    first: `/cms/page/${queryLimit}/0`,
-                    prev: prev,
-                    next: next
+                first: {
+                    request_type: 'GET',
+                    query: `/cms/page/${queryLimit}/0`
+                },
+                prev: {
+                    request_type: 'GET',
+                    query: prev
+                },
+                next: {
+                    request_type: 'GET',
+                    query: next
                 }
-            })
+            }
         })
-
-    })
-    .catch((err) => {
-        console.log(err);
+    }
+    catch(err) {
         res.status(500).json({
             error: err
         })
-    })
+    }
 }
