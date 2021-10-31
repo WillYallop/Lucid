@@ -28,7 +28,7 @@ const actions = {
         })
     },
     // Load single page
-    async cmpa_loadSinglePage({ commit }, pageID) {
+    cmpa_loadSinglePage({ commit }, pageID) {
         return new Promise((resolve, reject) => {
             axios.get(`${process.env.API_URL}/cms/page/${pageID}`)
             .then((res) => {
