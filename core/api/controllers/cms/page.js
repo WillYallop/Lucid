@@ -73,8 +73,10 @@ exports.add_new_page = async (req, res, next) => {
 // ------------------------------------ ------------------------------------
 exports.get_single_page = async (req, res, next) => {
     try {
+
         let count = await pageCount();
-        let pageResponse = await Pages.findOne({ _id: req.params.page_id });
+        let pageResponse = await Pages.findById(req.params.page_id);
+
     
         res.status(200).json({
             meta: {
