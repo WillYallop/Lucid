@@ -16,8 +16,14 @@ exports.get_page_components = async (req, res, next) => {
             },
             data: componentResponse,
             links: {
-                self: `/cms/components/${req.params.page_id}`,
-                page: `/cms/page/${req.params.page_id}`
+                self: {
+                    request_type: 'GET',
+                    query: `/cms/components/${req.params.page_id}`
+                },
+                page: {
+                    request_type: 'GET',
+                    query: `/cms/page/${req.params.page_id}`
+                }
             }
         });
     }
@@ -50,8 +56,14 @@ exports.add_page_component = async (req, res, next) => {
             },
             data: componentResponse,
             links: {
-                page_components: `/cms/components/${req.body.page_id}`,
-                page: `/cms/page/${req.body.page_id}`
+                page_components: {
+                    request_type: 'GET',
+                    query: `/cms/components/${req.body.page_id}`
+                },
+                page: {
+                    request_type: 'GET',
+                    query: `/cms/page/${req.params.page_id}`
+                }
             }
           })
     }
