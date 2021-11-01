@@ -27,7 +27,7 @@ mongoose.Promise = global.Promise;
 // Subdomain APPS
 const mainapp = express();
 const api = express();
-const admin = express();
+const cms = express();
 const assets = express();
 // create main app
 const app = express();
@@ -59,23 +59,21 @@ app.use((req, res, next) => {
 
 // Route imports
 const apiGeneratorRoutes = require('./core/api/routes/generate');
-const apiAdminRoutes = require('./core/api/routes/admin');
+const apiCmsRoutes = require('./core/api/routes/cms');
 const apiThemeRoutes = require('./core/api/routes/theme');
-const apiPageRoutes = require('./core/api/routes/page');
  
 // Routes
 api.use('/generate', apiGeneratorRoutes);
-api.use('/admin', apiAdminRoutes);
+api.use('/cms', apiCmsRoutes);
 api.use('/theme', apiThemeRoutes);
-api.use('/page', apiPageRoutes);
 
 mainapp.use('/', express.static(process.env.DIST_APP));
-admin.use('/', express.static(process.env.DIST_ADMIN));
+cms.use('/', express.static(process.env.DIST_CMS));
 assets.use('/', express.static(process.env.DIST_ASSETS));
 
 // Subdomain setup
 app.use(vhost(`${process.env.DOMAIN}`, mainapp));
-app.use(vhost(`admin.${process.env.DOMAIN}`, admin));
+app.use(vhost(`cms.${process.env.DOMAIN}`, cms));
 app.use(vhost(`api.${process.env.DOMAIN}`, api));
 app.use(vhost(`assets.${process.env.DOMAIN}`, assets));
 

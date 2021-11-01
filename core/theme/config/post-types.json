@@ -1,0 +1,10 @@
+[
+    {
+        "name": "blogs",
+        "template_name": "page.html"
+    },
+    {
+        "name": "jobs",
+        "template_name": "page.html"
+    }
+]

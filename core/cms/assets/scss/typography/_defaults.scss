@@ -1,0 +1,33 @@
+h1 {
+    font-size: 18px;
+    font-weight: bold;
+    color: map-get($map: $text, $key: _01-01);
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: bold;
+    color: map-get($map: $text, $key: _01-01);
+}
+
+h3 {
+    font-size: 18px;
+    font-weight: bold;
+    color: map-get($map: $text, $key: _01-01);
+}
+
+p {
+    font-size: 16px;
+    color: map-get($map: $text, $key: _01-02);
+}
+
+.titleText {
+    font-size: 16px;
+    color: map-get($map: $text, $key: _01-01);
+    font-weight: bold;
+}
+.bodyText {
+    font-size: 16px;
+    font-weight: normal;
+    color: map-get($map: $text, $key: _01-02);
+}
