@@ -23,7 +23,11 @@
             <div class="editorWrapper">
                 <!-- Page Editor -->
                 <div class="pageEditorCon">
-                    Edit
+                    
+                {{ create }}
+                {{ type }}
+                {{ postName }}
+
                 </div>
                 <!-- Page Config Sidebar -->
                 <div class="pageConfigSidebar">
@@ -39,23 +43,64 @@
 export default {
     async asyncData({ params, redirect, store }) {
         const slug = params.slug;
-        if(slug != undefined) {
+        const postName = params.post_name;
+
+        var dataRes = {
+            create: undefined,
+            type: undefined,
+            postName: undefined
+        }
+
+        // -----------------------------------------
+        // HANDLE POST NAME PARAM
+        // -----------------------------------------
+        if(!postName) { // if no post name redirect
+            redirect('/edit/page');
+        }
+        else { // verify post name
             try {
-                await store.dispatch('cmpa_loadSinglePage', slug);
-                return {
-                    create: false
-                }
+                var verifPostNameRes = await store.dispatch('cmth_verifyPostName', postName);
+                dataRes.create = true;
+                dataRes.type = verifPostNameRes.data.type;
+                dataRes.postName = verifPostNameRes.data.post_name;
             }
             catch(err) {
-                console.error(err);
-                redirect('/edit/page');
+                console.log('REDIRECT')
+                if(dataRes.postName) redirect(`/edit/${dataRes.postName}`);
+                else redirect(`/edit/page`);
+                return {}
             }
+        }
+
+        // -----------------------------------------
+        // HANDLE POST NAME PARAM
+        // -----------------------------------------
+        if(!slug) {
+            dataRes.create = true;
+            dataRes.type = verifPostNameRes != undefined ? verifPostNameRes.data.type : undefined;
+            dataRes.postName = verifPostNameRes != undefined ? verifPostNameRes.data.post_name : undefined;
         }
         else {
-            return {
-                create: true
+            try {
+                await store.dispatch('cmpa_loadSinglePage', {
+                    slug: slug,
+                    type: dataRes.type,
+                    postName: dataRes.postName
+                }); // load page data
+                dataRes.create = false;
+            }
+            catch(err) {
+                if(dataRes.postName) redirect(`/edit/${dataRes.postName}`);
+                else redirect(`/edit/page`);
+                return {}
             }
         }
+
+        // -----------------------------------------
+        // Return
+        // -----------------------------------------
+        console.log(dataRes);
+        return dataRes
     },
     data() {
         return {

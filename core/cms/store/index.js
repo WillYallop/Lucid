@@ -5,6 +5,7 @@ import PersistedState from 'vuex-persistedstate'
 import coreLoading from './modules/core/loading'
 // Modules - CMS
 import cmsPages from './modules/cms/pages'
+import cmsTheme from './modules/cms/theme'
 
 
 export const state = () => ({
@@ -21,7 +22,8 @@ export const actions = {
 
 export const modules = {
     coreLoading,
-    cmsPages
+    cmsPages,
+    cmsTheme
 }
 
 export const plugins = [

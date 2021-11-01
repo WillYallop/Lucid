@@ -43,7 +43,7 @@ const actions = {
     cmpa_loadMultiplePages({ state, commit }, data) {
         // Data
         // limit: int, skip: int
-        axios.get(`${process.env.API_URL}/cms/page/${data.limit}/${data.skip}`)
+        axios.get(`${process.env.API_URL}/cms/pages/${data.limit}/${data.skip}`)
         .then((response) => {
             console.log(response.data);
         })
@@ -52,21 +52,25 @@ const actions = {
         })
     },
     // Load single page
-    cmpa_loadSinglePage({ commit }, slug) {
+    cmpa_loadSinglePage({ commit }, data) {
+        // Includes:
+        // slug, postName, type
         return new Promise((resolve, reject) => {
-            axios.get(`${process.env.API_URL}/cms/page/${slug}`)
+            axios.get(`${process.env.API_URL}/cms/page/${data.slug}/${data.type}/${data.postName}`)
             .then((res) => {
                 commit('cmpa_setPage', res.data.data)
                 commit('cmpa_setTotalPages', res.data.meta.total_pages)
                 resolve(res.data)
             })
             .catch((err) => {
-                reject({
+                let errorMsg = {
                     status: err.response.status,
                     title: 'Request Error',
                     source: 'cmpa_loadSinglePage',
                     response: err.response
-                })
+                }
+                console.error(errorMsg)
+                reject(errorMsg)
             })
         })
     },
