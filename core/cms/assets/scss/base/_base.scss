@@ -1,0 +1,18 @@
+body {
+    background-color: $background;
+    position: relative;
+    font-family: 'Lato', sans-serif;
+    min-height: 100%;
+}
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Lato', sans-serif;
+    &:focus {
+        outline: none;
+    }
+}
+ul, menu, ol {
+    list-style-type: none;
+}
