@@ -61,5 +61,52 @@ exports.get_theme_posts = (req, res, next) => {
 }
 
 // ------------------------------------ ------------------------------------
-// GET - get list of valid post types
+// GET - verify if the given post name exists
 // ------------------------------------ ------------------------------------
+exports.verify_post_name = async (req, res, next) => {
+    // Grab names of all templates in theme/templates directory
+    var postName = req.params.post_name.toLowerCase();
+    if(postName === 'pages') {
+        res.status(200).json({
+            data: {
+                exists: true,
+                type: 'page',
+                post_name: undefined
+            },
+            links: [
+
+            ]
+        })
+    } 
+    else {
+        let findPostName = configPostTypes.find( x => x.name === postName);
+        if(findPostName) {
+            res.status(200).json({
+                data: {
+                    exists: true,
+                    type: 'post',
+                    post_name: postName
+                },
+                links: [
+    
+                ]
+            })
+        }
+        else {
+            res.status(404).json({
+                data: {
+                    exists: false,
+                    type: false,
+                    post_name: postName
+                },
+                errors: [
+                    {
+                        status: '404',
+                        title:  'Post Name Doesnt Exist',
+                        detail: `A post with the name of "${postName}" does not exist in the "theme/config/post-types.json" file!`
+                    }
+                ]
+            })
+        }
+    } 
+}
