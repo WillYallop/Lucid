@@ -21,6 +21,10 @@ const PageSchema = mongoose.Schema({
         enum : ['page','post'],
         required: true
     },
+    post_name: {
+        type: String,
+        required: true
+    },
 
     parent_page: {
         type: String,

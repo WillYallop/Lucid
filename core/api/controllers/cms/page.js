@@ -73,11 +73,12 @@ exports.add_new_page = async (req, res, next) => {
 exports.get_single_page = async (req, res, next) => {
     try {
         let count = await pageCount();
-        let pageResponse = await Pages.findOne({ slug: req.params.slug });
+        if(req.params.type === 'page') var pageResponse = await Pages.findOne({ slug: req.params.slug, page_type: req.params.type });
+        else var pageResponse = await Pages.findOne({ slug: req.params.slug, page_type: req.params.type, post_name: req.params.post_name });
 
         if(!pageResponse) {
             res.status(404).json({
-                error: `Page with slug ${req.params.slug} does not exists!`
+                error: `Page with slug "${req.params.slug}"" does not exists for post name "${req.params.post_name}" of type "${req.params.type}"!`
             })
         } 
         else {
