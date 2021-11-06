@@ -121,7 +121,7 @@ exports.get_multiple_pages = async (req, res, next) => {
         res.status(200).json({
             meta: {
                 total_pages: count,
-                [`${postName}_count`]: postNameCount
+                total_of_same_post: postNameCount
             },
             data: pagesResponse,
             links: {

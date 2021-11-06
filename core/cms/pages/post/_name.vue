@@ -11,7 +11,13 @@
         <!-- Main -->
         <template v-slot:main>
 
-            {{pages}}
+            <p class="greyedOut">Total Pages: {{ totalOfSamePost }}</p>
+
+            <div class="pagesListCon">
+                <LoopsPage v-for="page in pages" :key="page._id"
+                :page="page"
+                :postName="'page'"/>
+            </div>
 
         </template>
     </LayoutMainSection>
@@ -31,11 +37,9 @@ export default {
                     limit: 20,
                     skip: 0
                 });
-
-
-
                 return { 
                     postName,
+                    totalOfSamePost: pagesRes.meta.total_of_same_post,
                     pages: pagesRes.data
                 }
             }
@@ -51,5 +55,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.pagesListCon {
+    margin-top: 5px;
+}
 </style>
