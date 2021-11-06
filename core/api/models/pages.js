@@ -9,6 +9,10 @@ const PageSchema = mongoose.Schema({
     },
     page_name: { 
         type: String, 
+        required: true
+    },
+    page_title: {
+        type: String, 
         required: true,
         unique: true
     },
