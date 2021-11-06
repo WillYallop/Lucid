@@ -26,7 +26,7 @@
                     </li>
 
                     <li v-for="post in posts" :key="post">
-                        <nuxt-link :to="{ name: 'post-name', params: { name: post.toLowerCase() }}">
+                        <nuxt-link :to="{ name: 'post-post_name', params: { post_name: post.toLowerCase() }}">
                             <div class="iconMain _02-01">
                                 <img class="iconImg" src="@/assets/icons/page.svg" alt="Pages">
                             </div>

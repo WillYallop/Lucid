@@ -1,10 +1,10 @@
 <template>
     <LayoutMainSection class="_02-01"
-    :title="'Pages'"
-    :body="'Create and manage all of your page'">
+    :title="`Post - ${this.postName}`"
+    :body="'Create and manage all of your pages for this post type!'">
         <!-- Action Button -->
         <template v-slot:actionButton>
-            <nuxt-link class="iconMain large _02-01" to="/edit/page">
+            <nuxt-link class="iconMain large _02-01" :to="{ name: 'edit-post_name-page_title', params: { post_name: postName.toLowerCase() }}">
                 <img class="iconImg" src="@/assets/icons/plus.svg" alt="Pages">
             </nuxt-link>
         </template>
@@ -25,15 +25,29 @@
 
 <script>
 export default {
-    async asyncData({ store }) {
+    async validate({ params, store }) {
+        const postName = params.post_name;
+        try {
+            var verifPostNameRes = await store.dispatch('cmth_verifyPostName', postName);
+            if(verifPostNameRes.data.type === 'post') return true
+            else return false
+        }
+        catch(err) {
+            console.error(err);
+            return false
+        }
+    },
+    async asyncData({ params, store }) {
+        const postName = params.post_name
         try {
             // Load post data
             let pagesRes = await store.dispatch('cmpa_loadMultiplePages', {
-                post_name: 'page',
+                post_name: postName,
                 limit: 20,
                 skip: 0
             });
             return { 
+                postName,
                 totalOfSamePost: pagesRes.meta.total_of_same_post,
                 pages: pagesRes.data
             }

@@ -64,9 +64,9 @@ const actions = {
     // Load single page
     cmpa_loadSinglePage({ commit }, data) {
         // Includes:
-        // pageName, postName, type
+        // pageTitle, postName, type
         return new Promise((resolve, reject) => {
-            axios.get(`${process.env.API_URL}/cms/page/${data.type}/${data.pageName}/${data.postName}`)
+            axios.get(`${process.env.API_URL}/cms/page/${data.type}/${data.pageTitle}/${data.postName}`)
             .then((res) => {
                 commit('cmpa_setPage', res.data.data)
                 commit('cmpa_setTotalPages', res.data.meta.total_pages)

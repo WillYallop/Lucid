@@ -42,7 +42,7 @@
 <script>
 export default {
     async asyncData({ params, redirect, store }) {
-        const pageName = params.page_name;
+        const pageTitle = params.page_title;
         const postName = params.post_name;
 
         var dataRes = {
@@ -75,7 +75,7 @@ export default {
         // -----------------------------------------
         // HANDLE POST NAME PARAM
         // -----------------------------------------
-        if(!pageName) {
+        if(!pageTitle) {
             dataRes.create = true;
             dataRes.type = verifPostNameRes != undefined ? verifPostNameRes.data.type : undefined;
             dataRes.postName = verifPostNameRes != undefined ? verifPostNameRes.data.post_name : undefined;
@@ -83,7 +83,7 @@ export default {
         else {
             try {
                 await store.dispatch('cmpa_loadSinglePage', {
-                    pageName: pageName,
+                    pageTitle: pageTitle,
                     type: dataRes.type,
                     postName: dataRes.postName
                 }); // load page data

@@ -2,7 +2,7 @@
     <div class="pageRow">
         <p class="mediumP">{{ page.page_name }} - <span class="greyedOut">{{ page.slug }}</span></p>
         <div class="optionsRow">
-            <nuxt-link class="optionsLink" :to="{ name: 'edit-post_name-page_name', params: { post_name: postName, page_name: page.page_name }}">edit</nuxt-link>
+            <nuxt-link class="optionsLink" :to="{ name: 'edit-post_name-page_title', params: { post_name: postName, page_title: page.page_title }}">edit</nuxt-link>
             <nuxt-link class="optionsLink" to="/">home</nuxt-link>
         </div>
     </div>
