@@ -4,18 +4,14 @@
     :body="'Create and manage all of your pages for this post type!'">
         <!-- Action Button -->
         <template v-slot:actionButton>
-            <button class="iconMain large _02-01">
+            <nuxt-link class="iconMain large _02-01" :to="{ name: 'edit-post_name-page_name', params: { post_name: postName.toLowerCase() }}">
                 <img class="iconImg" src="@/assets/icons/plus.svg" alt="Pages">
-            </button>
+            </nuxt-link>
         </template>
         <!-- Main -->
         <template v-slot:main>
 
-
-
-            <button @click="toggleLoading">Toggle Loading</button>
-            
-
+            {{pages}}
 
         </template>
     </LayoutMainSection>
@@ -23,16 +19,33 @@
 
 <script>
 export default {
-    async asyncData({ params }) {
-      const postName = params.name // When calling /abc the slug will be "abc"
-      return { postName }
+    async asyncData({ params, redirect, store }) {
+        const postName = params.name // When calling /abc the slug will be "abc"
+        if(!postName) {
+            throw new Error('No post name');
+        } else {
+            try {
+                // Load post data
+                let pagesRes = await store.dispatch('cmpa_loadMultiplePages', {
+                    post_name: postName,
+                    limit: 20,
+                    skip: 0
+                });
+
+
+
+                return { 
+                    postName,
+                    pages: pagesRes.data
+                }
+            }
+            catch(err) {
+                throw new Error(err);
+            }
+        }
     },
     methods: {
-        toggleLoading() {
-            this.$store.dispatch('colo_toggleLoadingState', {
-                toggle: true
-            })
-        }
+
     }
 }
 </script>

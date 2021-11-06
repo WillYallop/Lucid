@@ -4,40 +4,47 @@
     :body="'Create and manage all of your page'">
         <!-- Action Button -->
         <template v-slot:actionButton>
-            <button class="iconMain large _02-01">
+            <nuxt-link class="iconMain large _02-01" to="/edit/page">
                 <img class="iconImg" src="@/assets/icons/plus.svg" alt="Pages">
-            </button>
+            </nuxt-link>
         </template>
         <!-- Main -->
         <template v-slot:main>
 
+            {{pages}}
 
-
-            <button @click="toggleLoading">Toggle Loading</button>
-            
-
+            <div class="pagesListCon">
+                <LoopsPage v-for="page in pages" :key="page._id"
+                :page="page"
+                :postName="'page'"/>
+            </div>
 
         </template>
     </LayoutMainSection>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-export default Vue.extend({
-    mounted() {
-        this.$store.dispatch('cmpa_loadMultiplePages', {
-            limit: 20,
-            skip: 0
-        });
+<script>
+export default {
+    async asyncData({ params, redirect, store }) {
+        try {
+            // Load post data
+            let pagesRes = await store.dispatch('cmpa_loadMultiplePages', {
+                post_name: 'page',
+                limit: 20,
+                skip: 0
+            });
+            return { 
+                pages: pagesRes.data
+            }
+        }
+        catch(err) {
+            throw new Error(err);
+        }
     },
     methods: {
-        toggleLoading() {
-            this.$store.dispatch('colo_toggleLoadingState', {
-                toggle: true
-            })
-        }
+
     }
-})
+}
 </script>
 
 <style lang="scss" scoped>
