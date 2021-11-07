@@ -43,6 +43,10 @@ a {
         background-color: map-get($map: $colours, $key: _07-02);
         color: map-get($map: $colours, $key: _07-03);
     }
+
+    &:disabled {
+        opacity: 0.2;
+    }
 }
 
 .iconButton {
