@@ -3,7 +3,7 @@
 const { 
     getUnregisteredComponents,
     getRegisteredComponents
-} = require('../../../generator/util/components');
+} = require('../../../modules/util/components');
 
 // ------------------------------------ ------------------------------------
 // GET - get a list of unregistered components
