@@ -1,0 +1,10 @@
+.infoListUl {
+    
+    li {
+        padding: 2px 0;
+        font-size: 14px;
+        &:first-child {
+            padding-top: 0;
+        }
+    }
+}

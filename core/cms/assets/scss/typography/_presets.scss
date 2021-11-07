@@ -57,3 +57,9 @@ a {
     font-weight: 400;
     color: map-get($map: $text, $key: _01-02);
 }
+
+label {
+    font-size: 14px;
+    color: map-get($map: $text, $key: _01-02);
+    font-weight: 500;
+}

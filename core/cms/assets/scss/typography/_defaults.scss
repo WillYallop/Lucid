@@ -6,17 +6,18 @@ h1 {
 
 h2 {
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 600;
     color: map-get($map: $text, $key: _01-01);
 }
 
 h3 {
     font-size: 18px;
-    font-weight: bold;
+    font-weight: 500;
     color: map-get($map: $text, $key: _01-01);
 }
 
 p {
     font-size: 16px;
+    font-weight: 400;
     color: map-get($map: $text, $key: _01-02);
 }

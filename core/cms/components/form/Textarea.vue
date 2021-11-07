@@ -1,7 +1,7 @@
 <template>
-    <div class="inputRow">
+    <div class="textareaRow">
         <label v-if="label" :for="id">{{ label }}</label>
-        <input type="text" v-model="propModel" :placeholder="placeholder" :name="name" :id="id" :aria-describedby="descriptionId" class="inputStyle">
+        <textarea class="textareaStyle" :name="name" :id="id" :aria-describedby="descriptionId" v-model="propModel"></textarea>
         <p v-if="description" :id="descriptionId" class="describe">{{ description }}</p>
     </div>
 </template>
@@ -14,8 +14,7 @@ export default {
         label: String,
         description: String,
         descriptionId: String,
-        value: String,
-        placeholder: String
+        value: String
     },
     computed: {
         propModel: {
@@ -24,27 +23,25 @@ export default {
             },
             set (value) { 
                 this.$emit('updateProp', value) 
-            },
+            }
         },
     },
 }
 </script>
 
 <style lang="scss" scoped>
-.inputRow {
+.textareaRow {
     width: 100%;
-    .inputStyle {
-        height: 40px;
+    .textareaStyle {
+        margin-top: 5px;
+        resize: none;
+        height: 150px;
         width: 100%;
         border: 1px solid $borderColour;
         border-radius: $borderRadius;
         color: map-get($map: $text, $key: _01-01);
-        padding: 0 10px;
+        padding: 10px;
         font-size: 14px;
-        margin-top: 5px;
-        &::placeholder {
-            color: map-get($map: $text, $key: _01-03);
-        }
     }
 }
 </style>
