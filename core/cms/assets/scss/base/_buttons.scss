@@ -10,6 +10,7 @@ button {
 a {
    color: map-get($map: $text, $key: _01-01); 
    text-decoration: none;
+   font-size: 14px
 }
 
 .mainBtnStyle {
@@ -53,7 +54,7 @@ a {
     align-items: center;
     span {
         padding: 0 10px;
-        font-size: 16px;
+        font-size: 14px;
     }
     &:hover {
         .iconMain {

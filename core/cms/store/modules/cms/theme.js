@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const state = () => ({
     
 })
@@ -11,7 +9,7 @@ const mutations  = {
 const actions = {
     cmth_verifyPostName({  }, name) {
         return new Promise((resolve, reject) => {
-            axios.get(`${process.env.API_URL}/theme/post/verify/${name}`)
+            this.$axios.get(`${process.env.API_URL}/theme/post/verify/${name}`)
             .then((res) => {
                 resolve(res.data)
             })
@@ -45,6 +43,46 @@ const actions = {
                 errorMsgs.forEach((error) => {
                     console.error(error)
                 });
+                reject(err)
+            })
+        })
+    },
+
+    // ----------------------------------------------------------------------------------------------------//
+    // --- Components -------------------------------------------------------------------------------------//
+    // ----------------------------------------------------------------------------------------------------//
+    cmth_getUnregisteredComponents({ }) {
+        return new Promise((resolve, reject) => {
+            this.$axios.get(`${process.env.API_URL}/theme/components/unregistered`)
+            .then((res) => {
+                resolve(res.data);
+            })
+            .catch((err) => {
+                let obj = {
+                    status: err.response.status,
+                    title: 'Request Error',
+                    source: 'cmth_getUnregisteredComponents',
+                    response: err.response
+                }
+                console.error(obj);
+                reject(err)
+            })
+        })
+    },
+    cmth_getComponentsRegisterState({ }) {
+        return new Promise((resolve, reject) => {
+            this.$axios.get(`${process.env.API_URL}/theme/components/register-state`)
+            .then((res) => {
+                resolve(res.data);
+            })
+            .catch((err) => {
+                let obj = {
+                    status: err.response.status,
+                    title: 'Request Error',
+                    source: 'cmth_getComponentsRegisterState',
+                    response: err.response
+                }
+                console.error(obj);
                 reject(err)
             })
         })

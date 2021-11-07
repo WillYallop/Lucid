@@ -1,6 +1,23 @@
 <template>
 <div>
 
+    <!-- Notifications -->
+    <LayoutNotificationSection>
+        <!-- Has unregistered components -->
+        <LayoutNotification v-if="componentNames.unregistered.length"
+        :classname="'_04-01'"
+        :error="false">
+            <p>You have {{componentNames.unregistered.length}} unregistered component(s)!</p>
+        </LayoutNotification>
+        <!-- Has no components -->
+        <LayoutNotification v-if="!hasComponents"
+        :classname="'_04-01'"
+        :error="false">
+            <p>You currently have 0 components in your theme directory! Get started by adding some!</p>
+        </LayoutNotification>
+    </LayoutNotificationSection>
+
+
     <!-- Main Section -->
     <LayoutMainSection
     :title="'Components'"
@@ -14,63 +31,73 @@
         <!-- Main -->
         <template v-slot:main>
 
-                <!-- Content Container -->
-                <div class="contentCon">
-                    <!-- Page Editor -->
-                    <div class="mainCol">
+            <!-- Content Container -->
+            <div class="contentCon">
+                <!-- Page Editor -->
+                <div class="mainCol">
 
+                    <!-- Has components in theme directory -->
+                    <div v-if="hasComponents" class="">
+
+                        {{ componentNames }}
 
                     </div>
-                    <!-- Page Config Sidebar -->
-                    <div class="sidebarCol">
-                        <!-- Register Group -->
-                        <div class="sidebarGroupCon">
-                            <!-- Body -->
-                            <div class="body">
-                                <button class="iconButton" @click="registerComponent.state = !registerComponent.state">
-                                    <div class="iconMain small">
-                                        <img class="iconImg" src="@/assets/icons/plus-white.svg" alt="Plus Icon">
-                                    </div>
-                                    <span>Register Component</span>
-                                </button>
-                            </div>
+                    <!-- No components in theme directory -->
+                    <div v-else class="">
+                        <h2>Your Theme Directory Has No Components</h2>
+                    </div>
+
+                </div>
+                <!-- Page Config Sidebar -->
+                <div class="sidebarCol">
+                    <!-- Register Group -->
+                    <div class="sidebarGroupCon">
+                        <!-- Body -->
+                        <div class="body">
+                            <button class="iconButton" @click="registerNewComponentState = !registerNewComponentState">
+                                <div class="iconMain small">
+                                    <img class="iconImg" src="@/assets/icons/plus-white.svg" alt="Plus Icon">
+                                </div>
+                                <span>Register Component</span>
+                            </button>
                         </div>
-                        <!-- Layout Group -->
-                        <div class="sidebarGroupCon">
-                            <!-- Header -->
-                            <div class="header">
-                                <p class="mediumP">Layout</p>
-                            </div>
-                            <!-- Body -->
-                            <div class="body">
-                                <button class="mainBtnStyle active small left">Expanded</button>
-                                <button class="mainBtnStyle small left">Compact</button>
-                            </div>
+                    </div>
+                    <!-- Layout Group -->
+                    <div class="sidebarGroupCon">
+                        <!-- Header -->
+                        <div class="header">
+                            <p class="mediumP">Layout</p>
                         </div>
-                        <!-- Meta Group -->
-                        <div class="sidebarGroupCon">
-                            <!-- Header -->
-                            <div class="header">
-                                <p class="mediumP">Meta</p>
-                            </div>
-                            <!-- Body -->
-                            <div class="body">
-                                <ul class="infoListUl">
-                                    <li><span class="greyedOut">Registered:</span> 6</li>
-                                    <li><span class="greyedOut">Unregistered:</span> 2</li>
-                                </ul>
-                            </div>
+                        <!-- Body -->
+                        <div class="body">
+                            <button class="mainBtnStyle active small left">Expanded</button>
+                            <button class="mainBtnStyle small left">Compact</button>
+                        </div>
+                    </div>
+                    <!-- Meta Group -->
+                    <div class="sidebarGroupCon">
+                        <!-- Header -->
+                        <div class="header">
+                            <p class="mediumP">Meta</p>
+                        </div>
+                        <!-- Body -->
+                        <div class="body">
+                            <ul class="infoListUl">
+                                <li><span class="greyedOut">Registered:</span> {{ componentNames.registered.length }}</li>
+                                <li><span class="greyedOut">Unregistered:</span> {{ componentNames.unregistered.length }}</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
+            </div>
 
         </template>
     </LayoutMainSection>
 
     <!-- Register Component Modal -->
     <GeneralModal
-    :state="registerComponent.state"
-    @toggle="registerComponent.state = !registerComponent.state">
+    :state="registerNewComponentState"
+    @toggle="registerNewComponentState = !registerNewComponentState">
         <div class="registerModalCon">
             <div class="header">
                 <h2>Register Component</h2>
@@ -85,8 +112,8 @@
                 :label="'Component File'"
                 :description="'Select from the list of components that are yet to be registered.'"
                 :descriptionId="'componentSelectInfo'"
-                :value="registerComponent.fileName"
-                 @updateProp="registerComponent.fileName = $event">
+                :value="registerNewComponentData.fileName"
+                 @updateProp="registerNewComponentData.fileName = $event">
                     <option value="temp">Temp</option>
                 </FormSelect>
 
@@ -95,16 +122,16 @@
                 :name="'component name'"
                 :id="'componentNameInp'"
                 :label="'Name'"
-                :value="registerComponent.name"
-                @updateProp="registerComponent.name = $event"/>
+                :value="registerNewComponentData.name"
+                @updateProp="registerNewComponentData.name = $event"/>
 
                 <!-- Description Field -->
                 <FormTextarea
                 :name="'component description'"
                 :id="'componentDescInp'"
                 :label="'Description / Summary'"
-                :value="registerComponent.description"
-                @updateProp="registerComponent.description = $event"/>
+                :value="registerNewComponentData.description"
+                @updateProp="registerNewComponentData.description = $event"/>
 
             </div>
             <div class="footer">
@@ -119,13 +146,46 @@
 
 <script>
 export default {
+    async asyncData({ store }) {
+        try {
+            let componentsStateRes = await store.dispatch('cmth_getComponentsRegisterState');
+            return {
+                hasComponents: componentsStateRes.meta.has_components,
+                componentNames: {
+                    registered: componentsStateRes.data.registered,
+                    unregistered: componentsStateRes.data.unregistered
+                }
+            }
+        }
+        catch(err) {
+            throw new Error(err);
+        }
+    },
     data() {
         return {
-            registerComponent: {
-                state: true,
+            // Base
+            hasComponents: false,
+            componentNames: {
+                registered: [],
+                unregistered: []
+            },
+            // Register Component Data
+            registerNewComponentState: false,
+            registerNewComponentData: {
                 fileName: 'temp',
                 name: '',
                 description: ''
+            }
+        }
+    },
+    watch: {
+        registerNewComponentState(val) {
+            if(val) {
+                this.$store.dispatch('cmth_getUnregisteredComponents')
+                .then((res) => {
+                    this.componentNames.unregistered = res.data;
+                })
+                .catch((err) => {})
             }
         }
     }
@@ -133,6 +193,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// Main Content
 .contentCon {
     width: 100%;
     display: flex;
