@@ -114,7 +114,8 @@
                 :descriptionId="'componentSelectInfo'"
                 :value="registerNewComponentData.fileName"
                  @updateProp="registerNewComponentData.fileName = $event">
-                    <option value="temp">Temp</option>
+                    <option value="" selected disabled hidden>Choose component</option>
+                    <option v-for="component in componentNames.unregistered" :key="component" :value="component">{{ component }}</option>
                 </FormSelect>
 
                 <!-- Name Field -->
@@ -172,7 +173,7 @@ export default {
             // Register Component Data
             registerNewComponentState: false,
             registerNewComponentData: {
-                fileName: 'temp',
+                fileName: '',
                 name: '',
                 description: ''
             }
