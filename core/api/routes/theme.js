@@ -23,6 +23,7 @@ router.get('/post/verify/:post_name', jsonParser, ThemePostController.verify_pos
 // Components
 router.get('/components/unregistered', jsonParser, ThemeComponentController.get_unregistered_components); // Return a list of all unregistered components
 router.get('/components/register-state', jsonParser, ThemeComponentController.get_component_registered_state); // Return a list of file names for registered and unregistered componenets
+router.post('/components', jsonParser, ThemeComponentController.register_new_component); // Register a new component
 
 module.exports = router;
 

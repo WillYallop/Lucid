@@ -5,16 +5,16 @@ const checkRegex = require('../regex')
 const regex = /^[a-z A-Z]+(_[a-z A-Z]+)*$/;
 const length = {
     max: 20,
-    min: 0
+    min: 1
 }
 
 async function validateComponentName(value) {
     let valid = true;
     let errors = [];
 
-    let checkRegexRes = await checkRegex(regex, value); // Regex
-    let checkMinLengthRes = await checkMinLength(length.min, value); // Min
-    let checkMaxLengthRes = await checkMaxLength(length.max, value); // Max
+    let checkRegexRes = await checkRegex(regex, value, 'component_name'); // Regex
+    let checkMinLengthRes = await checkMinLength(length.min, value, 'component_name'); // Min
+    let checkMaxLengthRes = await checkMaxLength(length.max, value, 'component_name'); // Max
 
     if(!checkRegexRes.passed) valid = false, errors.push(checkRegexRes.error);
     if(!checkMinLengthRes.passed) valid = false, errors.push(checkMinLengthRes.error);

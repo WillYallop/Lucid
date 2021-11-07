@@ -1,9 +1,7 @@
+'use strict';
 
 // Modules
-const { 
-    getUnregisteredComponents,
-    getRegisteredComponents
-} = require('../../../modules/util/components');
+const { getUnregisteredComponents, getRegisteredComponents, registerNewComponent } = require('../../../modules/util/components');
 
 // ------------------------------------ ------------------------------------
 // GET - get a list of unregistered components
@@ -43,6 +41,44 @@ exports.get_component_registered_state = async (req, res, next) => {
                 registered: registeredComponents.registered
             }
         })
+    }
+    catch(err) {
+        res.status(500).json({
+            error: err
+        })
+    }
+}
+
+// ------------------------------------ ------------------------------------
+// POST - get a list of unregistered and registered component names
+// ------------------------------------ ------------------------------------
+exports.register_new_component = async (req, res, next) => {
+    try {
+
+        // name: String, description: String, file_name: String
+        let registerComponentRes = await registerNewComponent({
+            name: req.body.name,
+            description: req.body.description,
+            file_name: req.body.file_name
+        })
+        
+        if(!registerComponentRes.valid) {
+            res.status(500).json({
+                meta: {
+                    valid: false
+                },
+                errors: registerComponentRes.errors
+            })
+        } 
+        else {
+            res.status(200).json({
+                meta: {
+                    valid: true
+                },
+                data: registerComponentRes.component
+            })
+        }
+     
     }
     catch(err) {
         res.status(500).json({

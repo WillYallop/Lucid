@@ -137,7 +137,7 @@
             </div>
             <div class="footer">
                 <p>After registering a component you will be take to the component editor page. Here you will be able to configure its fields and more.</p>
-                <button class="mainBtnStyle active small" :disabled="loadingState">Register</button>
+                <button @click="registerComponent" class="mainBtnStyle active small" :disabled="loadingState">Register</button>
             </div>
         </div>
     </GeneralModal>
@@ -182,6 +182,17 @@ export default {
     computed: {
         loadingState() {
             return this.$store.state.coreLoading.loadingState
+        }
+    },
+    methods: {
+        // Register a new componet
+        async registerComponent() {
+
+            // Verify name field
+            // Verify description / summary field
+
+            // Save 
+            console.log('helllo')
         }
     },
     watch: {
@@ -246,9 +257,6 @@ export default {
         h2 {
             margin-bottom: 5px;
         }
-    }
-    .body {
-
     }
     .footer {
         display: flex;

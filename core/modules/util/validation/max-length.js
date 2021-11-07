@@ -1,14 +1,23 @@
-async function checkMaxLength(max, value) {
+const errorCodeKey = 'validation_'
+
+async function checkMaxLength(max, value, calledName) {
     if(max !== false) {
-        if(value.length > max) {
-            return {
-                passed: false,
-                error: { number: 2, msg: 'Value is too large.' }
+        if(value != undefined) { 
+            if(value.length > max) {
+                return {
+                    passed: false,
+                    error: { code: `${errorCodeKey}exceeds_max_length`, msg: `Value: "${value}" is too large for field "${calledName}".` }
+                }
+            } else {
+                return {
+                    passed: true
+                }
             }
         } else {
             return {
-                passed: true
-            }
+                passed: false,
+                error: { code: `${errorCodeKey}value_undefined`, msg: `Value is not defined for field "${calledName}".`, }
+            };
         }
     }
     else {

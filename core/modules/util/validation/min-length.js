@@ -1,15 +1,26 @@
-async function checkMinLength(min, value) {
+const errorCodeKey = 'validation_'
+
+async function checkMinLength(min, value, calledName) {
     if(min !== false) {
-        if(value.length <= min) {
+        if(value != undefined) {
+            if(value.length < min) {
+                return {
+                    passed: false,
+                    error: { code: `${errorCodeKey}min_length`, msg: `Value: "${value}" is too small for field "${calledName}".`, }
+                };
+            } else {
+                return {
+                    passed: true
+                };
+            }
+        }
+        else {
             return {
                 passed: false,
-                error: { number: 1, msg: 'Value is too small.' }
-            };
-        } else {
-            return {
-                passed: true
+                error: { code: `${errorCodeKey}value_undefined`, msg: `Value is not defined for field "${calledName}".`, }
             };
         }
+
     }
     else {
         return {
