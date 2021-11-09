@@ -4,7 +4,7 @@ const themeDirectory = path.resolve(__dirname, '../../../theme');
 const configPostTypes = require(`${themeDirectory}/config/post-types.json`);
 
 // Modules
-const verifyFileExists = require('../../../modules/util/verify-file');
+const verifyFileExists = require('../../../modules/dist/src/verify-file');
 
 // ------------------------------------ ------------------------------------
 // GET - get list of valid post types

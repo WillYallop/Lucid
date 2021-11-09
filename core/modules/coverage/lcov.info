@@ -1,0 +1,17 @@
+TN:
+SF:src/verify-file.ts
+FN:3,verifyFileExists
+FNF:1
+FNH:1
+FNDA:2,verifyFileExists
+DA:1,1
+DA:4,2
+DA:5,1
+DA:8,1
+LF:4
+LH:4
+BRDA:4,0,0,1
+BRDA:4,0,1,1
+BRF:2
+BRH:2
+end_of_record

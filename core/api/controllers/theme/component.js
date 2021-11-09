@@ -1,7 +1,7 @@
 'use strict';
 
 // Modules
-const { getUnregisteredComponents, getRegisteredComponents, registerNewComponent } = require('../../../modules/util/components');
+const { getUnregisteredComponents, getRegisteredComponents, registerNewComponent } = require('../../../modules/dist/src/components');
 
 // ------------------------------------ ------------------------------------
 // GET - get a list of unregistered components

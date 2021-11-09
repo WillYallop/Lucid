@@ -1,3 +1,5 @@
+export {};
+
 const checkMaxLength = require('../max-length')
 const checkMinLength = require('../min-length')
 const checkRegex = require('../regex')

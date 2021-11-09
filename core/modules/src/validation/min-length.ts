@@ -1,29 +1,33 @@
+export {};
+
 const errorCodeKey = 'validation_'
 
-async function checkMaxLength(max, value, calledName) {
-    if(max !== false) {
-        if(value != undefined) { 
-            if(value.length > max) {
+async function checkMinLength(min, value, calledName) {
+    if(min !== false) {
+        if(value != undefined) {
+            if(value.length < min) {
                 return {
                     passed: false,
-                    error: { code: `${errorCodeKey}exceeds_max_length`, msg: `Value: "${value}" is too large for field "${calledName}".` }
-                }
+                    error: { code: `${errorCodeKey}min_length`, msg: `Value: "${value}" is too small for field "${calledName}".`, }
+                };
             } else {
                 return {
                     passed: true
-                }
+                };
             }
-        } else {
+        }
+        else {
             return {
                 passed: false,
                 error: { code: `${errorCodeKey}value_undefined`, msg: `Value is not defined for field "${calledName}".`, }
             };
         }
+
     }
     else {
         return {
             passed: true
-        }
+        };
     }
 }
-module.exports = checkMaxLength
+module.exports = checkMinLength

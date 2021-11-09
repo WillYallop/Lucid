@@ -1,4 +1,4 @@
-'use strict';
+export {};
 
 const fs = require('fs');
 const path = require('path');
@@ -14,36 +14,39 @@ const verifyFileExists = require('./verify-file')
 // Data
 const errorCodeKey = 'component_';
 
+// Types
+
+
+// Functions
 
 // ------------------------------------ ------------------------------------
 // return an array of all components within the theme directory
 // ------------------------------------ ------------------------------------
-function getComponentNames() {
-    return new Promise((resolve) => {
-        fs.readdir(`${themeDirectory}/components`, (err, files) => {
-            var fileNames = [];
-            files.forEach((file) => {
-                fileNames.push(file);
-            });
-            resolve(fileNames);
-        });
-    })
+async function getComponentNames() {
+    let files = await fs.readdirSync(`${themeDirectory}/components`);
+    var fileNames: Array<string> = [];
+    files.forEach((file: string) => {
+        fileNames.push(file);
+    });
+    return fileNames;
 }
 
 // ------------------------------------ ------------------------------------
 // return unregistered components
 // ------------------------------------ ------------------------------------
+interface unregisterResponse {
+    has_components: boolean,
+    unregistered: Array<string>
+}
 async function getUnregisteredComponents() {
     let components = await getComponentNames();
     if(components.length) {
-        var response = {
+        var response: unregisterResponse = {
             has_components: true,
             unregistered: []
         };
-
         let componentsConfigRaw = fs.readFileSync(`${themeDirectory}/config/components.json`) ;
-        let componentsConfig = JSON.parse(componentsConfigRaw);
-
+        let componentsConfig: Array<conifgRegisteredComponentObj> = JSON.parse(componentsConfigRaw);
         components.forEach((filename) => {
             let findComponent = componentsConfig.find( x => x.file_name === filename);
             if(!findComponent) response.unregistered.push(filename);
@@ -61,21 +64,24 @@ async function getUnregisteredComponents() {
 // ------------------------------------ ------------------------------------
 // return registered components
 // ------------------------------------ ------------------------------------
-async function getRegisteredComponents(mode) {
+interface registeredComponentsResponse {
+    has_components: boolean,
+    unregistered: Array<string>,
+    registered: Array<conifgRegisteredComponentObj | string>
+}
+async function getRegisteredComponents(mode: 'names' | 'data') {
     // Mode: names | data
-
     let components = await getComponentNames();
     if(components.length) {
-        var componentsResponse = {
+        var componentsResponse: registeredComponentsResponse = {
             has_components: true,
             unregistered: [],
             registered: []
         };
-
         let componentsConfigRaw = fs.readFileSync(`${themeDirectory}/config/components.json`) ;
-        let componentsConfig = JSON.parse(componentsConfigRaw);
+        let componentsConfig: Array<conifgRegisteredComponentObj> = JSON.parse(componentsConfigRaw);
 
-        components.forEach((filename) => {
+        components.forEach((filename: string) => {
             let findComponent = componentsConfig.find( x => x.file_name === filename);
             if(findComponent) {
                 if(mode === 'names') componentsResponse.registered.push(filename);
@@ -96,7 +102,21 @@ async function getRegisteredComponents(mode) {
 // ------------------------------------ ------------------------------------
 // register a new component
 // ------------------------------------ ------------------------------------
-async function registerNewComponent(data) {
+interface componentDataInpConfig {
+    name: string,
+    description: string,
+    file_name: string
+}
+interface errorResponse {
+    code: string,
+    msg: string
+}
+interface registerComponentRes {
+    valid: boolean,
+    component?: conifgRegisteredComponentObj,
+    errors: Array<errorResponse>
+}
+async function registerNewComponent(data: componentDataInpConfig) {
     // includes: 
     // name: String, description: String, file_name: String
 
@@ -104,12 +124,12 @@ async function registerNewComponent(data) {
 
     // Get components.json
     let componentsConfigRaw = fs.readFileSync(`${themeDirectory}/config/components.json`) ;
-    var componentsConfig = JSON.parse(componentsConfigRaw);
+    var componentsConfig: Array<conifgRegisteredComponentObj> = JSON.parse(componentsConfigRaw);
+
 
     // Res obj
-    var response = {
+    var response: registerComponentRes = {
         valid: true,
-        component: null,
         errors: []
     }
 
@@ -142,7 +162,7 @@ async function registerNewComponent(data) {
             preview_url: '',
             date_added: new Date(),
             date_modified: new Date(),
-            fields: []
+            fields: ['string']
         }
 
         componentsConfig.push(componentObj)

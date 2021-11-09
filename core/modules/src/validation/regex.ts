@@ -1,3 +1,5 @@
+export {};
+
 const errorCodeKey = 'validation_'
 
 async function checkRegex(regex, value, calledName) {
