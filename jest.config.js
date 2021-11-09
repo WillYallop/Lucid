@@ -4,12 +4,13 @@ module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'node',
     collectCoverage: true,
-    coverageDirectory: 'coverage',
+    coverageDirectory: './core/modules/coverage',
     verbose: true,
+    esModuleInterop: true,
     testPathIgnorePatterns: [
         '/node_modules/'
     ],
-    roots: ['./tests'],
+    roots: ['./core/modules/tests'],
     coverageThreshold: {
         global: {
             branches: 100,

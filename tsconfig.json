@@ -1,18 +1,21 @@
 {
-    "exclude": ["node_modules", "dist"],
+    "include": [
+        "core/modules/src/**/*.ts"
+    ],
+    "exclude": ["./core/modules/dist"],
     "compilerOptions": {
-        "outDir": "./dist",
+        "outDir": "./core/modules/dist",
         "noImplicitAny": true,
         "module": "es6",
         "target": "es6",
-        "allowJs": true,
         "moduleResolution": "node",
         "strict": true,
         "declaration": true,
         "removeComments": true,
+        "rootDir": "./core/modules/src",
         "typeRoots": [
             "./node_modules/@types",
-            "./src/types/**/*"
+            "./core/modules/src/types/**/*"
         ]
     }
 }
