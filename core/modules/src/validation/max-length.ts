@@ -1,8 +1,6 @@
-export {};
+{const errorCodeKey = 'validation_'
 
-const errorCodeKey = 'validation_'
-
-async function checkMaxLength(max, value, calledName) {
+async function checkMaxLength(max: any, value: any, calledName: any) {
     if(max !== false) {
         if(value != undefined) { 
             if(value.length > max) {
@@ -28,4 +26,4 @@ async function checkMaxLength(max, value, calledName) {
         }
     }
 }
-module.exports = checkMaxLength
+module.exports = checkMaxLength}

@@ -1,8 +1,6 @@
-export {};
+{const errorCodeKey = 'validation_'
 
-const errorCodeKey = 'validation_'
-
-async function checkMinLength(min, value, calledName) {
+async function checkMinLength(min: any, value: any, calledName: any) {
     if(min !== false) {
         if(value != undefined) {
             if(value.length < min) {
@@ -30,4 +28,4 @@ async function checkMinLength(min, value, calledName) {
         };
     }
 }
-module.exports = checkMinLength
+module.exports = checkMinLength}

@@ -1,6 +1,4 @@
-export {};
-
-const checkMaxLength = require('../max-length')
+{const checkMaxLength = require('../max-length')
 const checkMinLength = require('../min-length')
 const checkRegex = require('../regex')
 
@@ -10,9 +8,9 @@ const length = {
     min: 0
 }
 
-async function validateComponentDescription(value) {
+async function validateComponentDescription(value: any) {
     let valid = true;
-    let errors = [];
+    let errors: any = [];
 
     if(value) {
         let checkRegexRes = await checkRegex(regex, value, 'component_description'); // Regex
@@ -40,4 +38,4 @@ async function validateComponentDescription(value) {
 }
 
 
-module.exports = validateComponentDescription;
+module.exports = validateComponentDescription;}

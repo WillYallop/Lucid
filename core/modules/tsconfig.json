@@ -9,6 +9,7 @@
         "moduleResolution": "node",
         "strict": true,
         "declaration": true,
+        "removeComments": true,
         "typeRoots": [
             "./node_modules/@types",
             "./src/types/**/*"

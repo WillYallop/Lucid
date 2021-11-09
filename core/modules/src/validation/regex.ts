@@ -1,8 +1,6 @@
-export {};
+{const errorCodeKey = 'validation_'
 
-const errorCodeKey = 'validation_'
-
-async function checkRegex(regex, value, calledName) {
+async function checkRegex(regex: any, value: any, calledName: any) {
     if(regex !== false) {
         if(value != undefined) {
             let test = regex.test(value);
@@ -24,4 +22,4 @@ async function checkRegex(regex, value, calledName) {
         };
     }
 }
-module.exports = checkRegex
+module.exports = checkRegex}
