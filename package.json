@@ -8,7 +8,9 @@
     "start": "node server.js",
 
     "test": "jest --verbose ./core/modules/tests --colors --coverage",
-    "build:modules": "tsc -p tsconfig.build.json"
+    "generate:modules": "tsc -p tsconfig.build.json",
+
+    "generate": "npm run generate:modules"
   },
   "author": "",
   "license": "ISC",
