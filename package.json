@@ -5,7 +5,12 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+
+    "test": "jest --verbose ./core/modules/tests --colors --coverage",
+    "generate:modules": "tsc -p tsconfig.json",
+
+    "generate": "npm run generate:modules"
   },
   "author": "",
   "license": "ISC",
@@ -18,7 +23,15 @@
     "mongoose": "^6.0.11",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.13",
+    "uuid": "^8.3.2",
     "vhost": "^3.0.2",
     "vuex-persistedstate": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.2",
+    "@types/node": "^16.11.7",
+    "jest": "^27.3.1",
+    "ts-jest": "^27.0.7",
+    "typescript": "^4.4.4"
   }
 }

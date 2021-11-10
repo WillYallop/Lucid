@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const state = () => ({
     totalPages: undefined,
     page: {}
@@ -44,7 +42,7 @@ const actions = {
         // Data
         // limit: int, skip: int, post_name: string
         return new Promise((resolve, reject) => {
-            axios.get(`${process.env.API_URL}/cms/pages/${data.post_name}/${data.limit}/${data.skip}`)
+            this.$axios.get(`${process.env.API_URL}/cms/pages/${data.post_name}/${data.limit}/${data.skip}`)
             .then((res) => {
                 commit('cmpa_setTotalPages', res.data.meta.total_pages)
                 resolve(res.data)
@@ -66,7 +64,7 @@ const actions = {
         // Includes:
         // pageTitle, postName, type
         return new Promise((resolve, reject) => {
-            axios.get(`${process.env.API_URL}/cms/page/${data.type}/${data.pageTitle}/${data.postName}`)
+            this.$axios.get(`${process.env.API_URL}/cms/page/${data.type}/${data.pageTitle}/${data.postName}`)
             .then((res) => {
                 commit('cmpa_setPage', res.data.data)
                 commit('cmpa_setTotalPages', res.data.meta.total_pages)

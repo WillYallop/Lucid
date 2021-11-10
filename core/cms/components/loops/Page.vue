@@ -24,11 +24,6 @@ export default {
     border-radius: $borderRadius;
     background-color: map-get($map: $colours, $key: _05-01);
     padding: 10px;
-    // Title
-    .pageNameP {
-        font-weight: 500;
-        font-size: 16px;
-    }
     // Options
     .optionsRow {
         margin-top: 5px;

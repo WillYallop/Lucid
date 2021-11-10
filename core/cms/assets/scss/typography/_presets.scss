@@ -41,19 +41,25 @@ a {
     color: map-get($map: $text, $key: _01-03);
 }
 .mediumP {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
     color: map-get($map: $text, $key: _01-01);
 }
 
 
 .titleText {
-    font-size: 16px;
+    font-size: 14px;
     color: map-get($map: $text, $key: _01-01);
     font-weight: 700;
 }
 .bodyText {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 400;
     color: map-get($map: $text, $key: _01-02);
+}
+
+label {
+    font-size: 14px;
+    color: map-get($map: $text, $key: _01-02);
+    font-weight: 500;
 }
