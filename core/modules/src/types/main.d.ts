@@ -1,0 +1,1 @@
+/// <reference path="./config/components.d.ts" />

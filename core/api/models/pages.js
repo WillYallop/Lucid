@@ -9,7 +9,12 @@ const PageSchema = mongoose.Schema({
     },
     page_name: { 
         type: String, 
-        required: true 
+        required: true
+    },
+    page_title: {
+        type: String, 
+        required: true,
+        unique: true
     },
     slug: { 
         type: String, 
@@ -23,7 +28,8 @@ const PageSchema = mongoose.Schema({
     },
     post_name: {
         type: String,
-        required: true
+        required: true,
+        default: 'page'
     },
 
     parent_page: {

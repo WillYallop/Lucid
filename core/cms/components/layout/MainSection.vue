@@ -60,7 +60,7 @@ export default Vue.extend({
         margin-bottom: $padding;
         .sectionHeaderTextarea {
             h1 {
-                margin-bottom: 10px;
+                margin-bottom: 5px;
             }
         }
         .actionButtonCon {

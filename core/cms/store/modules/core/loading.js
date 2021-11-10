@@ -1,3 +1,5 @@
+var loadingStateTimeout;
+
 const state = () => ({
     loadingState: false
 
@@ -13,10 +15,24 @@ const actions = {
     colo_toggleLoadingState({ state, commit }, data) {
         // data: 
         // toggle: Boolean, state: Boolean
-        if(typeof data.toggle === 'boolean') commit('colo_setLoadingState', !state.loadingState);
+        var bool;
+        // Set bool
+        if(typeof data.toggle === 'boolean') bool = !state.loadingState;
         else {
-            if(typeof data.state === 'boolean') commit('colo_setLoadingState', data.state);
-            else commit('colo_setLoadingState', false);
+            if(typeof data.state === 'boolean') bool = data.state;
+            else bool = false;
+        }
+
+        // Mutate loading state;
+        // timeout craete a min duration the spinner should display
+        if(!bool) {
+            loadingStateTimeout = setTimeout(() => {
+                commit('colo_setLoadingState', bool)  
+            }, 300)
+        }
+        else {
+            clearTimeout(loadingStateTimeout);
+            commit('colo_setLoadingState', bool)  
         }
     }
 }
