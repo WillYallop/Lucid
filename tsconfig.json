@@ -2,7 +2,10 @@
     "include": [
         "core/modules/src/**/*.ts"
     ],
-    "exclude": ["./core/modules/dist"],
+    "exclude": [
+        "./core/modules/tests",
+        "./core/modules/dist"
+    ],
     "compilerOptions": {
         "outDir": "./core/modules/dist",
         "noImplicitAny": true,
@@ -13,6 +16,7 @@
         "declaration": true,
         "removeComments": true,
         "rootDir": "./core/modules/src",
+        "esModuleInterop": true,
         "typeRoots": [
             "./node_modules/@types",
             "./core/modules/src/types/**/*"

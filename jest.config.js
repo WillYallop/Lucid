@@ -6,7 +6,6 @@ module.exports = {
     collectCoverage: true,
     coverageDirectory: './core/modules/coverage',
     verbose: true,
-    esModuleInterop: true,
     testPathIgnorePatterns: [
         '/node_modules/'
     ],

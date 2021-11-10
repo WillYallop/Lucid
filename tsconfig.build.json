@@ -1,7 +1,0 @@
-{
-    "extends": "./tsconfig.json",
-    "exclude": [
-      "./core/modules/tests",
-      "./core/modules/dist"
-    ]
-}
