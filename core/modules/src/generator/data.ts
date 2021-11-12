@@ -22,6 +22,8 @@
         return {
             id: '12345',
             template: 'page.twig',
+            slug: '/',
+            name: 'Home',
             seo: {
                 title: 'HOME PAGE',
                 description: 'I AM A HOME PAGE'
