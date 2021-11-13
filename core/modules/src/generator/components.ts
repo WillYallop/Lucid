@@ -7,35 +7,42 @@
     const loader = new TwingLoaderFilesystem(templateDir);
     const twing = new TwingEnvironment(loader);
 
-    const format = (html: string) => {
-        return html.replace(/\r?\n|\rs/g, '');
-        // return res.replace(/\s/g, ' ').trim()
-    }
+    // const format = (html: string) => {
+    //     return html.replace(/\r?\n|\rs/g, '');
+    //     // return res.replace(/\s/g, ' ').trim()
+    // }
 
     const generateDataField = async (fields: Array<mod_compField>) => {
-        let response:any = {}
+        let response:any = {};
         for (const field of fields) {
-            response[field.name] = field.data
+            response[field.name] = field.data;
         }
-        return response
+        return response;
     }
 
     const generateComponents = async (components: Array<mod_componentData>) => {
-        const componentsMap = new Map();
-
-        // Build templates out
-        for (const component of components) {
-            const data = await generateDataField(component.fields);
-            await twing.render(component.file_name, data)
-            .then((output: string) => {
-                // console.log(output);
+        try {
+            const componentsMap = new Map();
+            // Build templates out
+            for (const component of components) {
+                const data = await generateDataField(component.fields);
+                let output = await twing.render(component.file_name, data);
                 componentsMap.set(component.name, {
                     id: component.id,
-                    markup: format(output)
-                })
+                    markup: output
+                });
+            }
+            return componentsMap;
+        }
+        catch(err) {
+            throw({
+                exit: true,
+                module: 'gen_generateComponents',
+                code: '500',
+                message: `Error while generating page components!`,
+                error: err
             });
         }
-        return componentsMap
     }
 
     module.exports = {

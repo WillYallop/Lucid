@@ -6,7 +6,18 @@
 
     // Create and save sitemap
     const createSitemap = async () => {
+        try {
 
+        }
+        catch(err) {
+            throw({
+                exit: true,
+                module: 'gen_createSitemap',
+                code: '500',
+                message: `Error generating a sitemap`,
+                error: err
+            });
+        }
     }
 
     // Save all pages
@@ -24,8 +35,13 @@
             return true
         }
         catch(err) {
-            console.log(err)
-            return false
+            throw({
+                exit: true,
+                module: 'gen_savePages',
+                code: '500',
+                message: `Error while writing pages to app dist!`,
+                error: err
+            });
         }
     }
 

@@ -17,33 +17,61 @@
 
     // Handles generating the app
     const generateApp = async () => {
-        const pageList: Array<gen_pageListRes> = await getPageList(); // grab all pages and posts along with their data
-        const templates = await generateTemplates(); // Generate all templates 
-        const pages = new Map(); // Create pages map
-        // Generate pages
-        for (const page of pageList) {
-            let pageData = await getPage(page); // get single page data
-            let components = await generateComponents(pageData.components); // generate components
-            let markup = await compilePage({ // Generate final page markdown
-                template: templates.get(pageData.template),
-                seo: templates.get(pageData.seo),
-                components: components,
+        try {
+            const start = Date.now();
+            const pages = new Map(); // Create pages map
+            const pageList: Array<gen_pageListRes> = await getPageList(); // grab all pages and posts along with their data
 
-                // These are temp for testing
-                head: `<title>${pageData.name}</title>`,
-                footer: '<script> console.log("footer markdown") </script>'
-            });
-            pages.set(pageData.id, {
-                slug: pageData.slug,
-                path: pageData.path,
-                markup: markup
-            })
-        }
+            // If we have pages
+            if(pageList.length) {
+                const templates = await generateTemplates(); // Generate all templates 
+                // Generate pages
+                for (const page of pageList) {
+                    let pageData = await getPage(page); // get single page data
+                    let components = await generateComponents(pageData.components); // generate components
+                    let pageTemplate = templates.get(pageData.template);
+
+                    // Error handling
+                    if(pageTemplate === undefined || typeof pageTemplate.markup !== 'string') {
+                        throw({
+                            exit: true,
+                            module: 'gen_generateApp',
+                            code: pageTemplate === undefined ? '404' : '500',
+                            message: pageTemplate === undefined ? `Template "${pageData.template}"" for page ID "${pageData.id}" was not found!` : `Template "${pageData.template}"" for page ID "${pageData.id}", markup is not typeof string!`
+                        });
+                    }
+
+                    // 
+                    let markup = await compilePage({ // Generate final page markdown
+                        template: pageTemplate,
+                        seo: templates.get(pageData.seo),
+                        components: components,
         
-        await savePages(pages) // Save pages
-        await createSitemap(pages) // Create/Save sitemap
+                        // These are temp for testing
+                        head: `<title>${pageData.name}</title>`,
+                        footer: '<script> console.log("footer markdown") </script>'
+                    });
+                    pages.set(pageData.id, {
+                        slug: pageData.slug,
+                        path: pageData.path,
+                        markup: markup
+                    });
+                }
+                
+                await savePages(pages) // Save pages
+                await createSitemap(pages) // Create/Save sitemap
+            }
+            
+            const stop = Date.now();
 
-        return pages
+            return {
+                build_time: (stop - start)/1000,
+                pages_built: pages.size
+            }
+        }
+        catch(err) {
+            return err
+        }
     }
 
     module.exports = {

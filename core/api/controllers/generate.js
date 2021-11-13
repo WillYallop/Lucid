@@ -16,8 +16,8 @@ function format(html) {
 
 exports.generate_app = async (req, res, next) => {
     let generateAppRes = await generateApp();
-    const obj = Object.fromEntries(generateAppRes);
-    res.send( obj['1'].markup )
+    // const obj = Object.fromEntries(generateAppRes);
+    res.send( generateAppRes )
 }
 
 

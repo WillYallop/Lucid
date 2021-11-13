@@ -10,84 +10,90 @@
 
         return [
             ['1', 'page.twig'],
-            ['2', 'page.twig'],
+            ['2', 'page.twig']
         ]
     }
 
     // Get data for a single page
-    const getPage = async (pageConfig: Array<string>) => {
-        // find page based on pageConfig
-        // Return all of page data.
-        const pagesData: Array<mod_pageData> = [
-            {
-                id: '1',
-                template: 'page.twig',
-                slug: '/',
-                path: '/index.html',
-                name: 'Home',
-                seo: {
-                    title: 'HOME PAGE',
-                    description: 'I AM A HOME PAGE'
+    const getPage = (pageConfig: Array<string>) => {
+        return new Promise((resolve, reject) => {
+            // find page based on pageConfig
+            // Return all of page data.
+            const pagesData: Array<mod_pageData> = [
+                {
+                    id: '1',
+                    template: 'page.twig',
+                    slug: '/',
+                    path: '/index.html',
+                    name: 'Home',
+                    seo: {
+                        title: 'HOME PAGE',
+                        description: 'I AM A HOME PAGE'
+                    },
+                    components: [
+                        {  
+                            id: '1',
+                            file_name: 'columns.twig',
+                            name: 'Columns',
+                            description: 'I have some columns',
+                            preview_url: '',
+                            date_added: '10/02/1999',
+                            date_modified: '10/02/1999',
+                            fields: [
+                                {
+                                    name: 'title',
+                                    data: 'I am the h1 title'
+                                },
+                                {
+                                    name: 'totalColumns',
+                                    data: 4
+                                }
+                            ]
+                        }
+                    ]
                 },
-                components: [
-                    {  
-                        id: '1',
-                        file_name: 'columns.twig',
-                        name: 'Columns',
-                        description: 'I have some columns',
-                        preview_url: '',
-                        date_added: '10/02/1999',
-                        date_modified: '10/02/1999',
-                        fields: [
-                            {
-                                name: 'title',
-                                data: 'I am the h1 title'
-                            },
-                            {
-                                name: 'totalColumns',
-                                data: 4
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                id: '2',
-                template: 'page.twig',
-                slug: '/blog',
-                path: '/blog/index.html',
-                name: 'Blog',
-                seo: {
-                    title: 'BLOG PAGE',
-                    description: 'I AM A BLOG PAGE'
+                {
+                    id: '2',
+                    template: 'page.twig',
+                    slug: '/blog',
+                    path: '/blog/index.html',
+                    name: 'Blog',
+                    seo: {
+                        title: 'BLOG PAGE',
+                        description: 'I AM A BLOG PAGE'
+                    },
+                    components: [
+                        {  
+                            id: '1',
+                            file_name: 'columns.twig',
+                            name: 'Columns',
+                            description: 'I have some columns',
+                            preview_url: '',
+                            date_added: '10/02/1999',
+                            date_modified: '10/02/1999',
+                            fields: [
+                                {
+                                    name: 'title',
+                                    data: 'I am the h1 title for blog page'
+                                },
+                                {
+                                    name: 'totalColumns',
+                                    data: 2
+                                }
+                            ]
+                        }
+                    ]
                 },
-                components: [
-                    {  
-                        id: '1',
-                        file_name: 'columns.twig',
-                        name: 'Columns',
-                        description: 'I have some columns',
-                        preview_url: '',
-                        date_added: '10/02/1999',
-                        date_modified: '10/02/1999',
-                        fields: [
-                            {
-                                name: 'title',
-                                data: 'I am the h1 title for blog page'
-                            },
-                            {
-                                name: 'totalColumns',
-                                data: 2
-                            }
-                        ]
-                    }
-                ]
-            },
-        ]
-        let page = pagesData.find( x => x.id === pageConfig[0] )
-        if(page) {
-            return page
-        }
+            ]
+            let page = pagesData.find( x => x.id === pageConfig[0] )
+            if(page) resolve(page)
+            else reject({
+                exit: true,
+                module: 'gen_getPage',
+                code: '404',
+                message: `Cannot find page with ID: ${pageConfig[0]} and template: ${pageConfig[1]}!`
+            })
+        })
     }   
 
     module.exports = {
