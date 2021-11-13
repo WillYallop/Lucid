@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const themeDirectory = path.resolve(__dirname, '../../../theme');
+const themeDirectory = path.resolve(__dirname, '../../../../theme');
 
 // ------------------------------------ ------------------------------------
 // GET list of theme layouts

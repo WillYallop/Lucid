@@ -1,3 +1,5 @@
+// KEY com_
+
 interface conifgRegisteredComponentObj {
     id: string
     file_name: string

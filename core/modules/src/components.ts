@@ -3,7 +3,7 @@
     const path = require('path');
     const { v4: uuidv4 } = require('uuid');
 
-    const themeDirectory = path.resolve(__dirname, '../../theme');
+    const themeDirectory = path.resolve(__dirname, '../../../theme');
 
     // Modules
     const validateComponentName = require('./validation/components/name')
