@@ -4,7 +4,7 @@
     const { generateComponents } = require('./components');
     const { generateTemplates } = require('./templates');
     const { compilePage } = require('./compiler/main');
-    const { savePages, createSitemap, copyStatic } = require('./save');
+    const { savePages, createSitemap, copyStatic, setGetStartedPage } = require('./save');
 
     // Handles generating the app
     const generateApp = async () => {
@@ -51,8 +51,10 @@
                 
                 await savePages(pages) // Save pages
                 await createSitemap(pages) // Create/Save sitemap
-                await copyStatic();
-            }
+            } 
+            else await setGetStartedPage(); // set get started page: default if we have no pages.
+
+            await copyStatic(); // copy theme static directory over to app dist
             
             const stop = Date.now();
 

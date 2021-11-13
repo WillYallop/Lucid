@@ -2,9 +2,29 @@
 
     const fse = require('fs-extra');
     const path = require('path');
+    const corePagesDirectory = path.resolve(__dirname, '../../../pages');
     const distAppTempDirectory = path.resolve(__dirname, '../../../../temp/generate');
     const distAppDirectory = path.resolve(__dirname, '../../../../dist/app');
     const themeDirectory = path.resolve(__dirname, '../../../../theme');
+
+    const setGetStartedPage = async () => {
+        try {
+            let markup = await fse.readFileSync(`${corePagesDirectory}/get-started.html`);
+            await fse.outputFile(`${distAppTempDirectory}/index.html`, markup); 
+            await fse.rmdirSync(distAppDirectory, { recursive: true }); // Wipe app dist
+            await fse.copy(distAppTempDirectory, distAppDirectory); // Copy temp to app dist
+            await fse.rmdirSync(distAppTempDirectory, { recursive: true }); // Wipe temp directory
+        }
+        catch(err) {
+            throw({
+                exit: true,
+                module: 'gen_setGetStartedPage',
+                code: '500',
+                message: `Error while writing get started page to app dist!`,
+                error: err
+            });
+        }
+    }
 
     // Copy over the static theme directory files to app dist
     const copyStatic = async () => {
@@ -69,6 +89,7 @@
     module.exports = {
         savePages,
         createSitemap,
-        copyStatic
+        copyStatic,
+        setGetStartedPage
     }
 }
