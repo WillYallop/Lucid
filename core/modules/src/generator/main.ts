@@ -9,10 +9,11 @@
 
 {
     // Modules
-    const { getPageList, getPage } = require('./generator/data');
-    const { generateComponents } = require('./generator/components');
-    const { generateTemplates } = require('./generator/templates');
-    const { compilePage, unescapeMarkup } = require('./generator/compiler/main');
+    const { getPageList, getPage } = require('./data');
+    const { generateComponents } = require('./components');
+    const { generateTemplates } = require('./templates');
+    const { compilePage, unescapeMarkup } = require('./compiler/main');
+    const { savePages, createSitemap } = require('./save');
 
     // Handles generating the app
     const generateApp = async () => {
@@ -31,13 +32,15 @@
                 head: `<title>${pageData.name}</title>`,
                 footer: '<script> console.log("footer markdown") </script>'
             });
-            let strippedMarkup = await unescapeMarkup(markup);
-
             pages.set(pageData.id, {
                 slug: pageData.slug,
-                markup: strippedMarkup
+                markup: markup
             })
         }
+        
+        await savePages(pages) // Save pages
+        await createSitemap() // Create/Save sitemap
+
         return pages
     }
 

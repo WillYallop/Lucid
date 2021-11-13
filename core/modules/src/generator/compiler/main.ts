@@ -10,7 +10,8 @@
 
 
     const unescapeMarkup = async (markup: string) => {
-        return markup.replace(/\r?\n|\rs/g, '');
+        return markup
+        // .replace(/\r?\n|\rs/g, '');
     }
 
     // public

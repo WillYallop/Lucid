@@ -1,4 +1,4 @@
-const { generateApp } = require('../../modules/dist/generate')
+const { generateApp } = require('../../modules/dist/generator/main')
 
 
 const {TwingEnvironment, TwingLoaderFilesystem} = require('twing');
@@ -14,16 +14,12 @@ function format(html) {
 }
 
 
-// Build out all components for every page
-// Build out the template pages
-// Then
-// Search the template page for a few custom tags ie: willpress, willpressHead, willpressFooter
-// Replace willpress with all of the components for that page.
-
-
 exports.generate_app = async (req, res, next) => {
     let generateAppRes = await generateApp();
+
     const obj = Object.fromEntries(generateAppRes);
+    // console.log(obj['12345'].markup)
+
     res.send( obj['12345'].markup )
 }
 
