@@ -4,6 +4,7 @@
 
     const elements = [
         { tag: 'willpressHead', regex: /<willpressHead>/i },
+        { tag: 'willpressSeo', regex: /<willpressSeo>/i },
         { tag: 'willpress', regex: /<willpress>/i },
         { tag: 'willpressFooter', regex: /<willpressFooter>/i }
     ]
@@ -18,6 +19,10 @@
                         // add seo
                         // add others
                         markup = markup.replace(element.regex, data.head);
+                        break;
+                    }
+                    case 'willpressSeo': {
+                        
                         break;
                     }
                     case 'willpress': {
