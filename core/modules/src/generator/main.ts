@@ -4,7 +4,7 @@
     const { generateComponents } = require('./components');
     const { generateTemplates } = require('./templates');
     const { compilePage } = require('./compiler/main');
-    const { savePages, createSitemap } = require('./save');
+    const { savePages, createSitemap, copyStatic } = require('./save');
 
     // Handles generating the app
     const generateApp = async () => {
@@ -51,6 +51,7 @@
                 
                 await savePages(pages) // Save pages
                 await createSitemap(pages) // Create/Save sitemap
+                await copyStatic();
             }
             
             const stop = Date.now();
