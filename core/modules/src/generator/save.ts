@@ -2,6 +2,7 @@
 
     const fse = require('fs-extra');
     const path = require('path');
+    const distAppTempDirectory = path.resolve(__dirname, '../../../../temp/generate');
     const distAppDirectory = path.resolve(__dirname, '../../../../dist/app');
 
     // Create and save sitemap
@@ -22,13 +23,17 @@
 
     const savePages = async (pages: gen_pagseMap) => {
         try {
+            // Save new site to a temp directory
             for (const [key, value] of pages.entries()) {
-                await fse.outputFile(`${distAppDirectory}${value.path}`, value.markup); 
+                await fse.outputFile(`${distAppTempDirectory}${value.path}`, value.markup); 
                 console.log(`Page "${value.slug}" has been created!`)
             }
+            await fse.copy(distAppTempDirectory, distAppDirectory); // Copy temp to app dist
+            await fse.rmdirSync(distAppTempDirectory, { recursive: true }); // Wipe temp directory
             return true
         }
         catch(err) {
+            await fse.rmdirSync(distAppTempDirectory, { recursive: true }); // Wipe temp directory
             throw({
                 exit: true,
                 module: 'gen_savePages',
