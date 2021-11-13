@@ -10,4 +10,7 @@ const GeneratorController = require('../controllers/generate');
 
 router.post('/', jsonParser, GeneratorController.generate_page)
 
+
+router.post('/app', jsonParser, GeneratorController.generate_app);
+
 module.exports = router;

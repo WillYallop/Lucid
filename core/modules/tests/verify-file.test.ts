@@ -3,7 +3,7 @@ export {};
 const verifyFileExists = require('../src/verify-file');
 
 const path = require('path');
-const themeDirectory = path.resolve(__dirname, '../../theme');
+const themeDirectory = path.resolve(__dirname, '../../../theme');
 
 test('tests whether a file exists', () => {
     const existsTrue = verifyFileExists(`${themeDirectory}/layouts/default.html`);

@@ -1,6 +1,6 @@
 const path = require('path');
 
-const themeDirectory = path.resolve(__dirname, '../../../theme');
+const themeDirectory = path.resolve(__dirname, '../../../../theme');
 const configPostTypes = require(`${themeDirectory}/config/post-types.json`);
 
 // Modules
