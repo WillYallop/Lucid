@@ -1,18 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-
-const themeDirectory = path.resolve(__dirname, '../../../../theme');
+const { getTemplateFileNames } = require('../../../modules/dist/theme')
 
 // ------------------------------------ ------------------------------------
 // GET list of theme page templates
 // ------------------------------------ ------------------------------------
-exports.get_theme_templates = (req, res, next) => {
+exports.get_theme_templates = async (req, res, next) => {
     // Grab names of all templates in theme/templates directory
-    fs.readdir(`${themeDirectory}/templates`, (err, files) => {
-        let fileNames = [];
-        files.forEach((file) => {
-            fileNames.push(file);
-        });
-        res.send(fileNames);
-    });
+    let fileNames = await getTemplateFileNames();
+    res.send(fileNames);
 }

@@ -6,29 +6,34 @@
     const templateDir = path.resolve(__dirname, '../../../../theme/templates');
     const loader = new TwingLoaderFilesystem(templateDir);
     const twing = new TwingEnvironment(loader);
+    const { getTemplateFileNames } = require('../theme');
 
     const generateTemplates = async () => {
-        const templateMap = new Map();
-        // GET GLOBAL DATA - THIS IS PASSED DOWN TO THE TEMPLATE
-        const data = {
-            global: {}
-        }
-        // GET ALL TEMPLATES
-        const templates = [
-            'page.twig'
-        ]
-
-        // Build templates out
-        for (const template of templates) {
-            await twing.render(template, data)
-            .then((output: string) => {
-                // console.log(output);
+        try {
+            const templateMap = new Map();
+            // GET GLOBAL DATA - THIS IS PASSED DOWN TO THE TEMPLATE
+            const data = {
+                global: {}
+            }
+            const templates = await getTemplateFileNames(); // GET ALL TEMPLATES
+            // Build templates out
+            for (const template of templates) {
+                let output = await twing.render(template, data)
                 templateMap.set(template, {
                     markup: output
                 })
+            }
+            return templateMap
+        }
+        catch(err) {
+            throw({
+                exit: true,
+                module: 'gen_generateTemplates',
+                code: '500',
+                message: `Error while building templates markup!`,
+                error: err
             });
         }
-        return templateMap
     }
 
     module.exports = {
