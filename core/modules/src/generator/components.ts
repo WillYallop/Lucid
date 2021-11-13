@@ -3,7 +3,7 @@
     // requite
     const path = require('path');
     const { TwingEnvironment, TwingLoaderFilesystem } = require('twing');
-    const templateDir = path.resolve(__dirname, '../../../theme/components');
+    const templateDir = path.resolve(__dirname, '../../../../theme/components');
     const loader = new TwingLoaderFilesystem(templateDir);
     const twing = new TwingEnvironment(loader);
 

@@ -3,8 +3,8 @@ const { generateApp } = require('../../modules/dist/generator/main')
 
 const {TwingEnvironment, TwingLoaderFilesystem} = require('twing');
 const path = require('path');
-const componentsDir = path.resolve(__dirname, '../../theme/components');
-const templateDir = path.resolve(__dirname, '../../theme/templates');
+const componentsDir = path.resolve(__dirname, '../../../theme/components');
+const templateDir = path.resolve(__dirname, '../../../theme/templates');
 let loader = new TwingLoaderFilesystem([componentsDir, templateDir]);
 let twing = new TwingEnvironment(loader);
 
