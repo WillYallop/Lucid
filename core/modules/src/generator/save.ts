@@ -9,7 +9,9 @@
     // Copy over the static theme directory files to app dist
     const copyStatic = async () => {
         try {
-            await fse.copy(`${themeDirectory}/static`, distAppDirectory); // Copy temp to app dist
+            if(fse.existsSync(`${themeDirectory}/static`)) {
+                await fse.copy(`${themeDirectory}/static`, distAppDirectory); // Copy temp to app dist
+            }
             return true
         }
         catch(err) {
