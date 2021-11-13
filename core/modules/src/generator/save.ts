@@ -20,13 +20,7 @@
         }
     }
 
-    // Save all pages
-    type savePagesPageMap = Map<string, {
-        slug: string
-        path: string
-        markup: string
-    }>
-    const savePages = async (pages: savePagesPageMap) => {
+    const savePages = async (pages: gen_pagseMap) => {
         try {
             for (const [key, value] of pages.entries()) {
                 await fse.outputFile(`${distAppDirectory}${value.path}`, value.markup); 

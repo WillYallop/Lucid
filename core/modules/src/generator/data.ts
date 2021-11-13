@@ -19,7 +19,7 @@
         return new Promise((resolve, reject) => {
             // find page based on pageConfig
             // Return all of page data.
-            const pagesData: Array<mod_pageData> = [
+            const pagesData: Array<pag_pageData> = [
                 {
                     id: '1',
                     template: 'page.twig',

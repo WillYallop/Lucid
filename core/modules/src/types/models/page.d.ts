@@ -1,8 +1,7 @@
-// KEY mod_
+// KEY pag_
 
-
-
-interface mod_pageData {
+// Should match up with API pages model
+interface pag_pageData {
     id: string,
     slug: string,
     path: string,
@@ -12,11 +11,11 @@ interface mod_pageData {
         title: string,
         description: string
     },
-    components: Array<mod_componentData>
+    components: Array<pag_componentData>
 }
 
 // TEMP
-interface mod_componentData {
+interface pag_componentData {
     id: string
     file_name: string
     name: string
@@ -24,9 +23,9 @@ interface mod_componentData {
     preview_url: string
     date_added: string
     date_modified: string
-    fields: Array<mod_compField>
+    fields: Array<pag_compField>
 }
-interface mod_compField {
+interface pag_compField {
     name: string,
     data: any
 }

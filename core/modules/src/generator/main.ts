@@ -10,16 +10,16 @@
     const generateApp = async () => {
         try {
             const start = Date.now();
-            const pages = new Map(); // Create pages map
+            const pages: gen_pagseMap = new Map(); // Create pages map
             const pageList: Array<gen_pageListRes> = await getPageList(); // grab all pages and posts along with their data
 
             // If we have pages
             if(pageList.length) {
-                const templates = await generateTemplates(); // Generate all templates 
+                const templates: gen_templatesMap = await generateTemplates(); // Generate all templates 
                 // Generate pages
                 for (const page of pageList) {
-                    let pageData = await getPage(page); // get single page data
-                    let components = await generateComponents(pageData.components); // generate components
+                    let pageData: pag_pageData = await getPage(page); // get single page data
+                    let components: gen_componentsMap = await generateComponents(pageData.components); // generate components
                     let pageTemplate = templates.get(pageData.template);
 
                     // Error handling
@@ -33,9 +33,9 @@
                     }
 
                     // 
-                    let markup = await compilePage({ // Generate final page markdown
+                    let markup: string = await compilePage({ // Generate final page markdown
                         template: pageTemplate,
-                        seo: templates.get(pageData.seo),
+                        seo: pageData.seo,
                         components: components,
         
                         // These are temp for testing

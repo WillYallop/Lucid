@@ -5,7 +5,7 @@
         markup: string
     }
 
-    const willpressEle = async (regex: string, components: Map<string, componentInp>) => {
+    const willpressEle = async (regex: string, components: gen_componentsMap) => {
         var componentsString: string = '';
         for (const [key, value] of components.entries()) {
             componentsString += value.markup

@@ -8,20 +8,7 @@
         { tag: 'willpressFooter', regex: /<willpressFooter>/i }
     ]
 
-    // public
-    interface compilePageInp {
-        template: {
-            markup: string
-        },
-        seo: {
-            title: string
-            description: string
-        }
-        components: string,
-        head: string,
-        footer: string
-    }
-    const compilePage = async (data: compilePageInp) => {
+    const compilePage = async (data: gen_compilePage) => {
         try {
             var markup = data.template.markup;
             // Build markup if needed and replace elements in tempalte markup.

@@ -7,7 +7,7 @@
     const loader = new TwingLoaderFilesystem(templateDir);
     const twing = new TwingEnvironment(loader);
 
-    const generateDataField = async (fields: Array<mod_compField>) => {
+    const generateDataField = async (fields: Array<pag_compField>) => {
         let response:any = {};
         for (const field of fields) {
             response[field.name] = field.data;
@@ -15,9 +15,9 @@
         return response;
     }
 
-    const generateComponents = async (components: Array<mod_componentData>) => {
+    const generateComponents = async (components: Array<pag_componentData>) => {
         try {
-            const componentsMap = new Map();
+            const componentsMap: gen_componentsMap = new Map();
             // Build templates out
             for (const component of components) {
                 const data = await generateDataField(component.fields);

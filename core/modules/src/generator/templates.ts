@@ -10,12 +10,12 @@
 
     const generateTemplates = async () => {
         try {
-            const templateMap = new Map();
+            const templateMap: gen_templatesMap = new Map();
             // GET GLOBAL DATA - THIS IS PASSED DOWN TO THE TEMPLATE
             const data = {
                 global: {}
             }
-            const templates = await getTemplateFileNames(); // GET ALL TEMPLATES
+            const templates: Array<string> = await getTemplateFileNames(); // GET ALL TEMPLATES
             // Build templates out
             for (const template of templates) {
                 let output = await twing.render(template, data)
