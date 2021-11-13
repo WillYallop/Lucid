@@ -7,11 +7,6 @@
     const loader = new TwingLoaderFilesystem(templateDir);
     const twing = new TwingEnvironment(loader);
 
-    // const format = (html: string) => {
-    //     return html.replace(/\r?\n|\rs/g, '');
-    //     // return res.replace(/\s/g, ' ').trim()
-    // }
-
     const generateDataField = async (fields: Array<mod_compField>) => {
         let response:any = {};
         for (const field of fields) {

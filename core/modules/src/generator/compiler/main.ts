@@ -8,12 +8,6 @@
         { tag: 'willpressFooter', regex: /<willpressFooter>/i }
     ]
 
-
-    const unescapeMarkup = async (markup: string) => {
-        return markup
-        // .replace(/\r?\n|\rs/g, '');
-    }
-
     // public
     interface compilePageInp {
         template: {
@@ -58,8 +52,7 @@
     }
 
     module.exports = {
-        compilePage,
-        unescapeMarkup
+        compilePage
     }
 
 }

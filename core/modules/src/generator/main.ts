@@ -1,18 +1,9 @@
-// Handles the generation of the site
-
-// TEMP
-// Build out all components for every page
-// Build out the template pages
-// Then
-// Search the template page for a few custom tags ie: willpress, willpressHead, willpressFooter
-// Replace willpress with all of the components for that page.
-
 {
     // Modules
     const { getPageList, getPage } = require('./data');
     const { generateComponents } = require('./components');
     const { generateTemplates } = require('./templates');
-    const { compilePage, unescapeMarkup } = require('./compiler/main');
+    const { compilePage } = require('./compiler/main');
     const { savePages, createSitemap } = require('./save');
 
     // Handles generating the app

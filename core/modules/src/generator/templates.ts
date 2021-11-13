@@ -1,6 +1,6 @@
 {
 
-    // requite
+    // require
     const path = require('path');
     const { TwingEnvironment, TwingLoaderFilesystem } = require('twing');
     const templateDir = path.resolve(__dirname, '../../../../theme/templates');
