@@ -26,6 +26,7 @@
             let components = await generateComponents(pageData.components); // generate components
             let markup = await compilePage({ // Generate final page markdown
                 template: templates.get(pageData.template),
+                seo: templates.get(pageData.seo),
                 components: components,
 
                 // These are temp for testing
@@ -34,12 +35,13 @@
             });
             pages.set(pageData.id, {
                 slug: pageData.slug,
+                path: pageData.path,
                 markup: markup
             })
         }
         
         await savePages(pages) // Save pages
-        await createSitemap() // Create/Save sitemap
+        await createSitemap(pages) // Create/Save sitemap
 
         return pages
     }

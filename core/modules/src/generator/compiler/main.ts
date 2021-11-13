@@ -19,6 +19,10 @@
         template: {
             markup: string
         },
+        seo: {
+            title: string
+            description: string
+        }
         components: string,
         head: string,
         footer: string
@@ -28,6 +32,8 @@
         for(const element of elements) {
             switch(element.tag) {
                 case 'willpressHead': {
+                    // add seo
+                    // add others
                     markup = markup.replace(element.regex, data.head);
                     break;
                 }

@@ -5,6 +5,7 @@
 interface mod_pageData {
     id: string,
     slug: string,
+    path: string,
     template: string,
     name: string,
     seo: {
