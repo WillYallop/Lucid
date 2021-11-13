@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 
 const path = require('path');
 const corePagesDirectory = path.resolve(__dirname, './core/pages');
+const themeDirectory = path.resolve(__dirname, './theme');
 
 // create main app
 const app = express();
@@ -71,11 +72,34 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_AT
     cms.use('/', express.static(process.env.DIST_CMS));
     assets.use('/', express.static(process.env.DIST_ASSETS));
 
+
     // Subdomain setup
     app.use(vhost(`${process.env.DOMAIN}`, mainapp));
     app.use(vhost(`cms.${process.env.DOMAIN}`, cms));
     app.use(vhost(`api.${process.env.DOMAIN}`, api));
     app.use(vhost(`assets.${process.env.DOMAIN}`, assets));
+
+
+    //Handle errors that make it past routes
+    app.use((req, res, next) => {
+        const error = new Error('Not Found');
+        error.status = 404;
+        next(error);
+    });
+    app.use((error, req, res, next) => {
+        res.status(error.status || 500);
+        // If the error is on the home page and is a 404
+        if(req.vhost.host === process.env.DOMAIN && error.status === 404) {
+            res.sendFile(`${themeDirectory}/404.html`)
+        }
+        else {
+            res.json({
+                error: {
+                    message: error.message
+                }
+            });
+        }
+    });
 
 
 })
