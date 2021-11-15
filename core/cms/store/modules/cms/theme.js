@@ -86,6 +86,31 @@ const actions = {
                 reject(err)
             })
         })
+    },
+    /**
+     * Register a new component
+     * @param {Object} component - The base component data to register.
+     * @param {string} component.name - The components name.
+     * @param {string} component.description - The components description.
+     * @param {string} component.file_name - The file name the component can be found with in the theme directory.
+     */
+    cmth_registerComponent({}, component) {
+        return new Promise((resolve, reject) => {
+            this.$axios.post(`${process.env.API_URL}/theme/components`, component)
+            .then((res) => {
+                resolve(res.data);
+            })
+            .catch((err) => {
+                let obj = {
+                    status: err.response.status,
+                    title: 'Request Error',
+                    source: 'cmth_registerComponent',
+                    response: err.response
+                }
+                console.error(obj);
+                reject(err)
+            })
+        })
     }
 }
 

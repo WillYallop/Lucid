@@ -1,6 +1,6 @@
 // KEY com_
 
-interface conifgRegisteredComponentObj {
+interface com_componentObj {
     id: string
     file_name: string
     name: string

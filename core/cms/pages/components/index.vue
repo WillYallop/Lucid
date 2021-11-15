@@ -187,12 +187,23 @@ export default {
     methods: {
         // Register a new componet
         async registerComponent() {
-
             // Verify name field
             // Verify description / summary field
+            // Update this to validator module.
+            if(this.registerNewComponentData.name.length && this.registerNewComponentData.description.length && this.registerNewComponentData.fileName.length) {
+                // Save 
+                this.$store.dispatch('cmth_registerComponent', {
+                    name: this.registerNewComponentData.name,
+                    description: this.registerNewComponentData.description,
+                    file_name: this.registerNewComponentData.fileName
+                })
+                .then((res) => {
+                    this.componentNames.unregistered = res.data;
+                })
+                .catch((err) => {
 
-            // Save 
-            console.log('helllo')
+                })
+            }
         }
     },
     watch: {
