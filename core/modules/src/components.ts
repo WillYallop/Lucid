@@ -6,8 +6,7 @@
     const themeDirectory = path.resolve(__dirname, '../../../theme');
 
     // Modules
-    const validateComponentName = require('./validation/components/name')
-    const validateComponentDescription = require('./validation/components/description')
+    const { validateFields } = require('./validate')
 
     const verifyFileExists = require('./verify-file')
 
@@ -94,17 +93,15 @@
     // ------------------------------------ ------------------------------------
     // register a new component
     // ------------------------------------ ------------------------------------
-
     async function registerNewComponent(data: com_registerCompInp) {
         // includes: 
         // name: String, description: String, file_name: String
 
-        const file_name = data.file_name
+        const file_name = data.file_name;
 
         // Get components.json
         let componentsConfigRaw = fs.readFileSync(`${themeDirectory}/config/components.json`) ;
         var componentsConfig: Array<com_componentObj> = JSON.parse(componentsConfigRaw);
-
 
         // Res obj
         var response: com_registerComponentRes = {
@@ -112,14 +109,19 @@
             errors: []
         }
 
-        // Verify name and description
-        var verifyNameRes = await validateComponentName(data.name);
-        if(!verifyNameRes.valid) response.errors = response.errors.concat(verifyNameRes.errors), response.valid = false;
-        var verifyDescRes = await validateComponentDescription(data.description)
-        if(!verifyDescRes.valid) response.errors = response.errors.concat(verifyDescRes.errors), response.valid = false;
+        // Verify name and description data
+        let verifyData = await validateFields([
+            {
+                method: 'com_name',
+                value: data.name
+            },
+            {
+                method: 'com_description',
+                value: data.description
+            }
+        ]);
 
         // Verify file_name exists in theme directory, and doesnt have an entry in the components.json
-
         if(file_name) {
             let verifyFileRes = await verifyFileExists(`${themeDirectory}/components/${file_name}`);
             if(!verifyFileRes) response.errors.push({ code: `${errorCodeKey}not_found`, msg: `Cannot find component with file_name of ${file_name} in the theme directory!` }), response.valid = false;
@@ -128,16 +130,14 @@
         }
         else response.errors.push({ code: `${errorCodeKey}file_name_missing`, msg: `You must enter a valid file_name!` }), response.valid = false;
 
-
-        // If we have passed, create the new component object and write to components.json
-        // Else return response
-        if(response.valid) {
+        // Valid
+        if(verifyData.valid && response.valid) {
             // Base component object
             let componentObj: com_componentObj = {
                 id: uuidv4(),
                 file_name: file_name,
-                name: verifyNameRes.uriComponentEncoded,
-                description: verifyDescRes.uriComponentEncoded,
+                name: data.name,
+                description: data.description,
                 preview_url: '',
                 date_added: new Date().toString(),
                 date_modified: new Date().toString(),
@@ -147,11 +147,11 @@
             componentsConfig.push(componentObj)
             response.component = componentObj
             // write data
-            let data = JSON.stringify(componentsConfig)
-            fs.writeFileSync(`${themeDirectory}/config/components.json`, data)
+            let writeData = JSON.stringify(componentsConfig)
+            fs.writeFileSync(`${themeDirectory}/config/components.json`, writeData)
             return response
-        }
-        else {
+        } else {
+            response.errors = response.errors.concat(verifyData.errors)
             return response
         }
     }

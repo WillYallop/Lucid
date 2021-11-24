@@ -41,36 +41,38 @@ export const validate = async (validateConfig: validateConfig, validate: validat
 }
 
 // Handle validate multiple/single fields
-export const validateFields = (validateArr: Array<validateField>) => {
-    return new Promise((resolve, reject) => {
-        const errors = [];
-        for(let i = 0; i < validateArr.length; i++) {
-            let defaultValidate: validateConfig = {
-                length: {
-                    min: 0,
-                    max: 100
-                },
-                regex: /^[a-z A-Z]+(_[a-z A-Z]+)*$/
-            }
-            switch(validateArr[i].method) {
-                // Components
-                case 'com_name': {
-                    defaultValidate.length.min = 0;
-                    defaultValidate.length.max = 40;
-                    defaultValidate.regex = /^[a-z A-Z]+(_[a-z A-Z]+)*$/;
-                    break;
-                }
-                case 'com_description': {
-                    defaultValidate.length.min = 0;
-                    defaultValidate.length.max = 200;
-                    defaultValidate.regex = /^[a-z A-Z]+(_[a-z A-Z]+)*$/;
-                    break;
-                }
-            }
-            validate(defaultValidate, validateArr[i])
-            .then((validateRes: validateRes) => {
-                if(!validateRes.valid) errors.push(validateRes.errors);
-            })
+export const validateFields = async (validateArr: Array<validateField>) => {
+    const errors = [];
+    let valid = true;
+    for(let i = 0; i < validateArr.length; i++) {
+        let defaultValidate: validateConfig = {
+            length: {
+                min: 0,
+                max: 100
+            },
+            regex: /^[a-z A-Z]+(_[a-z A-Z]+)*$/
         }
-    })
+        switch(validateArr[i].method) {
+            // Components
+            case 'com_name': {
+                defaultValidate.length.min = 0;
+                defaultValidate.length.max = 40;
+                defaultValidate.regex = /^[a-z A-Z]+(_[a-z A-Z]+)*$/;
+                break;
+            }
+            case 'com_description': {
+                defaultValidate.length.min = 0;
+                defaultValidate.length.max = 200;
+                defaultValidate.regex = /^[a-z A-Z]+(_[a-z A-Z]+)*$/;
+                break;
+            }
+        }
+        let validateRes: validateRes = await validate(defaultValidate, validateArr[i])
+        if(!validateRes.valid) errors.push(validateRes.errors), valid = false;
+    }
+    // Return
+    return {
+        valid: valid,
+        errors: errors
+    }
 } 
