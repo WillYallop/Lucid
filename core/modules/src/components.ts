@@ -8,7 +8,7 @@
     // Modules
     const { validateFields } = require('./validate')
 
-    const verifyFileExists = require('./verify-file')
+    const verifyFileExists = require('./validator/verify-file')
 
     // Data
     const errorCodeKey = 'component_';

@@ -2,7 +2,7 @@ const path = require('path');
 const themeDirectory = path.resolve(__dirname, '../../../../theme');
 
 // Methods
-const verifyFileExists = require('../verify-file')
+const verifyFileExists = require('./verify-file');
 
 // Interfaces
 interface validateFieldResponse {

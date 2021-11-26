@@ -1,6 +1,6 @@
 export {};
 
-const verifyFileExists = require('../src/verify-file');
+const verifyFileExists = require('../src/validator/verify-file');
 
 const path = require('path');
 const themeDirectory = path.resolve(__dirname, '../../../theme');
