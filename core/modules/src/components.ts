@@ -6,7 +6,7 @@
     const themeDirectory = path.resolve(__dirname, '../../../theme');
 
     // Modules
-    const { validateFields } = require('./validate')
+    const { validate } = require('./validator')
 
     const verifyFileExists = require('./validator/verify-file')
 
@@ -110,21 +110,23 @@
         }
 
         // Verify name and description data
-        let verifyData = await validateFields([
+        let verifyData = await validate([
             {
-                method: 'com_name',
+                method: 'comp_name',
                 value: data.name
             },
             {
-                method: 'com_description',
+                method: 'comp_description',
                 value: data.description
+            },
+            {
+                method: 'comp_verifyFileExists',
+                value: file_name
             }
         ]);
 
         // Verify file_name exists in theme directory, and doesnt have an entry in the components.json
         if(file_name) {
-            let verifyFileRes = await verifyFileExists(`${themeDirectory}/components/${file_name}`);
-            if(!verifyFileRes) response.errors.push({ code: `${errorCodeKey}not_found`, msg: `Cannot find component with file_name of ${file_name} in the theme directory!` }), response.valid = false;
             let findComponentRes = await componentsConfig.find( x => x.file_name === file_name);
             if(findComponentRes) response.errors.push({ code: `${errorCodeKey}exists_already`, msg: `It seems the component with file_name of ${file_name} has already been registered!` }), response.valid = false;
         }
@@ -157,7 +159,7 @@
     }
 
 
-    module.exports =  {
+    module.exports = {
         getRegisteredComponents,
         getUnregisteredComponents,
         getComponentNames,
