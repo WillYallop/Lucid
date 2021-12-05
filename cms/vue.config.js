@@ -1,6 +1,10 @@
 const path = require("path");
+const lucidConfig = require('../lucid.config');
 const vueSrc = "./src";
+
+
 module.exports = {
+  outputDir: path.resolve('../', lucidConfig.directories.cms_dist),
   runtimeCompiler: true,
   css: {
     requireModuleExtension: true,
