@@ -9,7 +9,8 @@
         "outDir": "server",
         "rootDir": "./src",
         "typeRoots": [
-            "./node_modules/lucid-core/types/modules/store/component.d.ts"
+            "./node_modules/lucid-core/types/index.d.ts",
+            "./node_modules/@types"
         ]
     },
     "lib": ["es2015"]

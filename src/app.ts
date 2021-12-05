@@ -60,19 +60,24 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_AT
     // ------------------------------------
 
     // Route imports
-    const apiGeneratorRoutes = require('./api/routes/generate');
-    const apiCmsRoutes = require('./api/routes/cms');
-    const apiThemeRoutes = require('./api/routes/theme');
+    const apiRoutes = {
+        generator: require('./api/routes/generate'),
+        components: require('./api/routes/component'),
+        pages: require('./api/routes/page'),
+        posts: require('./api/routes/post'),
+        templates: require('./api/routes/template')
+    }
 
     // Routes
-    api.use('/generate', apiGeneratorRoutes);
-    api.use('/cms', apiCmsRoutes);
-    api.use('/theme', apiThemeRoutes);
+    api.use('/generate', apiRoutes.generator);
+    api.use('/component', apiRoutes.components);
+    api.use('/page', apiRoutes.pages);
+    api.use('/post', apiRoutes.posts);
+    api.use('/template', apiRoutes.templates);
 
     mainapp.use('/', express.static(path.resolve(config.directories.dist), { extensions: ['html'] }));
     cms.use('/', express.static(path.resolve(config.directories.cms_dist)));
     assets.use('/', express.static(path.resolve(config.directories.assets_dist)));
-
 
     // Subdomain setup
     app.use(vhost(`${config.domain}`, mainapp));

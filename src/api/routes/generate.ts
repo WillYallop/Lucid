@@ -1,3 +1,5 @@
+// Handle everything to do with generating the app and components
+
 import express from 'express';
 import * as lucid from 'lucid-core';
 const router = express.Router();
