@@ -1,3 +1,5 @@
+/// <reference path="../node_modules/lucid-core/types/index.d.ts" />
+
 require('dotenv').config();
 import express from 'express';
 import vhost from 'vhost';

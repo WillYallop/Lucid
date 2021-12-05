@@ -1,13 +1,16 @@
 
 {
     "compilerOptions": {
-      "module": "commonjs",
-      "esModuleInterop": true,
-      "target": "es6",
-      "moduleResolution": "node",
-      "sourceMap": true,
-      "outDir": "server",
-      "rootDir": "./src"
+        "module": "commonjs",
+        "esModuleInterop": true,
+        "target": "es6",
+        "moduleResolution": "node",
+        "sourceMap": true,
+        "outDir": "server",
+        "rootDir": "./src",
+        "typeRoots": [
+            "./node_modules/lucid-core/types/modules/store/component.d.ts"
+        ]
     },
     "lib": ["es2015"]
 }
