@@ -1,0 +1,4 @@
+// Animate 
+@mixin animate {
+    transition: $animationSpeed ease-in-out;
+}
