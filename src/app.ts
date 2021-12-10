@@ -6,7 +6,7 @@ import vhost from 'vhost';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 
-import { schema } from "./api/schema";
+import { schema } from "./api/graphql/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 
 const path = require('path');
@@ -40,10 +40,15 @@ app.use(morgan('dev'));
 // ------------------------------------
 // SUBDOMAINS                         |
 // ------------------------------------
+const apiGenerateRoute = require('./api/rest/generate/routes/index');
+// Rest route
+api.use('/generate', apiGenerateRoute);
+// Graphql route
 api.use('/graphql', expressGraphQL({
     graphiql: true,
     schema: schema
 })); 
+
 mainapp.use('/', express.static(path.resolve(config.directories.dist), { extensions: ['html'] }));
 cms.use('/', express.static(path.resolve(config.directories.cms_dist)));
 assets.use('/', express.static(path.resolve(config.directories.assets_dist)));
