@@ -1,5 +1,5 @@
 module.exports = {
-    domain: 'lucid.local',
+    domain: process.env.DOMAIN,
     directories: {
         theme: './theme',
         templates: './templates',
