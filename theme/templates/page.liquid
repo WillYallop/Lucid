@@ -1,12 +1,10 @@
-{% extends "../layouts/default.twig" %}
+{% layout "../layouts/default.liquid" %}
 
-{% block layout %}
-
+{% block template %}
     <div class="pageContent">
-        <lucidApp>
+        {% lucidApp %}
     </div>
     <div class="sidebar">
         <p>I am a sidebar!</p>
     </div>
-
 {% endblock %}

@@ -1,9 +1,10 @@
 <div class="grid">
     <h1>{{ title }}</h1>
     <div>
-        
-        {% for col in 0..totalColumns %}
+        {% for col in (1..totalColumns) %}
             <h2>{{ col }}</h2>
+        {% else %}
+            There are no columns!
         {% endfor %}
     </div>
 </div>

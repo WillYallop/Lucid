@@ -1,10 +1,10 @@
 [
     {
         "name": "blogs",
-        "template_name": "page.twig"
+        "template_name": "page.liquid"
     },
     {
         "name": "jobs",
-        "template_name": "page.twig"
+        "template_name": "page.liquid"
     }
 ]
