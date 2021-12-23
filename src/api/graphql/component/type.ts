@@ -1,10 +1,10 @@
 
-import {GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString} from 'graphql'
+import {GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString} from 'graphql'
 
 // GraphQL object type
 export const component = new GraphQLObjectType({
-    name: 'Componet',
-    description: 'Component Model',
+    name: 'Componet Model',
+    description: 'The component model',
     fields: () => ({
         id: {
             type: GraphQLID,
@@ -43,4 +43,16 @@ export const component = new GraphQLObjectType({
             description: 'A list of field IDs'
         }
     })
-})
+});
+
+// Delete object type
+export const componentDelete = new GraphQLObjectType({
+    name: 'Delete Component Response',
+    description: 'The delete component response',
+    fields: () => ({
+        deleted: {
+            type: GraphQLNonNull(GraphQLBoolean),
+            description: 'Returns the state of the delete action'
+        },
+    })
+});

@@ -14,3 +14,8 @@ export const getMultiple = async(limit: number, skip: number) => {
     if(res.success) return res.components;
     else console.log(res.errors);
 }
+
+// Delete single
+export const deleteSingle = async(id: mod_componentModel["id"]) => {
+    console.log(id);
+}
