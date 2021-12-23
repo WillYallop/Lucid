@@ -1,21 +1,10 @@
 
-import {GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString} from 'graphql'
-
-// Typescript definiton to keep everything inline
-export type componentType = {
-    id: string
-    file_name: string
-    name: string
-    description: string
-    preview_url: string
-    date_added: string
-    date_modified: string
-}
+import {GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString} from 'graphql'
 
 // GraphQL object type
 export const component = new GraphQLObjectType({
-    name: 'User',
-    description: 'The user',
+    name: 'Componet',
+    description: 'Component Model',
     fields: () => ({
         id: {
             type: GraphQLID,
@@ -28,6 +17,10 @@ export const component = new GraphQLObjectType({
         file_name: {
             type: GraphQLNonNull(GraphQLString),
             description: 'The component file_name'
+        },
+        file_path: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The path to the component'
         },
         description: {
             type: GraphQLNonNull(GraphQLString),
@@ -44,6 +37,10 @@ export const component = new GraphQLObjectType({
         date_modified: {
             type: GraphQLNonNull(GraphQLString),
             description: 'The component date_modified'
+        },
+        fields: {
+            type: GraphQLList(GraphQLString),
+            description: 'A list of field IDs'
         }
     })
 })

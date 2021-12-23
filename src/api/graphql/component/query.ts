@@ -1,12 +1,15 @@
-import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType } from 'graphql';
+import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLString } from 'graphql';
 import { component } from './Type';
-import { getComponents } from './data';
+import { getSingle } from './data';
 
-const listComponents: GraphQLFieldConfig<any, any, any> = {
-    type: GraphQLList(component),
+const getSingleComponent: GraphQLFieldConfig<any, any, any> = {
+    type: component,
     description: component.description,
-    resolve: () => {
-        return getComponents()
+    args: {
+        id: { type: GraphQLString }
+    },
+    resolve: (_, args) => {
+        return getSingle(args.id)
     }
 }
 
@@ -14,6 +17,6 @@ export const componentQuery = new GraphQLObjectType({
     name: 'ComponentQuery',
     description: 'The components base query',
     fields: {
-        list: listComponents
+        getSingle: getSingleComponent
     }
 })
