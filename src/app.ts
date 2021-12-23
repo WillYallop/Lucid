@@ -4,7 +4,6 @@ require('dotenv').config();
 import express from 'express';
 import vhost from 'vhost';
 import morgan from 'morgan';
-import { Pool } from 'pg';
 
 import { schema } from "./api/graphql/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
@@ -17,28 +16,19 @@ const themeDir = path.resolve(config.directories.theme);
 
 // create main app
 const app = express();
-// Subdomain APPS
-const mainapp = express();
-const api = express();
-const cms = express();
-const assets = express();
 
-// ------------------------------------ 
-// DB CONNECTION                      |
-// ------------------------------------
-const pool = new Pool({
-    user: config.database.user,
-    host: config.database.host,
-    database: config.database.database,
-    password: config.database.password,
-    port: config.database.port
-})
 
 // ------------------------------------
 // MIDDLEWARE                         |
 // ------------------------------------
 app.use(morgan('dev'));
 
+
+// Subdomain APPS
+const mainapp = express();
+const api = express();
+const cms = express();
+const assets = express();
 // ------------------------------------
 // SUBDOMAINS                         |
 // ------------------------------------
