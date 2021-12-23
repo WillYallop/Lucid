@@ -5,7 +5,7 @@ const query = new GraphQLObjectType({
     name: 'Query',
     description: 'The base query',
     fields: {
-        component: {
+        components: {
             type: componentQuery,
             description: componentQuery.description,
             resolve: () => { return {} }
