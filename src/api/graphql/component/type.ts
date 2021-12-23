@@ -3,7 +3,7 @@ import {GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectTyp
 
 // GraphQL object type
 export const component = new GraphQLObjectType({
-    name: 'Componet Model',
+    name: 'ComponetModel',
     description: 'The component model',
     fields: () => ({
         id: {
@@ -47,7 +47,7 @@ export const component = new GraphQLObjectType({
 
 // Delete object type
 export const componentDelete = new GraphQLObjectType({
-    name: 'Delete Component Response',
+    name: 'DeleteComponent',
     description: 'The delete component response',
     fields: () => ({
         deleted: {

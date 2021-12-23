@@ -17,5 +17,8 @@ export const getMultiple = async(limit: number, skip: number) => {
 
 // Delete single
 export const deleteSingle = async(id: mod_componentModel["id"]) => {
-    console.log(id);
+    let res = await componentController.deleteSingle(id);
+    return {
+        deleted: res.deleted
+    }
 }

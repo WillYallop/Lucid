@@ -15,7 +15,7 @@ const deleteSingleComponent: GraphQLFieldConfig<any, any, any> = {
 }
 
 export const componentMutation = new GraphQLObjectType({
-    name: 'ComponentQuery',
+    name: 'ComponentMutation',
     description: 'The components base query',
     fields: {
         deleteSingle: deleteSingleComponent

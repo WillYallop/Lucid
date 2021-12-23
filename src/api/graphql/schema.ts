@@ -2,7 +2,7 @@ import {GraphQLObjectType, GraphQLSchema} from 'graphql';
 import { componentQuery } from './component/query';
 import { componentMutation } from './component/mutation';
 
-const BaseQuery = new GraphQLObjectType({
+const baseQuery = new GraphQLObjectType({
     name: 'Query',
     description: 'The base query',
     fields: {
@@ -14,7 +14,7 @@ const BaseQuery = new GraphQLObjectType({
     }
 });
 
-const BaseMutation = new GraphQLObjectType({
+const baseMutation = new GraphQLObjectType({
     name: 'Mutation',
     description: 'The base mutation',
     fields: {
@@ -28,6 +28,6 @@ const BaseMutation = new GraphQLObjectType({
 
 
 export const schema = new GraphQLSchema({
-    query: BaseQuery,
-    mutation: BaseMutation
+    query: baseQuery,
+    mutation: baseMutation
 });
