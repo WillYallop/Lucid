@@ -27,7 +27,14 @@ export const deleteSingle = async(id: mod_componentModel["id"]) => {
 
 // Save single
 export const saveSingle = async(data: cont_comp_saveSingleInp) => {
-    let res = await await componentController.saveSingle(data);
+    let res = await componentController.saveSingle(data);
     if(res.saved) return res.component;
+    else throw res.errors[0].message;
+}
+
+// Update single
+export const updateSingle = async (id: mod_componentModel["id"], data: cont_comp_updateSingleInp) => {
+    let res = await componentController.updateSingle(id, data);
+    if(res.updated) return res.component;
     else throw res.errors[0].message;
 }
