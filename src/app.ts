@@ -4,7 +4,7 @@ require('dotenv').config();
 import express from 'express';
 import vhost from 'vhost';
 import morgan from 'morgan';
-import mongoose from 'mongoose';
+import { Pool } from 'pg';
 
 import { schema } from "./api/graphql/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
@@ -26,11 +26,13 @@ const assets = express();
 // ------------------------------------ 
 // DB CONNECTION                      |
 // ------------------------------------
-mongoose.connect(`mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_ATLAS_PW}@${process.env.MONGO_ADDRESS}`, {
-    dbName: process.env.DB_NAME
+const pool = new Pool({
+    user: config.database.user,
+    host: config.database.host,
+    database: config.database.database,
+    password: config.database.password,
+    port: config.database.port
 })
-
-mongoose.Promise = global.Promise;
 
 // ------------------------------------
 // MIDDLEWARE                         |
