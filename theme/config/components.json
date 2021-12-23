@@ -1,1 +1,35 @@
-[{"id":"74cd38a0-6415-11ec-bc21-d53d7ba49e21","file_name":"columns.liquid","file_path":"columns.liquid","name":"test","description":"This is a test component!","preview_url":"","date_added":"Thu Dec 23 2021 17:26:25 GMT+0000 (Greenwich Mean Time)","date_modified":"Thu Dec 23 2021 17:26:25 GMT+0000 (Greenwich Mean Time)","fields":[]}]
+[
+    {
+        "id": "74cd38a0-6415-11ec-bc21-d53d7ba49e21",
+        "file_name": "columns.liquid",
+        "file_path": "columns.liquid",
+        "name": "test",
+        "description": "This is a test component!",
+        "preview_url": "",
+        "date_added": "Thu Dec 23 2021 17:26:25 GMT+0000 (Greenwich Mean Time)",
+        "date_modified": "Thu Dec 23 2021 17:26:25 GMT+0000 (Greenwich Mean Time)",
+        "fields": []
+    },
+    {
+        "id": "38b58230-6430-11ec-aad8-cf85d49a4289",
+        "file_name": "hero.liquid",
+        "file_path": "hero.liquid",
+        "name": "Hero Comp",
+        "description": "This is a description",
+        "preview_url": "",
+        "date_added": "Thu Dec 23 2021 20:38:01 GMT+0000 (Greenwich Mean Time)",
+        "date_modified": "Thu Dec 23 2021 20:38:01 GMT+0000 (Greenwich Mean Time)",
+        "fields": []
+    },
+    {
+        "id": "559843a0-6431-11ec-8ee2-0161a6b900b5",
+        "file_name": "header.liquid",
+        "file_path": "home/header.liquid",
+        "name": "Hero Comp",
+        "description": "This is a description",
+        "preview_url": "",
+        "date_added": "Thu Dec 23 2021 20:45:59 GMT+0000 (Greenwich Mean Time)",
+        "date_modified": "Thu Dec 23 2021 20:45:59 GMT+0000 (Greenwich Mean Time)",
+        "fields": []
+    }
+]

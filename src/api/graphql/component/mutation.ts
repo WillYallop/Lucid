@@ -1,6 +1,6 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
-import { componentDelete } from './Type';
-import { deleteSingle } from './data';
+import { componentDelete, component } from './Type';
+import { deleteSingle, saveSingle } from './data';
 
 // Get single component
 const deleteSingleComponent: GraphQLFieldConfig<any, any, any> = {
@@ -14,10 +14,26 @@ const deleteSingleComponent: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
+const saveSingleComponent: GraphQLFieldConfig<any, any, any> = {
+    type: component,
+    description: 'Save single component',
+    args: {
+        name: { type: GraphQLNonNull(GraphQLString) },
+        description: { type: GraphQLNonNull(GraphQLString) },
+        file_path: { type: GraphQLNonNull(GraphQLString) },
+        image: { type: GraphQLString }
+    },
+    resolve: (_, args) => {
+        return saveSingle(args)
+    }
+}
+
+
 export const componentMutation = new GraphQLObjectType({
     name: 'ComponentMutation',
     description: 'The components base query',
     fields: {
-        deleteSingle: deleteSingleComponent
+        deleteSingle: deleteSingleComponent,
+        saveSingle: saveSingleComponent
     }
 })
