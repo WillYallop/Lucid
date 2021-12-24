@@ -5,7 +5,7 @@ import express from 'express';
 import vhost from 'vhost';
 import morgan from 'morgan';
 
-import { privateSchema } from "./api/private/schema";
+import { privateSchema } from "./graphql/private/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 
 const path = require('path');
