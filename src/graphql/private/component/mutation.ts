@@ -1,6 +1,6 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID } from 'graphql';
 import { Component } from './Type';
-import { DeleteResType } from '../shared/type';
+import { DeleteResType } from '../shared/types/type';
 import { deleteSingle, saveSingle, updateSingle } from './data';
 
 // Get single component

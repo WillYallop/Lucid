@@ -7,7 +7,7 @@ export const Component = new GraphQLObjectType({
     description: 'The component model',
     fields: () => ({
         id: {
-            type: GraphQLID,
+            type: GraphQLNonNull(GraphQLID),
             description: 'The unique component id'
         },
         name: {
@@ -38,7 +38,7 @@ export const Component = new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLString),
             description: 'The component date_modified'
         },
-        fields: {
+        content_types: {
             type: GraphQLList(GraphQLID),
             description: 'A list of field IDs'
         }
