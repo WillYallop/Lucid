@@ -6,6 +6,9 @@ import { ComponentMutation } from './component/mutation';
 // Post Types
 import { PostQuery } from './posts/query';
 import { PostMutation } from './posts/mutation';
+// Page
+import { PageQuery } from './page/query';
+import { PageMutation } from './page/mutation';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -20,6 +23,11 @@ const baseQuery = new GraphQLObjectType({
         post: {
             type: PostQuery,
             description: PostQuery.description,
+            resolve: () => { return {} }
+        },
+        page: {
+            type: PageQuery,
+            description: PageQuery.description,
             resolve: () => { return {} }
         }
     }
@@ -37,6 +45,11 @@ const baseMutation = new GraphQLObjectType({
         post: {
             type: PostMutation, 
             description: PostMutation.description,
+            resolve: () => { return {} }
+        },
+        page: {
+            type: PageMutation,
+            description: PageMutation.description,
             resolve: () => { return {} }
         }
     }
