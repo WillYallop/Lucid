@@ -1,5 +1,5 @@
 
-import {GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString} from 'graphql'
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 
 // GraphQL object type
 export const component = new GraphQLObjectType({
@@ -42,17 +42,5 @@ export const component = new GraphQLObjectType({
             type: GraphQLList(GraphQLID),
             description: 'A list of field IDs'
         }
-    })
-});
-
-// Delete object type
-export const componentDelete = new GraphQLObjectType({
-    name: 'DeleteComponent',
-    description: 'The delete component response',
-    fields: () => ({
-        deleted: {
-            type: GraphQLNonNull(GraphQLBoolean),
-            description: 'Returns the state of the delete action'
-        },
     })
 });

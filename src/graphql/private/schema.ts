@@ -4,7 +4,8 @@ import {GraphQLObjectType, GraphQLSchema} from 'graphql';
 import { componentQuery } from './component/query';
 import { componentMutation } from './component/mutation';
 // Post Types
-import { postTypeQuery } from './posts_type/query';
+import { postQuery } from './posts/query';
+import { postMutation } from './posts/mutation';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -16,9 +17,9 @@ const baseQuery = new GraphQLObjectType({
             description: componentQuery.description,
             resolve: () => { return {} }
         },
-        post_type: {
-            type: postTypeQuery,
-            description:postTypeQuery.description,
+        post: {
+            type: postQuery,
+            description: postQuery.description,
             resolve: () => { return {} }
         }
     }
@@ -31,6 +32,11 @@ const baseMutation = new GraphQLObjectType({
         components: {
             type: componentMutation,
             description: componentMutation.description,
+            resolve: () => { return {} }
+        },
+        post: {
+            type: postMutation, 
+            description: postMutation.description,
             resolve: () => { return {} }
         }
     }

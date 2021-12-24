@@ -5,7 +5,7 @@ import { getSingle, getMultiple } from './data';
 // Get single component
 const getSingleComponent: GraphQLFieldConfig<any, any, any> = {
     type: component,
-    description: component.description,
+    description: 'Get single component',
     args: {
         id: { type: GraphQLNonNull(GraphQLString) }
     },
@@ -17,7 +17,7 @@ const getSingleComponent: GraphQLFieldConfig<any, any, any> = {
 // Get multiple components
 const getMultipleComponents: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLList(component),
-    description: component.description,
+    description: 'Get mutliple components',
     args: {
         limit: { type: GraphQLNonNull(GraphQLInt) },
         skip: { type: GraphQLNonNull(GraphQLInt) }

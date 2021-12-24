@@ -1,10 +1,10 @@
 
-import {GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString} from 'graphql'
+import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 
 // GraphQL object type
-export const postTypeType = new GraphQLObjectType({
-    name: 'PostTypeModel',
-    description: 'The post type model',
+export const postType = new GraphQLObjectType({
+    name: 'PostModel',
+    description: 'The post model',
     fields: () => ({
         id: {
             type: GraphQLID,
