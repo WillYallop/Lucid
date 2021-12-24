@@ -1,10 +1,10 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
-import { component } from './Type';
+import { Component } from './Type';
 import { getSingle, getMultiple } from './data';
 
 // Get single component
 const getSingleComponent: GraphQLFieldConfig<any, any, any> = {
-    type: component,
+    type: Component,
     description: 'Get single component',
     args: {
         id: { type: GraphQLNonNull(GraphQLString) }
@@ -16,7 +16,7 @@ const getSingleComponent: GraphQLFieldConfig<any, any, any> = {
 
 // Get multiple components
 const getMultipleComponents: GraphQLFieldConfig<any, any, any> = {
-    type: GraphQLList(component),
+    type: GraphQLList(Component),
     description: 'Get mutliple components',
     args: {
         limit: { type: GraphQLNonNull(GraphQLInt) },
@@ -27,7 +27,7 @@ const getMultipleComponents: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
-export const componentQuery = new GraphQLObjectType({
+export const ComponentQuery = new GraphQLObjectType({
     name: 'ComponentQuery',
     description: 'The components base query',
     fields: {

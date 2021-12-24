@@ -1,10 +1,10 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean } from 'graphql';
-import { postType } from './Type';
+import { PostType } from './Type';
 import { getSingle, getMultiple } from './data';
 
 // Get single post type
 const singlePost: GraphQLFieldConfig<any, any, any> = {
-    type: postType,
+    type: PostType,
     description: 'Get single post',
     args: {
         id: { type: GraphQLNonNull(GraphQLString) }
@@ -16,7 +16,7 @@ const singlePost: GraphQLFieldConfig<any, any, any> = {
 
 // Get multiple post types
 const getMultiplePost: GraphQLFieldConfig<any, any, any> = {
-    type: GraphQLList(postType),
+    type: GraphQLList(PostType),
     description: 'Get multiple posts',
     args: {
         limit: { type: GraphQLInt },
@@ -29,7 +29,7 @@ const getMultiplePost: GraphQLFieldConfig<any, any, any> = {
 }
 
 
-export const postQuery = new GraphQLObjectType({
+export const PostQuery = new GraphQLObjectType({
     name: 'PostQuery',
     description: 'The post base query',
     fields: {

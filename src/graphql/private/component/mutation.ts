@@ -1,11 +1,11 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID } from 'graphql';
-import { component } from './Type';
-import { deleteResType } from '../shared/type';
+import { Component } from './Type';
+import { DeleteResType } from '../shared/type';
 import { deleteSingle, saveSingle, updateSingle } from './data';
 
 // Get single component
 const deleteSingleComponent: GraphQLFieldConfig<any, any, any> = {
-    type: deleteResType,
+    type: DeleteResType,
     description: 'Delete component',
     args: {
         id: { type: GraphQLNonNull(GraphQLID) }
@@ -16,7 +16,7 @@ const deleteSingleComponent: GraphQLFieldConfig<any, any, any> = {
 }
 
 const saveSingleComponent: GraphQLFieldConfig<any, any, any> = {
-    type: component,
+    type: Component,
     description: 'Save single component',
     args: {
         name: { type: GraphQLNonNull(GraphQLString) },
@@ -30,7 +30,7 @@ const saveSingleComponent: GraphQLFieldConfig<any, any, any> = {
 }
 
 const updateSingleComponent: GraphQLFieldConfig<any, any, any> = {
-    type: component,
+    type: Component,
     description: 'Update single component',
     args: {
         id: { type: GraphQLNonNull(GraphQLID) },
@@ -49,7 +49,7 @@ const updateSingleComponent: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
-export const componentMutation = new GraphQLObjectType({
+export const ComponentMutation = new GraphQLObjectType({
     name: 'ComponentMutation',
     description: 'The components base mutation',
     fields: {

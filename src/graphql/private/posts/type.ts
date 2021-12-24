@@ -2,7 +2,7 @@
 import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 
 // GraphQL object type
-export const postType = new GraphQLObjectType({
+export const PostType = new GraphQLObjectType({
     name: 'PostModel',
     description: 'The post model',
     fields: () => ({

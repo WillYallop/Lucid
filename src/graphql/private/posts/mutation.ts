@@ -1,11 +1,11 @@
 import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID } from 'graphql';
-import { postType } from './Type';
-import { deleteResType } from '../shared/type';
+import { PostType } from './Type';
+import { DeleteResType } from '../shared/type';
 import { deleteSingle, saveSingle } from './data';
 
 // Get single component
 const deleteSinglePost: GraphQLFieldConfig<any, any, any> = {
-    type: deleteResType,
+    type: DeleteResType,
     description: 'Delete post',
     args: {
         id: { type: GraphQLNonNull(GraphQLID) }
@@ -16,7 +16,7 @@ const deleteSinglePost: GraphQLFieldConfig<any, any, any> = {
 }
 
 const saveSinglePost: GraphQLFieldConfig<any, any, any> = {
-    type: postType,
+    type: PostType,
     description: 'Save single post',
     args: {
         name: { type: GraphQLNonNull(GraphQLString) },
@@ -28,7 +28,7 @@ const saveSinglePost: GraphQLFieldConfig<any, any, any> = {
 }
 
 
-export const postMutation = new GraphQLObjectType({
+export const PostMutation = new GraphQLObjectType({
     name: 'PostMutation',
     description: 'The post base mutation',
     fields: {

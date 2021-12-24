@@ -1,7 +1,7 @@
 import {GraphQLBoolean, GraphQLNonNull, GraphQLObjectType} from 'graphql';
 
 // Delete object type
-export const deleteResType = new GraphQLObjectType({
+export const DeleteResType = new GraphQLObjectType({
     name: 'DeleteRes',
     description: 'Delete entry resposne',
     fields: () => ({

@@ -1,11 +1,11 @@
 import {GraphQLObjectType, GraphQLSchema} from 'graphql';
 
 // Components
-import { componentQuery } from './component/query';
-import { componentMutation } from './component/mutation';
+import { ComponentQuery } from './component/query';
+import { ComponentMutation } from './component/mutation';
 // Post Types
-import { postQuery } from './posts/query';
-import { postMutation } from './posts/mutation';
+import { PostQuery } from './posts/query';
+import { PostMutation } from './posts/mutation';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -13,13 +13,13 @@ const baseQuery = new GraphQLObjectType({
     description: 'The base query',
     fields: {
         components: {
-            type: componentQuery,
-            description: componentQuery.description,
+            type: ComponentQuery,
+            description: ComponentQuery.description,
             resolve: () => { return {} }
         },
         post: {
-            type: postQuery,
-            description: postQuery.description,
+            type: PostQuery,
+            description: PostQuery.description,
             resolve: () => { return {} }
         }
     }
@@ -30,13 +30,13 @@ const baseMutation = new GraphQLObjectType({
     description: 'The base mutation',
     fields: {
         components: {
-            type: componentMutation,
-            description: componentMutation.description,
+            type: ComponentMutation,
+            description: ComponentMutation.description,
             resolve: () => { return {} }
         },
         post: {
-            type: postMutation, 
-            description: postMutation.description,
+            type: PostMutation, 
+            description: PostMutation.description,
             resolve: () => { return {} }
         }
     }

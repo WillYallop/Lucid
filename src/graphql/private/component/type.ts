@@ -2,7 +2,7 @@
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 
 // GraphQL object type
-export const component = new GraphQLObjectType({
+export const Component = new GraphQLObjectType({
     name: 'ComponetModel',
     description: 'The component model',
     fields: () => ({
