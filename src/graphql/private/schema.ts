@@ -9,9 +9,7 @@ import { PostMutation } from './posts/mutation';
 // Page
 import { PageQuery } from './page/query';
 import { PageMutation } from './page/mutation';
-// Fields
-import { FieldQuery } from './fields/query';
-import { FieldMutation } from './fields/mutation';
+
 
 
 const baseQuery = new GraphQLObjectType({
@@ -31,11 +29,6 @@ const baseQuery = new GraphQLObjectType({
         page: {
             type: PageQuery,
             description: PageQuery.description,
-            resolve: () => { return {} }
-        },
-        field: {
-            type: FieldQuery,
-            description: FieldQuery.description,
             resolve: () => { return {} }
         }
     }
@@ -58,11 +51,6 @@ const baseMutation = new GraphQLObjectType({
         page: {
             type: PageMutation,
             description: PageMutation.description,
-            resolve: () => { return {} }
-        },        
-        field: {
-            type: FieldMutation,
-            description: FieldMutation.description,
             resolve: () => { return {} }
         }
     }
