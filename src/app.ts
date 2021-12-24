@@ -5,7 +5,7 @@ import express from 'express';
 import vhost from 'vhost';
 import morgan from 'morgan';
 
-import { schema } from "./api/graphql/schema";
+import { privateSchema } from "./api/private/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 
 const path = require('path');
@@ -32,14 +32,11 @@ const assets = express();
 // ------------------------------------
 // SUBDOMAINS                         |
 // ------------------------------------
-const apiGenerateRoute = require('./api/rest/generate/routes/index');
-// Rest route
-api.use('/generate', apiGenerateRoute);
-// Graphql route
-api.use('/graphql', expressGraphQL({
+// Graphql route - private / authenticated users only.
+api.use('/private', expressGraphQL({
     graphiql: true,
-    schema: schema
-})); 
+    schema: privateSchema
+}));
 
 mainapp.use('/', express.static(path.resolve(config.directories.dist), { extensions: ['html'] }));
 cms.use('/', express.static(path.resolve(config.directories.cms_dist)));

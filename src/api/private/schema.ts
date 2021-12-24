@@ -27,7 +27,7 @@ const baseMutation = new GraphQLObjectType({
 });
 
 
-export const schema = new GraphQLSchema({
+export const privateSchema = new GraphQLSchema({
     query: baseQuery,
     mutation: baseMutation
 });
