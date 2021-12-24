@@ -1,6 +1,6 @@
 
-import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
-import { ContentTypeConfigText, ContentTypeConfigRange, ContentTypeConfigRepeater } from '../shared/types/content_types/config_type';
+import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
+import { ContentTypeConfig } from '../shared/type';
 
 // GraphQL object type
 export const Component = new GraphQLObjectType({
@@ -64,7 +64,7 @@ export const ComponentContentType = new GraphQLObjectType({
             description: 'Component content type type'
         },
         config: {
-            type: GraphQLNonNull(ContentTypeConfigText || ContentTypeConfigRange || ContentTypeConfigRepeater),
+            type: GraphQLNonNull(ContentTypeConfig), 
             description: 'Component content type config'
         }
     })

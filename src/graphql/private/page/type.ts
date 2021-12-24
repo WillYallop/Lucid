@@ -1,19 +1,6 @@
 
-import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
-import { ContentTypeConfigText, ContentTypeConfigRange, ContentTypeConfigRepeater } from '../shared/types/content_types/config_type';
-import { 
-    ContentTypeDatabaseBoolean, 
-    ContentTypeDatabaseDate, 
-    ContentTypeDatabaseEmail,
-    ContentTypeDatabaseJSON, 
-    ContentTypeDatabaseMedia, 
-    ContentTypeDatabaseNumber, 
-    ContentTypeDatabaseRange, 
-    ContentTypeDatabaseRepeater, 
-    ContentTypeDatabaseRichMedia,
-    ContentTypeDatabaseSelect, 
-    ContentTypeDatabaseText 
-} from '../shared/types/content_types/database_type';
+import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
+import { ContentTypeDatabase, ContentTypeConfig } from '../shared/type';
 
 // Page
 export const Page = new GraphQLObjectType({
@@ -113,11 +100,11 @@ export const ComponentContentType = new GraphQLObjectType({
             description: 'Component content type type'
         },
         config: {
-            type: GraphQLNonNull(ContentTypeConfigText || ContentTypeConfigRange || ContentTypeConfigRepeater),
+            type: GraphQLNonNull(ContentTypeConfig),
             description: 'Component content type config'
         },
         data: {
-            type: GraphQLNonNull(ContentTypeDatabaseBoolean || ContentTypeDatabaseDate || ContentTypeDatabaseEmail || ContentTypeDatabaseJSON || ContentTypeDatabaseMedia || ContentTypeDatabaseNumber || ContentTypeDatabaseRange || ContentTypeDatabaseRepeater || ContentTypeDatabaseRichMedia || ContentTypeDatabaseSelect || ContentTypeDatabaseText),
+            type: GraphQLNonNull(ContentTypeDatabase),
             description: 'Component content type data'
         }
     })
