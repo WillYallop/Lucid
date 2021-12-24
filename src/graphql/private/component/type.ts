@@ -1,5 +1,6 @@
 
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
+import { ContentTypeConfigText, ContentTypeConfigRange, ContentTypeConfigRepeater } from '../shared/types/content_types/config_type';
 
 // GraphQL object type
 export const Component = new GraphQLObjectType({
@@ -39,8 +40,32 @@ export const Component = new GraphQLObjectType({
             description: 'The component date_modified'
         },
         content_types: {
-            type: GraphQLList(GraphQLID),
-            description: 'A list of field IDs'
+            type: GraphQLList(ComponentContentType),
+            description: 'A list of the content_types'
         }
     })
 });
+
+//  Component content_type
+export const ComponentContentType = new GraphQLObjectType({
+    name: 'ComponentContentTypeModel',
+    description: 'Component content type model',
+    fields: () => ({
+        id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'Component content type database ID'
+        },
+        name: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'Component content type name'
+        },
+        type: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'Component content type type'
+        },
+        config: {
+            type: GraphQLNonNull(ContentTypeConfigText || ContentTypeConfigRange || ContentTypeConfigRepeater),
+            description: 'Component content type config'
+        }
+    })
+})

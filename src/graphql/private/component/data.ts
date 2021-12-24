@@ -4,6 +4,8 @@ import { componentController } from 'lucid-core';
 export const getSingle = async (id: mod_componentModel["id"]) => {
     let res = await componentController.getSingleByID(id);
 
+    // Get content_types from res and add them to the response object.
+
     if(res.success) return res.component; 
     else throw res.errors[0].message;
 }
@@ -11,6 +13,9 @@ export const getSingle = async (id: mod_componentModel["id"]) => {
 // Get multiple components
 export const getMultiple = async(limit: number, skip: number) => {
     let res = await componentController.getMultiple(limit, skip);
+
+    // Get content_types from res and add them to the response object.
+
     if(res.success) return res.components;
     else throw res.errors[0].message;
 }
