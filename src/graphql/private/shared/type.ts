@@ -30,7 +30,7 @@ export const ContentTypeConfig = new GraphQLObjectType({
             description: 'Min range'
         },
         max_length: {
-            type: GraphQLBoolean,
+            type: GraphQLInt,
             description: 'Max text length'
         },
         min_length: {

@@ -1,6 +1,10 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
-import { Component } from './Type';
+import { Component, ComponentContentType } from './Type';
 import { getSingle, getMultiple } from './data';
+
+// ------------------------------------ ------------------------------------
+// Components
+// ------------------------------------ ------------------------------------
 
 // Get single component
 const getSingleComponent: GraphQLFieldConfig<any, any, any> = {

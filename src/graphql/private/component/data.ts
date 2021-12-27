@@ -1,11 +1,11 @@
-import { componentController } from 'lucid-core';
+import { componentController, contentTypeController } from 'lucid-core';
 
 // Get single component
 export const getSingle = async (id: mod_componentModel["id"]) => {
     let res = await componentController.getSingleByID(id);
-
+    let { content_types } = await contentTypeController.getAll(id);
+    res.component['content_types'] = content_types;
     // Get content_types from res and add them to the response object.
-
     if(res.success) return res.component; 
     else throw res.errors[0].message;
 }
@@ -13,9 +13,11 @@ export const getSingle = async (id: mod_componentModel["id"]) => {
 // Get multiple components
 export const getMultiple = async(limit: number, skip: number) => {
     let res = await componentController.getMultiple(limit, skip);
-
+    for await (const component of res.components) {
+        let  { content_types } = await contentTypeController.getAll(component.id);
+        component['content_types'] = content_types;
+    }
     // Get content_types from res and add them to the response object.
-
     if(res.success) return res.components;
     else throw res.errors[0].message;
 }
