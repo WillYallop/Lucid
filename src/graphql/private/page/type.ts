@@ -13,19 +13,19 @@ export const Page = new GraphQLObjectType({
         },
         template: {
             type: GraphQLNonNull(GraphQLString),
-            description: 'The component name'
+            description: 'The pages corresponding template'
         },
         slug: {
             type: GraphQLNonNull(GraphQLString),
-            description: 'The component file_name'
+            description: 'The pages slug'
         },
         name: {
             type: GraphQLNonNull(GraphQLString),
-            description: 'The path to the component'
+            description: 'The name of the page'
         },
         seo: {
             type: PageSeoObject,
-            description: 'The component description'
+            description: PageSeoObject.description
         },
         components: {
             type: GraphQLList(PageComponent),
