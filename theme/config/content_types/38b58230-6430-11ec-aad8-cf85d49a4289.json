@@ -16,5 +16,14 @@
             "max_length": 20,
             "min_length": 400
         }
+    },
+    {
+        "id": "70c68690-670c-11ec-b211-b72e69e3c4ab",
+        "name": "body_text",
+        "type": "text",
+        "config": {
+            "max_length": 100,
+            "min_length": 10
+        }
     }
 ]

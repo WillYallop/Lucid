@@ -1,6 +1,6 @@
 
-import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
-import { ContentTypeConfig } from '../shared/type';
+import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInputObjectType } from 'graphql';
+import { ContentTypeConfig, ContentTypeConfigArgs } from '../shared/type';
 
 // GraphQL object type
 export const Component = new GraphQLObjectType({

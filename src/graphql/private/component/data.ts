@@ -1,5 +1,9 @@
 import { componentController, contentTypeController } from 'lucid-core';
 
+// ------------------------------------ ------------------------------------
+// Components
+// ------------------------------------ ------------------------------------
+
 // Get single component
 export const getSingle = async (id: mod_componentModel["id"]) => {
     let res = await componentController.getSingleByID(id);
@@ -43,5 +47,34 @@ export const saveSingle = async(data: cont_comp_saveSingleInp) => {
 export const updateSingle = async (id: mod_componentModel["id"], data: cont_comp_updateSingleInp) => {
     let res = await componentController.updateSingle(id, data);
     if(res.updated) return res.component;
+    else throw res.errors[0].message;
+}
+
+
+// ------------------------------------ ------------------------------------
+// Content Types
+// ------------------------------------ ------------------------------------
+
+// Delete single content type
+export const deleteSingleContentType = async (componentID: mod_componentModel["id"], contentTypeID: mod_contentTypesConfigModel["id"]) => {
+    let res = await contentTypeController.deleteSingle(componentID, contentTypeID);
+    if(res.deleted) {
+        return {
+            deleted: res.deleted
+        }
+    } else throw res.errors[0].message;
+}
+
+// Create single content type
+export const createSingleContentType = async (componentID: mod_componentModel["id"], contentType: cont_cont_saveSingleInp) => {
+    let res = await contentTypeController.saveSingle(componentID, contentType);
+    if(res.saved) return res.content_type;
+    else throw res.errors[0].message;
+}
+
+// Update single cotent type
+export const updateSingleContentType = async (componentID: mod_componentModel["id"], contentType: cont_cont_updateSingleInp) => {
+    let res = await contentTypeController.updateSingle(componentID, contentType);
+    if(res.updated) return res.content_type;
     else throw res.errors[0].message;
 }
