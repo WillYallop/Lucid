@@ -8,10 +8,10 @@ const deleteSinglePost: GraphQLFieldConfig<any, any, any> = {
     type: DeleteResType,
     description: 'Delete post',
     args: {
-        id: { type: GraphQLNonNull(GraphQLID) }
+        _id: { type: GraphQLNonNull(GraphQLID) }
     },
     resolve: (_, args) => {
-        return deleteSingle(args.id);
+        return deleteSingle(args._id);
     }
 }
 

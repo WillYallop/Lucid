@@ -1,6 +1,6 @@
 [
     {
-        "id": "74cd38a0-6415-11ec-bc21-d53d7ba49e21",
+        "_id": "74cd38a0-6415-11ec-bc21-d53d7ba49e21",
         "file_name": "columns.liquid",
         "file_path": "columns.liquid",
         "name": "test",
@@ -11,7 +11,7 @@
         "fields": []
     },
     {
-        "id": "38b58230-6430-11ec-aad8-cf85d49a4289",
+        "_id": "38b58230-6430-11ec-aad8-cf85d49a4289",
         "file_name": "hero.liquid",
         "file_path": "hero.liquid",
         "name": "Hero Comp",
@@ -22,7 +22,7 @@
         "fields": []
     },
     {
-        "id": "559843a0-6431-11ec-8ee2-0161a6b900b5",
+        "_id": "559843a0-6431-11ec-8ee2-0161a6b900b5",
         "file_name": "header.liquid",
         "file_path": "home/header.liquid",
         "name": "Header Component",

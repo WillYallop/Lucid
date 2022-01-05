@@ -7,9 +7,9 @@ export const Component = new GraphQLObjectType({
     name: 'ComponetModel',
     description: 'The component model',
     fields: () => ({
-        id: {
+        _id: {
             type: GraphQLNonNull(GraphQLID),
-            description: 'The unique component id'
+            description: 'The unique component _id'
         },
         name: {
             type: GraphQLNonNull(GraphQLString),
@@ -51,7 +51,7 @@ export const ComponentContentType = new GraphQLObjectType({
     name: 'ComponentContentTypeModel',
     description: 'Component content type model',
     fields: () => ({
-        id: {
+        _id: {
             type: GraphQLNonNull(GraphQLID),
             description: 'Component content type database ID'
         },

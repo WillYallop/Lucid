@@ -7,10 +7,10 @@ const getSinglePage: GraphQLFieldConfig<any, any, any> = {
     type: Page,
     description: 'Get single page',
     args: {
-        id: { type: GraphQLNonNull(GraphQLString) }
+        _id: { type: GraphQLNonNull(GraphQLString) }
     },
     resolve: (_, args) => {
-        return getSingle();
+        return getSingle(args._id);
     }
 }
 

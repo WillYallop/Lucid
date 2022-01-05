@@ -21,10 +21,10 @@ const deleteSingleComponent: GraphQLFieldConfig<any, any, any> = {
     type: DeleteResType,
     description: 'Delete component',
     args: {
-        id: { type: GraphQLNonNull(GraphQLID) }
+        _id: { type: GraphQLNonNull(GraphQLID) }
     },
     resolve: (_, args) => {
-        return deleteSingle(args.id);
+        return deleteSingle(args._id);
     }
 }
 
@@ -46,7 +46,7 @@ const updateSingleComponent: GraphQLFieldConfig<any, any, any> = {
     type: Component,
     description: 'Update single component',
     args: {
-        id: { type: GraphQLNonNull(GraphQLID) },
+        _id: { type: GraphQLNonNull(GraphQLID) },
         name: { type: GraphQLString },
         description: { type: GraphQLString },
         preview_url: { type: GraphQLString },
@@ -56,9 +56,9 @@ const updateSingleComponent: GraphQLFieldConfig<any, any, any> = {
         let updateObj: cont_comp_updateSingleInp = {};
         // Build out the validate object
         for (const [key, value] of Object.entries(args)) {
-            if(key != 'id') updateObj[key] = value;
+            if(key != '_id') updateObj[key] = value;
         }
-        return updateSingle(args.id, updateObj);
+        return updateSingle(args._id, updateObj);
     }
 }
 
@@ -126,7 +126,7 @@ const updateContentType: GraphQLFieldConfig<any, any, any> = {
                     name: 'UpdateContentTypeArgs',
                     description: 'Component update content type args model',
                     fields: () => ({
-                        id: {
+                        _id: {
                             type: GraphQLNonNull(GraphQLID),
                             description: 'Component content type ID'
                         },

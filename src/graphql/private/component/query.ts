@@ -11,10 +11,10 @@ const getSingleComponent: GraphQLFieldConfig<any, any, any> = {
     type: Component,
     description: 'Get single component',
     args: {
-        id: { type: GraphQLNonNull(GraphQLString) }
+        _id: { type: GraphQLNonNull(GraphQLString) }
     },
     resolve: (_, args) => {
-        return getSingle(args.id);
+        return getSingle(args._id);
     }
 }
 

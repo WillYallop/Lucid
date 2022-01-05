@@ -1,4 +1,4 @@
-import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID } from 'graphql';
+import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLBoolean } from 'graphql';
 import { Page } from './Type';
 import { DeleteResType } from '../shared/type';
 import { deleteSingle, saveSingle, updateSingle } from './data';
@@ -19,10 +19,18 @@ const saveSinglePage: GraphQLFieldConfig<any, any, any> = {
     type: Page,
     description: 'Save single page',
     args: {
-
+        template: { type: GraphQLNonNull(GraphQLString) },
+        slug: { type: GraphQLNonNull(GraphQLString) },
+        name: { type: GraphQLNonNull(GraphQLString) },
+        type: { type: GraphQLNonNull(GraphQLString) },
+        post_name: { type: GraphQLString },
+        has_parent: { type: GraphQLNonNull(GraphQLBoolean) },
+        parent_id: { type: GraphQLString },
+        author: { type: GraphQLNonNull(GraphQLString) },
+        is_homepage: { type: GraphQLNonNull(GraphQLBoolean) }
     },
     resolve: (_, args) => {
-        return saveSingle();
+        return saveSingle(args);
     }
 }
 

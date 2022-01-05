@@ -1,15 +1,16 @@
 
-import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
-import { ContentTypeDatabase, ContentTypeConfig } from '../shared/type';
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
+import { ContentTypeConfig } from '../shared/type';
+import { SEOObjectType } from '../seo/type';
 
 // Page
 export const Page = new GraphQLObjectType({
     name: 'PageModel',
     description: 'The page model',
     fields: () => ({
-        id: {
-            type: GraphQLID,
-            description: 'The unique page id'
+        _id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'The unique page _id'
         },
         template: {
             type: GraphQLNonNull(GraphQLString),
@@ -24,8 +25,40 @@ export const Page = new GraphQLObjectType({
             description: 'The name of the page'
         },
         seo: {
-            type: PageSeoObject,
-            description: PageSeoObject.description
+            type: GraphQLNonNull(SEOObjectType),
+            description: SEOObjectType.description
+        },
+        type: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'Either page or post'
+        },
+        post_name: {
+            type: GraphQLString,
+            description: 'The name of the pages post type'
+        },
+        has_parent: {
+            type: GraphQLBoolean,
+            description: 'Whether the page has a parent or not'
+        },
+        parent_id: {
+            type: GraphQLString,
+            description: 'The ID its its parents page'
+        },
+        date_created: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The date the page was created'
+        },
+        last_edited: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The date the page was last edited'
+        },
+        author: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The author of the page'
+        },
+        is_homepage: {
+            type: GraphQLNonNull(GraphQLBoolean),
+            description: 'Whether this is the homepage'
         },
         components: {
             type: GraphQLList(PageComponent),
@@ -39,9 +72,9 @@ export const PageComponent = new GraphQLObjectType({
     name: 'PageComponentsModel',
     description: 'The pages component model',
     fields: () => ({
-        id: {
+        _id: {
             type: GraphQLNonNull(GraphQLID),
-            description: 'The unique component id'
+            description: 'The unique component _id'
         },
         name: {
             type: GraphQLNonNull(GraphQLString),
@@ -73,7 +106,7 @@ export const PageComponent = new GraphQLObjectType({
         },
         content_types: {
             type: GraphQLList(ComponentContentType),
-            description: 'A list of field IDs'
+            description: 'A list of content types config and their corresponding page data'
         }
     })
 })
@@ -83,10 +116,6 @@ export const ComponentContentType = new GraphQLObjectType({
     name: 'PageComponentContentTypeModel',
     description: 'The pages component content type model',
     fields: () => ({
-        id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: 'Component content type database ID'
-        },
         config_id: {
             type: GraphQLNonNull(GraphQLID),
             description: 'Component content type config ID'
@@ -104,26 +133,8 @@ export const ComponentContentType = new GraphQLObjectType({
             description: 'Component content type config'
         },
         data: {
-            type: GraphQLNonNull(ContentTypeDatabase),
+            type: GraphQLNonNull(GraphQLString),
             description: 'Component content type data'
-        }
-    })
-})
-
-
-
-// Page SEO
-export const PageSeoObject = new GraphQLObjectType({
-    name:'PageSEOModel',
-    description: 'The page SEO model',
-    fields: () => ({
-        title: { 
-            type: GraphQLString,
-            description: 'Page SEO title'
-        },
-        description: { 
-            type: GraphQLString,
-            description: 'Page SEO description'
         }
     })
 })

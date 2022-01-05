@@ -5,9 +5,9 @@ import { componentController, contentTypeController } from 'lucid-core';
 // ------------------------------------ ------------------------------------
 
 // Get single component
-export const getSingle = async (id: mod_componentModel["id"]) => {
-    let res = await componentController.getSingleByID(id);
-    let { content_types } = await contentTypeController.getAll(id);
+export const getSingle = async (_id: mod_componentModel["_id"]) => {
+    let res = await componentController.getSingleByID(_id);
+    let { content_types } = await contentTypeController.getAll(_id);
     res.component['content_types'] = content_types;
     // Get content_types from res and add them to the response object.
     if(res.success) return res.component; 
@@ -18,7 +18,7 @@ export const getSingle = async (id: mod_componentModel["id"]) => {
 export const getMultiple = async(limit: number, skip: number) => {
     let res = await componentController.getMultiple(limit, skip);
     for await (const component of res.components) {
-        let  { content_types } = await contentTypeController.getAll(component.id);
+        let  { content_types } = await contentTypeController.getAll(component._id);
         component['content_types'] = content_types;
     }
     // Get content_types from res and add them to the response object.
@@ -27,8 +27,8 @@ export const getMultiple = async(limit: number, skip: number) => {
 }
 
 // Delete single
-export const deleteSingle = async(id: mod_componentModel["id"]) => {
-    let res = await componentController.deleteSingle(id);
+export const deleteSingle = async(_id: mod_componentModel["_id"]) => {
+    let res = await componentController.deleteSingle(_id);
     if(res.deleted) {
         return {
             deleted: res.deleted
@@ -44,8 +44,8 @@ export const saveSingle = async(data: cont_comp_saveSingleInp) => {
 }
 
 // Update single
-export const updateSingle = async (id: mod_componentModel["id"], data: cont_comp_updateSingleInp) => {
-    let res = await componentController.updateSingle(id, data);
+export const updateSingle = async (_id: mod_componentModel["_id"], data: cont_comp_updateSingleInp) => {
+    let res = await componentController.updateSingle(_id, data);
     if(res.updated) return res.component;
     else throw res.errors[0].message;
 }
@@ -56,7 +56,7 @@ export const updateSingle = async (id: mod_componentModel["id"], data: cont_comp
 // ------------------------------------ ------------------------------------
 
 // Delete single content type
-export const deleteSingleContentType = async (componentID: mod_componentModel["id"], contentTypeID: mod_contentTypesConfigModel["id"]) => {
+export const deleteSingleContentType = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
     let res = await contentTypeController.deleteSingle(componentID, contentTypeID);
     if(res.deleted) {
         return {
@@ -66,14 +66,14 @@ export const deleteSingleContentType = async (componentID: mod_componentModel["i
 }
 
 // Create single content type
-export const createSingleContentType = async (componentID: mod_componentModel["id"], contentType: cont_cont_saveSingleInp) => {
+export const createSingleContentType = async (componentID: mod_componentModel["_id"], contentType: cont_cont_saveSingleInp) => {
     let res = await contentTypeController.saveSingle(componentID, contentType);
     if(res.saved) return res.content_type;
     else throw res.errors[0].message;
 }
 
 // Update single cotent type
-export const updateSingleContentType = async (componentID: mod_componentModel["id"], contentType: cont_cont_updateSingleInp) => {
+export const updateSingleContentType = async (componentID: mod_componentModel["_id"], contentType: cont_cont_updateSingleInp) => {
     let res = await contentTypeController.updateSingle(componentID, contentType);
     if(res.updated) return res.content_type;
     else throw res.errors[0].message;

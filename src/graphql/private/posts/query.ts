@@ -7,10 +7,10 @@ const singlePost: GraphQLFieldConfig<any, any, any> = {
     type: PostType,
     description: 'Get single post',
     args: {
-        id: { type: GraphQLNonNull(GraphQLString) }
+        _id: { type: GraphQLNonNull(GraphQLString) }
     },
     resolve: (_, args) => {
-        return getSingle(args.id);
+        return getSingle(args._id);
     }
 }
 

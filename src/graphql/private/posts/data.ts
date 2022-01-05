@@ -1,8 +1,8 @@
 import { postsController } from 'lucid-core';
 
 // Get single post
-export const getSingle = async (id: cont_post_postDeclaration["id"]) => {
-    let res = await postsController.getSinglePostType(id);
+export const getSingle = async (_id: cont_post_postDeclaration["_id"]) => {
+    let res = await postsController.getSinglePostType(_id);
     if(res.found) return res.post_type;
     else throw res.errors[0].message;
 }
@@ -15,8 +15,8 @@ export const getMultiple = async (limit?: number, skip?: number, all?: boolean) 
 }
 
 // Delete single post
-export const deleteSingle = async (id: cont_post_postDeclaration["id"]) => {
-    let res = await postsController.removePostType(id);
+export const deleteSingle = async (_id: cont_post_postDeclaration["_id"]) => {
+    let res = await postsController.removePostType(_id);
     if(res.deleted) {
         return {
             deleted: res.deleted

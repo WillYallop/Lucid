@@ -6,9 +6,9 @@ export const PostType = new GraphQLObjectType({
     name: 'PostModel',
     description: 'The post model',
     fields: () => ({
-        id: {
+        _id: {
             type: GraphQLID,
-            description: 'The unique component id'
+            description: 'The unique component _id'
         },
         name: {
             type: GraphQLNonNull(GraphQLString),
