@@ -152,6 +152,17 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
 }
 
 // Delete page
-export const deleteSingle = async () => {
-
+export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
+    try {
+        // Delete all data related to the page
+        let deletePage = await Page.deleteOne({ _id: _id });
+        let deletePageSeo = await SEO.deleteOne({ page_id: _id });
+        let deletePageComponenet = await PageComponents.deleteOne({ page_id: _id });
+        return {
+            deleted: true
+        }
+    }
+    catch(err) {
+        throw err;
+    }
 }
