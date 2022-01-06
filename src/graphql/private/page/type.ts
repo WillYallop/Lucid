@@ -138,3 +138,59 @@ export const ComponentContentType = new GraphQLObjectType({
         }
     })
 })
+
+// Multiple Pages
+export const MultiplePages = new GraphQLObjectType({
+    name: 'MultiplePagesModel',
+    description: 'The multiple pages model',
+    fields: () => ({
+        _id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'The unique page _id'
+        },
+        template: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The pages corresponding template'
+        },
+        slug: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The pages slug'
+        },
+        name: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The name of the page'
+        },
+        type: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'Either page or post'
+        },
+        post_name: {
+            type: GraphQLString,
+            description: 'The name of the pages post type'
+        },
+        has_parent: {
+            type: GraphQLBoolean,
+            description: 'Whether the page has a parent or not'
+        },
+        parent_id: {
+            type: GraphQLString,
+            description: 'The ID its its parents page'
+        },
+        date_created: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The date the page was created'
+        },
+        last_edited: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The date the page was last edited'
+        },
+        author: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The author of the page'
+        },
+        is_homepage: {
+            type: GraphQLNonNull(GraphQLBoolean),
+            description: 'Whether this is the homepage'
+        }
+    })
+})

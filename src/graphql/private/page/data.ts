@@ -64,9 +64,16 @@ export const getSingle = async (_id: mod_pageModel["_id"]) => {
 }
 
 // Get multiple pages
-export const getMultiple = async () => {
-
-    return ''
+export const getMultiple = async (type: mod_pageModel["type"], post_name: mod_pageModel["post_name"],  limit: number, skip: number) => {
+    try {
+        let pages: any;
+        if(type === 'post') pages = await Page.find({ type: type, post_name: post_name }).skip(skip).limit(limit);
+        else pages = await Page.find({ type: type }).skip(skip).limit(limit);
+        return pages;
+    }
+    catch(err) {
+        throw err;
+    }
 }
 
 // Create new page

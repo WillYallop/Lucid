@@ -1,5 +1,5 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean } from 'graphql';
-import { Page } from './Type';
+import { Page, MultiplePages } from './Type';
 import { getSingle, getMultiple } from './data';
 
 // Get single pages
@@ -16,13 +16,16 @@ const getSinglePage: GraphQLFieldConfig<any, any, any> = {
 
 // Get multiple pages
 const getMultiplePages: GraphQLFieldConfig<any, any, any> = {
-    type: GraphQLList(Page),
+    type: GraphQLList(MultiplePages),
     description: 'Get multiple pages',
     args: {
-
+        type: { type: GraphQLNonNull(GraphQLString) },
+        post_name: { type: GraphQLString },
+        limit: { type: GraphQLNonNull(GraphQLInt) },
+        skip: { type: GraphQLNonNull(GraphQLInt) }
     },
     resolve: (_, args)  => {
-        return getMultiple()
+        return getMultiple(args.type, args.post_name, args.limit, args.skip);
     }
 }
 
