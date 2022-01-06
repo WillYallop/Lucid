@@ -38,10 +38,23 @@ const updateSinglePage: GraphQLFieldConfig<any, any, any> = {
     type: Page,
     description: 'Update single page',
     args: {
-
+        _id: { type: GraphQLNonNull(GraphQLID) },
+        template: { type: GraphQLString },
+        slug: { type: GraphQLString },
+        name: { type: GraphQLString },
+        has_parent: { type: GraphQLBoolean },
+        parent_id: { type: GraphQLString },
+        is_homepage: { type: GraphQLBoolean }
     },
     resolve: (_, args) => {
-        return updateSingle();
+        return updateSingle(args._id, {
+            template: args.template,
+            slug: args.slug,
+            name: args.name,
+            has_parent: args.has_parent,
+            parent_id: args.parent_id,
+            is_homepage: args.is_homepage
+        });
     }
 }
 

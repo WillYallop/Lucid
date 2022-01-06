@@ -77,7 +77,7 @@ export const getMultiple = async (type: mod_pageModel["type"], post_name: mod_pa
 }
 
 // Create new page
-export const saveSingle = async (data: cont_page_savePageInp) => {
+export const saveSingle = async (data: cont_page_saveSingleInp) => {
     try {
 
         // Page object
@@ -118,8 +118,37 @@ export const saveSingle = async (data: cont_page_savePageInp) => {
 }
 
 // Update page
-export const updateSingle = async () => {
+export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_updateSingleInp) => {
+    try {
 
+        // Create new object to update the page with
+        let updatePageObj: const_page_updatePageObj = {
+            last_edited: new Date().toString()
+        };
+        // Grab page from DB and check if whether its a post or page
+        let checkPage = await Page.findById(_id);
+        // If its a post it means we cant update the template
+        if(checkPage.type === 'page') {
+            if(data.template != undefined) updatePageObj.template = data.template;
+        }
+        // Set other data
+        if(data.slug != undefined) updatePageObj.slug = data.slug;
+        if(data.name != undefined) updatePageObj.name = data.name;
+        if(data.has_parent != undefined) updatePageObj.has_parent = data.has_parent;
+        if(data.parent_id != undefined) updatePageObj.parent_id = data.parent_id;
+        if(data.is_homepage != undefined) updatePageObj.is_homepage = data.is_homepage;
+
+        // Update
+        let pageUpdated = await Page.updateOne({ _id: _id }, updatePageObj);
+
+        // Get page
+        let page = await getSingle(_id);
+        return page;
+
+    }
+    catch(err) {
+        throw(err)
+    }
 }
 
 // Delete page
