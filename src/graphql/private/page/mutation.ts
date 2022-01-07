@@ -23,7 +23,6 @@ const saveSinglePage: GraphQLFieldConfig<any, any, any> = {
         slug: { type: GraphQLNonNull(GraphQLString) },
         name: { type: GraphQLNonNull(GraphQLString) },
         type: { type: GraphQLNonNull(GraphQLString) },
-        post_name: { type: GraphQLString },
         has_parent: { type: GraphQLNonNull(GraphQLBoolean) },
         parent_id: { type: GraphQLString },
         author: { type: GraphQLNonNull(GraphQLString) },

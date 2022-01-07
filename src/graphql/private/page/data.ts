@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 //
-import { componentController, contentTypeController } from 'lucid-core';
+import { componentController, contentTypeController } from '../../../index';
 
 // Schemas
 import Page from './schema';
@@ -25,7 +25,10 @@ export const getSingle = async (_id: mod_pageModel["_id"]) => {
         for await(const pageComponent of pageComponents) {
             let { component } = await componentController.getSingleByID(pageComponent.component_id);
             let { content_types } = await contentTypeController.getAll(pageComponent.component_id);
-  
+            
+            if(component === undefined) throw 'Component undefined.';
+            if(content_types === undefined) throw 'Content Types undefined.';
+
             let contentTypesArray: Array<mod_pageModelComponentContentType> = [];
             // Build out content type array
             for await(const contentType of content_types) {
@@ -81,7 +84,7 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
     try {
 
         // Page object
-        let newPageObj = {
+        let newPageObj: const_page_saveSinglePageObj = {
             _id: new mongoose.Types.ObjectId,
             template: data.template,
             slug: data.slug,
