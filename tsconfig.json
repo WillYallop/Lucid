@@ -10,7 +10,7 @@
         "sourceMap": true,
         "strict": true,
         "forceConsistentCasingInFileNames": true,
-        "outDir": "server",
+        "outDir": "dist",
         "rootDir": "./src",
         "declaration": true,
         "declarationMap": true,

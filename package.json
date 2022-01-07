@@ -2,11 +2,15 @@
   "name": "lucid-cms",
   "version": "1.0.0",
   "description": "",
-  "main": "server/server.js",
+  "main": "dist/server.js",
   "scripts": {
     "test": "jest --verbose ./tests --colors --coverage",
-    "dev": "tsc-watch --onSuccess \"nodemon server/server.js\"",
-    "start": "tsc && node server/server.js"
+    "dev": "tsc-watch --onSuccess \"nodemon dist/server.js\"",
+    "start": "tsc && node dist/server.js",
+    "build": "tsc"
+  },
+  "bin": {
+    "lucid": "./cli/lucid.js"
   },
   "author": "",
   "license": "ISC",
@@ -18,6 +22,7 @@
     "@types/lodash": "^4.14.178",
     "@types/morgan": "^1.9.3",
     "@types/node": "^16.11.19",
+    "@types/shelljs": "^0.8.10",
     "@types/uuid": "^8.3.4",
     "@types/vhost": "^3.0.4",
     "express-graphql": "^0.12.0",
@@ -38,6 +43,7 @@
     "liquidjs": "^9.32.0",
     "lodash": "^4.17.21",
     "mongoose": "^6.1.4",
+    "shelljs": "^0.8.5",
     "uuid": "^8.3.2",
     "vhost": "^3.0.2"
   }
