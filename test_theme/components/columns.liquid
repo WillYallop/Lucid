@@ -1,0 +1,10 @@
+<div class="grid">
+    <h1>{{ title }}</h1>
+    <div>
+        {% for col in (1..totalColumns) %}
+            <h2>{{ col }}</h2>
+        {% else %}
+            The collection is empty.
+        {% endfor %}
+    </div>
+</div>

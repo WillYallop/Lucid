@@ -1,7 +1,7 @@
 module.exports = {
-    domain: 'lucid.local',
+    domain: process.env.DOMAIN,
     directories: {
-        theme: './theme',
+        theme: './test_theme',
         templates: './templates',
         temp: './temp',
         // Dists 
@@ -9,4 +9,10 @@ module.exports = {
         assets_dist: './dist/assets',
         cms_dist: './dist/cms'
     },
+    database: {
+        user: process.env.DB_USER,
+        name: process.env.DB_NAME,
+        password: process.env.DB_PASSWORD,
+        address: process.env.DB_ADDRESS
+    }
 }
