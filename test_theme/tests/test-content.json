@@ -1,0 +1,4 @@
+{
+    "name": "test",
+    "description": "this soley exists to test if getSingleFileContent function works in tests."
+}

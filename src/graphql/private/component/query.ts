@@ -1,5 +1,6 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
-import { Component, ComponentContentType } from './Type';
+// @ts-ignore: Unreachable code error
+import { Component } from './Type';
 import { getSingle, getMultiple } from './data';
 
 // ------------------------------------ ------------------------------------

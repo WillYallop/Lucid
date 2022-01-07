@@ -1,7 +1,7 @@
 [
     {
         "_id": "2d3e64d0-64fd-11ec-8688-635a3ff32370",
-        "name": "title_text",
+        "name": "test_text",
         "type": "text",
         "config": {
             "max_length": 0,
@@ -10,11 +10,11 @@
     },
     {
         "_id": "445a92a0-64fe-11ec-aab2-15b263b74864",
-        "name": "description_text",
+        "name": "test_text_two",
         "type": "text",
         "config": {
             "max_length": 20,
-            "min_length": 400
+            "min_length": 100
         }
     }
 ]

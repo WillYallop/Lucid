@@ -1,5 +1,3 @@
-/// <reference path="../node_modules/lucid-core/types/index.d.ts" />
-
 require('dotenv').config();
 import express from 'express';
 import vhost from 'vhost';
@@ -65,7 +63,7 @@ app.use((req, res, next) => {
     const error = new Error('Not Found');
     next(error);
 });
-app.use((error, req, res, next) => {
+app.use((error:any, req:any, res:any, next:any) => {
     res.status(error.status || 500);
     // If the error is on the home page and is a 404
     if(req.vhost.host === config.domain && error.status === 404) {

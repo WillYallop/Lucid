@@ -56,6 +56,7 @@ const updateSingleComponent: GraphQLFieldConfig<any, any, any> = {
         let updateObj: cont_comp_updateSingleInp = {};
         // Build out the validate object
         for (const [key, value] of Object.entries(args)) {
+            // @ts-ignore: Unreachable code error
             if(key != '_id') updateObj[key] = value;
         }
         return updateSingle(args._id, updateObj);

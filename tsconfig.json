@@ -4,18 +4,28 @@
         "module": "commonjs",
         "esModuleInterop": true,
         "target": "es2021",
+        "removeComments": true,
+        "preserveConstEnums": true,
         "moduleResolution": "node",
         "sourceMap": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
         "outDir": "server",
         "rootDir": "./src",
+        "declaration": true,
+        "declarationMap": true,
         "typeRoots": [
-            "./node_modules/lucid-core/types/index.d.ts",
+            "./types/**/**",
             "./node_modules/@types"
         ]
     },
+    "include": ["src/**/*.ts"],
     "exclude": [
-        "node_modules",
-        "cms"
-      ],
-    "lib": ["es2015"]
+      "node_modules",
+      "dist",
+      "cms"
+    ],
+    "files": [
+      "./types/index.d.ts"
+    ]
 }

@@ -1,7 +1,7 @@
 module.exports = {
     domain: process.env.DOMAIN,
     directories: {
-        theme: './theme',
+        theme: './test_theme',
         templates: './templates',
         temp: './temp',
         // Dists 
