@@ -13,7 +13,6 @@ interface cont_page_saveSingleInp {
     is_homepage: mod_pageModel["is_homepage"]
 }
 interface const_page_saveSinglePageObj {
-    _id: mod_pageModel["_id"] | any
     template: mod_pageModel["template"]
     slug: mod_pageModel["slug"]
     name: mod_pageModel["name"]
@@ -22,7 +21,9 @@ interface const_page_saveSinglePageObj {
     has_parent: mod_pageModel["has_parent"]
     parent_id?: mod_pageModel["parent_id"]
     author: mod_pageModel["author"]
-    is_homepage: mod_pageModel["is_homepage"]
+    is_homepage: mod_pageModel["is_homepage"],
+    date_created: mod_pageModel["date_created"]
+    last_edited: mod_pageModel["last_edited"]
 }
 
 // updateSingle()
