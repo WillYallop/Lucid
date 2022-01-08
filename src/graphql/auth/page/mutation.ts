@@ -1,5 +1,6 @@
 import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLBoolean } from 'graphql';
-import { Page } from './Type';
+// @ts-ignore: Unreachable code error
+import { Page } from './type';
 import { DeleteResType } from '../shared/type';
 import { deleteSingle, saveSingle, updateSingle } from './data';
 

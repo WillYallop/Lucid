@@ -1,6 +1,6 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean } from 'graphql';
 // @ts-ignore: Unreachable code error
-import { Page, MultiplePages } from './Type';
+import { Page, MultiplePages } from './type';
 import { getSingle, getMultiple } from './data';
 
 // Get single pages

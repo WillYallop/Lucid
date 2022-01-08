@@ -25,7 +25,7 @@ export const Page = new GraphQLObjectType({
             description: 'The name of the page'
         },
         seo: {
-            type: GraphQLNonNull(SEOObjectType),
+            type: SEOObjectType,
             description: SEOObjectType.description
         },
         type: {

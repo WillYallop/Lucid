@@ -1,6 +1,6 @@
 import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID } from 'graphql';
 // @ts-ignore: Unreachable code error
-import { SEOObjectType } from './Type';
+import { SEOObjectType } from './type';
 import { updateSingle } from './data';
 
 // Update SEO
