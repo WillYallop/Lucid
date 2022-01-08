@@ -64,7 +64,7 @@ EXAMPLE CONTENT_TYPE CONFIG FILE
 const saveSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_saveSingleInp): Promise<cont_cont_saveSingleRes> => {
     // Check if file ith component ID exists in theme/config/content_types and save a single component content type object to it
     // Else create the file and save a single component content type object to it
-    let verifyData = await validate([
+    let validateArray: Array<vali_validateFieldObj> = [
         {
             method: 'uuidVerify',
             value: componentID
@@ -73,7 +73,27 @@ const saveSingle = async (componentID: mod_componentModel["_id"], contentType: c
             method: 'cont_name',
             value: __convertStringLowerUnderscore(contentType.name) // only the contentType.name is user inputted, so we assume the rest is correct
         }
-    ]);
+    ];
+    // If we are saving a repeater with fields - verify their data as well!
+    let newRepeaterFieldArray: Array<mod_contentTypesConfigModel> = [];
+    if(contentType.type === 'repeater' && contentType.fields != undefined) {
+        for(let i = 0; i < contentType.fields.length; i++) {
+            validateArray.push({
+                method: 'cont_name',
+                value: __convertStringLowerUnderscore(contentType.fields[i].name) 
+            });
+            newRepeaterFieldArray.push({
+                _id: uuidv1(),
+                name: __convertStringLowerUnderscore(contentType.fields[i].name),
+                type: contentType.fields[i].type,
+                config: contentType.fields[i].config
+            });
+        }
+    };
+
+    // Verify
+    let verifyData = await validate(validateArray);
+    // If valid
     if (verifyData.valid) {
         let componentData: Array<mod_componentModel> = await getSingleFileContent('/config/components.json', 'json');
         let findComponent = componentData.find(x => x._id === componentID);
@@ -86,6 +106,7 @@ const saveSingle = async (componentID: mod_componentModel["_id"], contentType: c
                 type: contentType.type,
                 config: contentType.config
             };
+            if(contentType.type === 'repeater') contentTypeObj.fields = newRepeaterFieldArray;
 
             let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
             let findDuplicateName = contentTypeFileData.findIndex(x => x.name === contentTypeObj.name);

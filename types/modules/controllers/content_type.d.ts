@@ -5,6 +5,7 @@ interface cont_cont_saveSingleInp {
     name: mod_contentTypesConfigModel["name"]
     type: mod_contentTypesConfigModel["type"]
     config: mod_contentTypesConfigModel["config"]
+    fields?: Array<cont_cont_saveSingleInp>
 }
 interface cont_cont_saveSingleRes {
     saved: boolean,
