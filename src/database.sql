@@ -27,8 +27,40 @@ CREATE TABLE page_seo (
 );
 
 CREATE TABLE page_components (
-    _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
     component_id uuid NOT NUll,
     component_data JSON NOT NULL
 );
+
+
+
+
+-- Content Type Repeater
+-- Acts as a bride to more component_content_type_ tables...
+CREATE TABLE component_content_type_repeater (
+    _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
+    config_id uuid NOT NUll,
+    in_repeater boolean NOT NULL DEFAULT false,
+    repeater_id uuid REFERENCES component_content_type_repeater (_id) ON DELETE CASCADE
+);
+
+-- Content Type Text
+CREATE TABLE component_content_type_text (
+    page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
+    config_id uuid NOT NUll,
+    in_repeater boolean NOT NULL DEFAULT false,
+    repeater_id uuid REFERENCES component_content_type_repeater (_id) ON DELETE CASCADE,
+    value VARCHAR NOT NULL
+);
+
+-- Content Type Number
+CREATE TABLE component_content_type_number (
+    page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
+    config_id uuid NOT NUll,
+    in_repeater boolean NOT NULL DEFAULT false,
+    repeater_id uuid REFERENCES component_content_type_repeater (_id) ON DELETE CASCADE,
+    value INT NOT NULL
+);
+
+-- MORE TO COME
