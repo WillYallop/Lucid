@@ -3,7 +3,7 @@ import moment from 'moment';
 import { __updateSetQueryGen } from '../shared/functions';
 
 // Update single SEO obj - TODO
-export const updateSingle = async (page_id: mod_pageModel["_id"], data: cont_seo_updateSingleInp) => {
+export const updateSingleSEO = async (page_id: mod_pageModel["_id"], data: cont_seo_updateSingleInp) => {
     try {
         // Add some validation for the field - refer to controllers 
 
@@ -25,3 +25,32 @@ export const updateSingle = async (page_id: mod_pageModel["_id"], data: cont_seo
         throw err;
     }
 };
+
+// Get single SEO 
+export const getSingleSEO = async (page_id: mod_pageModel["_id"]) => {
+    try {
+        let seoRes = await db.one('SELECT * FROM page_seo WHERE page_id=$1', page_id);
+        return seoRes;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Save single SEO
+export const saveSingleSEO = async (data: const_seo_saveSingleInp) => {
+    try {
+        let seoRes = await db.one('INSERT INTO page_seo(page_id, title, description, og_title, og_description, og_image) VALUES(${page_id}, ${title}, ${description}, ${og_title}, ${og_description}, ${og_image}) RETURNING *', {
+            page_id: data.page_id,
+            title: data.title,
+            description: "",
+            og_title: data.og_title,
+            og_description: "",
+            og_image: ""
+        });
+        return seoRes;
+    }
+    catch(err) {
+        throw err;
+    }
+}

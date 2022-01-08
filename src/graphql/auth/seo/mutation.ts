@@ -1,10 +1,10 @@
 import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID } from 'graphql';
 // @ts-ignore: Unreachable code error
 import { SEOObjectType } from './type';
-import { updateSingle } from './data';
+import { updateSingleSEO } from './data';
 
 // Update SEO
-const updateSingleSEO: GraphQLFieldConfig<any, any, any> = {
+const updateSingleSEOMutation: GraphQLFieldConfig<any, any, any> = {
     type: SEOObjectType,
     description: 'Update single page SEO object',
     args: {
@@ -17,7 +17,7 @@ const updateSingleSEO: GraphQLFieldConfig<any, any, any> = {
         og_image: { type: GraphQLString }
     },
     resolve: (_, args) => {
-        return updateSingle(args.page_id, {
+        return updateSingleSEO(args.page_id, {
             title: args.title,
             description: args.description,
             og_title: args.og_title,
@@ -31,6 +31,6 @@ export const SEOMutation = new GraphQLObjectType({
     name: 'SEOMutation',
     description: 'The SEO base mutation',
     fields: {
-        updateSingle: updateSingleSEO
+        updateSingle: updateSingleSEOMutation
     }
 })

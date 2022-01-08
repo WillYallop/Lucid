@@ -3,6 +3,7 @@ import moment from 'moment';
 import { __updateSetQueryGen } from '../shared/functions';
 
 // Controllers
+import { getSingleSEO, saveSingleSEO } from '../seo/data';
 import { componentController, contentTypeController } from '../../../index';
 
 
@@ -13,7 +14,7 @@ export const getSingle = async (_id: mod_pageModel["_id"]) => {
         // Get page
         let page = await db.one('SELECT * FROM pages WHERE _id=$1', _id);
         // Get SEO Object
-        page.seo = await db.one('SELECT * FROM page_seo WHERE page_id=$1', _id);
+        page.seo = await getSingleSEO(_id);
 
         // Get pages components
         // Query DB for pages saved components
@@ -115,14 +116,14 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
         // Save page row
         let getPageRes = await db.one('INSERT INTO pages(template, slug, name, type, post_name, has_parent, parent_id, date_created, last_edited, author, is_homepage) VALUES(${template}, ${slug}, ${name}, ${type}, ${post_name}, ${has_parent}, ${parent_id}, ${date_created}, ${last_edited}, ${author}, ${is_homepage}) RETURNING *', newPageObj);
         // Save SEO row
-        getPageRes.seo = await db.one('INSERT INTO page_seo(page_id, title, description, og_title, og_description, og_image) VALUES(${page_id}, ${title}, ${description}, ${og_title}, ${og_description}, ${og_image}) RETURNING *', {
+        getPageRes.seo = await saveSingleSEO({
             page_id: getPageRes._id,
             title: data.name,
             description: "",
             og_title: data.name,
             og_description: "",
             og_image: ""
-        });
+        })
 
         return getPageRes;
     }
