@@ -3,7 +3,7 @@ import express from 'express';
 import vhost from 'vhost';
 import morgan from 'morgan';
 
-import { privateSchema } from "./graphql/private/schema";
+import { privateSchema } from "./graphql/auth/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 
 const path = require('path');
