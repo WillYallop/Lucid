@@ -2,7 +2,6 @@ require('dotenv').config();
 import express from 'express';
 import vhost from 'vhost';
 import morgan from 'morgan';
-import mongoose from 'mongoose';
 
 import { privateSchema } from "./graphql/private/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
@@ -20,10 +19,10 @@ const app = express();
 // ------------------------------------
 // DATABASE                           |
 // ------------------------------------
-mongoose.connect(`mongodb+srv://${config.database.user}:${config.database.password}@${config.database.address}`, {
-    dbName: config.database.name
-});
-mongoose.Promise = global.Promise;
+// mongoose.connect(`mongodb+srv://${config.database.user}:${config.database.password}@${config.database.address}`, {
+//     dbName: config.database.name
+// });
+// mongoose.Promise = global.Promise;
 
 
 // ------------------------------------
