@@ -1,5 +1,6 @@
 import db from '../../../db';
 import moment from 'moment';
+import { __updateSetQueryGen } from '../shared/functions';
 
 // Controllers
 import { componentController, contentTypeController } from '../../../index';
@@ -151,20 +152,8 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
         if(data.parent_id != undefined) updatePageObj.parent_id = data.parent_id;
         if(data.is_homepage != undefined) updatePageObj.is_homepage = data.is_homepage;
 
-
-        // key=${key},
-        let queryValuesStr = '';
-        let notFirst = false;
-        for (const key in updatePageObj) {
-            let comma = notFirst ? ', ' : '';
-            notFirst = true;
-            queryValuesStr += comma + key +'='+'${'+key+'}';
-        }
-
         // Update
-        let queryStr = `UPDATE pages SET ${queryValuesStr} WHERE _id='${_id}'`;
-        console.log(queryStr);
-        let pageUpdatated = await db.none(queryStr, updatePageObj);
+        await db.none(`UPDATE pages SET ${__updateSetQueryGen(updatePageObj)} WHERE _id='${_id}'`, updatePageObj);
 
         // Get page
         let page = await getSingle(_id);

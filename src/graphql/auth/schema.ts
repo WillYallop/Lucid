@@ -9,7 +9,8 @@ import { PostMutation } from './posts/mutation';
 // Page
 import { PageQuery } from './page/query';
 import { PageMutation } from './page/mutation';
-
+// Page SEO
+import { SEOMutation } from './seo/mutation';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -51,6 +52,11 @@ const baseMutation = new GraphQLObjectType({
         page: {
             type: PageMutation,
             description: PageMutation.description,
+            resolve: () => { return {} }
+        },
+        seo: {
+            type: SEOMutation,
+            description: SEOMutation.description,
             resolve: () => { return {} }
         }
     }

@@ -5,10 +5,6 @@ export const SEOObjectType = new GraphQLObjectType({
     name:'SEOModel',
     description: 'The SEO model',
     fields: () => ({
-        _id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: 'The SEO db collection ID'
-        },
         page_id: {
             type: GraphQLNonNull(GraphQLID),
             description: 'The corresponding pages ID'

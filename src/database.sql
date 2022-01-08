@@ -18,7 +18,6 @@ CREATE TABLE pages (
 );
 
 CREATE TABLE page_seo (
-    _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     page_id uuid UNIQUE REFERENCES pages (_id) ON DELETE CASCADE,
     title VARCHAR NOT NULL,
     description VARCHAR NOT NUll,

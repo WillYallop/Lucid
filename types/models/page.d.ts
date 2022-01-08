@@ -8,7 +8,6 @@ interface mod_pageModel {
     slug: string
     name: string
     seo: {
-        _id: string
         page_id: mod_pageModel["_id"]
         title: string
         description: string
