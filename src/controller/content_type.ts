@@ -4,6 +4,60 @@ import { v1 as uuidv1 } from 'uuid';
 import { __verifyFieldsToErrorArray, __convertStringLowerUnderscore } from './helper/shared';
 import merge from 'lodash/merge';
 
+/*
+
+EXAMPLE CONTENT_TYPE CONFIG FILE
+
+[
+    {
+        "_id": "2d3e64d0-64fd-11ec-8688-635a3ff32370",
+        "name": "test_text",
+        "type": "text",
+        "config": {
+            "max_length": 0,
+            "min_length": 200
+        }
+    },
+    {
+        "_id": "445a92a0-64fe-11ec-aab2-15b263b74864",
+        "name": "test_number",
+        "type": "number",
+        "config": {
+
+        }
+    },
+    {
+        "_id": "74cd38a0-6415-11ec-bc21-d53d7ba49e21",
+        "name": "test_repeater",
+        "type": "repeater",
+        "config": {
+
+        },
+        "fields": [
+            {
+                "_id": "5ff5b4ae-70ca-11ec-9817-dfdf56df382f",
+                "name": "test_text_2",
+                "type": "text",
+                "config": {
+                    "max_length": 0,
+                    "min_length": 200
+                }
+            },
+            {
+                "_id": "5acc6cac-70ca-11ec-9816-e327d0e79f79",
+                "name": "test_number_2",
+                "type": "number",
+                "config": {
+        
+                }
+            }
+        ]
+    }
+]
+
+*/
+
+
 // ------------------------------------ ------------------------------------
 // save single component content type
 // ------------------------------------ ------------------------------------

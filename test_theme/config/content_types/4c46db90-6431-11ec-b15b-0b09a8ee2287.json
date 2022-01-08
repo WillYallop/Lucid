@@ -10,11 +10,37 @@
     },
     {
         "_id": "445a92a0-64fe-11ec-aab2-15b263b74864",
-        "name": "test_text_two",
-        "type": "text",
+        "name": "test_number",
+        "type": "number",
         "config": {
-            "max_length": 20,
-            "min_length": 100
+
         }
+    },
+    {
+        "_id": "74cd38a0-6415-11ec-bc21-d53d7ba49e21",
+        "name": "test_repeater",
+        "type": "repeater",
+        "config": {
+
+        },
+        "fields": [
+            {
+                "_id": "5ff5b4ae-70ca-11ec-9817-dfdf56df382f",
+                "name": "test_text_2",
+                "type": "text",
+                "config": {
+                    "max_length": 0,
+                    "min_length": 200
+                }
+            },
+            {
+                "_id": "5acc6cac-70ca-11ec-9816-e327d0e79f79",
+                "name": "test_number_2",
+                "type": "number",
+                "config": {
+        
+                }
+            }
+        ]
     }
 ]

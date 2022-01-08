@@ -4,6 +4,7 @@ import { __updateSetQueryGen } from '../shared/functions';
 
 // Controllers
 import { getSingleSEO, saveSingleSEO } from '../seo/data';
+import { getSingleContentType } from '../content_type/data';
 import { componentController, contentTypeController } from '../../../index';
 
 
@@ -16,33 +17,27 @@ export const getSingle = async (_id: mod_pageModel["_id"]) => {
         // Get SEO Object
         page.seo = await getSingleSEO(_id);
 
-        // Get pages components
-        // Query DB for pages saved components
-        let pageComponents: Array<sch_pageDBComponent> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', page._id);
-
-        // Based on component_id in that, grab all corresponding component and content_types config from the theme directory
+        // For each component
+        // For each content type row for pages - no matter the type
+        // Loop over them and find the matching content type config form the theme and merge them into one obj
+        let pageComponents: Array<const_page_pageComponentsRes> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', _id);
         let componentsArray: Array<mod_pageModelComponent> = [];
-        for await(const pageComponent of pageComponents) {
+        for await(const pageComponent of pageComponents) { 
             let { component } = await componentController.getSingleByID(pageComponent.component_id);
             let { content_types } = await contentTypeController.getAll(pageComponent.component_id);
-            
+            // Throw if not found
             if(component === undefined) throw 'Component undefined.';
             if(content_types === undefined) throw 'Content Types undefined.';
-
+            // Find all content type data for this component
             let contentTypesArray: Array<mod_pageModelComponentContentType> = [];
-            // Build out content type array
             for await(const contentType of content_types) {
-                let contentTypeData = pageComponent.component_data.find( x => x.config_id === contentType._id );
-                if(contentTypeData) {
-                    contentTypesArray.push({
-                        config_id: contentType._id,
-                        name: contentType.name,
-                        type: contentType.type,
-                        config: contentType.config,
-                        data: contentTypeData.data
-                    })
-                }
+                // Find component_content_type_ table data based on configs id and component_id
+                // components config shoudl be the source of truth for what page component data to query
+                let componentsContentTypeData = await getSingleContentType(pageComponent._id, contentType);
+                // Set data based on the content type
+                if(componentsContentTypeData) contentTypesArray.push(componentsContentTypeData);
             }
+
             // Create page component object
             let obj: mod_pageModelComponent = {
                 _id: component._id,
@@ -57,6 +52,7 @@ export const getSingle = async (_id: mod_pageModel["_id"]) => {
             }
             componentsArray.push(obj)
         }
+
         // Build into object and store in page.components
         page.components = componentsArray;
         return page;
@@ -186,19 +182,22 @@ export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
 /*
 
 SQL Querie to insert a page_components row as we dont have a graphql field for that yet:
+Along with queries to enter a content_type for that pages component for type text, number and repeater!
 
 
-INSERT INTO page_components(page_id, component_id, component_data)
-VALUES ('e6422602-7091-11ec-b80c-7b4399a42990', '74cd38a0-6415-11ec-bc21-d53d7ba49e21', '[
-    {
-        "config_id": "2d3e64d0-64fd-11ec-8688-635a3ff32370",
-        "data": "This is a title"
-    },
-    {
-        "config_id": "445a92a0-64fe-11ec-aab2-15b263b74864",
-        "data": "This is the description"
-    }
-]')
+INSERT INTO page_components(page_id, component_id)
+VALUES ('', '74cd38a0-6415-11ec-bc21-d53d7ba49e21')
+RETURNING *;
+
+
+-- insert into TEXT type
+INSERT INTO component_content_type_text(component_id, config_id, value)
+VALUES ('', '2d3e64d0-64fd-11ec-8688-635a3ff32370', 'I am the text type data')
+RETURNING *;
+
+-- insert into NUMBER type
+INSERT INTO component_content_type_number(component_id, config_id, value)
+VALUES ('', '445a92a0-64fe-11ec-aab2-15b263b74864', 22)
 RETURNING *;
 
 */

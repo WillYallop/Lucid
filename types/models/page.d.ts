@@ -41,5 +41,5 @@ interface mod_pageModelComponentContentType {
     name: mod_contentTypesConfigModel["name"]
     type: mod_contentTypesConfigModel["type"]
     config: mod_contentTypesConfigModel["config"]
-    data: string
+    data: any
 }
