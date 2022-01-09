@@ -33,7 +33,7 @@ export const PostMutation = new GraphQLObjectType({
     name: 'PostMutation',
     description: 'The post base mutation',
     fields: {
-        deleteSingle: deleteSinglePost,
-        saveSingle: saveSinglePost
+        delete_single: deleteSinglePost,
+        save_single: saveSinglePost
     }
 })

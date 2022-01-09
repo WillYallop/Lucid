@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLBoolean, GraphQLInt } from 'graphql';
 import { DeleteResType } from '../shared/type';
 import { PageComponentModel } from './type';
-import { addPageComponent } from './data';
+import { addPageComponent, deletePageComponent } from './data';
 
 const addSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
     type: PageComponentModel,
@@ -16,10 +16,21 @@ const addSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
+const deleteSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
+    type: DeleteResType,
+    args: {
+        page_components_id: { type: GraphQLNonNull(GraphQLID) }
+    },
+    resolve: (_, args) => {
+        return deletePageComponent(args.page_components_id)
+    }
+}
+
 export const PageComponentMutation = new GraphQLObjectType({
     name: 'PageComponentMutation',
     description: 'The page component base mutation',
     fields: {
-        addPageComponent: addSinglePageComponent
+        add_page_component: addSinglePageComponent,
+        delete_page_component: deleteSinglePageComponent
     }
 })

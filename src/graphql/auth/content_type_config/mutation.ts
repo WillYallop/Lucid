@@ -109,8 +109,8 @@ export const ContentTypeConfigMutation = new GraphQLObjectType({
     name: 'ContentTypeConfigMutation',
     description: 'The content type config base mutation',
     fields: {
-        deleteContentTypeConfig: deleteContentType,
-        createContentTypeConfig: createContentType,
-        updateContentTypeConfig: updateContentType
+        delete_single: deleteContentType,
+        create_single: createContentType,
+        update_single: updateContentType
     }
 })

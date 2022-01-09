@@ -36,7 +36,7 @@ export const ComponentQuery = new GraphQLObjectType({
     name: 'ComponentQuery',
     description: 'The components base query',
     fields: {
-        getSingle: getSingleComponent,
-        getMultiple: getMultipleComponents
+        get_single: getSingleComponent,
+        get_multiple: getMultipleComponents
     }
 })

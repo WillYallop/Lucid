@@ -62,8 +62,8 @@ export const PageMutation = new GraphQLObjectType({
     name: 'PageMutation',
     description: 'The page base mutation',
     fields: {
-        deleteSingle: deleteSinglePage,
-        saveSingle: saveSinglePage,
-        updateSingle: updateSinglePage
+        delete_single: deleteSinglePage,
+        save_single: saveSinglePage,
+        update_single: updateSinglePage
     }
 })

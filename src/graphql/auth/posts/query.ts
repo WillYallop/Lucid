@@ -34,7 +34,7 @@ export const PostQuery = new GraphQLObjectType({
     name: 'PostQuery',
     description: 'The post base query',
     fields: {
-        getSingle: singlePost,
-        getMultiple: getMultiplePost
+        get_single: singlePost,
+        get_multiple: getMultiplePost
     }
 })

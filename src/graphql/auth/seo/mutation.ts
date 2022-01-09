@@ -31,6 +31,6 @@ export const SEOMutation = new GraphQLObjectType({
     name: 'SEOMutation',
     description: 'The SEO base mutation',
     fields: {
-        updateSingle: updateSingleSEOMutation
+        update_single: updateSingleSEOMutation
     }
 })

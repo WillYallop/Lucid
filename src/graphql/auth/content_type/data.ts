@@ -50,9 +50,6 @@ export const getSingleContentType = async (component_id: mod_contentTypesDatabas
 // Save new content type row in the correct table
 export const saveSingleContentType = async (component_id: mod_contentTypesDatabaseModel["component_id"], content_type: mod_contentTypesConfigModel) => { // component_id referes to the page_components tables _id - not the theme/config components ID
     try {
-
-        console.log(content_type.type);
-
         switch(content_type.type) {
             case 'text': {
                 await db.none('INSERT INTO component_content_type_text(component_id, config_id, value) VALUES(${component_id}, ${config_id}, ${value})', {

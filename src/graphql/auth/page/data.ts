@@ -167,8 +167,7 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
 export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
     try {
         // Delete all data related to the page
-        let deletePage = await db.none('DELETE FROM pages WHERE _id=$1', _id);
-        console.log(deletePage);
+        await db.none('DELETE FROM pages WHERE _id=$1', _id);
         return {
             deleted: true
         }

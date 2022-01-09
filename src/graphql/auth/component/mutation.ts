@@ -67,8 +67,8 @@ export const ComponentMutation = new GraphQLObjectType({
     name: 'ComponentMutation',
     description: 'The components base mutation',
     fields: {
-        deleteSingle: deleteSingleComponent,
-        saveSingle: saveSingleComponent,
-        updateSingle: updateSingleComponent
+        delete_single: deleteSingleComponent,
+        save_single: saveSingleComponent,
+        update_single: updateSingleComponent
     }
 })

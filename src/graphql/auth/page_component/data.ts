@@ -65,37 +65,15 @@ export const addPageComponent = async (page_id: mod_pageModel["_id"], component_
 }
 
 // Delete corresponding page_components table row
-export const deleteComponent = async () => {
+export const deletePageComponent = async (page_components_id: mod_pageComponentsModel["_id"]) => {
     try {
-
+        // Delete all data related to the page
+        await db.none('DELETE FROM page_components WHERE _id=$1', page_components_id);
+        return {
+            deleted: true
+        }
     }
     catch(err) {
         throw err;
     }
 }
-
-
-
-
-/*
-
-SQL Querie to insert a page_components row as we dont have a graphql field for that yet:
-Along with queries to enter a content_type for that pages component for type text, number and repeater!
-
-
-INSERT INTO page_components(page_id, component_id)
-VALUES ('', '74cd38a0-6415-11ec-bc21-d53d7ba49e21')
-RETURNING *;
-
-
--- insert into TEXT type
-INSERT INTO component_content_type_text(component_id, config_id, value)
-VALUES ('', '2d3e64d0-64fd-11ec-8688-635a3ff32370', 'I am the text type data')
-RETURNING *;
-
--- insert into NUMBER type
-INSERT INTO component_content_type_number(component_id, config_id, value)
-VALUES ('', '445a92a0-64fe-11ec-aab2-15b263b74864', 22)
-RETURNING *;
-
-*/
