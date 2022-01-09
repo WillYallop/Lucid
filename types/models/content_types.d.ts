@@ -13,6 +13,7 @@ interface mod_contentTypesConfigModel {
         max_range?: number
         min_range?: number
         default_num?: number
+        default_srt?: string
         max_repeats?: number
     }
     // Only type of repeater has this:

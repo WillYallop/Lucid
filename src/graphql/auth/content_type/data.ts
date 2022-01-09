@@ -36,7 +36,7 @@ export const getSingleContentType = async (component_id: mod_contentTypesDatabas
                         if(subFiledRes) data.push(subFiledRes);
                     }
                 }
-                response.data = data;
+                response.data = JSON.stringify(data);
                 return response;
                 break;
             }
@@ -55,7 +55,7 @@ export const saveSingleContentType = async (component_id: mod_contentTypesDataba
                 await db.none('INSERT INTO component_content_type_text(component_id, config_id, value) VALUES(${component_id}, ${config_id}, ${value})', {
                     component_id: component_id,
                     config_id: content_type._id,
-                    value: ''
+                    value: content_type.config.default_srt
                 });
                 break;
             }

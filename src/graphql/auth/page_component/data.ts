@@ -5,8 +5,20 @@ import { __updateSetQueryGen } from '../shared/functions';
 import { componentController, contentTypeController } from '../../../index';
 import { saveSingleContentType } from '../content_type/data';
 
-// Update component_content_type for a page_components row
+// Used to update page_components table row data
 export const updatePageComponent = async () => {
+    try {
+
+
+
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Update 
+export const updatePageComponentField = async () => {
     try {
 
     }
