@@ -1,4 +1,4 @@
-import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLBoolean, GraphQLInt, GraphQLList } from 'graphql';
+import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInt } from 'graphql';
 import { DeleteResType } from '../shared/type';
 import { PageComponentModel } from './type';
 import { addPageComponent, deletePageComponent, updatePageComponent } from './data';

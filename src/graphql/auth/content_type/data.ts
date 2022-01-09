@@ -18,14 +18,24 @@ export const getSingleContentType = async (page_component_id: mod_contentTypesDa
 
         switch(content_type.type) {
             case 'text': {
-                const { value } = await db.one(`SELECT * FROM component_content_type_text WHERE page_component_id='${page_component_id}' AND config_id='${content_type._id}'`);
-                response.data = value;
+                try {
+                    const result = await db.one(`SELECT * FROM component_content_type_text WHERE page_component_id='${page_component_id}' AND config_id='${content_type._id}'`);
+                    response.data = result.value;
+                }
+                catch(err) {
+                    response.data = 'Error: query failed, resave data to get working again!';
+                }
                 return response;
                 break;
             }
             case 'number': {
-                const { value } = await db.one(`SELECT * FROM component_content_type_number WHERE page_component_id='${page_component_id}' AND config_id='${content_type._id}'`);
-                response.data = value;
+                try {
+                    const result = await db.one(`SELECT * FROM component_content_type_number WHERE page_component_id='${page_component_id}' AND config_id='${content_type._id}'`);
+                    response.data = result.value;
+                }
+                catch(err) {
+                    response.data = 0;
+                }
                 return response;
                 break;
             }
@@ -87,9 +97,8 @@ export const saveSingleContentType = async (page_component_id: mod_contentTypesD
     }
 }
 
-
 // Update component_content_type_ rows
-export const updateSingleContentType = async (data: cont_page_comp_updatePageComponentInp) => {
+export const updateSingleContentType = async (data: cont_cont_updateSingleContentTypeInp) => {
     try {
         let response;
         // Make the data paramater an array if the user passed in a single  
@@ -116,6 +125,40 @@ export const updateSingleContentType = async (data: cont_page_comp_updatePageCom
         // Update pages last edited field
         await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${page_id}'`);
         return response;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Delete component_content_type row
+export const deleteSingleContentType = async (data: cont_cont_deleteSingleContentTypeInp) => {
+    try {
+        switch(data.type) {
+            case 'text': {
+                // component_content_type_text
+                await db.none('DELETE FROM component_content_type_text WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
+                    page_component_id: data.page_component_id,
+                    config_id: data.config_id
+                });
+                break;
+            }
+            case 'number': {
+                // component_content_type_number
+                await db.none('DELETE FROM component_content_type_number WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
+                    page_component_id: data.page_component_id,
+                    config_id: data.config_id
+                });
+                break;
+            }
+            case 'repeater': {
+                throw 'Component content type repeater is never stored in the database! Delete its children fields independently!';
+                break;
+            }
+        }
+        return {
+            deleted: true
+        }
     }
     catch(err) {
         throw err;

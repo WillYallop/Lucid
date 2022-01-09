@@ -46,13 +46,21 @@ interface cont_cont_updateSingleRes {
     errors?: Array<core_errorMsg> 
 }
 
-// updateeSIngleContentType()
-interface cont_contupdateSingleContentTypeInp {
-    page_component_id: mod_pageComponentsModel["_id"] // component_id referes to the page_components tables _id - not the theme/config components ID
+// updateSingleContentType()
+interface cont_cont_updateSingleContentTypeInp {
+    page_component_id: mod_pageComponentsModel["_id"]
     config_id: mod_contentTypesConfigModel["_id"]
+    type: mod_contentTypesConfigModel["type"]
     value?: any
 }
 interface cont_cont_updateSingleContentTypeObj {
     value?: mod_contentTypesDatabaseModel["value"]
     // more may be added
+}
+
+// deleteSingleContentType()
+interface cont_cont_deleteSingleContentTypeInp {
+    page_component_id: mod_pageComponentsModel["_id"]
+    config_id: mod_contentTypesConfigModel["_id"]
+    type: mod_contentTypesConfigModel["type"]
 }
