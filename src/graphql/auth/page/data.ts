@@ -20,7 +20,7 @@ export const getSingle = async (_id: mod_pageModel["_id"]) => {
         // For each component
         // For each content type row for pages - no matter the type
         // Loop over them and find the matching content type config form the theme and merge them into one obj
-        let pageComponents: Array<const_page_pageComponentsRes> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', _id);
+        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', _id);
         let componentsArray: Array<mod_pageModelComponent> = [];
         for await(const pageComponent of pageComponents) { 
             let { component } = await componentController.getSingleByID(pageComponent.component_id);
@@ -41,6 +41,7 @@ export const getSingle = async (_id: mod_pageModel["_id"]) => {
             // Create page component object
             let obj: mod_pageModelComponent = {
                 _id: component._id,
+                page_components_id: pageComponent._id,
                 file_name: component.file_name,
                 file_path: component.file_path,
                 name: component.name,
@@ -176,28 +177,3 @@ export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
         throw err;
     }
 }
-
-
-
-/*
-
-SQL Querie to insert a page_components row as we dont have a graphql field for that yet:
-Along with queries to enter a content_type for that pages component for type text, number and repeater!
-
-
-INSERT INTO page_components(page_id, component_id)
-VALUES ('', '74cd38a0-6415-11ec-bc21-d53d7ba49e21')
-RETURNING *;
-
-
--- insert into TEXT type
-INSERT INTO component_content_type_text(component_id, config_id, value)
-VALUES ('', '2d3e64d0-64fd-11ec-8688-635a3ff32370', 'I am the text type data')
-RETURNING *;
-
--- insert into NUMBER type
-INSERT INTO component_content_type_number(component_id, config_id, value)
-VALUES ('', '445a92a0-64fe-11ec-aab2-15b263b74864', 22)
-RETURNING *;
-
-*/

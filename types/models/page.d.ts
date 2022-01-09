@@ -27,6 +27,7 @@ interface mod_pageModel {
 }
 interface mod_pageModelComponent {
     _id: mod_componentModel["_id"]
+    page_components_id: mod_pageComponentsModel["_id"] 
     file_name: mod_componentModel["file_name"]
     file_path: mod_componentModel["file_path"]
     name: mod_componentModel["name"]

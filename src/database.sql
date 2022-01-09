@@ -32,7 +32,8 @@ CREATE TABLE page_seo (
 CREATE TABLE page_components (
     _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
-    component_id uuid NOT NUll -- referes to themes config component ID
+    component_id uuid NOT NUll, -- referes to themes config component ID
+    position INT NOT NULL
 );
 
 

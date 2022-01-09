@@ -13,6 +13,8 @@ import { PageMutation } from './page/mutation';
 import { SEOMutation } from './seo/mutation';
 // Content Type Config
 import { ContentTypeConfigMutation } from './content_type_config/mutation';
+// Page Component
+import { PageComponentMutation } from './page_component/mutation';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -64,6 +66,11 @@ const baseMutation = new GraphQLObjectType({
         content_type_config: {
             type: ContentTypeConfigMutation,
             description: ContentTypeConfigMutation.description,
+            resolve: () => { return {} }
+        },
+        page_components: {
+            type: PageComponentMutation,
+            description: PageComponentMutation.description,
             resolve: () => { return {} }
         }
     }

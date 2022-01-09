@@ -46,3 +46,44 @@ export const getSingleContentType = async (component_id: mod_contentTypesDatabas
         throw err;
     }
 }
+
+// Save new content type row in the correct table
+export const saveSingleContentType = async (component_id: mod_contentTypesDatabaseModel["component_id"], content_type: mod_contentTypesConfigModel) => { // component_id referes to the page_components tables _id - not the theme/config components ID
+    try {
+
+        console.log(content_type.type);
+
+        switch(content_type.type) {
+            case 'text': {
+                await db.none('INSERT INTO component_content_type_text(component_id, config_id, value) VALUES(${component_id}, ${config_id}, ${value})', {
+                    component_id: component_id,
+                    config_id: content_type._id,
+                    value: ''
+                });
+                break;
+            }
+            case 'number': {
+                await db.none('INSERT INTO component_content_type_number(component_id, config_id, value) VALUES(${component_id}, ${config_id}, ${value})', {
+                    component_id: component_id,
+                    config_id: content_type._id,
+                    value: content_type.config.default_num
+                });
+                break;
+            }
+            case 'repeater': {
+                // loop over all fields and save rows for them!
+                // For now repeaters can only go one level deep - may change in the future
+                if(content_type.fields) {
+                    for await(const contentType of  content_type.fields) {
+                        await saveSingleContentType(component_id, contentType);
+                    }
+                }
+                break;
+            }
+        }
+
+    }
+    catch(err) {
+        throw err;
+    }
+}

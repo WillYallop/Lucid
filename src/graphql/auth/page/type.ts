@@ -74,7 +74,11 @@ export const PageComponent = new GraphQLObjectType({
     fields: () => ({
         _id: {
             type: GraphQLNonNull(GraphQLID),
-            description: 'The unique component _id'
+            description: 'The unique component _id - refers to the theme/components ID'
+        },
+        page_components_id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'The unique page_components_id - refers to the page components table _id'
         },
         name: {
             type: GraphQLNonNull(GraphQLString),

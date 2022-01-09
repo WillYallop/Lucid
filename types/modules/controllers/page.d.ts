@@ -25,11 +25,6 @@ interface const_page_saveSinglePageObj {
     date_created: mod_pageModel["date_created"]
     last_edited: mod_pageModel["last_edited"]
 }
-interface const_page_pageComponentsRes {
-    _id: string
-    page_id: mod_pageModel["_id"]
-    component_id: mod_componentModel["_id"]
-}
 
 // updateSingle()
 interface cont_page_updateSingleInp {

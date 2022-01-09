@@ -72,6 +72,10 @@ export const ContentTypeConfigArgs = new GraphQLInputObjectType({
         min_length: {
             type: GraphQLInt,
             description: 'Min text length'
+        },
+        default_num: {
+            type: GraphQLInt,
+            description: 'Default number'
         }
     })
 });
