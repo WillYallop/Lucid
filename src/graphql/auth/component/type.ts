@@ -40,15 +40,15 @@ export const Component = new GraphQLObjectType({
             description: 'The component date_modified'
         },
         content_types: {
-            type: GraphQLNonNull(GraphQLList(ComponentContentType)),
+            type: GraphQLNonNull(GraphQLList(ComponentContentTypeConfig)),
             description: 'A list of the content_types'
         }
     })
 });
 
 //  Component content_type
-export const ComponentContentType = new GraphQLObjectType({
-    name: 'ComponentContentTypeModel',
+export const ComponentContentTypeConfig = new GraphQLObjectType({
+    name: 'ComponentContentTypeConfigModel',
     description: 'Component content type model',
     fields: () => ({
         _id: {
@@ -66,6 +66,31 @@ export const ComponentContentType = new GraphQLObjectType({
         config: {
             type: GraphQLNonNull(ContentTypeConfig), 
             description: 'Component content type config'
+        },
+        fields: {
+            type: new GraphQLObjectType({
+                name: 'ComponentContentTypeModel',
+                description: 'Component content type model',
+                fields: () => ({
+                    _id: {
+                        type: GraphQLNonNull(GraphQLID),
+                        description: 'Component content type database ID'
+                    },
+                    name: {
+                        type: GraphQLNonNull(GraphQLString),
+                        description: 'Component content type name'
+                    },
+                    type: {
+                        type: GraphQLNonNull(GraphQLString),
+                        description: 'Component content type type'
+                    },
+                    config: {
+                        type: GraphQLNonNull(ContentTypeConfig), 
+                        description: 'Component content type config'
+                    }
+                })
+            }),
+            description: 'Only used for the repeater content type'
         }
     })
 })

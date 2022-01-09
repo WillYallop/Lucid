@@ -80,9 +80,9 @@ export const createSingleContentType = async (componentID: mod_componentModel["_
 }
 
 // Update single cotent type
-export const updateSingleContentType = async (componentID: mod_componentModel["_id"], contentType: cont_cont_updateSingleInp) => {
+export const updateSingleContentType = async (componentID: mod_componentModel["_id"], contentType: cont_cont_updateSingleInp, repeaterField: boolean, repeaterID: mod_contentTypesConfigModel["_id"]) => {
     let res: any;
-    res = await contentTypeController.updateSingle(componentID, contentType);
+    res = await contentTypeController.updateSingle(componentID, contentType, repeaterField, repeaterID);
     if(res.updated) return res.content_type;
     else throw res.errors[0].message;
 }

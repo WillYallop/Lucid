@@ -233,7 +233,6 @@ const getSingle = async (componentID: mod_componentModel["_id"], _id: mod_conten
     }
 }
 
-// ------------------------------------ ------------------------------------
 // delete single component content type
 // ------------------------------------ ------------------------------------
 const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]): Promise<cont_cont_deleteSingleRes> => {
@@ -285,7 +284,7 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
 // ------------------------------------ ------------------------------------
 // update single component content type
 // ------------------------------------ ------------------------------------
-const updateSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_updateSingleInp): Promise<cont_cont_updateSingleRes> => {
+const updateSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_updateSingleInp, repeaterField: boolean, repeaterID: mod_contentTypesConfigModel["_id"]): Promise<cont_cont_updateSingleRes> => {
     if (Object.entries(contentType).length) {
         // Base validation object
         let validateObj: Array<vali_validateFieldObj> = [
@@ -324,10 +323,75 @@ const updateSingle = async (componentID: mod_componentModel["_id"], contentType:
         // Update data
         if (verifyData.valid) {
             let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
-            let findContentTypeIndex = contentTypeFileData.findIndex(x => x._id === contentType._id);
-            if (findContentTypeIndex != -1) {
-                // Check object with same name doesnt exists - this has to be unique!
-                if(contentType.name != undefined) {
+            // Field names can share the same and as objects a level higher as they wont interfere
+            if(repeaterField) {
+                let findRepeaterTypeIndex = contentTypeFileData.findIndex(x => x._id === repeaterID);
+                if (findRepeaterTypeIndex != -1 && contentTypeFileData[findRepeaterTypeIndex].fields != undefined) {
+                    // @ts-ignore: Unreachable code error
+                    let findContentTypeIndex = contentTypeFileData[findRepeaterTypeIndex].fields.findIndex(x => x._id === contentType._id);
+                    if(findContentTypeIndex != -1) {
+                        // Check name exists
+                        // @ts-ignore: Unreachable code error
+                        let nameExistsIndex = contentTypeFileData[findRepeaterTypeIndex].fields.findIndex( x => x.name ===  contentType.name && x._id != contentType._id );
+                        if(nameExistsIndex != -1) {
+                            // Exists
+                            return {
+                                updated: false,
+                                errors: [
+                                    {
+                                        code: 409,
+                                        origin: 'contentTypeController.updateSingle',
+                                        title: 'Content Type Name Exists',
+                                        message: `Content type with name: "${contentType.name}" already exists! Please choose another name!`
+                                    }
+                                ]
+                            }
+                        }
+
+                        // Update object and save
+                        // @ts-ignore: Unreachable code error
+                        let newContentTypeObj: mod_contentTypesConfigModel = merge(contentTypeFileData[findRepeaterTypeIndex].fields[findContentTypeIndex], contentType);
+                        // @ts-ignore: Unreachable code error
+                        contentTypeFileData[findRepeaterTypeIndex].fields[findContentTypeIndex] = newContentTypeObj;
+                        let response = await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
+                        return {
+                            updated: response,
+                            // @ts-ignore: Unreachable code error
+                            content_type: contentTypeFileData[findRepeaterTypeIndex].fields[findContentTypeIndex]
+                        }
+                    }
+                    else {
+                        return {
+                            updated: false,
+                            errors: [
+                                {
+                                    code: 404,
+                                    origin: 'contentTypeController.updateSingle',
+                                    title: 'Content Type Not Found',
+                                    message: `Cannot find content type with ID: "${contentType._id}" for component ID: "${componentID}" to update!`
+                                }
+                            ]
+                        }
+                    }
+                }
+                else {
+                    return {
+                        updated: false,
+                        errors: [
+                            {
+                                code: 404,
+                                origin: 'contentTypeController.updateSingle',
+                                title: 'Content Type Not Found',
+                                message: `Cannot find content type with ID: "${contentType._id}" for component ID: "${componentID}" to update!`
+                            }
+                        ]
+                    }
+                }
+            }
+            else {
+                let findContentTypeIndex = contentTypeFileData.findIndex(x => x._id === contentType._id);
+                if (findContentTypeIndex != -1) {
+                    // Check object with same name doesnt exists - this has to be unique!
                     let nameExistsIndex = contentTypeFileData.findIndex( x => x.name ===  contentType.name && x._id != contentType._id );
                     if(nameExistsIndex != -1) {
                         // Exists
@@ -343,29 +407,30 @@ const updateSingle = async (componentID: mod_componentModel["_id"], contentType:
                             ]
                         }
                     }
+                    // Update object and save
+                    let newContentTypeObj: mod_contentTypesConfigModel = merge(contentTypeFileData[findContentTypeIndex], contentType);
+                    contentTypeFileData[findContentTypeIndex] = newContentTypeObj;
+                    let response = await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
+                    return {
+                        updated: response,
+                        content_type: contentTypeFileData[findContentTypeIndex]
+                    }
                 }
-                // Update object and save
-                let newContentTypeObj: mod_contentTypesConfigModel = merge(contentTypeFileData[findContentTypeIndex], contentType);
-                contentTypeFileData[findContentTypeIndex] = newContentTypeObj;
-                let response = await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
-                return {
-                    updated: response,
-                    content_type: contentTypeFileData[findContentTypeIndex]
+                else {
+                    return {
+                        updated: false,
+                        errors: [
+                            {
+                                code: 404,
+                                origin: 'contentTypeController.updateSingle',
+                                title: 'Content Type Not Found',
+                                message: `Cannot find content type with ID: "${contentType._id}" for component ID: "${componentID}" to update!`
+                            }
+                        ]
+                    }
                 }
             }
-            else {
-                return {
-                    updated: false,
-                    errors: [
-                        {
-                            code: 404,
-                            origin: 'contentTypeController.updateSingle',
-                            title: 'Content Type Not Found',
-                            message: `Cannot find content type with ID: "${contentType._id}" for component ID: "${componentID}" to update!`
-                        }
-                    ]
-                }
-            }
+
         }
         else {
             // Define custom errors

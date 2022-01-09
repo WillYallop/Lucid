@@ -1,6 +1,6 @@
-import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInt, GraphQLInputObjectType } from 'graphql';
+import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInt, GraphQLInputObjectType, GraphQLBoolean } from 'graphql';
 // @ts-ignore: Unreachable code error
-import { Component, ComponentContentType } from './type';
+import { Component, ComponentContentTypeConfig } from './type';
 import { DeleteResType, ContentTypeConfigArgs } from '../shared/type';
 import { 
     // Components
@@ -84,7 +84,7 @@ const deleteContentType: GraphQLFieldConfig<any, any, any> = {
 
 // Create single content type
 const createContentType: GraphQLFieldConfig<any, any, any> = {
-    type: ComponentContentType,
+    type: ComponentContentTypeConfig,
     description: 'Create single content type',
     args: {
         component_id: { type: GraphQLNonNull(GraphQLID) },
@@ -118,7 +118,7 @@ const createContentType: GraphQLFieldConfig<any, any, any> = {
 
 // Update single content type
 const updateContentType: GraphQLFieldConfig<any, any, any> = {
-    type: ComponentContentType,
+    type: ComponentContentTypeConfig,
     description: 'Update single content type',
     args: {
         component_id: { type: GraphQLNonNull(GraphQLID) },
@@ -147,10 +147,12 @@ const updateContentType: GraphQLFieldConfig<any, any, any> = {
                     })
                 })
             )
-        }
+        },
+        repeaterField: { type: GraphQLNonNull(GraphQLBoolean) },
+        repeaterID: { type: GraphQLID }
     },
     resolve: (_, args) => {
-        return updateSingleContentType(args.component_id, args.content_type);
+        return updateSingleContentType(args.component_id, args.content_type, args.repeaterField, args.repeaterID);
     }
 }
 
