@@ -1,6 +1,6 @@
 
 import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInputObjectType } from 'graphql';
-import { ContentTypeConfig, ContentTypeConfigArgs } from '../shared/type';
+import { ComponentContentTypeConfig } from '../content_type_config/type';
 
 // GraphQL object type
 export const Component = new GraphQLObjectType({
@@ -45,52 +45,3 @@ export const Component = new GraphQLObjectType({
         }
     })
 });
-
-//  Component content_type
-export const ComponentContentTypeConfig = new GraphQLObjectType({
-    name: 'ComponentContentTypeConfigModel',
-    description: 'Component content type model',
-    fields: () => ({
-        _id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: 'Component content type database ID'
-        },
-        name: {
-            type: GraphQLNonNull(GraphQLString),
-            description: 'Component content type name'
-        },
-        type: {
-            type: GraphQLNonNull(GraphQLString),
-            description: 'Component content type type'
-        },
-        config: {
-            type: GraphQLNonNull(ContentTypeConfig), 
-            description: 'Component content type config'
-        },
-        fields: {
-            type: new GraphQLObjectType({
-                name: 'ComponentContentTypeModel',
-                description: 'Component content type model',
-                fields: () => ({
-                    _id: {
-                        type: GraphQLNonNull(GraphQLID),
-                        description: 'Component content type database ID'
-                    },
-                    name: {
-                        type: GraphQLNonNull(GraphQLString),
-                        description: 'Component content type name'
-                    },
-                    type: {
-                        type: GraphQLNonNull(GraphQLString),
-                        description: 'Component content type type'
-                    },
-                    config: {
-                        type: GraphQLNonNull(ContentTypeConfig), 
-                        description: 'Component content type config'
-                    }
-                })
-            }),
-            description: 'Only used for the repeater content type'
-        }
-    })
-})

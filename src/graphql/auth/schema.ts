@@ -11,6 +11,8 @@ import { PageQuery } from './page/query';
 import { PageMutation } from './page/mutation';
 // Page SEO
 import { SEOMutation } from './seo/mutation';
+// Content Type Config
+import { ContentTypeConfigMutation } from './content_type_config/mutation';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -57,6 +59,11 @@ const baseMutation = new GraphQLObjectType({
         seo: {
             type: SEOMutation,
             description: SEOMutation.description,
+            resolve: () => { return {} }
+        },
+        content_type_config: {
+            type: ContentTypeConfigMutation,
+            description: ContentTypeConfigMutation.description,
             resolve: () => { return {} }
         }
     }

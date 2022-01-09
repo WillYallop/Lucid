@@ -1,6 +1,6 @@
 
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
-import { ContentTypeConfig } from '../shared/type';
+import { ContentTypeConfig } from '../content_type_config/type';
 import { SEOObjectType } from '../seo/type';
 
 // Page

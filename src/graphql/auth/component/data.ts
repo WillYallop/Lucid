@@ -1,4 +1,6 @@
-import { componentController, contentTypeController } from '../../../index';
+import { componentController } from '../../../index';
+
+import { getAllContentTypeConfig } from '../content_type_config/data';
 
 // ------------------------------------ ------------------------------------
 // Components
@@ -8,7 +10,7 @@ import { componentController, contentTypeController } from '../../../index';
 export const getSingle = async (_id: mod_componentModel["_id"]) => {
     let res: any;
     res = await componentController.getSingleByID(_id);
-    let { content_types } = await contentTypeController.getAll(_id);
+    let { content_types } = await getAllContentTypeConfig(_id);
     res.component['content_types'] = content_types;
     // Get content_types from res and add them to the response object.
     if(res.success) return res.component; 
@@ -20,7 +22,7 @@ export const getMultiple = async(limit: number, skip: number) => {
     let res: any;
     res = await componentController.getMultiple(limit, skip);
     for await (const component of res.components) {
-        let  { content_types } = await contentTypeController.getAll(component._id);
+        let  { content_types } = await getAllContentTypeConfig(component._id);
         component['content_types'] = content_types;
     }
     // Get content_types from res and add them to the response object.
@@ -52,37 +54,5 @@ export const updateSingle = async (_id: mod_componentModel["_id"], data: cont_co
     let res: any;
     res = await componentController.updateSingle(_id, data);
     if(res.updated) return res.component;
-    else throw res.errors[0].message;
-}
-
-
-// ------------------------------------ ------------------------------------
-// Content Types
-// ------------------------------------ ------------------------------------
-
-// Delete single content type
-export const deleteSingleContentType = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
-    let res: any;
-    res = await contentTypeController.deleteSingle(componentID, contentTypeID);
-    if(res.deleted) {
-        return {
-            deleted: res.deleted
-        }
-    } else throw res.errors[0].message;
-}
-
-// Create single content type
-export const createSingleContentType = async (componentID: mod_componentModel["_id"], contentType: cont_cont_saveSingleInp) => {
-    let res: any;
-    res = await contentTypeController.saveSingle(componentID, contentType);
-    if(res.saved) return res.content_type;
-    else throw res.errors[0].message;
-}
-
-// Update single cotent type
-export const updateSingleContentType = async (componentID: mod_componentModel["_id"], contentType: cont_cont_updateSingleInp, repeaterField: boolean, repeaterID: mod_contentTypesConfigModel["_id"]) => {
-    let res: any;
-    res = await contentTypeController.updateSingle(componentID, contentType, repeaterField, repeaterID);
-    if(res.updated) return res.content_type;
     else throw res.errors[0].message;
 }
