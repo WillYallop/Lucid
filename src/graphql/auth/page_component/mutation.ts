@@ -1,11 +1,11 @@
 import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLBoolean, GraphQLInt } from 'graphql';
 import { DeleteResType } from '../shared/type';
 import { PageComponentModel } from './type';
-import { addPageComponent, deletePageComponent } from './data';
+import { addPageComponent, deletePageComponent, updatePageComponent } from './data';
 
 const addSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
     type: PageComponentModel,
-    description: 'Update single page',
+    description: 'Add single page component',
     args: {
         page_id: { type: GraphQLNonNull(GraphQLID) },
         component_id: { type: GraphQLNonNull(GraphQLID) },
@@ -16,10 +16,24 @@ const addSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
+const updateSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
+    type: PageComponentModel,
+    description: 'Update single page component data',
+    args: {
+        _id: { type: GraphQLNonNull(GraphQLID) },
+        position: { type: GraphQLInt }
+    },
+    resolve: (_, args) => {
+        return updatePageComponent(args._id, {
+            position: args.position
+        })
+    }
+}
+
 const deleteSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
     type: DeleteResType,
     args: {
-        page_components_id: { type: GraphQLNonNull(GraphQLID) }
+        _id: { type: GraphQLNonNull(GraphQLID) }
     },
     resolve: (_, args) => {
         return deletePageComponent(args.page_components_id)
@@ -31,6 +45,7 @@ export const PageComponentMutation = new GraphQLObjectType({
     description: 'The page component base mutation',
     fields: {
         add_page_component: addSinglePageComponent,
-        delete_page_component: deleteSinglePageComponent
+        delete_page_component: deleteSinglePageComponent,
+        update_page_component: updateSinglePageComponent
     }
 })

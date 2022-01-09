@@ -6,11 +6,17 @@ import { componentController, contentTypeController } from '../../../index';
 import { saveSingleContentType } from '../content_type/data';
 
 // Used to update page_components table row data
-export const updatePageComponent = async () => {
+export const updatePageComponent = async (_id: mod_pageComponentsModel["_id"], data: const_page_updatePageComponentInp) => {
     try {
-
-
-
+        // We can only update the position atm
+        // More may come TODO
+        let updatePageComponentObj: const_page_updatePageComponentUpdateObj = {};
+        if(data.position != undefined) updatePageComponentObj.position = data.position;
+        // Update
+        let pageComponentsRes = await db.one(`UPDATE page_components SET ${__updateSetQueryGen(updatePageComponentObj)} WHERE _id='${_id}' RETURNING *`, updatePageComponentObj);
+        // Update pages last edited field
+        await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${pageComponentsRes.page_id}'`);
+        return pageComponentsRes;
     }
     catch(err) {
         throw err;
@@ -77,10 +83,10 @@ export const addPageComponent = async (page_id: mod_pageModel["_id"], component_
 }
 
 // Delete corresponding page_components table row
-export const deletePageComponent = async (page_components_id: mod_pageComponentsModel["_id"]) => {
+export const deletePageComponent = async (_id: mod_pageComponentsModel["_id"]) => {
     try {
         // Delete all data related to the page
-        await db.none('DELETE FROM page_components WHERE _id=$1', page_components_id);
+        await db.none('DELETE FROM page_components WHERE _id=$1', _id);
         return {
             deleted: true
         }

@@ -44,3 +44,11 @@ interface const_page_updatePageObj {
     parent_id?: mod_pageModel["parent_id"]
     is_homepage?: mod_pageModel["is_homepage"]
 }
+
+// updatePageComponent
+interface const_page_updatePageComponentInp {
+    position?: mod_pageComponentsModel["position"]
+}
+interface const_page_updatePageComponentUpdateObj {
+    position?: mod_pageComponentsModel["position"]
+}
