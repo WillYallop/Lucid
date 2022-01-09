@@ -1,8 +1,8 @@
 import db from '../../../db';
 
 // Get single content type data for pages component 
-// Based on component_id and config_id
-export const getSingleContentType = async (component_id: mod_contentTypesDatabaseModel["component_id"], content_type: mod_contentTypesConfigModel) => { // component_id referes to the page_components tables _id - not the theme/config components ID
+// Based on page_component_id and config_id
+export const getSingleContentType = async (page_component_id: mod_contentTypesDatabaseModel["page_component_id"], content_type: mod_contentTypesConfigModel) => { // page_component_id referes to the page_components tables _id - not the theme/config components ID
     try {
         // Query to search all content type tables
         // TODO - needs more content_types adding
@@ -16,13 +16,13 @@ export const getSingleContentType = async (component_id: mod_contentTypesDatabas
 
         switch(content_type.type) {
             case 'text': {
-                const { value } = await db.one(`SELECT * FROM component_content_type_text WHERE component_id='${component_id}' AND config_id='${content_type._id}'`);
+                const { value } = await db.one(`SELECT * FROM component_content_type_text WHERE page_component_id='${page_component_id}' AND config_id='${content_type._id}'`);
                 response.data = value;
                 return response;
                 break;
             }
             case 'number': {
-                const { value } = await db.one(`SELECT * FROM component_content_type_number WHERE component_id='${component_id}' AND config_id='${content_type._id}'`);
+                const { value } = await db.one(`SELECT * FROM component_content_type_number WHERE page_component_id='${page_component_id}' AND config_id='${content_type._id}'`);
                 response.data = value;
                 return response;
                 break;
@@ -32,7 +32,7 @@ export const getSingleContentType = async (component_id: mod_contentTypesDatabas
                 // For now repeaters can only go one level deep - may change in the future
                 if(content_type.fields) {
                     for await(const contentType of  content_type.fields) {
-                        let subFiledRes = await getSingleContentType(component_id, contentType);
+                        let subFiledRes = await getSingleContentType(page_component_id, contentType);
                         if(subFiledRes) data.push(subFiledRes);
                     }
                 }
@@ -48,20 +48,20 @@ export const getSingleContentType = async (component_id: mod_contentTypesDatabas
 }
 
 // Save new content type row in the correct table
-export const saveSingleContentType = async (component_id: mod_contentTypesDatabaseModel["component_id"], content_type: mod_contentTypesConfigModel) => { // component_id referes to the page_components tables _id - not the theme/config components ID
+export const saveSingleContentType = async (page_component_id: mod_contentTypesDatabaseModel["page_component_id"], content_type: mod_contentTypesConfigModel) => { // page_component_id referes to the page_components tables _id - not the theme/config components ID
     try {
         switch(content_type.type) {
             case 'text': {
-                await db.none('INSERT INTO component_content_type_text(component_id, config_id, value) VALUES(${component_id}, ${config_id}, ${value})', {
-                    component_id: component_id,
+                await db.none('INSERT INTO component_content_type_text(page_component_id, config_id, value) VALUES(${page_component_id}, ${config_id}, ${value})', {
+                    page_component_id: page_component_id,
                     config_id: content_type._id,
                     value: content_type.config.default_srt
                 });
                 break;
             }
             case 'number': {
-                await db.none('INSERT INTO component_content_type_number(component_id, config_id, value) VALUES(${component_id}, ${config_id}, ${value})', {
-                    component_id: component_id,
+                await db.none('INSERT INTO component_content_type_number(page_component_id, config_id, value) VALUES(${page_component_id}, ${config_id}, ${value})', {
+                    page_component_id: page_component_id,
                     config_id: content_type._id,
                     value: content_type.config.default_num
                 });
@@ -72,7 +72,7 @@ export const saveSingleContentType = async (component_id: mod_contentTypesDataba
                 // For now repeaters can only go one level deep - may change in the future
                 if(content_type.fields) {
                     for await(const contentType of  content_type.fields) {
-                        await saveSingleContentType(component_id, contentType);
+                        await saveSingleContentType(page_component_id, contentType);
                     }
                 }
                 break;
@@ -84,3 +84,6 @@ export const saveSingleContentType = async (component_id: mod_contentTypesDataba
         throw err;
     }
 }
+
+// 
+// export const updateSingleContentType = async (page_component_id)

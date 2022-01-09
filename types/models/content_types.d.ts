@@ -29,7 +29,7 @@ interface mod_pageComponentsModel {
 
 // This is the model for the data base, this is what links the pageComponentModel component to its data
 interface mod_contentTypesDatabaseModel {
-    component_id: mod_pageComponentsModel["_id"] // component_id referes to the page_components tables _id - not the theme/config components ID
+    page_component_id: mod_pageComponentsModel["_id"] // component_id referes to the page_components tables _id - not the theme/config components ID
     config_id: mod_contentTypesConfigModel["_id"]
     value: any
 }

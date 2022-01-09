@@ -44,14 +44,14 @@ CREATE TABLE page_components (
 
 -- Content Type Text
 CREATE TABLE component_content_type_text (
-    component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
+    page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
     config_id uuid NOT NUll,
     value VARCHAR NOT NULL
 );
 
 -- Content Type Number
 CREATE TABLE component_content_type_number (
-    component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
+    page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
     config_id uuid NOT NUll,
     value INT NOT NULL
 );
