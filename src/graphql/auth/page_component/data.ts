@@ -23,18 +23,6 @@ export const updatePageComponent = async (_id: mod_pageComponentsModel["_id"], d
     }
 }
 
-// Update 
-export const updatePageComponentField = async () => {
-    try {
-
-        
-
-    }
-    catch(err) {
-        throw err;
-    }
-}
-
 // Add page_components table row 
 // This doesnt add allow any data to be added to them - it simply creates the empty tables needed.
 // Only fire when adding a new component to a page.

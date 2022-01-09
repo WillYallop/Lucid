@@ -1,4 +1,6 @@
 import db from '../../../db';
+import moment from 'moment';
+import { __updateSetQueryGen } from '../shared/functions';
 
 // Get single content type data for pages component 
 // Based on page_component_id and config_id
@@ -85,5 +87,37 @@ export const saveSingleContentType = async (page_component_id: mod_contentTypesD
     }
 }
 
-// 
-// export const updateSingleContentType = async (page_component_id)
+
+// Update component_content_type_ rows
+export const updateSingleContentType = async (data: cont_page_comp_updatePageComponentInp) => {
+    try {
+        let response;
+        // Make the data paramater an array if the user passed in a single  
+        switch(data.type) {
+            case 'text': {
+                let dataObj: cont_cont_updateSingleContentTypeObj = {};
+                if(data.value != undefined) dataObj.value = data.value;
+                response = await db.one(`UPDATE component_content_type_text SET ${__updateSetQueryGen(dataObj)} WHERE page_component_id='${data.page_component_id}' AND config_id='${data.config_id}' RETURNING *`, dataObj);
+                break;
+            }
+            case 'number': {
+                let dataObj: cont_cont_updateSingleContentTypeObj = {};
+                if(data.value != undefined) dataObj.value = parseInt(data.value);
+                response = await db.one(`UPDATE component_content_type_number SET ${__updateSetQueryGen(dataObj)} WHERE page_component_id='${data.page_component_id}' AND config_id='${data.config_id}' RETURNING *`, dataObj);
+                break;
+            }
+            case 'repeater': {
+                throw 'Component content type repeater is never stored in the database! Update its children fields independently!';
+                break;
+            }
+        }
+        // Get page id from page_components table
+        let { page_id } = await db.one('SELECT page_id FROM page_components WHERE _id=$1', data.page_component_id);
+        // Update pages last edited field
+        await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${page_id}'`);
+        return response;
+    }
+    catch(err) {
+        throw err;
+    }
+}

@@ -45,3 +45,14 @@ interface cont_cont_updateSingleRes {
     content_type?: mod_contentTypesConfigModel
     errors?: Array<core_errorMsg> 
 }
+
+// updateeSIngleContentType()
+interface cont_contupdateSingleContentTypeInp {
+    page_component_id: mod_pageComponentsModel["_id"] // component_id referes to the page_components tables _id - not the theme/config components ID
+    config_id: mod_contentTypesConfigModel["_id"]
+    value?: any
+}
+interface cont_cont_updateSingleContentTypeObj {
+    value?: mod_contentTypesDatabaseModel["value"]
+    // more may be added
+}
