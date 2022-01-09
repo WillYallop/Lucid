@@ -164,3 +164,24 @@ export const deleteSingleContentType = async (data: cont_cont_deleteSingleConten
         throw err;
     }
 }
+
+
+// DELETE ALL INSTANCES OF CONTENT TYPE FOR PAGE COMPONENT
+export const deleteAllPageComponentContentTypes = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
+    try {
+        let pageComponents = await db.manyOrNone('SELECT _id FROM page_components WHERE component_id=$1', componentID);
+        for await(const pageComp of pageComponents) {
+            db.none('DELETE FROM component_content_type_text WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
+                page_component_id: pageComp._id,
+                config_id: contentTypeID
+            });
+            db.none('DELETE FROM component_content_type_number WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
+                page_component_id: pageComp._id,
+                config_id: contentTypeID
+            });
+        }
+    }
+    catch(err) {
+        throw err;
+    }
+}
