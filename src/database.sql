@@ -18,7 +18,6 @@ CREATE TABLE pages (
 );
 
 CREATE TABLE page_seo (
-    _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     page_id uuid UNIQUE REFERENCES pages (_id) ON DELETE CASCADE,
     title VARCHAR NOT NULL,
     description VARCHAR NOT NUll,
@@ -27,9 +26,34 @@ CREATE TABLE page_seo (
     og_image VARCHAR NOT NULL
 );
 
+-- Acts as lookup table for its content type data
+-- A page can have many of these
+-- And these can have many component_content_type_ tables
 CREATE TABLE page_components (
     _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
-    component_id uuid NOT NUll,
-    component_data JSON NOT NULL
+    component_id uuid NOT NUll, -- referes to themes config component ID
+    position INT NOT NULL
 );
+
+
+
+
+-- Content Type Repeater
+-- Acts as a bride to more component_content_type_ tables...
+
+-- Content Type Text
+CREATE TABLE component_content_type_text (
+    page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
+    config_id uuid NOT NUll,
+    value VARCHAR NOT NULL
+);
+
+-- Content Type Number
+CREATE TABLE component_content_type_number (
+    page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
+    config_id uuid NOT NUll,
+    value INT NOT NULL
+);
+
+-- MORE TO COME

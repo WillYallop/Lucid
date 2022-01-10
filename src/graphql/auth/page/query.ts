@@ -1,6 +1,6 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean } from 'graphql';
 // @ts-ignore: Unreachable code error
-import { Page, MultiplePages } from './Type';
+import { Page, MultiplePages } from './type';
 import { getSingle, getMultiple } from './data';
 
 // Get single pages
@@ -35,7 +35,7 @@ export const PageQuery = new GraphQLObjectType({
     name: 'PageQuery',
     description: 'The page base query',
     fields: {
-        getSingle: getSinglePage,
-        getMultiple: getMultiplePages
+        get_single: getSinglePage,
+        get_multiple: getMultiplePages
     }
 })

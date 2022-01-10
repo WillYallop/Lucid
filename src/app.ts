@@ -3,7 +3,7 @@ import express from 'express';
 import vhost from 'vhost';
 import morgan from 'morgan';
 
-import { privateSchema } from "./graphql/private/schema";
+import { privateSchema } from "./graphql/auth/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 
 const path = require('path');
@@ -15,14 +15,6 @@ const themeDir = path.resolve(config.directories.theme);
 // create main app
 const app = express();
 
-
-// ------------------------------------
-// DATABASE                           |
-// ------------------------------------
-// mongoose.connect(`mongodb+srv://${config.database.user}:${config.database.password}@${config.database.address}`, {
-//     dbName: config.database.name
-// });
-// mongoose.Promise = global.Promise;
 
 
 // ------------------------------------
@@ -42,7 +34,7 @@ const assets = express();
 // SUBDOMAINS                         |
 // ------------------------------------
 // Graphql route - private / authenticated users only.
-api.use('/private', expressGraphQL({
+api.use('/auth', expressGraphQL({
     graphiql: true,
     schema: privateSchema
 }));

@@ -1,5 +1,5 @@
 import { componentCompiler, pageCompiler } from './compiler';
-import { savePages, createSitemap, buildDefaultApp, copyStatic } from '../controller/dist';
+import { savePages, createSitemap, buildDefaultApp, copyStatic, copyAssets } from '../controller/dist';
 
 
 // Handle statically generate the app
@@ -16,7 +16,7 @@ const generateApp = async (pages: Array<gen_generateAppInp>): Promise<gene_gener
             for (const page of pages) {
 
                 // Compile page components
-                const components = await componentCompiler(page.components); // generate components
+                const components = await componentCompiler(page.components, page.slug); // generate components
 
                 // Compile page - replaces all custom element tags with component data, seo etc.
                 const markup = await pageCompiler({
@@ -28,7 +28,7 @@ const generateApp = async (pages: Array<gen_generateAppInp>): Promise<gene_gener
                     head: `<link rel="preconnect" href="https://fonts.googleapis.com">
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
                     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">`,
-                    script: '<script> console.log("footer markdown") </script>'
+                    footer: '<script> console.log("footer markdown") </script>'
                 });
                 
                 // Add new built page entry in builtPages map!
@@ -45,6 +45,7 @@ const generateApp = async (pages: Array<gen_generateAppInp>): Promise<gene_gener
 
         // Copy static files over
         await copyStatic();
+        await copyAssets();
 
         // Stop Timer
         const stop = Date.now();

@@ -1,5 +1,6 @@
 import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLBoolean } from 'graphql';
-import { Page } from './Type';
+// @ts-ignore: Unreachable code error
+import { Page } from './type';
 import { DeleteResType } from '../shared/type';
 import { deleteSingle, saveSingle, updateSingle } from './data';
 
@@ -61,8 +62,8 @@ export const PageMutation = new GraphQLObjectType({
     name: 'PageMutation',
     description: 'The page base mutation',
     fields: {
-        deleteSingle: deleteSinglePage,
-        saveSingle: saveSinglePage,
-        updateSingle: updateSinglePage
+        delete_single: deleteSinglePage,
+        save_single: saveSinglePage,
+        update_single: updateSinglePage
     }
 })

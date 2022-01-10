@@ -1,67 +1,14 @@
-import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInt, GraphQLInputObjectType } from 'graphql';
-import { Component, ComponentContentType } from './Type';
-import { DeleteResType, ContentTypeConfigArgs } from '../shared/type';
+import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLInt, GraphQLInputObjectType, GraphQLBoolean } from 'graphql';
+// @ts-ignore: Unreachable code error
+import {ComponentContentTypeConfig, ContentTypeConfigArgs } from './type';
+import { DeleteResType } from '../shared/type';
 import { 
-    // Components
-    deleteSingle, 
-    saveSingle, 
-    updateSingle,
     // Content types
-    deleteSingleContentType,
-    createSingleContentType,
-    updateSingleContentType
+    deleteSingleContentTypeConfig,
+    createSingleContentTypeConfig,
+    updateSingleContentTypeConfig
 } from './data';
 
-// ------------------------------------ ------------------------------------
-// Components
-// ------------------------------------ ------------------------------------
-
-// Get single component
-const deleteSingleComponent: GraphQLFieldConfig<any, any, any> = {
-    type: DeleteResType,
-    description: 'Delete component',
-    args: {
-        _id: { type: GraphQLNonNull(GraphQLID) }
-    },
-    resolve: (_, args) => {
-        return deleteSingle(args._id);
-    }
-}
-
-const saveSingleComponent: GraphQLFieldConfig<any, any, any> = {
-    type: Component,
-    description: 'Save single component',
-    args: {
-        name: { type: GraphQLNonNull(GraphQLString) },
-        description: { type: GraphQLNonNull(GraphQLString) },
-        file_path: { type: GraphQLNonNull(GraphQLString) },
-        image: { type: GraphQLString }
-    },
-    resolve: (_, args) => {
-        return saveSingle(args)
-    }
-}
-
-const updateSingleComponent: GraphQLFieldConfig<any, any, any> = {
-    type: Component,
-    description: 'Update single component',
-    args: {
-        _id: { type: GraphQLNonNull(GraphQLID) },
-        name: { type: GraphQLString },
-        description: { type: GraphQLString },
-        preview_url: { type: GraphQLString },
-        fields: { type: GraphQLList(GraphQLID) }
-    },
-    resolve: (_, args) => {
-        let updateObj: cont_comp_updateSingleInp = {};
-        // Build out the validate object
-        for (const [key, value] of Object.entries(args)) {
-            // @ts-ignore: Unreachable code error
-            if(key != '_id') updateObj[key] = value;
-        }
-        return updateSingle(args._id, updateObj);
-    }
-}
 
 // ------------------------------------ ------------------------------------
 // Content Types
@@ -76,14 +23,14 @@ const deleteContentType: GraphQLFieldConfig<any, any, any> = {
         content_type_id: { type: GraphQLNonNull(GraphQLID) }
     },
     resolve: (_, args) => {
-        return deleteSingleContentType(args.component_id, args.content_type_id);
+        return deleteSingleContentTypeConfig(args.component_id, args.content_type_id);
     }
 }
 
 
 // Create single content type
 const createContentType: GraphQLFieldConfig<any, any, any> = {
-    type: ComponentContentType,
+    type: ComponentContentTypeConfig,
     description: 'Create single content type',
     args: {
         component_id: { type: GraphQLNonNull(GraphQLID) },
@@ -111,13 +58,13 @@ const createContentType: GraphQLFieldConfig<any, any, any> = {
         }
     },
     resolve: (_, args) => {
-        return createSingleContentType(args.component_id, args.content_type);
+        return createSingleContentTypeConfig(args.component_id, args.content_type);
     }
 }
 
 // Update single content type
 const updateContentType: GraphQLFieldConfig<any, any, any> = {
-    type: ComponentContentType,
+    type: ComponentContentTypeConfig,
     description: 'Update single content type',
     args: {
         component_id: { type: GraphQLNonNull(GraphQLID) },
@@ -146,26 +93,24 @@ const updateContentType: GraphQLFieldConfig<any, any, any> = {
                     })
                 })
             )
-        }
+        },
+        repeaterField: { type: GraphQLNonNull(GraphQLBoolean) },
+        repeaterID: { type: GraphQLID }
     },
     resolve: (_, args) => {
-        return updateSingleContentType(args.component_id, args.content_type);
+        return updateSingleContentTypeConfig(args.component_id, args.content_type, args.repeaterField, args.repeaterID);
     }
 }
 
 
 
 // Mutation handler
-export const ComponentMutation = new GraphQLObjectType({
-    name: 'ComponentMutation',
-    description: 'The components base mutation',
+export const ContentTypeConfigMutation = new GraphQLObjectType({
+    name: 'ContentTypeConfigMutation',
+    description: 'The content type config base mutation',
     fields: {
-        deleteSingle: deleteSingleComponent,
-        saveSingle: saveSingleComponent,
-        updateSingle: updateSingleComponent,
-
-        deleteContentType: deleteContentType,
-        createContentType: createContentType,
-        updateContentType: updateContentType
+        delete_single: deleteContentType,
+        create_single: createContentType,
+        update_single: updateContentType
     }
 })

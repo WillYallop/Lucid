@@ -9,7 +9,14 @@ import { PostMutation } from './posts/mutation';
 // Page
 import { PageQuery } from './page/query';
 import { PageMutation } from './page/mutation';
-
+// Page SEO
+import { SEOMutation } from './seo/mutation';
+// Content Type Config
+import { ContentTypeConfigMutation } from './content_type_config/mutation';
+// Content Type
+import { ContentTypeMutation } from './content_type/mutation';
+// Page Component
+import { PageComponentMutation } from './page_component/mutation';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -51,6 +58,26 @@ const baseMutation = new GraphQLObjectType({
         page: {
             type: PageMutation,
             description: PageMutation.description,
+            resolve: () => { return {} }
+        },
+        seo: {
+            type: SEOMutation,
+            description: SEOMutation.description,
+            resolve: () => { return {} }
+        },
+        content_type_config: {
+            type: ContentTypeConfigMutation,
+            description: ContentTypeConfigMutation.description,
+            resolve: () => { return {} }
+        },
+        content_type: {
+            type: ContentTypeMutation,
+            description: ContentTypeMutation.description,
+            resolve: () => { return {} }
+        },
+        page_components: {
+            type: PageComponentMutation,
+            description: PageComponentMutation.description,
             resolve: () => { return {} }
         }
     }

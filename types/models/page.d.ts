@@ -8,7 +8,6 @@ interface mod_pageModel {
     slug: string
     name: string
     seo: {
-        _id: string
         page_id: mod_pageModel["_id"]
         title: string
         description: string
@@ -28,6 +27,7 @@ interface mod_pageModel {
 }
 interface mod_pageModelComponent {
     _id: mod_componentModel["_id"]
+    page_components_id: mod_pageComponentsModel["_id"] 
     file_name: mod_componentModel["file_name"]
     file_path: mod_componentModel["file_path"]
     name: mod_componentModel["name"]
@@ -42,5 +42,5 @@ interface mod_pageModelComponentContentType {
     name: mod_contentTypesConfigModel["name"]
     type: mod_contentTypesConfigModel["type"]
     config: mod_contentTypesConfigModel["config"]
-    data: string
+    data: any
 }

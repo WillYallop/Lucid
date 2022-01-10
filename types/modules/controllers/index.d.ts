@@ -3,3 +3,4 @@
 /// <reference path="./content_type.d.ts" />
 /// <reference path="./menu.d.ts" />
 /// <reference path="./page.d.ts" />
+/// <reference path="./seo.d.ts" />

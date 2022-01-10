@@ -1,5 +1,6 @@
 import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLID } from 'graphql';
-import { PostType } from './Type';
+// @ts-ignore: Unreachable code error
+import { PostType } from './type';
 import { DeleteResType } from '../shared/type';
 import { deleteSingle, saveSingle } from './data';
 
@@ -32,7 +33,7 @@ export const PostMutation = new GraphQLObjectType({
     name: 'PostMutation',
     description: 'The post base mutation',
     fields: {
-        deleteSingle: deleteSinglePost,
-        saveSingle: saveSinglePost
+        delete_single: deleteSinglePost,
+        save_single: saveSinglePost
     }
 })

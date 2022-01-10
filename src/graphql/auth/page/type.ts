@@ -1,6 +1,6 @@
 
-import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
-import { ContentTypeConfig } from '../shared/type';
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLUnionType } from 'graphql';
+import { ContentTypeConfig } from '../content_type_config/type';
 import { SEOObjectType } from '../seo/type';
 
 // Page
@@ -25,7 +25,7 @@ export const Page = new GraphQLObjectType({
             description: 'The name of the page'
         },
         seo: {
-            type: GraphQLNonNull(SEOObjectType),
+            type: SEOObjectType,
             description: SEOObjectType.description
         },
         type: {
@@ -74,7 +74,11 @@ export const PageComponent = new GraphQLObjectType({
     fields: () => ({
         _id: {
             type: GraphQLNonNull(GraphQLID),
-            description: 'The unique component _id'
+            description: 'The unique component _id - refers to the theme/components ID'
+        },
+        page_components_id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'The unique page_components_id - refers to the page components table _id'
         },
         name: {
             type: GraphQLNonNull(GraphQLString),

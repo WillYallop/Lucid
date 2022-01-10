@@ -10,11 +10,10 @@
     },
     {
         "_id": "445a92a0-64fe-11ec-aab2-15b263b74864",
-        "name": "test_text_two",
-        "type": "text",
+        "name": "test_number",
+        "type": "number",
         "config": {
-            "max_length": 20,
-            "min_length": 100
+
         }
     }
 ]

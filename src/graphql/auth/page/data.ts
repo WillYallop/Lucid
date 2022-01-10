@@ -1,7 +1,10 @@
 import db from '../../../db';
 import moment from 'moment';
+import { __updateSetQueryGen } from '../shared/functions';
 
 // Controllers
+import { getSingleSEO, saveSingleSEO } from '../seo/data';
+import { getSingleContentType } from '../content_type/data';
 import { componentController, contentTypeController } from '../../../index';
 
 
@@ -12,38 +15,33 @@ export const getSingle = async (_id: mod_pageModel["_id"]) => {
         // Get page
         let page = await db.one('SELECT * FROM pages WHERE _id=$1', _id);
         // Get SEO Object
-        page.seo = await db.one('SELECT * FROM page_seo WHERE page_id=$1', _id);
+        page.seo = await getSingleSEO(_id);
 
-        // Get pages components
-        // Query DB for pages saved components
-        let pageComponents: Array<sch_pageDBComponent> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', page._id);
-
-        // Based on component_id in that, grab all corresponding component and content_types config from the theme directory
+        // For each component
+        // For each content type row for pages - no matter the type
+        // Loop over them and find the matching content type config form the theme and merge them into one obj
+        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', _id);
         let componentsArray: Array<mod_pageModelComponent> = [];
-        for await(const pageComponent of pageComponents) {
+        for await(const pageComponent of pageComponents) { 
             let { component } = await componentController.getSingleByID(pageComponent.component_id);
             let { content_types } = await contentTypeController.getAll(pageComponent.component_id);
-            
+            // Throw if not found
             if(component === undefined) throw 'Component undefined.';
             if(content_types === undefined) throw 'Content Types undefined.';
-
+            // Find all content type data for this component
             let contentTypesArray: Array<mod_pageModelComponentContentType> = [];
-            // Build out content type array
             for await(const contentType of content_types) {
-                let contentTypeData = pageComponent.component_data.find( x => x.config_id === contentType._id );
-                if(contentTypeData) {
-                    contentTypesArray.push({
-                        config_id: contentType._id,
-                        name: contentType.name,
-                        type: contentType.type,
-                        config: contentType.config,
-                        data: contentTypeData.data
-                    })
-                }
+                // Find component_content_type_ table data based on configs id and component_id
+                // components config shoudl be the source of truth for what page component data to query
+                let componentsContentTypeData = await getSingleContentType(pageComponent._id, contentType);
+                // Set data based on the content type
+                if(componentsContentTypeData) contentTypesArray.push(componentsContentTypeData);
             }
+
             // Create page component object
             let obj: mod_pageModelComponent = {
                 _id: component._id,
+                page_components_id: pageComponent._id,
                 file_name: component.file_name,
                 file_path: component.file_path,
                 name: component.name,
@@ -55,6 +53,7 @@ export const getSingle = async (_id: mod_pageModel["_id"]) => {
             }
             componentsArray.push(obj)
         }
+
         // Build into object and store in page.components
         page.components = componentsArray;
         return page;
@@ -114,14 +113,14 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
         // Save page row
         let getPageRes = await db.one('INSERT INTO pages(template, slug, name, type, post_name, has_parent, parent_id, date_created, last_edited, author, is_homepage) VALUES(${template}, ${slug}, ${name}, ${type}, ${post_name}, ${has_parent}, ${parent_id}, ${date_created}, ${last_edited}, ${author}, ${is_homepage}) RETURNING *', newPageObj);
         // Save SEO row
-        getPageRes.seo = await db.one('INSERT INTO page_seo(page_id, title, description, og_title, og_description, og_image) VALUES(${page_id}, ${title}, ${description}, ${og_title}, ${og_description}, ${og_image}) RETURNING *', {
+        getPageRes.seo = await saveSingleSEO({
             page_id: getPageRes._id,
             title: data.name,
             description: "",
             og_title: data.name,
             og_description: "",
             og_image: ""
-        });
+        })
 
         return getPageRes;
     }
@@ -151,20 +150,8 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
         if(data.parent_id != undefined) updatePageObj.parent_id = data.parent_id;
         if(data.is_homepage != undefined) updatePageObj.is_homepage = data.is_homepage;
 
-
-        // key=${key},
-        let queryValuesStr = '';
-        let notFirst = false;
-        for (const key in updatePageObj) {
-            let comma = notFirst ? ', ' : '';
-            notFirst = true;
-            queryValuesStr += comma + key +'='+'${'+key+'}';
-        }
-
         // Update
-        let queryStr = `UPDATE pages SET ${queryValuesStr} WHERE _id='${_id}'`;
-        console.log(queryStr);
-        let pageUpdatated = await db.none(queryStr, updatePageObj);
+        await db.none(`UPDATE pages SET ${__updateSetQueryGen(updatePageObj)} WHERE _id='${_id}'`, updatePageObj);
 
         // Get page
         let page = await getSingle(_id);
@@ -180,8 +167,7 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
 export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
     try {
         // Delete all data related to the page
-        let deletePage = await db.none('DELETE FROM pages WHERE _id=$1', _id);
-        console.log(deletePage);
+        await db.none('DELETE FROM pages WHERE _id=$1', _id);
         return {
             deleted: true
         }
@@ -190,25 +176,3 @@ export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
         throw err;
     }
 }
-
-
-
-/*
-
-SQL Querie to insert a page_components row as we dont have a graphql field for that yet:
-
-
-INSERT INTO page_components(page_id, component_id, component_data)
-VALUES ('e6422602-7091-11ec-b80c-7b4399a42990', '74cd38a0-6415-11ec-bc21-d53d7ba49e21', '[
-    {
-        "config_id": "2d3e64d0-64fd-11ec-8688-635a3ff32370",
-        "data": "This is a title"
-    },
-    {
-        "config_id": "445a92a0-64fe-11ec-aab2-15b263b74864",
-        "data": "This is the description"
-    }
-]')
-RETURNING *;
-
-*/

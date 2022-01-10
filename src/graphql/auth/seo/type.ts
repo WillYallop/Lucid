@@ -2,13 +2,9 @@ import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'gra
 
 // Page SEO
 export const SEOObjectType = new GraphQLObjectType({
-    name:'SEOModel',
+    name:'SEOObjectType',
     description: 'The SEO model',
     fields: () => ({
-        _id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: 'The SEO db collection ID'
-        },
         page_id: {
             type: GraphQLNonNull(GraphQLID),
             description: 'The corresponding pages ID'
@@ -34,4 +30,4 @@ export const SEOObjectType = new GraphQLObjectType({
             description: 'The OG image'
         }
     })
-})
+});

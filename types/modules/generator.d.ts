@@ -7,8 +7,11 @@ interface gen_generateAppInp {
     slug: mod_pageModel["slug"]
     name: mod_pageModel["name"]
     seo: {
-        title: string
-        description: string
+        title: mod_pageModel["seo"]["title"]
+        description: mod_pageModel["seo"]["description"]
+        og_title: mod_pageModel["seo"]["og_title"]
+        og_description: mod_pageModel["seo"]["og_description"]
+        og_image: mod_pageModel["seo"]["og_image"]
     }
     components: Array<gen_generateAppInpComponentModel>
 }
@@ -44,14 +47,19 @@ type gene_pagseMap = Map<string, {
 }>
 // Page Compiler Input 
 interface gene_compilePage {
-    template: string,
+    template: mod_pageModel["template"],
     seo: {
-        title: string
-        description: string
+        title: mod_pageModel["seo"]["title"]
+        description: mod_pageModel["seo"]["description"]
+        og_title: mod_pageModel["seo"]["og_title"]
+        og_description: mod_pageModel["seo"]["og_description"]
+        og_image: mod_pageModel["seo"]["og_image"]
     }
     components: gene_componentsMap
+
+    // Undecided!
     head: string
-    script: string
+    footer: string
 }
 
 interface gene_generateAppRes {
