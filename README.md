@@ -19,7 +19,7 @@ On top of the default liquid tags, we have a few of our own registered. Click th
 ### lucidScript
 > Make sure paramater is strict JSON with quotes around keys!
 
-This custom tag handles importing javascript into your component or page. It has a few paramaters that enable to configure how the script is added. Perhaps the coolest one of these is the ```load``` paramater. Which can take either ```visible``` or ```onload``` and tells lucid if you want to load the script on page load, or when the component is visible, similar to how frameworks like Asto handle their components with (Island Architecture)[https://jasonformat.com/islands-architecture/].
+This custom tag handles importing javascript into your component or page. It has a few paramaters that enables you to configure how the script is added. Perhaps the coolest one of these is the ```load``` paramater. Which can take either ```visible``` or ```onload``` and tells lucid if you want to load the script on page load, or when the component is visible, similar to how frameworks like Asto handle their components with (Island Architecture)[https://jasonformat.com/islands-architecture/].
 
 - The ```src``` paramater is relative to the theme/assets directory!
 - the ```visibleID``` should be the coresponding element ID you want to load the script with when it enters the browser viewbox. This is only used if the ```load``` paramater is set to ```visible```!
@@ -45,6 +45,15 @@ Interface:
     async: boolean
     await: boolean
 }
+```
+
+### lucidAsset
+
+This tag can be used to add the src to your template. Paths are relative to the theme/assets directory! This tag returns your asset src as string in quotations already!
+
+Example tag:
+```
+<img src={% lucidAsset "/images/tree.jpg" %} width="200px" height="200px"/>
 ```
 
 ### lucidHead

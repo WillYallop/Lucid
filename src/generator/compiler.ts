@@ -15,17 +15,6 @@ const engine = new Liquid({
 });
 
 
-// Generate component data
-const __generateDataField = async (content_types: Array<gen_generateAppInpComponentFieldModel>) => {
-    // TODO
-    let response: any = {};
-    for (const type of content_types) {
-        response[type.name] = type.data;
-    }
-    return response;
-}
-
-
 
 // lucidScript custom tag
 const lucidScriptTagRegister = () => {
@@ -61,7 +50,29 @@ const lucidScriptTagRegister = () => {
     });
 }
 
+const lucidAssetTagRegister = () => {
+    return engine.registerTag('lucidAsset', {
+        parse: function(tagToken: TagToken, remainTokens: TopLevelToken[]) {
+            let assetPath = tagToken.args.replaceAll('"', '');
+            this.assetSrc = `"${hasHttps?'https://':'http://'}assets.${domain}${assetPath}"`;
+        },
+        render: async function(ctx: Context, emitter: Emitter) {
+            emitter.write(this.assetSrc);
+        }
+    });
+}
 
+
+
+// Generate component data
+const __generateDataField = async (content_types: Array<gen_generateAppInpComponentFieldModel>) => {
+    // TODO
+    let response: any = {};
+    for (const type of content_types) {
+        response[type.name] = type.data;
+    }
+    return response;
+}
 
 // Compile page components
 const componentCompiler = async (components: Array<gen_generateAppInpComponentModel>, slug?: mod_pageModel["slug"]): Promise<gene_componentsMap> => {
@@ -73,6 +84,8 @@ const componentCompiler = async (components: Array<gen_generateAppInpComponentMo
 
             // Register script tag
             lucidScriptTagRegister();
+            // Register asset tag
+            lucidAssetTagRegister();
 
             const data = await __generateDataField(component.content_types); // TODO
             const dir = path.resolve(`${themeDir}/components/${component.file_path}`);
@@ -125,6 +138,8 @@ const pageCompiler = async (data: gene_compilePage): Promise<string> => {
         });
         // Register script tag
         lucidScriptTagRegister();
+        // Register asset tag
+        lucidAssetTagRegister();
 
         // Render page
         let dir = path.resolve(`${themeDir}/templates/${data.template}`);
