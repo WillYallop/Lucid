@@ -1,6 +1,6 @@
 {
   "name": "lucid-cms",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Lucid is a fully functioning CMS with static site generation, liquid templating, themes and media CDN.",
   "main": "dist/server.js",
   "keywords": [
