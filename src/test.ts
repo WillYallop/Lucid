@@ -73,33 +73,33 @@ import { validate, componentController, postsController, themeController, genera
 //     console.log(res);
 // })
 
-contentTypeController.saveSingle('74cd38a0-6415-11ec-bc21-d53d7ba49e21', {
-    name: 'test_repeater',
-    type: 'repeater',
-    config: {
-        max_repeats: 10
-    },
-    fields: [
-        {
-            name: 'test_text_two',
-            type: 'text',
-            config: {
-                max_length: 20,
-                min_length: 400
-            }
-        },
-        {
-            name: 'test_number_two',
-            type: 'number',
-            config: {
+// contentTypeController.saveSingle('74cd38a0-6415-11ec-bc21-d53d7ba49e21', {
+//     name: 'test_repeater',
+//     type: 'repeater',
+//     config: {
+//         max_repeats: 10
+//     },
+//     fields: [
+//         {
+//             name: 'test_text_two',
+//             type: 'text',
+//             config: {
+//                 max_length: 20,
+//                 min_length: 400
+//             }
+//         },
+//         {
+//             name: 'test_number_two',
+//             type: 'number',
+//             config: {
 
-            }
-        },
-    ]
-})
-.then((res) => {
-    console.log(res);
-})
+//             }
+//         },
+//     ]
+// })
+// .then((res) => {
+//     console.log(res);
+// })
 
 // postsController.addPostType('blogs', 'page.liquid')
 // .then((response) => {
