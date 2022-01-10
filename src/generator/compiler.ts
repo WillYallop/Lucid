@@ -1,4 +1,5 @@
 import { Liquid, TagToken, Context, Emitter, TopLevelToken } from 'liquidjs';
+import islandScriptHandler from './island_script';
 
 // Path and theme directory
 const path = require('path');
@@ -13,6 +14,19 @@ const engine = new Liquid({
     extname: '.liquid'
 });
 
+
+// Generate component data
+const __generateDataField = async (content_types: Array<gen_generateAppInpComponentFieldModel>) => {
+    // TODO
+    let response: any = {};
+    for (const type of content_types) {
+        response[type.name] = type.data;
+    }
+    return response;
+}
+
+
+
 // lucidScript custom tag
 const lucidScriptTagRegister = () => {
     return engine.registerTag('lucidScript', {
@@ -22,18 +36,18 @@ const lucidScriptTagRegister = () => {
                 load: 'onload' | 'visible'
                 visibleID?: string
                 async: boolean
-                await: boolean
+                defer: boolean
             } = JSON.parse(tagToken.args);
             this.assetSrc = `${hasHttps?'https://':'http://'}assets.${domain}${assetConfig.src}`;
             this.load = assetConfig.load;
             this.visibleID = assetConfig.visibleID;
             this.async = assetConfig.async;
-            this.await = assetConfig.await;
+            this.defer = assetConfig.defer;
         },
         render: async function(ctx: Context, emitter: Emitter) {
             // If the user wants the script to be on load
             if(this.load === 'onload') {
-                emitter.write(`<script src="${this.assetSrc}" ${this.async === true?'async':''} ${this.await === true?'await':''}></script>`);
+                emitter.write(`<script src="${this.assetSrc}" ${this.async === true?'async':''} ${this.defer === true?'defer':''}></script>`);
             }
             else if(this.load === 'visible') {
                 emitter.write(`<lucidTempIslandObj>
@@ -47,15 +61,7 @@ const lucidScriptTagRegister = () => {
     });
 }
 
-// Generate component data
-const __generateDataField = async (content_types: Array<gen_generateAppInpComponentFieldModel>) => {
-    // TODO
-    let response: any = {};
-    for (const type of content_types) {
-        response[type.name] = type.data;
-    }
-    return response;
-}
+
 
 // Compile page components
 const componentCompiler = async (components: Array<gen_generateAppInpComponentModel>, slug?: mod_pageModel["slug"]): Promise<gene_componentsMap> => {
@@ -119,12 +125,14 @@ const pageCompiler = async (data: gene_compilePage): Promise<string> => {
         });
         // Register script tag
         lucidScriptTagRegister();
-        
 
+        // Render page
         let dir = path.resolve(`${themeDir}/templates/${data.template}`);
         let markup = await engine.renderFile(dir)
 
-        return markup
+        let newMarkup = await islandScriptHandler(markup);
+
+        return newMarkup
     }
     catch (err) {
         throw {
