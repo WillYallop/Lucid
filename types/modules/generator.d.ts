@@ -47,7 +47,14 @@ type gene_pagseMap = Map<string, {
 }>
 // Page Compiler Input 
 interface gene_compilePage {
-    page: gen_generateAppInp
+    template: mod_pageModel["template"],
+    seo: {
+        title: mod_pageModel["seo"]["title"]
+        description: mod_pageModel["seo"]["description"]
+        og_title: mod_pageModel["seo"]["og_title"]
+        og_description: mod_pageModel["seo"]["og_description"]
+        og_image: mod_pageModel["seo"]["og_image"]
+    }
     components: gene_componentsMap
 
     // Undecided!

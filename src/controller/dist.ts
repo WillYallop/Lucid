@@ -7,6 +7,7 @@ const themDir = path.resolve(config.directories.theme);
 const templatesDir = path.resolve(config.directories.templates);
 const tempGenDir =  path.resolve(config.directories.temp + '/generate');
 const distDir = path.resolve(config.directories.dist);
+const assetDir = path.resolve(config.directories.assets_dist);
 
 // ------------------------------------ ------------------------------------
 //  Handles building the default boiler app
@@ -45,6 +46,23 @@ const copyStatic = async () => {
             origin: 'distController.copyStatic',
             title: 'Dist Error',
             message: `Error while copying static theme directory to app dist!`
+        }]
+    }
+}
+
+const copyAssets = async () => {
+    try {
+        if(fs.existsSync(`${themDir}/assets`)) {
+            await fs.copy(`${themDir}/assets`, config.directories.assets_dist); 
+        }
+        return true
+    }
+    catch(err) {
+        throw [{
+            code: 500,
+            origin: 'distController.copyAssets',
+            title: 'Dist Error',
+            message: `Error while copying assets theme directory to assets dist!`
         }]
     }
 }
@@ -95,6 +113,7 @@ const savePages = async (pages: gene_pagseMap): Promise<boolean> => {
 export {
     buildDefaultApp,
     copyStatic,
+    copyAssets,
     createSitemap,
     savePages
 }

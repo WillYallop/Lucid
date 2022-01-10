@@ -1,5 +1,5 @@
 import { componentCompiler, pageCompiler } from './compiler';
-import { savePages, createSitemap, buildDefaultApp, copyStatic } from '../controller/dist';
+import { savePages, createSitemap, buildDefaultApp, copyStatic, copyAssets } from '../controller/dist';
 
 
 // Handle statically generate the app
@@ -16,11 +16,12 @@ const generateApp = async (pages: Array<gen_generateAppInp>): Promise<gene_gener
             for (const page of pages) {
 
                 // Compile page components
-                const components = await componentCompiler(page.components); // generate components
+                const components = await componentCompiler(page.components, page.slug); // generate components
 
                 // Compile page - replaces all custom element tags with component data, seo etc.
                 const markup = await pageCompiler({
-                    page: page,
+                    template: page.template,
+                    seo: page.seo,
                     components: components,
 
                     // These are temp for testing
@@ -44,6 +45,7 @@ const generateApp = async (pages: Array<gen_generateAppInp>): Promise<gene_gener
 
         // Copy static files over
         await copyStatic();
+        await copyAssets();
 
         // Stop Timer
         const stop = Date.now();
