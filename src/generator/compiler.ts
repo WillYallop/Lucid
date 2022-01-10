@@ -60,8 +60,8 @@ const pageCompiler = async (data: gene_compilePage): Promise<string> => {
         });
         engine.registerTag('lucidSeo', {
             render: async function (context: Context, emitter: Emitter) {
-                emitter.write(`<title>${data.seo.title}</title>
-                <meta name="description" content="${data.seo.description}">`);
+                emitter.write(`<title>${data.page.seo.title}</title>
+                <meta name="description" content="${data.page.seo.description}">`);
             }
         });
         engine.registerTag('lucidApp', {
@@ -74,11 +74,11 @@ const pageCompiler = async (data: gene_compilePage): Promise<string> => {
         });
         engine.registerTag('lucidScript', {
             render: async function (context: Context, emitter: Emitter) {
-                emitter.write(data.script);
+                emitter.write(data.footer);
             }
         });
 
-        let dir = path.resolve(`${themeDir}/templates/${data.template}`);
+        let dir = path.resolve(`${themeDir}/templates/${data.page.template}`);
         let markup = await engine.renderFile(dir)
 
         return markup

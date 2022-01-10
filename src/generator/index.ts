@@ -20,15 +20,14 @@ const generateApp = async (pages: Array<gen_generateAppInp>): Promise<gene_gener
 
                 // Compile page - replaces all custom element tags with component data, seo etc.
                 const markup = await pageCompiler({
-                    template: page.template,
-                    seo: page.seo,
+                    page: page,
                     components: components,
 
                     // These are temp for testing
                     head: `<link rel="preconnect" href="https://fonts.googleapis.com">
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
                     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">`,
-                    script: '<script> console.log("footer markdown") </script>'
+                    footer: '<script> console.log("footer markdown") </script>'
                 });
                 
                 // Add new built page entry in builtPages map!
