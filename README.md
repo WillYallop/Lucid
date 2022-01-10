@@ -10,16 +10,16 @@ This read me is not complete!
 
 On top of the default liquid tags, we have a few of our own registered. Click the links bellow to read more about them and what they do!
 
-- (lucidScript)[#lucidscript]
-- (lucidHead)[#lucidHead]
-- (lucidSeo)[#lucidSeo]
-- (lucidApp)[#lucidApp]
-- (lucidFooter)[#lucidFooter]
+- [lucidScript](#lucidscript)
+- [lucidHead](#lucidHead)
+- [lucidSeo](#lucidSeo)
+- [lucidApp](#lucidApp)
+- [lucidFooter](#lucidFooter)
 
 ### lucidScript
 > Make sure paramater is strict JSON with quotes around keys!
 
-This custom tag handles importing javascript into your component or page. It has a few paramaters that enables you to configure how the script is added. Perhaps the coolest one of these is the ```load``` paramater. Which can take either ```visible``` or ```onload``` and tells lucid if you want to load the script on page load, or when the component is visible, similar to how frameworks like Asto handle their components with (Island Architecture)[https://jasonformat.com/islands-architecture/].
+This custom tag handles importing javascript into your component or page. It has a few paramaters that enables you to configure how the script is added. Perhaps the coolest one of these is the ```load``` paramater. Which can take either ```visible``` or ```onload``` and tells lucid if you want to load the script on page load, or when the component is visible, similar to how frameworks like Asto handle their components with [Island Architecture](https://jasonformat.com/islands-architecture/).
 
 - The ```src``` paramater is relative to the theme/assets directory!
 - the ```visibleID``` should be the coresponding element ID you want to load the script with when it enters the browser viewbox. This is only used if the ```load``` paramater is set to ```visible```!
