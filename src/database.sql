@@ -26,6 +26,20 @@ CREATE TABLE page_seo (
     og_image VARCHAR NOT NULL
 );
 
+-- Menues
+CREATE TABLE menus (
+    _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    name VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE menu_links (
+    menu_id uuid REFERENCES menus (_id) ON DELETE CASCADE,
+    page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
+    external boolean DEFAULT false,
+    blank boolean DEFAULT false,
+    text VARCHAR(255) NOT NULL
+)
+
 -- Acts as lookup table for its content type data
 -- A page can have many of these
 -- And these can have many component_content_type_ tables
@@ -35,8 +49,6 @@ CREATE TABLE page_components (
     component_id uuid NOT NUll, -- referes to themes config component ID
     position INT NOT NULL
 );
-
-
 
 
 -- Content Type Repeater
