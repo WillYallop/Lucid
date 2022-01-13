@@ -22,10 +22,10 @@ const createMenuField: GraphQLFieldConfig<any, any, any> = {
     type: MenusModel,
     description: 'Delete menu',
     args: {
-
+        name: { type: GraphQLNonNull(GraphQLString) }
     },
     resolve: (_, args) => {
-        return createMenu(args);
+        return createMenu(args.name);
     }
 }
 

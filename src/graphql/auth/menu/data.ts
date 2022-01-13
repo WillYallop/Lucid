@@ -1,5 +1,7 @@
 import db from '../../../db';
 import moment from 'moment';
+import validate from '../../../validator';
+import { __convertStringLowerUnderscore } from '../../../controller/helper/shared';
 import { __updateSetQueryGen } from '../shared/functions';
 
 
@@ -17,17 +19,35 @@ export const deleteMenu = async (_id: mod_menuModel["_id"]) => {
         }
     }
     catch(err) {
-
+        throw err;
     }
 }
 
 // Create menu
-export const createMenu = async () => {
+export const createMenu = async (name: mod_menuModel["name"]) => {
     try {
+
+        let validateObj: Array<vali_validateFieldObj> = [
+            {
+                method: 'menu_name',
+                value: __convertStringLowerUnderscore(name)
+            }
+        ];
+        let verifyData = await validate(validateObj);
+        // Update data
+        if(verifyData.valid) {
+            let menuRes = await db.one('INSERT INTO menus(name) VALUES(${name}) RETURNING *', {
+                name: name
+            });
+            return menuRes;
+        }
+        else {
+            throw 'Menu name doesnt meet criteria!'
+        }
 
     }
     catch(err) {
-        
+        throw err;
     }
 }
 
@@ -37,7 +57,7 @@ export const updateMenu = async () => {
 
     }
     catch(err) {
-        
+        throw err;
     }
 }
 
@@ -47,7 +67,7 @@ export const getMenu = async () => {
 
     }
     catch(err) {
-        
+        throw err;
     }
 }
 
@@ -62,7 +82,7 @@ export const deleteMenuItem = async () => {
 
     }
     catch(err) {
-        
+        throw err;
     }
 }
 
@@ -72,7 +92,7 @@ export const addMenuItem = async () => {
 
     }
     catch(err) {
-        
+        throw err;
     }
 }
 
@@ -82,6 +102,6 @@ export const updateMenuItem = async () => {
 
     }
     catch(err) {
-        
+        throw err;
     }
 }
