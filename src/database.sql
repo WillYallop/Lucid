@@ -35,7 +35,6 @@ CREATE TABLE menus (
 CREATE TABLE menu_links (
     menu_id uuid REFERENCES menus (_id) ON DELETE CASCADE,
     page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
-    external boolean DEFAULT false,
     blank boolean DEFAULT false,
     text VARCHAR(255) NOT NULL
 )
