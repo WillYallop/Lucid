@@ -40,6 +40,10 @@ export const MenuLinkModel = new GraphQLObjectType({
         text: {
             type: GraphQLNonNull(GraphQLString),
             description: 'The items inner text'
+        },
+        href: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The pages slug'
         }
     })
 })

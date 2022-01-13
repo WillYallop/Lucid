@@ -33,6 +33,7 @@ CREATE TABLE menus (
 );
 
 CREATE TABLE menu_links (
+    _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     menu_id uuid REFERENCES menus (_id) ON DELETE CASCADE,
     page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
     blank boolean DEFAULT false,
