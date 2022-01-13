@@ -11,6 +11,9 @@ import { PageQuery } from './page/query';
 import { PageMutation } from './page/mutation';
 // Page SEO
 import { SEOMutation } from './seo/mutation';
+// Menu 
+import { MenuQuery } from './menu/query';
+import { MenuMutation } from './menu/mutation';
 // Content Type Config
 import { ContentTypeConfigMutation } from './content_type_config/mutation';
 // Content Type
@@ -36,6 +39,11 @@ const baseQuery = new GraphQLObjectType({
         page: {
             type: PageQuery,
             description: PageQuery.description,
+            resolve: () => { return {} }
+        },
+        menu: {
+            type: MenuQuery,
+            description: MenuQuery.description,
             resolve: () => { return {} }
         }
     }
@@ -78,6 +86,11 @@ const baseMutation = new GraphQLObjectType({
         page_components: {
             type: PageComponentMutation,
             description: PageComponentMutation.description,
+            resolve: () => { return {} }
+        },
+        menu: {
+            type: MenuMutation,
+            description: MenuMutation.description,
             resolve: () => { return {} }
         }
     }

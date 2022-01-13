@@ -62,7 +62,7 @@ export const updateMenu = async () => {
 }
 
 // Get menu
-export const getMenu = async () => {
+export const getMenu = async (_id: mod_menuModel["_id"]) => {
     try {
 
     }
