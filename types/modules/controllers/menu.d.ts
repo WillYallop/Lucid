@@ -1,42 +1,28 @@
 // Key: cont_menu
 
-// createMenu()
-interface cont_menu_createMenuInp {
-    name: mod_menuModel["name"],
-    links?: Array<{
-        text?: mod_menuModelLinks["text"]
-        blank?: mod_menuModelLinks["blank"]
-        page_id?: mod_menuModelLinks["page_id"]
-        external?: mod_menuModelLinks["external"]
-        external_url?: mod_menuModelLinks["external_url"]
-    }>  
-}
-interface cont_menu_createMenuRes {
-    saved: boolean
-    menu?: mod_menuModel
-    errors?: Array<core_errorMsg>
+// Add menu item
+interface cont_menu_addMenuItemInp {
+    menu_id: mod_menuModel["_id"]
+    page_id: mod_pageModel["_id"]
+    blank: boolean
+    text: string
 }
 
-// updateMenu()
-interface cont_menu_updateMenuInp {
-    name?: mod_menuModel["name"],
-    links?: Array<{
-        _id: mod_menuModelLinks["_id"] 
-        text?: mod_menuModelLinks["text"]
-        blank?: mod_menuModelLinks["blank"]
-        page_id?: mod_menuModelLinks["page_id"]
-        external?: mod_menuModelLinks["external"]
-        external_url?: mod_menuModelLinks["external_url"]
-    }>  
-}
-interface cont_menu_updateMenuRes {
-    updated: boolean
-    menu?: mod_menuModel
-    errors?: Array<core_errorMsg>
+// Update menu item
+interface cont_menu_updateMenuItemInp {
+    page_id?: mod_pageModel["_id"]
+    blank?: boolean
+    text?: string
 }
 
-// Delete menu
-interface cont_menu_deleteMenuRes {
-    deleted: boolean
-    errors?: Array<core_errorMsg>
+// Get menu
+// Temp limks array
+interface cont_menu_getMenuLinkstemp {
+    _id: string
+    menu_id: mod_menuModel["_id"]
+    page_id: mod_pageModel["_id"]
+    text: string
+    blank: boolean
+    href?: mod_pageModel["slug"]
+    slug?: mod_pageModel["slug"]
 }

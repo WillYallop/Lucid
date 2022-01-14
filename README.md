@@ -41,9 +41,9 @@ Interface:
 { 
     src: string
     load: 'visible' | 'onload'
-    visibleID: string
-    async: boolean
-    await: boolean
+    visibleID?: string
+    async?: boolean
+    await?: boolean
 }
 ```
 
