@@ -87,8 +87,18 @@ export const getMenu = async (_id: mod_menuModel["_id"]) => {
         let menuRes: mod_menuModel = await db.one('SELECT * FROM menus WHERE _id=$1', _id);
         // Get all menu_links with menu _id
         // Join page slug as href to menu_link
-        menuRes.links = await db.manyOrNone('SELECT menu_links._id, menu_links.menu_id, menu_links.page_id, menu_links.blank, menu_links.text, pages.slug FROM menu_links WHERE menu_id=$1 INNER JOIN pages ON menu_links.page_id = pages._id;', _id);
+        let links: Array<cont_menu_getMenuLinkstemp> = await db.manyOrNone('SELECT menu_links._id, menu_links.menu_id, menu_links.page_id, menu_links.blank, menu_links.text, pages.slug FROM menu_links INNER JOIN pages ON menu_links.page_id = pages._id WHERE menu_links.menu_id=$1;', _id);
 
+        // Loop through links and update pages.slug value to link.href
+        if(links) {
+            links.forEach((link) => {
+                link.href = link.slug;
+                delete link.slug;
+            });
+        }
+        // Set links
+        menuRes.links = links;
+        
         return menuRes;
     }
     catch(err) {
@@ -118,7 +128,7 @@ export const deleteMenuItem = async (_id: mod_menuModelLinks["_id"]) => {
 // Add menu item
 export const addMenuItem = async (item: cont_menu_addMenuItemInp) => {
     try {
-        let { _id } = await db.one('INSERT INTO menu_links(menu_id, page_id, blank, text) VALUES(${menu_id}, ${page_id}, ${blank}, ${text} RETURNING _id) ', item);
+        let { _id } = await db.one('INSERT INTO menu_links(menu_id, page_id, blank, text) VALUES(${menu_id}, ${page_id}, ${blank}, ${text}) RETURNING *', item);
         let newMenuItem = await getMenuItem(_id);
         return newMenuItem;
     }
@@ -151,7 +161,9 @@ export const updateMenuItem = async (_id: mod_menuModelLinks["_id"], data: cont_
 
 export const getMenuItem = async (_id: mod_menuModelLinks["_id"]) => {
     try {
-        let menuItem = await db.one('SELECT menu_links._id, menu_links.menu_id, menu_links.page_id, menu_links.blank, menu_links.text, pages.slug FROM menu_links WHERE _id=$1 INNER JOIN pages ON menu_links.page_id = pages._id;', _id);
+        let menuItem = await db.one('SELECT menu_links._id, menu_links.menu_id, menu_links.page_id, menu_links.blank, menu_links.text, pages.slug FROM menu_links INNER JOIN pages ON menu_links.page_id = pages._id WHERE menu_links._id=$1;', _id);
+        menuItem.href = menuItem.slug;
+        delete menuItem.slug;
         return menuItem;
     }
     catch(err) {

@@ -38,7 +38,7 @@ CREATE TABLE menu_links (
     page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
     blank boolean DEFAULT false,
     text VARCHAR(255) NOT NULL
-)
+);
 
 -- Acts as lookup table for its content type data
 -- A page can have many of these

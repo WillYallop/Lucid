@@ -35,7 +35,7 @@ const updateMenuField: GraphQLFieldConfig<any, any, any> = {
     description: 'Delete menu',
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) },
-        name: { type: GraphQLNonNull(GraphQLString) }
+        name: { type: GraphQLString }
     },
     resolve: (_, args) => {
         return updateMenu(args._id, args.name);

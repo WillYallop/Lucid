@@ -25,6 +25,10 @@ export const MenuLinkModel = new GraphQLObjectType({
     name: 'MenuLinkModel',
     description: 'The menu link model',
     fields: () => ({
+        _id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'The menu links unique _id'
+        },
         menu_id: {
             type: GraphQLNonNull(GraphQLID),
             description: 'The menus unique _id'
