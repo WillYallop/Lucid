@@ -61,10 +61,18 @@ const addMenuItemField: GraphQLFieldConfig<any, any, any> = {
     type: MenuLinkModel,
     description: 'Add menu item',
     args: {
-
+        menu_id: { type: GraphQLNonNull(GraphQLID) },
+        page_id: { type: GraphQLNonNull(GraphQLID) },
+        blank: { type: GraphQLNonNull(GraphQLBoolean) },
+        text: { type: GraphQLNonNull(GraphQLString) }
     },
     resolve: (_, args) => {
-        return addMenuItem(args);
+        return addMenuItem({
+            menu_id: args.menu_id,
+            page_id: args.page_id,
+            blank: args.blank,
+            text: args.text
+        });
     }
 }
 

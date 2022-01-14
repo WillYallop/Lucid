@@ -68,7 +68,7 @@ export const updateMenu = async (_id: mod_menuModel["_id"], name: mod_menuModel[
                 name: __convertStringLowerUnderscore(name)
             };
             // Update
-            let menuRes = await db.one(`UPDATE menus SET ${__updateSetQueryGen(updateMenusObj)} WHERE _id='${_id}'  RETURNING *`, updateMenusObj);
+            let menuRes = await db.one(`UPDATE menus SET ${__updateSetQueryGen(updateMenusObj)} WHERE _id='${_id}' RETURNING *`, updateMenusObj);
             return menuRes;
         }
         else {
@@ -87,7 +87,7 @@ export const getMenu = async (_id: mod_menuModel["_id"]) => {
         let menuRes: mod_menuModel = await db.one('SELECT * FROM menus WHERE _id=$1', _id);
         // Get all menu_links with menu _id
         // Join page slug as href to menu_link
-        menuRes.links = await db.manyOrNone('SELECT * FROM menu_links WHERE menu_id=$1 INNER JOIN pages ON menu_links.href = pages.slug;', _id);
+        menuRes.links = await db.manyOrNone('SELECT menu_links._id, menu_links.menu_id, menu_links.page_id, menu_links.blank, menu_links.text, pages.slug FROM menu_links WHERE menu_id=$1 INNER JOIN pages ON menu_links.page_id = pages._id;', _id);
 
         return menuRes;
     }
@@ -116,9 +116,11 @@ export const deleteMenuItem = async (_id: mod_menuModelLinks["_id"]) => {
 }
 
 // Add menu item
-export const addMenuItem = async () => {
+export const addMenuItem = async (item: cont_menu_addMenuItemInp) => {
     try {
-
+        let { _id } = await db.one('INSERT INTO menu_links(menu_id, page_id, blank, text) VALUES(${menu_id}, ${page_id}, ${blank}, ${text} RETURNING _id) ', item);
+        let newMenuItem = await getMenuItem(_id);
+        return newMenuItem;
     }
     catch(err) {
         throw err;
@@ -129,6 +131,16 @@ export const addMenuItem = async () => {
 export const updateMenuItem = async () => {
     try {
 
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+export const getMenuItem = async (_id: mod_menuModelLinks["_id"]) => {
+    try {
+        let menuItem = await db.one('SELECT menu_links._id, menu_links.menu_id, menu_links.page_id, menu_links.blank, menu_links.text, pages.slug FROM menu_links WHERE _id=$1 INNER JOIN pages ON menu_links.page_id = pages._id;', _id);
+        return menuItem;
     }
     catch(err) {
         throw err;
