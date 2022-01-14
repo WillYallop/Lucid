@@ -83,7 +83,13 @@ export const updateMenu = async (_id: mod_menuModel["_id"], name: mod_menuModel[
 // Get menu
 export const getMenu = async (_id: mod_menuModel["_id"]) => {
     try {
+        // Get page
+        let menuRes: mod_menuModel = await db.one('SELECT * FROM menus WHERE _id=$1', _id);
+        // Get all menu_links with menu _id
+        // Join page slug as href to menu_link
+        menuRes.links = await db.manyOrNone('SELECT * FROM menu_links WHERE menu_id=$1 INNER JOIN pages ON menu_links.href = pages.slug;', _id);
 
+       return menuRes;
     }
     catch(err) {
         throw err;

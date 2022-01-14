@@ -15,7 +15,6 @@ const getMenuField: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
-
 export const MenuQuery = new GraphQLObjectType({
     name: 'MenuQuery',
     description: 'The menu base query',
