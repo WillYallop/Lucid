@@ -1,4 +1,4 @@
-import { validate, componentController, postsController, themeController, generator, contentTypeController, menuController } from './index';
+import { validate, componentController, postsController, themeController, generator, contentTypeController } from './index';
 
 // menuController.deleteMenu('dc1c1770-6653-11ec-89d2-a929c88c3c26')
 // .then((res) => {

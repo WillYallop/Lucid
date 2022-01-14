@@ -81,10 +81,17 @@ const updateMenuItemField: GraphQLFieldConfig<any, any, any> = {
     type: MenuLinkModel,
     description: 'Update menu item',
     args: {
-
+        _id: { type: GraphQLNonNull(GraphQLID) },
+        page_id: { type: GraphQLID },
+        blank: { type: GraphQLBoolean },
+        text: { type: GraphQLString }
     },
     resolve: (_, args) => {
-        return updateMenuItem(args);
+        return updateMenuItem(args._id, {
+            page_id: args.page_id,
+            blank: args.blank,
+            text: args.text
+        });
     }
 }
 

@@ -7,3 +7,10 @@ interface cont_menu_addMenuItemInp {
     blank: boolean
     text: string
 }
+
+// Update menu item
+interface cont_menu_updateMenuItemInp {
+    page_id?: mod_pageModel["_id"]
+    blank?: boolean
+    text?: string
+}

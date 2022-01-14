@@ -128,9 +128,21 @@ export const addMenuItem = async (item: cont_menu_addMenuItemInp) => {
 }
 
 // Update menu item
-export const updateMenuItem = async () => {
+export const updateMenuItem = async (_id: mod_menuModelLinks["_id"], data: cont_menu_updateMenuItemInp) => {
     try {
 
+        let updateMenuItemObj: cont_menu_updateMenuItemInp = {};
+
+        // Set data
+        if(data.page_id != undefined) updateMenuItemObj.page_id = data.page_id;
+        if(data.blank != undefined) updateMenuItemObj.blank = data.blank;
+        if(data.text != undefined) updateMenuItemObj.text = data.text;
+
+        // Update
+        await db.none(`UPDATE menu_links SET ${__updateSetQueryGen(updateMenuItemObj)} WHERE _id='${_id}'`, updateMenuItemObj);
+
+        let newMenuItem = await getMenuItem(_id);
+        return newMenuItem;
     }
     catch(err) {
         throw err;
