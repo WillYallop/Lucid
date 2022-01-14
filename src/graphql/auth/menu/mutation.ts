@@ -49,10 +49,10 @@ const deleteMenuItemField: GraphQLFieldConfig<any, any, any> = {
     type: DeleteResType,
     description: 'Delete menu item',
     args: {
-
+        _id: { type: GraphQLNonNull(GraphQLID) }
     },
     resolve: (_, args) => {
-        return deleteMenuItem(args);
+        return deleteMenuItem(args._id);
     }
 }
 

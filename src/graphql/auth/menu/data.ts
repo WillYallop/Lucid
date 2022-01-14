@@ -89,7 +89,7 @@ export const getMenu = async (_id: mod_menuModel["_id"]) => {
         // Join page slug as href to menu_link
         menuRes.links = await db.manyOrNone('SELECT * FROM menu_links WHERE menu_id=$1 INNER JOIN pages ON menu_links.href = pages.slug;', _id);
 
-       return menuRes;
+        return menuRes;
     }
     catch(err) {
         throw err;
@@ -102,9 +102,13 @@ export const getMenu = async (_id: mod_menuModel["_id"]) => {
 // ------------------------------------ ------------------------------------
 
 // Delete menu item
-export const deleteMenuItem = async () => {
+export const deleteMenuItem = async (_id: mod_menuModelLinks["_id"]) => {
     try {
-
+        // Delete all data related to the page
+        await db.none('DELETE FROM menu_links WHERE _id=$1', _id);
+        return {
+            deleted: true
+        }
     }
     catch(err) {
         throw err;
