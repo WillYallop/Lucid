@@ -1,7 +1,7 @@
 // Layout
 import MainLayout from "../layouts/MainLayout";
 
-const Home: React.FC = () => {
+const Dashboard: React.FC = () => {
     return (
         <MainLayout>
 
@@ -11,4 +11,4 @@ const Home: React.FC = () => {
     );
 }
 
-export default Home;
+export default Dashboard;

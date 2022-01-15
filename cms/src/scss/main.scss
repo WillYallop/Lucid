@@ -11,11 +11,14 @@
 // Core
 @import './core/reset.scss';
 @import './core/base.scss';
+@import './core/a.scss';
+@import './core/buttons.scss';
 
 // Layouts
 @import './layouts/main_layout.scss';
 
 // Components
 @import './components/Core/Icons.scss';
+@import './components/Utility/Loading.scss';
 @import './components/Header.scss';
 @import './components/Navigation.scss';

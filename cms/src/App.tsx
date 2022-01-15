@@ -5,13 +5,13 @@ import {
 } from "react-router-dom";
 
 // Views
-import Home from './views/Home';
+import Dashboard from './views/Dashboard';
 
 const App: React.FC = () => {
   return (
     <Router>
         <Routes>
-          <Route path="/" element={<Home />}></Route>
+          <Route path="/" element={<Dashboard />}></Route>
         </Routes>
     </Router>
   );

@@ -2,7 +2,7 @@ require('dotenv').config();
 import express from 'express';
 import vhost from 'vhost';
 import morgan from 'morgan';
-
+import cors from 'cors';
 import { privateSchema } from "./graphql/auth/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 
@@ -15,6 +15,21 @@ const themeDir = path.resolve(config.directories.theme);
 // create main app
 const app = express();
 
+// ------------------------------------
+// CORS                               |
+// ------------------------------------
+var whitelist = ['http://localhost:3000', `${config.https ? 'https://' : 'http://'}${config.domain}`];
+var corsOptions = {
+  origin: function (origin:any, callback:any) {
+    if (whitelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}
+
+app.use(cors(corsOptions))
 
 
 // ------------------------------------
