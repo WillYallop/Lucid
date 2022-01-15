@@ -5,6 +5,9 @@
 @import './settings/colours.scss';
 @import './settings/base.scss';
 
+// Mixins
+@import './mixins/animate.scss';
+
 // Core
 @import './core/reset.scss';
 @import './core/base.scss';
@@ -13,5 +16,6 @@
 @import './layouts/main_layout.scss';
 
 // Components
+@import './components/Core/Icons.scss';
 @import './components/Header.scss';
 @import './components/Navigation.scss';
