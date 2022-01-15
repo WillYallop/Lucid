@@ -40,7 +40,7 @@ api.use('/auth', expressGraphQL({
 }));
 
 mainapp.use('/', express.static(path.resolve(config.directories.dist), { extensions: ['html'] }));
-cms.use('/', express.static(path.resolve(config.directories.cms_dist)));
+cms.use('/', express.static(path.resolve(__dirname, '../cms/build')));
 assets.use('/', express.static(path.resolve(config.directories.assets_dist)));
 
 // Subdomain setup
