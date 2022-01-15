@@ -3,6 +3,7 @@
     top: 0;
     left: 0;
     right: 0;
+    z-index: 10;
     background-color: map-get($map: $section_colours, $key: _01_01);
     height: $header_height;
     width: 100%;

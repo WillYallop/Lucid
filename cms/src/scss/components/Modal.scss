@@ -8,6 +8,7 @@
     overflow-y: auto;
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
+    z-index: 11;
     &::-webkit-scrollbar {
         display: none;
     }
