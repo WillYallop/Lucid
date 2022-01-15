@@ -3,5 +3,8 @@
     main {
         padding-top: $header_height;
         padding-left: $navigation_width;
+        @include mobile {
+            padding-left: 0;
+        }
     }
 }

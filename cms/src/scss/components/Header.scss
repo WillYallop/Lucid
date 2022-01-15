@@ -9,6 +9,7 @@
     padding: 0 $padding;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     border-bottom: 1px solid map-get($map: $section_colours, $key: _01_02);
     .logoLink {
         height: rem(25);
@@ -16,4 +17,13 @@
             height: rem(25);
         }
     }
+    .toggleNavBtn {
+        @include mobile {
+            display: block;
+        }
+        display: none;
+        padding: 0;
+        background-color: transparent;
+    }
+
 }

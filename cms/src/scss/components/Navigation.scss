@@ -1,81 +1,111 @@
-.navSideBarCon {
-    position: fixed;
-    left: 0;
-    top: $header_height;
-    bottom: 0;
-    width: $navigation_width;
-    background-color: map-get($map: $section_colours, $key: _01_01);
-    border-right: 1px solid map-get($map: $section_colours, $key: _01_02);
-    padding: $padding;
-    overflow-y: auto;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-    &::-webkit-scrollbar {
-        display: none;
-    }
-    // Nav con
-    .navCon {
-        width: 100%;
-        .navUl {
+.navSideBar {
+    z-index: 10;
+    .navSideBarSlider {
+        position: fixed;
+        left: 0;
+        top: $header_height;
+        bottom: 0;
+        width: $navigation_width;
+        background-color: map-get($map: $section_colours, $key: _01_01);
+        border-right: 1px solid map-get($map: $section_colours, $key: _01_02);
+        padding: $padding;
+        overflow-y: auto;
+        -ms-overflow-style: none;  /* IE and Edge */
+        scrollbar-width: none;  /* Firefox */
+        z-index: 2;
+        &::-webkit-scrollbar {
+            display: none;
+        }
+        @include mobile {
+            left: -$navigation_width;
+            transition: left $transition_time $transition_type;
+            &.active {
+                left: 0;
+            }
+        }
+        // Nav con
+        .navCon {
             width: 100%;
-            // Li
-            .navItem, a {
-                @include animate;
+            .navUl {
                 width: 100%;
-                display: flex;
-                align-items: center;
-                
-                .coreIcon {
-                    margin-right: rem(10);
+                // Li
+                .navItem, a {
+                    @include animate;
+                    width: 100%;
+                    display: flex;
+                    align-items: center;
+                    
+                    .coreIcon {
+                        margin-right: rem(10);
+                    }
                 }
-            }
-            .navItem {
-                margin-bottom: rem(10);
-            }
-            a {
-                opacity: 0.3;
-                color: map-get($map: $text_colours, $key: _02_02);
-                text-transform: capitalize;
-                &:hover {
-                    opacity: 1;
+                .navItem {
+                    margin-bottom: rem(10);
                 }
-                &.active {
-                    opacity: 1;
-                    color: map-get($map: $text_colours, $key: _02_01);
+                a {
+                    opacity: 0.3;
+                    color: map-get($map: $text_colours, $key: _02_02);
+                    text-transform: capitalize;
                     &:hover {
-                        color: map-get($map: $text_colours, $key: _02_02);
-                        .coreIcon {
-                            background-color: map-get($map: $accent_colours, $key: _01_02);
+                        opacity: 1;
+                    }
+                    &.active {
+                        opacity: 1;
+                        color: map-get($map: $text_colours, $key: _02_01);
+                        &:hover {
+                            color: map-get($map: $text_colours, $key: _02_02);
+                            .coreIcon {
+                                background-color: map-get($map: $accent_colours, $key: _01_02);
+                            }
                         }
                     }
                 }
-            }
-            // Seperator
-            .seperator {
-                display: block;
-                width: 100%;
-                height: rem(1);
-                background-color: map-get($map: $section_colours, $key: _01_02);
-                margin: rem(10) 0;
-            }
-            // Pages subsection
-            .pagesSubSection {
-                padding-left: $padding;
-                position: relative;
-                &::before {
-                    content: '';
-                    position: absolute;
-                    top: 0;
-                    left: rem(10);
-                    bottom: 0;
-                    width: rem(1);
+                // Seperator
+                .seperator {
+                    display: block;
+                    width: 100%;
+                    height: rem(1);
                     background-color: map-get($map: $section_colours, $key: _01_02);
+                    margin: rem(10) 0;
                 }
-                .postsLoadingCon {
-                    height: rem(100);
-                    border-radius: rem(5);
-                    overflow: hidden;
+                // Pages subsection
+                .pagesSubSection {
+                    padding-left: $padding;
+                    position: relative;
+                    &::before {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        left: rem(10);
+                        bottom: 0;
+                        width: rem(1);
+                        background-color: map-get($map: $section_colours, $key: _01_02);
+                    }
+                    .postsLoadingCon {
+                        height: rem(100);
+                        border-radius: rem(5);
+                        overflow: hidden;
+                    }
                 }
+            }
+        }
+    }
+    .mobileOverlay {
+        @include animate;
+        content: '';
+        z-index: 1;
+        position: fixed;
+        top: $header_height;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-color: rgba($color: #000000, $alpha: 0.4);
+        opacity: 0;
+        display: none;
+        @include mobile {
+            display: block;
+            &.active {
+                opacity: 1;
             }
         }
     }
