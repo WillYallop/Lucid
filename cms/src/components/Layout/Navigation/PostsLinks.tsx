@@ -1,12 +1,14 @@
 
+import React, { useState, ReactElement } from 'react';
 import { useQuery, gql } from "@apollo/client";
 import { NavLink } from "react-router-dom";
 // Components
 import CoreIcon from "../../Core/Icon";
 import UtilityLoading from "../../Ultility/Loading";
+import Modal from "../../Modal/Modal";
+import NewPostTypeForm from "../../Modal/NewPostTypeForm";
 // Icons
 import { faFile } from '@fortawesome/free-solid-svg-icons';
-import { ReactElement } from "react";
 
 
 // Types
@@ -32,6 +34,7 @@ const GET_MULTIPLE_POSTS = gql`query {
 }`;
 
 const NavigationPostLinks: React.FC = () => {
+    const [state, toggleState] = useState(false);
 
     // -----------------------------------------
     // handle post links 
@@ -45,7 +48,7 @@ const NavigationPostLinks: React.FC = () => {
             </div>
         </div>
     )
-    if(error) console.log(error);
+    if(error) return null;
 
     let postLinks: Array<ReactElement> = [];
     if(data && data.post) {
@@ -65,18 +68,17 @@ const NavigationPostLinks: React.FC = () => {
         }
     }
 
-    // -----------------------------------------
-    // handle add post type
-    // -----------------------------------------
-    const addPostType = () => {
-        console.log('hello!')
-    }
-
-
     return (
         <div className="pagesSubSection">
             { postLinks }
-            <button className="btnStyle1" onClick={addPostType}>New post type</button>
+            <button className="btnStyle1" onClick={() => toggleState(!state)}>New post type</button>
+            <Modal 
+            state={state} 
+            toggleState={() => toggleState(!state)}
+            title='Register a new post type'
+            body='A post type is a category of page that can only use one template file.'>
+                <NewPostTypeForm></NewPostTypeForm>
+            </Modal>
         </div>
     )
 }

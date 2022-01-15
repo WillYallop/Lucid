@@ -23,6 +23,18 @@
             margin: auto;
             pointer-events: all;
             border-radius: rem(10);
+            .header {
+                position: relative;
+                margin: $padding;
+                padding-bottom: $padding;
+                border-bottom: rem(1) solid map-get($map: $section_colours, $key: _02_02);
+                padding-right: rem(50);
+                .closeBtn {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                }
+            }
         }
     }
     // overlay
@@ -36,8 +48,5 @@
         backdrop-filter: blur(8px);
         background-color: rgba(0, 0, 0, 0.5);
         cursor: pointer;
-        &:hover {
-            backdrop-filter: blur(1px);
-        }
     }
 }

@@ -1,7 +1,7 @@
 // Components
 import Header from "../components/Layout/Header";
 import Navigation from "../components/Layout/Navigation/Navigation";
-import Modal from "../components/Modal/Modal";
+
 
 const MainLayout: React.FC = ({ children }) => {
     return (
@@ -10,8 +10,6 @@ const MainLayout: React.FC = ({ children }) => {
             <Header></Header>
             {/* Navigation */}
             <Navigation></Navigation>
-            {/* Modal */}
-            <Modal></Modal>
             {/* Main */}
             <main>
                 { children }
