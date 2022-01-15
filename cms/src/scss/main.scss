@@ -1,0 +1,17 @@
+// Functions
+@import './functions/rem.scss';
+
+// Settings
+@import './settings/colours.scss';
+@import './settings/base.scss';
+
+// Core
+@import './core/reset.scss';
+@import './core/base.scss';
+
+// Layouts
+@import './layouts/main_layout.scss';
+
+// Components
+@import './components/Header.scss';
+@import './components/Navigation.scss';

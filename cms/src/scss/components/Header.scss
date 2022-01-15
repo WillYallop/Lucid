@@ -1,0 +1,19 @@
+.headerCon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: map-get($map: $section_colours, $key: _01_01);
+    height: $header_height;
+    width: 100%;
+    padding: 0 $padding;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid map-get($map: $section_colours, $key: _01_02);
+    .logoLink {
+        height: rem(25);
+        img {
+            height: rem(25);
+        }
+    }
+}
