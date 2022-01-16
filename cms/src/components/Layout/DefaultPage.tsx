@@ -1,4 +1,3 @@
-
 interface DefaultPageProps {
     title: string
     body: string

@@ -5,6 +5,9 @@ import DefaultPage from "../../components/Layout/DefaultPage";
 
 const Pages: React.FC = () => {
 
+
+
+    // Sidebar Element
     const siderbar = (
         <p>I am a sidebar</p>
     )

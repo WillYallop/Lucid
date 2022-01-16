@@ -3,7 +3,12 @@ $accent_colours: (
     // Main accent
     _01_01: #F8ED21,
     _01_02: darken(#F8ED21, 20%),
-    _01_03: #2E2D29 // accent colour
+    _01_03: #2E2D29, // accent colour
+
+    // Status colours
+    _02_01: #FC5252, // error
+    _02_02: #FCB252, // warning
+    _02_03: #65E24D, // success
 );
 
 $section_colours: (
@@ -13,6 +18,7 @@ $section_colours: (
     _02_01: #FFFFFF, // Content con bg
     _02_02: #E5E5E5, // _02_01 contrast
 
+    // Loading
     _05_01: #1D1D1D, // Loading dark
     _05_02: #F1F1F1 // Loading light
 );
@@ -23,5 +29,5 @@ $text_colours: (
     _01_02: #4E4E4E, // body
     // Dark
     _02_01: #FFFFFF, // title
-    _02_02: #D6D6D6 // body
+    _02_02: #ececec // body
 );
