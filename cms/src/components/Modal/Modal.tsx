@@ -1,40 +1,42 @@
-import ReactDom from 'react-dom';
+import { useContext } from "react";
 // Components
 import CoreIcon from "../Core/Icon";
 // Icons
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+// Context
+import { ModalContext } from "../../helper/Context";
 
-interface ModalProps {
-    state: boolean
-    toggleState: () => void
-    title?: string
-    body?: string
-}
+const Modal: React.FC = () => {
+    const { modalState, setModalState } = useContext(ModalContext);
 
-const Modal: React.FC<ModalProps> = ({ children, state, toggleState, title, body }) => {
-    const portalEle = document.getElementById('portal') as HTMLElement;
+    if(!modalState) return null;
+    if(!modalState.state) return null;
 
-    if(!state) return null;
+    const closeModal = () => {
+        setModalState({
+            ...modalState,
+            state: false
+        });
+    }
 
-    return ReactDom.createPortal(
+    return (
         <div className='modalCon'>
             <div className='inner'>
 
                 <div className='content'>
                     <div className='header'>
-                        <h2>{ title ? title : 'Modal header' }</h2>
-                        { body ? <p>{body}</p> : null }
-                        <div className='closeBtn' onClick={toggleState}>
+                        <h2>{ modalState.title ? modalState.title : 'Modal header' }</h2>
+                        { modalState.body ? <p>{modalState.body}</p> : null }
+                        <div className='closeBtn' onClick={closeModal}>
                             <CoreIcon icon={faTimes}/>
                         </div>
                     </div>
-                    { children }
+                    { modalState.element }
                 </div>
 
             </div>
-            <div className='overlay' onClick={toggleState}></div>
-        </div>,
-        portalEle
+            <div className='overlay' onClick={closeModal}></div>
+        </div>
     )
 }
 
