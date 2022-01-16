@@ -20,6 +20,8 @@ import { ContentTypeConfigMutation } from './content_type_config/mutation';
 import { ContentTypeMutation } from './content_type/mutation';
 // Page Component
 import { PageComponentMutation } from './page_component/mutation';
+// Utility
+import { UtilityQuery } from './utility/query';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -44,6 +46,11 @@ const baseQuery = new GraphQLObjectType({
         menu: {
             type: MenuQuery,
             description: MenuQuery.description,
+            resolve: () => { return {} }
+        },
+        utility: {
+            type: UtilityQuery,
+            description: UtilityQuery.description,
             resolve: () => { return {} }
         }
     }
