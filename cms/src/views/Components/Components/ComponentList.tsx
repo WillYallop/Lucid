@@ -31,7 +31,7 @@ const ComponentList: React.FC = () => {
     // -------------------------------------------------------
     // Components
     // -------------------------------------------------------
-    let [ skip, limit ] = [ 0 , 1 ];
+    let [ skip, limit ] = [ 0 , 10 ];
     const [ components, setComponents ] = useState<Array<componentData>>([]);
     const [ showLoadMore, setShowLoadMore ] = useState(true);
 
@@ -65,7 +65,7 @@ const ComponentList: React.FC = () => {
         })
         .then((result) => {
             const allComponents: Array<componentData> = result.data.data.components.get_multiple || [];
-            if(!allComponents.length) setShowLoadMore(false);
+            if(allComponents.length < limit) setShowLoadMore(false);
             setComponents((components) => [
                 ...components,
                 ...allComponents
