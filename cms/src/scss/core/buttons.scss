@@ -1,0 +1,19 @@
+button {
+    @include animate;
+    cursor: pointer;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    border: none;
+    padding: rem(10) $padding;
+    font-size: rem(14);
+    font-weight: 500;
+}
+
+.btnStyle1 {
+    background-color: map-get($map: $accent_colours, $key: _01_01);
+    &:hover {
+        background-color: map-get($map: $accent_colours, $key: _01_02);
+    }
+    border-radius: rem(5);
+    width: 100%;
+    padding: rem(5) $padding;
+}

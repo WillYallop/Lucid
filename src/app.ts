@@ -2,7 +2,6 @@ require('dotenv').config();
 import express from 'express';
 import vhost from 'vhost';
 import morgan from 'morgan';
-
 import { privateSchema } from "./graphql/auth/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 
@@ -15,6 +14,32 @@ const themeDir = path.resolve(config.directories.theme);
 // create main app
 const app = express();
 
+// ------------------------------------
+// CORS                               |
+// ------------------------------------
+app.use((req, res, next) => {
+
+  const allowedOrigins = [
+    `${config.https ? 'https://' : 'http://'}${config.domain}`,
+    `${config.https ? 'https://' : 'http://'}cms.${config.domain}`,
+    `${config.https ? 'https://' : 'http://'}assets.${config.domain}`,
+    `${config.https ? 'https://' : 'http://'}api.${config.domain}`,
+    'http://localhost:3000'
+  ];
+  const origin = req.headers.origin;
+  if(origin) {
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+  }
+
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Auth-Strategy');
+  if(req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+      return res.status(200).json({});
+  }
+  next();
+});
 
 
 // ------------------------------------
@@ -40,8 +65,9 @@ api.use('/auth', expressGraphQL({
 }));
 
 mainapp.use('/', express.static(path.resolve(config.directories.dist), { extensions: ['html'] }));
-cms.use('/', express.static(path.resolve(config.directories.cms_dist)));
+cms.use('/', express.static(path.resolve(__dirname, '../cms/build')));
 assets.use('/', express.static(path.resolve(config.directories.assets_dist)));
+
 
 // Subdomain setup
 app.use(vhost(`${config.domain}`, mainapp));

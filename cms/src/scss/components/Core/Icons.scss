@@ -1,0 +1,18 @@
+.coreIcon {
+    @include animate;
+    width: rem(30);
+    height: rem(30);
+    background-color: map-get($map: $accent_colours, $key: _01_01);
+    border-radius: rem(5);
+    color: map-get($map: $accent_colours, $key: _01_03);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    svg {
+        height: rem(20);
+    }
+    &:hover {
+        background-color: map-get($map: $accent_colours, $key: _01_02);
+    }
+}
