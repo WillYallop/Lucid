@@ -1,7 +1,16 @@
+.con {
+    width: 100%;
+}
 
 .itemRow {
     padding: rem(10);
     border: $border_style;
     margin-bottom: rem(5);
     border-radius: rem(5);
+    &.loading {
+        height: rem(60);
+        border: none;
+        padding: 0;
+        overflow: hidden;
+    }
 }

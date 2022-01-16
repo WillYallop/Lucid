@@ -1,7 +1,7 @@
 
-import React, { useContext, ReactElement } from 'react';
-import { useQuery, gql } from "@apollo/client";
+import React, { useContext, ReactElement, useState, useEffect } from 'react';
 import { NavLink } from "react-router-dom";
+import axios from 'axios';
 // Components
 import CoreIcon from "../../Core/Icon";
 import UtilityLoading from "../../Ultility/Loading";
@@ -10,7 +10,8 @@ import NewPostTypeForm from "../../Modal/NewPostTypeForm";
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 // Context
 import { ModalContext } from "../../../helper/Context";
-
+// Functions
+import getApiUri from "../../../functions/getApiUri";
 
 // Types
 interface cont_post_postDeclaration {
@@ -19,24 +20,10 @@ interface cont_post_postDeclaration {
     template_name: string
 }
 
-// Get multiple posts query
-const GET_MULTIPLE_POSTS = gql`query {
-    post {
-        get_multiple
-        (
-            all: true
-        )
-        {
-            _id
-            name
-            template_name
-        }
-    }
-}`;
-
 const NavigationPostLinks: React.FC = () => {
-
-    // Modal State
+    // -------------------------------------------------------
+    // Modal 
+    // -------------------------------------------------------
     const { modalState, setModalState } = useContext(ModalContext);
 
     const openModal = () => {
@@ -52,34 +39,72 @@ const NavigationPostLinks: React.FC = () => {
     // -----------------------------------------
     // handle post links 
     // -----------------------------------------
-    const { loading, error, data } = useQuery(GET_MULTIPLE_POSTS);
+    const [ posts, setPosts ] = useState<Array<cont_post_postDeclaration>>([]);
 
-    if (loading) return (
-        <div className="pagesSubSection">
-            <div className="postsLoadingCon">
-                <UtilityLoading mode="dark"/>
-            </div>
-        </div>
-    )
-    if(error) return null;
+    useEffect(() => {
+        getAllPosts();
+        return () => {
+            setPosts([]);
+        }
+    }, []);
+
+    const getAllPosts = () => {
+        axios({
+            url: getApiUri(),
+            method: 'post',
+            data: {
+              query: `
+                query {
+                    post {
+                        get_multiple
+                        (
+                            all: true
+                        )
+                        {
+                            _id
+                            name
+                            template_name
+                        }
+                    }
+                }`
+            }
+        })
+        .then((result) => {
+            const allPosts: Array<cont_post_postDeclaration> = result.data.data.post.get_multiple || [];
+            setPosts((posts) => [
+                ...posts,
+                ...allPosts
+            ]);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    }
 
     let postLinks: Array<ReactElement> = [];
-    if(data && data.post) {
-        let posts: Array<cont_post_postDeclaration> = data.post.get_multiple;
-        if(posts) {
-            posts.forEach((postObj) => {
-                let path = `/posts/${postObj.name}`;
-                let ele = (
-                    <li className="navItem" key={postObj._id}>
-                        <NavLink to={path} className={(navData) => navData.isActive ? "active" : "" }>
-                            <CoreIcon icon={faFile}/> { postObj.name }
-                        </NavLink >
-                    </li>
-                );
-                postLinks.push(ele);
-            });
-        }
+    if(posts.length) {
+        posts.forEach((post) => {
+            let path = `/posts/${post.name}`;
+            let ele = (
+                <li className="navItem" key={post._id}>
+                    <NavLink to={path} className={(navData) => navData.isActive ? "active" : "" }>
+                        <CoreIcon icon={faFile}/> { post.name }
+                    </NavLink >
+                </li>
+            );
+            postLinks.push(ele);
+        });
+    } 
+    else {
+        return (
+            <div className="pagesSubSection">
+                <div className="postsLoadingCon">
+                    <UtilityLoading mode="dark"/>
+                </div>
+            </div>
+        )
     }
+
 
     return (
         <div className="pagesSubSection">

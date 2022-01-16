@@ -1,5 +1,5 @@
 import React, { ReactElement, useState, useEffect } from 'react';
-import { useQuery, gql } from "@apollo/client";
+import axios from 'axios';
 // Context
 import { 
     ModalContext, defaultModalState
@@ -8,37 +8,61 @@ import {
 import Header from "../components/Layout/Header";
 import Navigation from "../components/Layout/Navigation/Navigation";
 import Modal from '../components/Modal/Modal';
-import NotificationSection from '../components/Core/Notifications/NotificationSection';
+// Functions
+import getApiUri from "../functions/getApiUri";
 
-// Ping query
-const UTILITY_PING = gql`query {
-    utility {
-        ping
-        {
-    recieved
-    }
-}
-}`;
+
 
 const MainLayout: React.FC = ({ children }) => {
-    // Ping API
-    const { error } = useQuery(UTILITY_PING); 
 
     // Navigation State
     const [navigationState, toggleNavigation] = useState(false);
     // Modal State
     const [modalState, setModalState] = useState(defaultModalState.modalState);
+    // Pint state
+    const [showConnectionError, setConnectionErrorState] = useState(false);
+
+
+    // Check server status
+    useEffect(() => {
+        checkAPIConnection();
+        return () => {
+            setConnectionErrorState(false);
+        }
+    }, []);
 
     const checkAPIConnection = () => {
-        if(error) {
-            return (
-                <div className='criticalWarning'>
-                    <p className="title">Critial Error</p>
-                    <p>We cannot connect to the Lucid API. Please check your set up!</p>
-                </div>
-            )
-        }
+        axios({
+            url: getApiUri(),
+            method: 'post',
+            data: {
+              query: `
+                query {
+                    utility {
+                        ping
+                        {
+                            recieved
+                        }
+                    }
+                }`
+            }
+        })
+        .then((result) => {
+            const pingRecieved: boolean = result.data.data.utility.ping.recieved;
+            if(!pingRecieved) setConnectionErrorState(false);
+        })
+        .catch((err) => {
+            console.log(err);
+            setConnectionErrorState(true);
+        })
     }
+
+    const connectionErrorEle = (
+        <div className='criticalWarning'>
+            <p className="title">Critial Error</p>
+            <p>We cannot connect to the Lucid API. Please check your set up!</p>
+        </div>
+    )
 
     return (
         <ModalContext.Provider value={{ modalState, setModalState }}>
@@ -53,7 +77,7 @@ const MainLayout: React.FC = ({ children }) => {
                 <Modal/>
                 {/* Main */}
                 <main>
-                    { checkAPIConnection() }
+                    { showConnectionError ? connectionErrorEle : null }
                     { children }
                 </main>
             </div>

@@ -1,9 +1,13 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
+
 // Context
 import { PageNotificationContext, PageNotificationContextNoticationsObj } from "../../../helper/Context";
 // Components
 import ComponentRow from "./ComponentRow";
+import UtilityLoading from '../../../components/Ultility/Loading';
+// Functions
+import getApiUri from "../../../functions/getApiUri";
 
 interface componentData {
     date_added: string
@@ -31,21 +35,23 @@ const ComponentList: React.FC = () => {
     // -------------------------------------------------------
     // Components
     // -------------------------------------------------------
-    let [ skip, limit ] = [ 0 , 10 ];
+    let [ skip, limit ] = [ 0 , 1 ];
     const [ components, setComponents ] = useState<Array<componentData>>([]);
     const [ showLoadMore, setShowLoadMore ] = useState(true);
 
+    // First load
     useEffect(() => {
         getAllComponents(skip, limit);
         return () => {
             setComponents([]);
             setShowLoadMore(true);
+            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
         }
     }, []);
 
     const getAllComponents = (s: number, l: number) => {
         axios({
-            url: 'http://api.lucid.local/auth',
+            url: getApiUri(),
             method: 'post',
             data: {
               query: `
@@ -85,7 +91,19 @@ const ComponentList: React.FC = () => {
         });
     } 
     else {
-        return <p>Loading</p>
+        return (
+            <div className="con">
+                <div className="itemRow loading">
+                    <UtilityLoading mode="light"/>
+                </div>
+                <div className="itemRow loading">
+                    <UtilityLoading mode="light"/>
+                </div>
+                <div className="itemRow loading">
+                    <UtilityLoading mode="light"/>
+                </div>
+            </div>
+        )
     }
 
     // Load more
@@ -95,7 +113,7 @@ const ComponentList: React.FC = () => {
     }
 
     return (
-        <div className="componentList">
+        <div className="con">
             { componentRows }
             { showLoadMore ? <button onClick={loadmore}>Load more</button> : null }
             
