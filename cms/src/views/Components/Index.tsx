@@ -2,6 +2,7 @@
 import MainLayout from "../../layouts/MainLayout";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
+import ComponentList from "./Components/ComponentList";
 
 const Components: React.FC = () => {
 
@@ -15,7 +16,8 @@ const Components: React.FC = () => {
             title="Components"
             body="Manage all of your components!"
             sidebar={siderbar}>
-                <p>Lorem ipsum dolar</p>
+                {/* Component List */}
+                <ComponentList/>
             </DefaultPage>
         </MainLayout>
     );

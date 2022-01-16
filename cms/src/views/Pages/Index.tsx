@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import MainLayout from "../../layouts/MainLayout";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
-import ExampleNotification from "./components/ExampleNotification";
+import ExampleNotification from "./Components/ExampleNotification";
 
 const Pages: React.FC = () => {
 
