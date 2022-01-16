@@ -6,7 +6,9 @@ const ping: GraphQLFieldConfig<any, any, any> = {
     type: PingType,
     description: 'Ping',
     resolve: () => {
-        return true
+        return {
+            recieved: true
+        }
     }
 }
 
