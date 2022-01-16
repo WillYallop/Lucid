@@ -1,0 +1,34 @@
+.defaultPageCon {
+    width: 100%;
+    .header {
+        margin: $padding;
+        border-bottom: $border_style;
+        padding-bottom: rem(10);
+    }
+    .content {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 $padding $padding;
+        flex-wrap: wrap-reverse;
+        &.hasSidebar {
+            .main {
+                width: calc(100% - rem(320));
+                @include smallDesktop {
+                    width: 100%;
+                }
+            }
+        }
+        // Main
+        .main {
+            width: 100%;
+        }
+        // Siderbar
+        .sidebar {
+            width: rem(300);
+            @include smallDesktop {
+                width: 100%;
+                margin-bottom: rem(20);
+            }
+        }
+    }
+}

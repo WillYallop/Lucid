@@ -25,7 +25,6 @@
             width: 100%;
             max-width: rem(800);
             background-color: white;
-            height: rem(500);
             margin: auto;
             pointer-events: all;
             border-radius: rem(10);
@@ -33,7 +32,7 @@
                 position: relative;
                 margin: $padding;
                 padding-bottom: $padding;
-                border-bottom: rem(1) solid map-get($map: $section_colours, $key: _02_02);
+                border-bottom: $border_style;
                 padding-right: rem(50);
                 .closeBtn {
                     position: absolute;

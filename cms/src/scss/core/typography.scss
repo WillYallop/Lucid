@@ -1,9 +1,11 @@
-h2 {
+h1, h2 {
     font-size: rem(18);
     font-weight: bold;
     margin-bottom: rem(8);
+    color: map-get($map: $text_colours, $key: _01_01);
 }
 
 p {
     font-size: rem(16);
+    color: map-get($map: $text_colours, $key: _01_02);
 }

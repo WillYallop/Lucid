@@ -1,12 +1,21 @@
 $html_font_size: 16px;
 $padding: rem(20px);
 
+// Header & Nav sizes
 $header_height: rem(50);
 $navigation_width: rem(250);
 
+// Animation
 $transition_time: 0.2s;
 $transition_type: ease-out;
 
-$screen_sm_min: 567px;
-$screen_md_min: 768px;
-$screen_lg_min: 1024px;
+// Breakpoint config
+$breakpoints: (
+    _small_mobile: 567px,
+    _mobile: 768px,
+    _tablet: 1024px,
+    _small_desktop: 1100px
+);
+
+// Border Style
+$border_style: rem(1) solid map-get($map: $section_colours, $key: _02_02);

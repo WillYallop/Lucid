@@ -1,21 +1,28 @@
 
 // Small devices
 @mixin smallMobile {
-    @media (max-width: #{$screen_sm_min}) {
+    @media (max-width: #{map-get($breakpoints, _small_mobile)}) {
         @content;
     }
 }
  
 // mobile
 @mixin mobile {
-    @media (max-width: #{$screen_md_min}) {
+    @media (max-width: #{map-get($breakpoints, _mobile)}) {
         @content;
     }
 }
  
-// Desktip
+// tablet
 @mixin tablet {
-    @media (max-width: #{$screen_lg_min}) {
+    @media (max-width: #{map-get($breakpoints, _tablet)}) {
+        @content;
+    }
+}
+
+// small desktop
+@mixin smallDesktop {
+    @media (max-width: #{map-get($breakpoints, _small_desktop)}) {
         @content;
     }
 }

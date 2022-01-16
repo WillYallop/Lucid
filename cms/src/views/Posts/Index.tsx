@@ -1,12 +1,22 @@
 // Layout
 import MainLayout from "../../layouts/MainLayout";
+// Components
+import DefaultPage from "../../components/Layout/DefaultPage";
 
 const Posts: React.FC = () => {
+
+    const siderbar = (
+        <p>I am a sidebar</p>
+    )
+
     return (
         <MainLayout>
-
-            <h1>Posts</h1>
-
+            <DefaultPage
+            title="Posts"
+            body="Create and manage all of your blog posts!"
+            sidebar={siderbar}>
+                <p>Lorem ipsum dolar</p>
+            </DefaultPage>
         </MainLayout>
     );
 }
