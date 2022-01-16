@@ -2,7 +2,6 @@ require('dotenv').config();
 import express from 'express';
 import vhost from 'vhost';
 import morgan from 'morgan';
-import cors from 'cors';
 import { privateSchema } from "./graphql/auth/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 
@@ -18,12 +17,29 @@ const app = express();
 // ------------------------------------
 // CORS                               |
 // ------------------------------------
-const corsOptions  = {
-  origin: 'http://localhost:3000'
-}
+app.use((req, res, next) => {
 
-app.use(function(req,res,next) { res.setHeader("Access-Control-Allow-Origin", "*"); next(); });
-app.use(cors(corsOptions));
+  const allowedOrigins = [
+    `${config.https ? 'https://' : 'http://'}${config.domain}`,
+    `${config.https ? 'https://' : 'http://'}cms.${config.domain}`,
+    `${config.https ? 'https://' : 'http://'}assets.${config.domain}`,
+    `${config.https ? 'https://' : 'http://'}api.${config.domain}`,
+    'http://localhost:3000'
+  ];
+  const origin = req.headers.origin;
+  if(origin) {
+    if (allowedOrigins.includes(origin)) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+  }
+
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization, Auth-Strategy');
+  if(req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
+      return res.status(200).json({});
+  }
+  next();
+});
 
 
 // ------------------------------------
