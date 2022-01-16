@@ -33,10 +33,15 @@ const ComponentList: React.FC = () => {
     // -------------------------------------------------------
     let [ skip, limit ] = [ 0 , 1 ];
     const [ components, setComponents ] = useState<Array<componentData>>([]);
+    const [ showLoadMore, setShowLoadMore ] = useState(true);
 
     useEffect(() => {
         getAllComponents(skip, limit);
-    }, [])
+        return () => {
+            setComponents([]);
+            setShowLoadMore(true);
+        }
+    }, []);
 
     const getAllComponents = (s: number, l: number) => {
         axios({
@@ -60,6 +65,7 @@ const ComponentList: React.FC = () => {
         })
         .then((result) => {
             const allComponents: Array<componentData> = result.data.data.components.get_multiple || [];
+            if(!allComponents.length) setShowLoadMore(false);
             setComponents((components) => [
                 ...components,
                 ...allComponents
@@ -91,8 +97,8 @@ const ComponentList: React.FC = () => {
     return (
         <div className="componentList">
             { componentRows }
-
-            <button onClick={loadmore}>Load more</button>
+            { showLoadMore ? <button onClick={loadmore}>Load more</button> : null }
+            
         </div>
     )
 }
