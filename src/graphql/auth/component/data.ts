@@ -22,7 +22,7 @@ export const getMultiple = async(limit: number, skip: number) => {
     let res: any;
     res = await componentController.getMultiple(limit, skip);
     for await (const component of res.components) {
-        let  { content_types } = await getAllContentTypeConfig(component._id);
+        let content_types = await getAllContentTypeConfig(component._id);
         component['content_types'] = content_types;
     }
     // Get content_types from res and add them to the response object.

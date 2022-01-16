@@ -47,6 +47,6 @@ export const updateSingleContentTypeConfig = async (componentID: mod_componentMo
 export const getAllContentTypeConfig = async (componentID: mod_componentModel["_id"]) => {
     let res: any;
     res = await contentTypeController.getAll(componentID);
-    if(res.updated) return res.content_type;
+    if(res.success) return res.content_types;
     else throw res.errors[0].message;
 }

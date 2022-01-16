@@ -40,7 +40,7 @@ export const Component = new GraphQLObjectType({
             description: 'The component date_modified'
         },
         content_types: {
-            type: GraphQLNonNull(GraphQLList(ComponentContentTypeConfig)),
+            type: GraphQLList(ComponentContentTypeConfig),
             description: 'A list of the content_types'
         }
     })
