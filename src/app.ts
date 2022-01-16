@@ -18,19 +18,12 @@ const app = express();
 // ------------------------------------
 // CORS                               |
 // ------------------------------------
-var whitelist = [
-  'http://localhost:3000',
-  `${config.https ? 'https://' : 'http://'}${config.domain}`
-];
-var corsOptions = {
-  origin: function (origin:any, callback:any) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  }
+const corsOptions  = {
+  origin: 'http://localhost:3000'
 }
+
+app.use(function(req,res,next) { res.setHeader("Access-Control-Allow-Origin", "*"); next(); });
+app.use(cors(corsOptions));
 
 
 // ------------------------------------
@@ -59,10 +52,6 @@ mainapp.use('/', express.static(path.resolve(config.directories.dist), { extensi
 cms.use('/', express.static(path.resolve(__dirname, '../cms/build')));
 assets.use('/', express.static(path.resolve(config.directories.assets_dist)));
 
-api.use(cors(corsOptions));
-mainapp.use(cors(corsOptions));
-cms.use(cors(corsOptions));
-assets.use(cors(corsOptions));
 
 // Subdomain setup
 app.use(vhost(`${config.domain}`, mainapp));
