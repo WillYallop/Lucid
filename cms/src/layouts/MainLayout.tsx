@@ -1,9 +1,6 @@
 import React, { ReactElement, useState, useEffect } from 'react';
 import axios from 'axios';
-// Context
-import { 
-    ModalContext, defaultModalState
-} from '../helper/Context';
+
 // Components
 import Header from "../components/Layout/Header";
 import Navigation from "../components/Layout/Navigation/Navigation";
@@ -17,8 +14,7 @@ const MainLayout: React.FC = ({ children }) => {
 
     // Navigation State
     const [navigationState, toggleNavigation] = useState(false);
-    // Modal State
-    const [modalState, setModalState] = useState(defaultModalState.modalState);
+
     // Pint state
     const [showConnectionError, setConnectionErrorState] = useState(false);
 
@@ -65,23 +61,21 @@ const MainLayout: React.FC = ({ children }) => {
     )
 
     return (
-        <ModalContext.Provider value={{ modalState, setModalState }}>
-            <div className="mainLayoutCon">
-                {/* Header */}
-                <Header toggleNav={() => toggleNavigation(!navigationState)}></Header>
-                {/* Navigation */}
-                <Navigation 
-                showNav={navigationState} 
-                toggleNav={() => toggleNavigation(!navigationState)}></Navigation>
-                {/* Modal */}
-                <Modal/>
-                {/* Main */}
-                <main>
-                    { showConnectionError ? connectionErrorEle : null }
-                    { children }
-                </main>
-            </div>
-        </ModalContext.Provider>
+        <div className="mainLayoutCon">
+            {/* Header */}
+            <Header toggleNav={() => toggleNavigation(!navigationState)}></Header>
+            {/* Navigation */}
+            <Navigation 
+            showNav={navigationState} 
+            toggleNav={() => toggleNavigation(!navigationState)}></Navigation>
+            {/* Modal */}
+            <Modal/>
+            {/* Main */}
+            <main>
+                { showConnectionError ? connectionErrorEle : null }
+                { children }
+            </main>
+        </div>
     );
 }
 

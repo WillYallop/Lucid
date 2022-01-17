@@ -1,5 +1,3 @@
-// Layout
-import MainLayout from "../../layouts/MainLayout";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
 import ComponentList from "./Components/ComponentList";
@@ -11,15 +9,13 @@ const Components: React.FC = () => {
     )
 
     return (
-        <MainLayout>
-            <DefaultPage
-            title="Components"
-            body="Manage all of your components!"
-            sidebar={siderbar}>
-                {/* Component List */}
-                <ComponentList/>
-            </DefaultPage>
-        </MainLayout>
+        <DefaultPage
+        title="Components"
+        body="Manage all of your components!"
+        sidebar={siderbar}>
+            {/* Component List */}
+            <ComponentList/>
+        </DefaultPage>
     );
 }
 

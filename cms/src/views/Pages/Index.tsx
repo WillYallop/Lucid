@@ -1,6 +1,4 @@
 import React, { useContext } from "react";
-// Layout
-import MainLayout from "../../layouts/MainLayout";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
 import ExampleNotification from "./Components/ExampleNotification";
@@ -13,18 +11,16 @@ const Pages: React.FC = () => {
     )
 
     return (
-        <MainLayout>
-            <DefaultPage
-            title="Pages"
-            body="Create and manage all of your page!"
-            sidebar={siderbar}>
-                <p>Lorem ipsum dolar</p>
-                
+        <DefaultPage
+        title="Pages"
+        body="Create and manage all of your page!"
+        sidebar={siderbar}>
+            <p>Lorem ipsum dolar</p>
+            
 
-                <ExampleNotification/>
+            <ExampleNotification/>
 
-            </DefaultPage>
-        </MainLayout>
+        </DefaultPage>
     );
 }
 

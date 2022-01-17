@@ -1,5 +1,4 @@
-// Layout
-import MainLayout from "../../layouts/MainLayout";
+
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
 
@@ -10,14 +9,12 @@ const Style: React.FC = () => {
     )
 
     return (
-        <MainLayout>
-            <DefaultPage
-            title="Style"
-            body="Edit the style of your site!"
-            sidebar={siderbar}>
-                <p>Lorem ipsum dolar</p>
-            </DefaultPage>
-        </MainLayout>
+        <DefaultPage
+        title="Style"
+        body="Edit the style of your site!"
+        sidebar={siderbar}>
+            <p>Lorem ipsum dolar</p>
+        </DefaultPage>
     );
 }
 
