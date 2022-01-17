@@ -56,3 +56,14 @@ export const updateSingle = async (_id: mod_componentModel["_id"], data: cont_co
     if(res.updated) return res.component;
     else throw res.errors[0].message;
 }
+
+// Get unregistered components
+export const getUnregistered = async () => {
+    try {
+        let res = await componentController.getUnregistered();
+        return res;
+    }
+    catch(err) {
+        throw err;
+    }
+}

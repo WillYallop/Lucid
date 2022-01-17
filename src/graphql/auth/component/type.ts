@@ -1,5 +1,5 @@
 
-import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInputObjectType } from 'graphql';
+import { GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInputObjectType, GraphQLInt } from 'graphql';
 import { ComponentContentTypeConfig } from '../content_type_config/type';
 
 // GraphQL object type
@@ -42,6 +42,52 @@ export const Component = new GraphQLObjectType({
         content_types: {
             type: GraphQLList(ComponentContentTypeConfig),
             description: 'A list of the content_types'
+        }
+    })
+});
+
+// Unregistered
+export const UnregisteredComponentsFieldType = new GraphQLObjectType({
+    name: 'UnregisteredComponentsFieldType',
+    description: 'The unregistered component type',
+    fields: () => ({
+        unregistered: {
+            type: GraphQLNonNull(GraphQLList(UnregisteredComponents)),
+            description: UnregisteredComponents.description
+        },
+        totals: {
+            type: GraphQLNonNull(UnregisteredComponentsTotals),
+            description: UnregisteredComponentsTotals.description
+        }
+    })
+});
+
+export const UnregisteredComponents = new GraphQLObjectType({
+    name: 'UnregisteredComponents',
+    description: 'The unregistered component model',
+    fields: () => ({
+        file_name: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The component file name'
+        },
+        file_path: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The component file path'
+        }
+    })
+});
+
+export const UnregisteredComponentsTotals = new GraphQLObjectType({
+    name: 'UnregisteredComponentsTotals',
+    description: 'The unregistered component totals',
+    fields: () => ({
+        unregistered: {
+            type: GraphQLNonNull(GraphQLInt),
+            description: 'Total unregistered components'
+        },
+        registered: {
+            type: GraphQLNonNull(GraphQLInt),
+            description: 'Total registered components'
         }
     })
 });
