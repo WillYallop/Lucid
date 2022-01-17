@@ -57,15 +57,24 @@ const verifyFileExists = async (target: string) => {
 // ------------------------------------ ------------------------------------
 // Read Directory
 // ------------------------------------ ------------------------------------
-const listDirectoryFiles = async (target: string): Promise<Array<string>> => {
+
+const listDirectoryFiles = async (target: string, files_?: Array<cont_the_listDirectoryFiles>): Promise<Array<cont_the_listDirectoryFiles>> => {
+    files_ = files_ || [];
     const directory = path.resolve(themeDir + target);
+
     // Will list all files names inside the target directory
-    let fileNames: Array<string> = [];
     let files = await fs.readdir(directory);
-    for await(const file of files) {
-        fileNames.push(file);
+    for await(let file of files){
+        let filePath = directory + '/' + file;
+        let stat = await fs.stat(filePath);
+        let isDirectory = stat.isDirectory();
+        if (isDirectory) files_ = await listDirectoryFiles(target + '/' + file, files_)
+        else files_.push({
+            file_name: file,
+            file_path: target + '/' + file
+        });
     }
-    return fileNames;
+    return files_;
 }
 
 export {

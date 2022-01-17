@@ -50,3 +50,12 @@ interface cont_comp_saveComponentHandlerRes {
     saved: boolean
     component: mod_componentModel
 }
+
+// Get unregistered
+interface cont_comp_getUnregisteredRes {
+    unregistered: Array<cont_the_listDirectoryFiles>
+    totals: {
+        unregistered: number
+        registered: number
+    }
+}

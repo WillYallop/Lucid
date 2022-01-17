@@ -1,4 +1,4 @@
-import { getSingleFileContent, writeSingleFile } from './theme';
+import { getSingleFileContent, writeSingleFile, listDirectoryFiles } from './theme';
 import validate from '../validator';
 import { v1 as uuidv1 } from 'uuid';
 import { __verifyFieldsToErrorArray } from './helper/shared';
@@ -299,10 +299,38 @@ const getMultiple = async (limit: number, skip: number): Promise<cont_comp_getMu
     }
 }
 
+// ------------------------------------ ------------------------------------
+// get unregistered components
+// ------------------------------------ ------------------------------------
+const getUnregistered = async (): Promise<cont_comp_getUnregisteredRes> => {
+    let unregisteredComponents: Array<cont_the_listDirectoryFiles> = [];
+    let componentFiles = await listDirectoryFiles('/components');
+    // Get all registed components from the config/components.json file and compare against these paths to find no registered.
+    let registeredComponents: Array<mod_componentModel> = await getSingleFileContent('/config/components.json', 'json');
+    componentFiles.forEach((component) => {
+        // Remove the /components/ from the file_path res
+        component.file_path = component.file_path.replace('/components/', '');
+        let findMatch = registeredComponents.findIndex( x => x.file_path === component.file_path);
+        if(findMatch != -1) {
+            // Is unregistered!
+            unregisteredComponents.push(component);
+        }
+    });
+    return {
+        unregistered: unregisteredComponents,
+        totals: {
+            unregistered: unregisteredComponents.length,
+            registered: registeredComponents.length
+        }
+    }
+}
+
+
 export {
     saveSingle,
     updateSingle,
     deleteSingle,
     getSingleByID,
-    getMultiple
+    getMultiple,
+    getUnregistered
 }

@@ -4,3 +4,4 @@
 /// <reference path="./menu.d.ts" />
 /// <reference path="./page.d.ts" />
 /// <reference path="./seo.d.ts" />
+/// <reference path="./theme.d.ts" />
