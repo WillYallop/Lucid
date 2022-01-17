@@ -1,6 +1,6 @@
 import React, { ReactElement, useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { Outlet } from "react-router-dom";
 // Components
 import Header from "../components/Layout/Header";
 import Navigation from "../components/Layout/Navigation/Navigation";
@@ -10,11 +10,9 @@ import getApiUri from "../functions/getApiUri";
 
 
 
-const MainLayout: React.FC = ({ children }) => {
-
+const MainLayout: React.FC = () => {
     // Navigation State
     const [navigationState, toggleNavigation] = useState(false);
-
     // Pint state
     const [showConnectionError, setConnectionErrorState] = useState(false);
 
@@ -73,7 +71,7 @@ const MainLayout: React.FC = ({ children }) => {
             {/* Main */}
             <main>
                 { showConnectionError ? connectionErrorEle : null }
-                { children }
+                <Outlet />
             </main>
         </div>
     );
