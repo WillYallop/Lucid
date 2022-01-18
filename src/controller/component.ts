@@ -1,5 +1,5 @@
 import { getSingleFileContent, writeSingleFile, listDirectoryFiles } from './theme';
-import { __generateErrorString } from '../controller/helper/shared';
+import { __generateErrorString } from './helper/shared';
 import validate from '../validator';
 import { v1 as uuidv1 } from 'uuid';
 import merge from 'lodash/merge';
@@ -9,7 +9,7 @@ import merge from 'lodash/merge';
 // delete single component
 // ------------------------------------ ------------------------------------
 // This doesnt remove the component file.liquid, it just unregisteres in from the components collection that stores its info and fields.
-const deleteSingle = async (_id: mod_componentModel["_id"]): Promise<cont_comp_deleteSingleRes> => {
+const deleteSingle = async (_id: mod_componentModel["_id"]) => {
     try {
         const origin = 'componentController.deleteSingle';
         // Validate the ID
@@ -25,10 +25,7 @@ const deleteSingle = async (_id: mod_componentModel["_id"]): Promise<cont_comp_d
         if(componentIndex != -1) {
             // Remove from array and write to file
             componentData.splice(componentIndex, 1);
-            let response = await writeSingleFile('/config/components.json', 'json', componentData);
-            return {
-                deleted: response
-            }
+            await writeSingleFile('/config/components.json', 'json', componentData);
         }
         else {
             throw __generateErrorString({
@@ -48,7 +45,7 @@ const deleteSingle = async (_id: mod_componentModel["_id"]): Promise<cont_comp_d
 // ------------------------------------ ------------------------------------
 // Handles updating a component, all fields must pass validation first, can pass any amount of value to update
 // TO DO - add validation to the preview_url and fields paramaters
-const updateSingle = async (_id: mod_componentModel["_id"], data: cont_comp_updateSingleInp): Promise<cont_comp_updateSingleRes> => {
+const updateSingle = async (_id: mod_componentModel["_id"], data: cont_comp_updateSingleInp): Promise<mod_componentModel> => {
     try {
         const origin = 'componentController.updateSingle';
         if(Object.entries(data).length) {
@@ -92,11 +89,8 @@ const updateSingle = async (_id: mod_componentModel["_id"], data: cont_comp_upda
                 // Update object and save
                 let newCompObj: mod_componentModel = merge(componentData[findCompIndex], data);
                 componentData[findCompIndex] = newCompObj;
-                let response = await writeSingleFile('/config/components.json', 'json', componentData);
-                return {
-                    updated: response,
-                    component: componentData[findCompIndex]
-                }
+                await writeSingleFile('/config/components.json', 'json', componentData);
+                return componentData[findCompIndex]
             }
             else {
                 throw __generateErrorString({
@@ -123,7 +117,7 @@ const updateSingle = async (_id: mod_componentModel["_id"], data: cont_comp_upda
 // register a new component
 // ------------------------------------ ------------------------------------
 // Will handle saving a new component 
-const saveSingle = async (data: cont_comp_saveSingleInp): Promise<cont_comp_saveSingleRes> => {
+const saveSingle = async (data: cont_comp_saveSingleInp): Promise<mod_componentModel> => {
     try {
         const origin = 'componentController.saveSingle';
         // Validate the data
@@ -159,11 +153,8 @@ const saveSingle = async (data: cont_comp_saveSingleInp): Promise<cont_comp_save
             }
             // Add to array and save
             componentData.push(componentObj);
-            let response = await writeSingleFile('/config/components.json', 'json', componentData);
-            return {
-                saved: response,
-                component: componentObj
-            }
+            await writeSingleFile('/config/components.json', 'json', componentData);
+            return componentObj
         }
         else {
             throw __generateErrorString({
@@ -181,7 +172,7 @@ const saveSingle = async (data: cont_comp_saveSingleInp): Promise<cont_comp_save
 // ------------------------------------ ------------------------------------
 // get single component
 // ------------------------------------ ------------------------------------
-const getSingleByID = async (_id: mod_componentModel["_id"]): Promise<cont_comp_getSingleByIDRes> => {
+const getSingleByID = async (_id: mod_componentModel["_id"]): Promise<mod_componentModel> => {
     try {
         const origin = 'componentController.getSingleByID';
         // Verify ID
@@ -196,10 +187,7 @@ const getSingleByID = async (_id: mod_componentModel["_id"]): Promise<cont_comp_
         let componentData: Array<mod_componentModel> = await getSingleFileContent('/config/components.json', 'json');
         let findComponent = componentData.find( x => x._id === _id );
         if(findComponent) {
-            return {
-                success: true,
-                component: findComponent
-            }
+            return findComponent
         }
         else {
             throw __generateErrorString({
@@ -217,7 +205,7 @@ const getSingleByID = async (_id: mod_componentModel["_id"]): Promise<cont_comp_
 // ------------------------------------ ------------------------------------
 // get multiple components
 // ------------------------------------ ------------------------------------
-const getMultiple = async (limit: number, skip: number): Promise<cont_comp_getMultipleRes> => {
+const getMultiple = async (limit: number, skip: number): Promise<Array<mod_componentModel>> => {
     try {
         const origin = 'componentController.getMultiple';
         // Validate inputs are numbers
@@ -237,10 +225,7 @@ const getMultiple = async (limit: number, skip: number): Promise<cont_comp_getMu
             let componentData: Array<mod_componentModel> = await getSingleFileContent('/config/components.json', 'json');
             componentData.splice(0, skip);
             componentData.splice(limit);
-            return {
-                success: true,
-                components: componentData
-            }
+            return componentData
         }
     }
     catch(err) {

@@ -61,7 +61,7 @@ EXAMPLE CONTENT_TYPE CONFIG FILE
 // ------------------------------------ ------------------------------------
 // save single component content type
 // ------------------------------------ ------------------------------------
-const saveSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_saveSingleInp): Promise<cont_cont_saveSingleRes> => {
+const saveSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_saveSingleInp): Promise<mod_contentTypesConfigModel> => {
     try {
         const origin = 'contentTypeController.saveSingle';
         // Check if file ith component ID exists in theme/config/content_types and save a single component content type object to it
@@ -114,11 +114,8 @@ const saveSingle = async (componentID: mod_componentModel["_id"], contentType: c
                 // Does not exist
                 // Add to array and save
                 contentTypeFileData.push(contentTypeObj);
-                let response = await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
-                return {
-                    saved: response,
-                    content_type: contentTypeObj
-                }
+                await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
+                return contentTypeObj
             }
             else {
                 throw __generateErrorString({
@@ -144,7 +141,7 @@ const saveSingle = async (componentID: mod_componentModel["_id"], contentType: c
 // ------------------------------------ ------------------------------------
 // get all component content types data
 // ------------------------------------ ------------------------------------
-const getAll = async (componentID: mod_componentModel["_id"]): Promise<cont_cont_getAllRes> => {
+const getAll = async (componentID: mod_componentModel["_id"]): Promise<Array<mod_contentTypesConfigModel>> => {
     try {
         await validate([
             {
@@ -153,17 +150,14 @@ const getAll = async (componentID: mod_componentModel["_id"]): Promise<cont_cont
             }
         ]);
         let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
-        return {
-            success: true,
-            content_types: contentTypeFileData
-        }
+        return contentTypeFileData;
     }
     catch(err) {
         throw err;
     }
 }
 
-const getSingle = async (componentID: mod_componentModel["_id"], _id: mod_contentTypesConfigModel["_id"]): Promise<cont_cont_getSingleRes> => {
+const getSingle = async (componentID: mod_componentModel["_id"], _id: mod_contentTypesConfigModel["_id"]): Promise<mod_contentTypesConfigModel> => {
     try {
         const origin = 'contentTypeController.getSingle';
         await validate([
@@ -180,10 +174,7 @@ const getSingle = async (componentID: mod_componentModel["_id"], _id: mod_conten
         // Find single
         let findContentType = contentTypeFileData.find( x => x._id === _id);
         if(findContentType) {
-            return {
-                success: true,
-                content_type: findContentType
-            }
+            return findContentType;
         }
         else {
             throw __generateErrorString({
@@ -200,7 +191,7 @@ const getSingle = async (componentID: mod_componentModel["_id"], _id: mod_conten
 
 // delete single component content type
 // ------------------------------------ ------------------------------------
-const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]): Promise<cont_cont_deleteSingleRes> => {
+const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
     try {
         const origin = 'contentTypeController.deleteSingle';
         await validate([
@@ -218,10 +209,7 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
         if (findContentTypeIndex != -1) {
             // Remove from array and write to file
             contentTypeFileData.splice(findContentTypeIndex, 1);
-            let response = await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
-            return {
-                deleted: response
-            }
+            await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
         }
         else {
             throw __generateErrorString({
@@ -239,7 +227,7 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
 // ------------------------------------ ------------------------------------
 // update single component content type
 // ------------------------------------ ------------------------------------
-const updateSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_updateSingleInp, repeaterField: boolean, repeaterID: mod_contentTypesConfigModel["_id"]): Promise<cont_cont_updateSingleRes> => {
+const updateSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_updateSingleInp, repeaterField: boolean, repeaterID: mod_contentTypesConfigModel["_id"]): Promise<mod_contentTypesConfigModel> => {
     try {
         const origin = 'contentTypeController.updateSingle';
         if(Object.entries(contentType).length) {
@@ -295,19 +283,21 @@ const updateSingle = async (componentID: mod_componentModel["_id"], contentType:
     
             // save data
             const mergeAndSaveContentTypeFileData = async (existing: mod_contentTypesConfigModel, topLevelInd: number, filedLevelInd?: number) => {
-                let newContentTypeObj: mod_contentTypesConfigModel = merge(existing, contentType);
-                if(repeaterField) {
-                    // @ts-ignore: Unreachable code error
-                    contentTypeFileData[topLevelInd].fields[filedLevelInd] = newContentTypeObj;
+                try {
+                    let newContentTypeObj: mod_contentTypesConfigModel = merge(existing, contentType);
+                    if(repeaterField) {
+                        // @ts-ignore: Unreachable code error
+                        contentTypeFileData[topLevelInd].fields[filedLevelInd] = newContentTypeObj;
+                    }
+                    else {
+                        contentTypeFileData[topLevelInd] = newContentTypeObj;
+                    }
+                    await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
+                    return newContentTypeObj;
                 }
-                else {
-                    contentTypeFileData[topLevelInd] = newContentTypeObj;
+                catch(err) {
+                    throw err;
                 }
-                let response = await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
-                return {
-                    response,
-                    newContentTypeObj
-                };
             }
             
             // content Type Top Level
@@ -332,11 +322,8 @@ const updateSingle = async (componentID: mod_componentModel["_id"], contentType:
                     if(contentTypeFieldIndex != -1) {
                         // Merge and save data!
                         // @ts-ignore: Unreachable code error
-                        let { response, newContentTypeObj } = await mergeAndSaveContentTypeFileData(contentTypeFileData[contentTypeTopLevelIndex].fields[contentTypeFieldIndex], contentTypeTopLevelIndex, contentTypeFieldIndex);
-                        return {
-                            updated: response,
-                            content_type: newContentTypeObj
-                        }
+                        let newContentTypeObj = await mergeAndSaveContentTypeFileData(contentTypeFileData[contentTypeTopLevelIndex].fields[contentTypeFieldIndex], contentTypeTopLevelIndex, contentTypeFieldIndex);
+                        return newContentTypeObj
                     }
                     else {
                         throw __generateErrorString({
@@ -356,11 +343,8 @@ const updateSingle = async (componentID: mod_componentModel["_id"], contentType:
                         });
                     }
                     // Merge and save data!
-                    let { response, newContentTypeObj } = await mergeAndSaveContentTypeFileData(contentTypeFileData[contentTypeTopLevelIndex], contentTypeTopLevelIndex);
-                    return {
-                        updated: response,
-                        content_type: newContentTypeObj
-                    }
+                    let newContentTypeObj = await mergeAndSaveContentTypeFileData(contentTypeFileData[contentTypeTopLevelIndex], contentTypeTopLevelIndex);
+                    return newContentTypeObj
                 }
     
             }

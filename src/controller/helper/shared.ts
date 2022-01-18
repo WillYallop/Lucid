@@ -10,5 +10,5 @@ interface generateErrorStringInp {
     message: string
 }
 export const __generateErrorString = (error: generateErrorStringInp): string => {
-    return `Lucid Error! Code: ${error.code}, Origin: ${origin}, Message: ${error.message}!`;
+    return `Lucid Error! Code: ${error.code}, Origin: ${error.origin}, Message: ${error.message}!`;
 }

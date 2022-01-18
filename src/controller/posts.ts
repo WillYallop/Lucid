@@ -29,7 +29,7 @@ import { __convertStringLowerUnderscore, __generateErrorString } from './helper/
 // ------------------------------------ ------------------------------------
 // add new post type entry
 // ------------------------------------ ------------------------------------
-const addPostType = async (name: cont_post_postDeclaration["name"], template_name: cont_post_postDeclaration["template_name"]): Promise<cont_post_addPostTypeRes> => {
+const addPostType = async (name: cont_post_postDeclaration["name"], template_name: cont_post_postDeclaration["template_name"]): Promise<cont_post_postDeclaration> => {
     try {
         const origin = 'postsController.addPostType';
         // Make sure entry doesnt already exist with same name
@@ -60,11 +60,8 @@ const addPostType = async (name: cont_post_postDeclaration["name"], template_nam
                 template_name: template_name
             };
             postsData.push(postObj);
-            let response = await writeSingleFile('/config/posts.json', 'json', postsData);
-            return {
-                saved: response,
-                post_type: postObj
-            }
+            await writeSingleFile('/config/posts.json', 'json', postsData);
+            return postObj
         }
         else {
             throw __generateErrorString({
@@ -82,7 +79,7 @@ const addPostType = async (name: cont_post_postDeclaration["name"], template_nam
 // ------------------------------------ ------------------------------------
 // remove single post type entry
 // ------------------------------------ ------------------------------------
-const removePostType = async (_id: cont_post_postDeclaration["_id"]): Promise<cont_post_removePostTypeRes> => {
+const removePostType = async (_id: cont_post_postDeclaration["_id"]) => {
     try {
         const origin = 'postsController.removePostType';
         // Validate the ID
@@ -99,10 +96,7 @@ const removePostType = async (_id: cont_post_postDeclaration["_id"]): Promise<co
         if(postIndex != -1) {
             // Remove from array and write
             postsData.splice(postIndex, 1);
-            let response = await writeSingleFile('/config/posts.json', 'json', postsData);
-            return {
-                deleted: response
-            }
+            await writeSingleFile('/config/posts.json', 'json', postsData);
         }
         else {
             throw __generateErrorString({
@@ -120,7 +114,7 @@ const removePostType = async (_id: cont_post_postDeclaration["_id"]): Promise<co
 // ------------------------------------ ------------------------------------
 // get single post type entry
 // ------------------------------------ ------------------------------------
-const getSinglePostType = async (_id: cont_post_postDeclaration["_id"]): Promise<cont_post_getSinglePostTypeRes> => {
+const getSinglePostType = async (_id: cont_post_postDeclaration["_id"]): Promise<cont_post_postDeclaration> => {
     try {
         const origin = 'postsController.getSinglePostType';
         // Validate the ID
@@ -135,10 +129,7 @@ const getSinglePostType = async (_id: cont_post_postDeclaration["_id"]): Promise
         // Check if it exists and get it
         let post = postsData.find( x => x._id === _id );
         if(post != undefined) {
-            return {
-                found: true,
-                post_type: post
-            }
+            return post
         }
         else {
             throw __generateErrorString({
@@ -156,16 +147,13 @@ const getSinglePostType = async (_id: cont_post_postDeclaration["_id"]): Promise
 // ------------------------------------ ------------------------------------
 // get multiple post types entries
 // ------------------------------------ ------------------------------------
-const getMultiplePostTypes = async (limit?: number, skip?: number, all?: boolean): Promise<cont_post_getMultiplePostTypeRes> => {
+const getMultiplePostTypes = async (limit?: number, skip?: number, all?: boolean): Promise<Array<cont_post_postDeclaration>> => {
     try {
         const origin = 'postsController.getMultiplePostTypes';
         // Get component data
         let postsData: Array<cont_post_postDeclaration> = await getSingleFileContent('/config/posts.json', 'json');
         if(all) {
-            return {
-                success: true,
-                post_types: postsData
-            }
+            return postsData;
         } 
         else {
             if(typeof limit != 'number' && typeof skip != 'number') {
@@ -179,10 +167,7 @@ const getMultiplePostTypes = async (limit?: number, skip?: number, all?: boolean
             else {
                 postsData.splice(0, skip);
                 if(limit != undefined) postsData.splice(limit);
-                return {
-                    success: true,
-                    post_types: postsData
-                }
+                return postsData;
             }
         }
     }

@@ -7,27 +7,6 @@ interface cont_cont_saveSingleInp {
     config: mod_contentTypesConfigModel["config"]
     fields?: Array<cont_cont_saveSingleInp>
 }
-interface cont_cont_saveSingleRes {
-    saved: boolean,
-    content_type?: mod_contentTypesConfigModel
-}
-
-// getAll()
-interface cont_cont_getAllRes {
-    success: boolean
-    content_types?: Array<mod_contentTypesConfigModel>
-}
-
-// getSingle()
-interface cont_cont_getSingleRes {
-    success: boolean
-    content_type?: mod_contentTypesConfigModel
-}
-
-// deleteSingle()
-interface cont_cont_deleteSingleRes {
-    deleted: boolean
-}
 
 // updateSingle()
 interface cont_cont_updateSingleInp {
@@ -35,10 +14,6 @@ interface cont_cont_updateSingleInp {
     name?: mod_contentTypesConfigModel["name"]
     type?: mod_contentTypesConfigModel["type"]
     config?: mod_contentTypesConfigModel["config"]
-}
-interface cont_cont_updateSingleRes {
-    updated: boolean
-    content_type?: mod_contentTypesConfigModel
 }
 
 // updateSingleContentType()
