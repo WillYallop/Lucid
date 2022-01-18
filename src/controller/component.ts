@@ -1,7 +1,6 @@
 import { getSingleFileContent, writeSingleFile, listDirectoryFiles } from './theme';
 import validate from '../validator';
 import { v1 as uuidv1 } from 'uuid';
-import { __verifyFieldsToErrorArray } from './helper/shared';
 import merge from 'lodash/merge';
 
 
@@ -10,6 +9,7 @@ import merge from 'lodash/merge';
 // ------------------------------------ ------------------------------------
 // This doesnt remove the component file.liquid, it just unregisteres in from the components collection that stores its info and fields.
 const deleteSingle = async (_id: mod_componentModel["_id"]): Promise<cont_comp_deleteSingleRes> => {
+
     // Validate the ID
     let verifyData = await validate([
         {
