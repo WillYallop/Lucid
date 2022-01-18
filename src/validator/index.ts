@@ -5,12 +5,11 @@ import { __generateErrorString } from '../controller/helper/shared';
 import { version as uuidVersion } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 
+const origin = 'validateField';
+
 // Handle passing of field data to correct method validator
 const validateField = async (field: vali_validateFieldObj) => {
     try {
-        let error = false;
-        let code: number, message: string;
-        const origin = 'validateField';
         if(field.value != undefined) {
             switch(field.method) {
                 // Components
