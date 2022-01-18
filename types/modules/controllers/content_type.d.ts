@@ -10,27 +10,23 @@ interface cont_cont_saveSingleInp {
 interface cont_cont_saveSingleRes {
     saved: boolean,
     content_type?: mod_contentTypesConfigModel
-    errors?: Array<core_errorMsg>
 }
 
 // getAll()
 interface cont_cont_getAllRes {
     success: boolean
     content_types?: Array<mod_contentTypesConfigModel>
-    errors?: Array<core_errorMsg>
 }
 
 // getSingle()
 interface cont_cont_getSingleRes {
     success: boolean
     content_type?: mod_contentTypesConfigModel
-    errors?: Array<core_errorMsg>
 }
 
 // deleteSingle()
 interface cont_cont_deleteSingleRes {
     deleted: boolean
-    errors?: Array<core_errorMsg>
 }
 
 // updateSingle()
@@ -43,7 +39,6 @@ interface cont_cont_updateSingleInp {
 interface cont_cont_updateSingleRes {
     updated: boolean
     content_type?: mod_contentTypesConfigModel
-    errors?: Array<core_errorMsg> 
 }
 
 // updateSingleContentType()
