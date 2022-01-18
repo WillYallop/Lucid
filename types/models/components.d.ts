@@ -10,4 +10,6 @@ interface mod_componentModel {
     preview_url: string
     date_added: string
     date_modified: string
+
+    content_types?: Array<mod_contentTypesConfigModel>
 }

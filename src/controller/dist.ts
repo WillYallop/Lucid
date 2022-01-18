@@ -2,6 +2,7 @@ import * as fs from 'fs-extra';
 
 const path = require('path');
 const config = require(path.resolve("./lucid.config.js"));
+import { __generateErrorString } from './helper/shared';
 
 const themDir = path.resolve(config.directories.theme);
 const templatesDir = path.resolve(config.directories.templates);
@@ -21,12 +22,7 @@ const buildDefaultApp = async () => {
         fs.rmdirSync(tempGenDir, { recursive: true }); // Wipe temp directory
     }
     catch(err) {
-        throw [{
-            code: 500,
-            origin: 'distController.buildDefaultApp',
-            title: 'Dist Error',
-            message: `Error while building default app to dist!`
-        }]
+        throw err;
     }
 }
 
@@ -41,12 +37,7 @@ const copyStatic = async () => {
         return true
     }
     catch(err) {
-        throw [{
-            code: 500,
-            origin: 'distController.copyStatic',
-            title: 'Dist Error',
-            message: `Error while copying static theme directory to app dist!`
-        }]
+        throw err;
     }
 }
 
@@ -58,12 +49,7 @@ const copyAssets = async () => {
         return true
     }
     catch(err) {
-        throw [{
-            code: 500,
-            origin: 'distController.copyAssets',
-            title: 'Dist Error',
-            message: `Error while copying assets theme directory to assets dist!`
-        }]
+        throw err;
     }
 }
 
@@ -75,12 +61,7 @@ const createSitemap = async (pages: gene_pagseMap) => {
         console.log('Build Sitemap!');
     }
     catch(err) {
-        throw({
-            code: 500,
-            origin: 'distController.createSitemap',
-            title: 'Dist Error',
-            message: `Error while generating app sitemap!`
-        });
+        throw err;
     }
 }
 
@@ -101,12 +82,7 @@ const savePages = async (pages: gene_pagseMap): Promise<boolean> => {
     }
     catch(err) {
         fs.rmdirSync(tempGenDir, { recursive: true }); // Wipe temp directory
-        throw [{
-            code: 500,
-            origin: 'distController.savePages',
-            title: 'Dist Error',
-            message: `Error while saving page to dist directory!`
-        }]
+        throw err;
     }
 }
 
