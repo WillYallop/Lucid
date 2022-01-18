@@ -102,10 +102,12 @@
         background-color: rgba($color: #000000, $alpha: 0.4);
         opacity: 0;
         display: none;
+        pointer-events: none;
         @include mobile {
             display: block;
             &.active {
                 opacity: 1;
+                pointer-events: all;
             }
         }
     }

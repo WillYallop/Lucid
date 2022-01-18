@@ -1,23 +1,119 @@
-// Layout
-import MainLayout from "../../layouts/MainLayout";
+import { useState, useEffect, useContext } from "react";
+import axios from 'axios';
+
+// Context
+import { PageNotificationContext, PageNotificationContextNoticationsObj } from "../../helper/Context";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
+import ComponentList from "./Components/ComponentList";
+// Functions
+import getApiUri from "../../functions/getApiUri";
+
+
+interface unregisteredComponentsData {
+    totals: {
+        unregistered: number
+        registered: number
+    }
+    unregistered: Array<{
+        file_name: string
+        path_name: string
+    }>
+}
+const defaultUnregisteredComponents: unregisteredComponentsData = {
+    totals: {
+        unregistered: 0,
+        registered: 0
+    },
+    unregistered: []
+}
+
 
 const Components: React.FC = () => {
+    // -------------------------------------------------------
+    // Notification 
+    // -------------------------------------------------------
+    const { notifications, setNotifications } = useContext(PageNotificationContext);
+    const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
+        setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
+            ...array,
+            {
+                message: message,
+                type: type
+            }
+        ]);
+    }
+
+    // -------------------------------------------------------
+    // Unregistered components
+    // -------------------------------------------------------
+    const [ unregisteredComponents, setUnregisteredComponents ] = useState<unregisteredComponentsData>(defaultUnregisteredComponents);
+    const getUnregisteredComponents = () => {
+        axios({
+            url: getApiUri(),
+            method: 'post',
+            data: {
+              query: `
+                query {
+                    components {
+                        get_unregistered
+                        {
+                            unregistered {
+                                file_name
+                                file_path
+                            }
+                            totals {
+                                unregistered
+                                registered
+                            }
+                        }
+                    }
+                }`
+            }
+        })
+        .then((result) => {
+            const res: unregisteredComponentsData = result.data.data.components.get_unregistered || {};
+            setUnregisteredComponents(() => {
+                return {
+                    ...unregisteredComponents,
+                    ...res
+                }
+            });
+            if(res.totals.unregistered > 0) {
+                addNotification(`You have ${res.totals.unregistered} unregistered components!`, 'warning');
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            addNotification('There was an error getting your unregistered components!', 'error');
+        })
+    }
+
+
+    // -------------------------------------------------------
+    // 
+    // -------------------------------------------------------
+    useEffect(() => {
+        getUnregisteredComponents();
+        return () => {
+            setUnregisteredComponents(defaultUnregisteredComponents);
+            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
+        }
+    }, []);
+
 
     const siderbar = (
         <p>I am a sidebar</p>
     )
 
     return (
-        <MainLayout>
-            <DefaultPage
-            title="Components"
-            body="Manage all of your components!"
-            sidebar={siderbar}>
-                <p>Lorem ipsum dolar</p>
-            </DefaultPage>
-        </MainLayout>
+        <DefaultPage
+        title="Components"
+        body="Manage all of your components!"
+        sidebar={siderbar}>
+            {/* Component List */}
+            <ComponentList/>
+        </DefaultPage>
     );
 }
 

@@ -1,4 +1,10 @@
+import React, { ReactElement, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes,  Route } from "react-router-dom";
+// Context
+import { 
+  ModalContext, defaultModalState,
+  defaultPageNotificationState, PageNotificationContext 
+} from './helper/Context';
 // Views
 import Dashboard from './views/Dashboard';
 import Pages from "./views/Pages/Index";
@@ -10,24 +16,48 @@ import Settings from "./views/Settings/Index";
 import EditComponent from "./views/EditComponent/Index";
 import EditPage from "./views/EditPage/Index";
 
+import SignIn from './views/SignIn/Index';
+// Components
+import MainLayout from './layouts/MainLayout';
+
 
 const App: React.FC = () => {
+
+  // Modal State
+  const [modalState, setModalState] = useState(defaultModalState.modalState);
+  const [ notifications, setNotifications ] = useState(defaultPageNotificationState.notifications);
+
+
+
   return (
-    <Router>
-        <Routes>
-          <Route path="/" element={<Dashboard />}></Route>
-          <Route path="/pages" element={<Pages />}></Route>
-          <Route path="/posts/:name" element={<Posts />}></Route>
+    <ModalContext.Provider value={{ modalState, setModalState }}>
+      <PageNotificationContext.Provider value={{ notifications, setNotifications }}>
 
-          <Route path="/media" element={<Media />}></Route>
-          <Route path="/components" element={<Components />}></Route>
-          <Route path="/style" element={<Style />}></Route>
-          <Route path="/settings" element={<Settings />}></Route>
+        <Router>
+          <Routes>
 
-          <Route path="/editpage/:_id" element={<EditPage />}></Route>
-          <Route path="/editcomponent/:_id" element={<EditComponent />}></Route>
-        </Routes>
-    </Router>
+            <Route>
+              <Route path="/signin" element={<SignIn/>}></Route>
+            </Route>
+
+              <Route element={<MainLayout/>}>
+                <Route path="/" element={<Dashboard />}></Route>
+                <Route path="/pages" element={<Pages />}></Route>
+                <Route path="/posts/:name" element={<Posts />}></Route>
+                <Route path="/media" element={<Media />}></Route>
+                <Route path="/components" element={<Components />}></Route>
+                <Route path="/style" element={<Style />}></Route>
+                <Route path="/settings" element={<Settings />}></Route>
+
+                <Route path="/editpage/:_id" element={<EditPage />}></Route>
+                <Route path="/editcomponent/:_id" element={<EditComponent />}></Route>
+              </Route>
+
+          </Routes>
+        </Router>
+        
+      </PageNotificationContext.Provider>
+    </ModalContext.Provider>
   );
 }
 

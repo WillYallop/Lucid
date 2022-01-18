@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt } from 'graphql';
 // @ts-ignore: Unreachable code error
-import { Component } from './type';
-import { getSingle, getMultiple } from './data';
+import { Component, UnregisteredComponentsFieldType } from './type';
+import { getSingle, getMultiple, getUnregistered } from './data';
 
 // ------------------------------------ ------------------------------------
 // Components
@@ -32,11 +32,21 @@ const getMultipleComponents: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
+// Get unregisterd components and meta data
+const getUnregisteredComponentsField: GraphQLFieldConfig<any, any, any> = {
+    type: UnregisteredComponentsFieldType,
+    description: 'Get unregistered components',
+    resolve: () => {
+        return getUnregistered();
+    }
+}
+
 export const ComponentQuery = new GraphQLObjectType({
     name: 'ComponentQuery',
     description: 'The components base query',
     fields: {
         get_single: getSingleComponent,
-        get_multiple: getMultipleComponents
+        get_multiple: getMultipleComponents,
+        get_unregistered: getUnregisteredComponentsField
     }
 })

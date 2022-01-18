@@ -3,19 +3,9 @@ import ReactDOM from 'react-dom';
 import './scss/main.scss';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
-import getApiUri from "./functions/getApiUri";
-
-// configure apollo client
-const client = new ApolloClient({
-  uri: getApiUri(),
-  cache: new InMemoryCache()
-});
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <App />
-  </ApolloProvider>,
+  <App />,
   document.getElementById('root')
 );
 

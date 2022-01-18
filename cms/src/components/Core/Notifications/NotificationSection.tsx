@@ -13,12 +13,16 @@ const NotificationSection: React.FC = () => {
     notifications.forEach((notif) => {
         notificationElements.push(<NotificationRow key={notificationElements.length + 1} message={notif.message} type={notif.type}/>)
     });
-
-    return (
-        <div className="notificationContainer">
-            { notificationElements }
-        </div>
-    );
+    if(notifications.length) {
+        return (
+            <div className="notificationContainer">
+                { notificationElements }
+            </div>
+        )
+    }
+    else {
+        return null;
+    }
 }
 
 export default NotificationSection;

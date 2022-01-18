@@ -230,6 +230,12 @@ import { validate, componentController, postsController, themeController, genera
 //     console.log(res);
 // })
 
+// List files
+componentController.getUnregistered()
+.then((res) => {
+    console.log(res);
+})
+
 // TEST VALIDATE
 // async function testValidate() {
 //     let verifyData = await validate([

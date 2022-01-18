@@ -23,8 +23,8 @@ export const getSingle = async (_id: mod_pageModel["_id"]) => {
         let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', _id);
         let componentsArray: Array<mod_pageModelComponent> = [];
         for await(const pageComponent of pageComponents) { 
-            let { component } = await componentController.getSingleByID(pageComponent.component_id);
-            let { content_types } = await contentTypeController.getAll(pageComponent.component_id);
+            let component = await componentController.getSingleByID(pageComponent.component_id);
+            let content_types = await contentTypeController.getAll(pageComponent.component_id);
             // Throw if not found
             if(component === undefined) throw 'Component undefined.';
             if(content_types === undefined) throw 'Content Types undefined.';

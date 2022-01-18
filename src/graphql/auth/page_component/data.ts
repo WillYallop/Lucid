@@ -31,41 +31,30 @@ export const updatePageComponent = async (_id: mod_pageComponentsModel["_id"], d
 export const addPageComponent = async (page_id: mod_pageModel["_id"], component_id: mod_componentModel["_id"], position: mod_pageComponentsModel["position"]) => {
     try {
         // Verify component_id
-        let getComponent = await componentController.getSingleByID(component_id);
-        if(getComponent.success) {
-            // Create a new page_components row
-            let savePageComponentRes: mod_pageComponentsModel = await db.one('INSERT INTO page_components(page_id, component_id, position) VALUES(${page_id}, ${component_id}, ${position}) RETURNING *', {
-                page_id: page_id, // reference will verify if this exists
-                component_id: component_id,
-                position: position
-            });
-            // Grab component theme/config/content_types file to get a list of all config_ids
-            // Update page last edited field
-            let { success, content_types } = await contentTypeController.getAll(component_id);
-            if(success) {
-                if(content_types != undefined) {
-                    for await(const contentType of content_types) {
-                        // Save a new empty table row for the correct content type
-                        await saveSingleContentType(savePageComponentRes._id, contentType);
-                    }
-                    return {
-                        _id: savePageComponentRes._id,
-                        component_id: savePageComponentRes.component_id,
-                        position: savePageComponentRes.position
-                    }
-                }
-                else {
-                    throw 'Cannot verify components content_type config!'
-                }
+        await componentController.getSingleByID(component_id);
+        // Create a new page_components row
+        let savePageComponentRes: mod_pageComponentsModel = await db.one('INSERT INTO page_components(page_id, component_id, position) VALUES(${page_id}, ${component_id}, ${position}) RETURNING *', {
+            page_id: page_id, // reference will verify if this exists
+            component_id: component_id,
+            position: position
+        });
+        // Grab component theme/config/content_types file to get a list of all config_ids
+        // Update page last edited field
+        let content_types = await contentTypeController.getAll(component_id);
+        if(content_types != undefined) {
+            for await(const contentType of content_types) {
+                // Save a new empty table row for the correct content type
+                await saveSingleContentType(savePageComponentRes._id, contentType);
             }
-            else {
-                throw 'Cannot verify components content_type config!'
+            return {
+                _id: savePageComponentRes._id,
+                component_id: savePageComponentRes.component_id,
+                position: savePageComponentRes.position
             }
         }
         else {
-            throw 'Cannot verify component exists!'
+            throw 'Cannot verify components content_type config!'
         }
-
     }
     catch(err) {
         throw err;

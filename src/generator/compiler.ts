@@ -98,12 +98,7 @@ const componentCompiler = async (components: Array<gen_generateAppInpComponentMo
         return componentsMap;
     }
     catch (err) {
-        throw {
-            code: 500,
-            origin: 'componentCompiller',
-            title: 'Compiling Error',
-            message: `Error while compiling page components!`
-        };
+        throw err;
     }
 }
 
@@ -150,12 +145,7 @@ const pageCompiler = async (data: gene_compilePage): Promise<string> => {
         return newMarkup
     }
     catch (err) {
-        throw {
-            code: 500,
-            origin: 'pageCompiler',
-            title: 'Compiling Error',
-            message: `Error while compiling page!`
-        };
+        throw err;
     }
 }
 

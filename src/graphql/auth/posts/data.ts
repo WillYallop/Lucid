@@ -2,35 +2,45 @@ import { postsController } from '../../../index';
 
 // Get single post
 export const getSingle = async (_id: cont_post_postDeclaration["_id"]) => {
-    let res: any;
-    res = await postsController.getSinglePostType(_id);
-    if(res.found) return res.post_type;
-    else throw res.errors[0].message;
+    try {
+        let post_type = await postsController.getSinglePostType(_id);
+        return post_type;
+    }
+    catch(err) {
+        throw err;
+    }
 }
 
 // Get multiple posts
 export const getMultiple = async (limit?: number, skip?: number, all?: boolean) => {
-    let res: any;
-    res = await postsController.getMultiplePostTypes(limit, skip, all);
-    if(res.success) return res.post_types;
-    else throw res.errors[0].message;
+    try {
+        let post_types = await postsController.getMultiplePostTypes(limit, skip, all);
+        return post_types;
+    }
+    catch(err) {
+        throw err;
+    }
 }
 
 // Delete single post
 export const deleteSingle = async (_id: cont_post_postDeclaration["_id"]) => {
-    let res: any;
-    res = await postsController.removePostType(_id);
-    if(res.deleted) {
-        return {
-            deleted: res.deleted
-        }
-    } else throw res.errors[0].message;
+    try {
+        await postsController.removePostType(_id);
+        return true;
+    }
+    catch(err) {
+        throw err;
+    }
+
 }
 
 // Save single post
 export const saveSingle = async (name: cont_post_postDeclaration["name"], template_name: cont_post_postDeclaration["template_name"]) => {
-    let res: any;
-    res = await postsController.addPostType(name, template_name);
-    if(res.saved) return res.post_type;
-    else throw res.errors[0].message;
+    try {
+        let post_type = await postsController.addPostType(name, template_name);
+        return post_type;
+    }
+    catch(err) {
+        throw err;
+    }
 }

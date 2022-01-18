@@ -1,5 +1,4 @@
 import { componentController } from '../../../index';
-
 import { getAllContentTypeConfig } from '../content_type_config/data';
 
 // ------------------------------------ ------------------------------------
@@ -8,51 +7,75 @@ import { getAllContentTypeConfig } from '../content_type_config/data';
 
 // Get single component
 export const getSingle = async (_id: mod_componentModel["_id"]) => {
-    let res: any;
-    res = await componentController.getSingleByID(_id);
-    let { content_types } = await getAllContentTypeConfig(_id);
-    res.component['content_types'] = content_types;
-    // Get content_types from res and add them to the response object.
-    if(res.success) return res.component; 
-    else throw res.errors[0].message;
+    try {
+        let component = await componentController.getSingleByID(_id);
+        let content_types = await getAllContentTypeConfig(_id);
+        component['content_types'] = content_types;
+        return component;
+    }
+    catch(err) {
+        throw err;
+    }
 }
 
 // Get multiple components
 export const getMultiple = async(limit: number, skip: number) => {
-    let res: any;
-    res = await componentController.getMultiple(limit, skip);
-    for await (const component of res.components) {
-        let  { content_types } = await getAllContentTypeConfig(component._id);
-        component['content_types'] = content_types;
+    try {
+        let components = await componentController.getMultiple(limit, skip);
+        for await (const component of components) {
+            let content_types = await getAllContentTypeConfig(component._id);
+            component['content_types'] = content_types;
+        }
+        // Get content_types from res and add them to the response object.
+        return components;
     }
-    // Get content_types from res and add them to the response object.
-    if(res.success) return res.components;
-    else throw res.errors[0].message;
+    catch(err) {
+        throw err;
+    }
 }
 
 // Delete single
 export const deleteSingle = async(_id: mod_componentModel["_id"]) => {
-    let res: any;
-    res = await componentController.deleteSingle(_id);
-    if(res.deleted) {
+    try {
+        await componentController.deleteSingle(_id);
         return {
-            deleted: res.deleted
+            deleted: true
         }
-    } else throw res.errors[0].message;
+    }
+    catch(err) {
+        throw err;
+    }
 }
 
 // Save single
 export const saveSingle = async(data: cont_comp_saveSingleInp) => {
-    let res: any;
-    res = await componentController.saveSingle(data);
-    if(res.saved) return res.component;
-    else throw res.errors[0].message;
+    try {
+        const component = await componentController.saveSingle(data);
+        return component;
+    }
+    catch(err) {
+        throw err;
+    }
 }
 
 // Update single
 export const updateSingle = async (_id: mod_componentModel["_id"], data: cont_comp_updateSingleInp) => {
-    let res: any;
-    res = await componentController.updateSingle(_id, data);
-    if(res.updated) return res.component;
-    else throw res.errors[0].message;
+    try {
+        const component = await componentController.updateSingle(_id, data);
+        return component
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Get unregistered components
+export const getUnregistered = async () => {
+    try {
+        let unregistered = await componentController.getUnregistered();
+        return unregistered;
+    }
+    catch(err) {
+        throw err;
+    }
 }
