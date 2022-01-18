@@ -26,25 +26,19 @@ export const deleteMenu = async (_id: mod_menuModel["_id"]) => {
 // Create menu
 export const createMenu = async (name: mod_menuModel["name"]) => {
     try {
-
+        const origin = 'menuField.createMenu';
         let validateObj: Array<vali_validateFieldObj> = [
             {
                 method: 'menu_name',
                 value: __convertStringLowerUnderscore(name)
             }
         ];
-        let verifyData = await validate(validateObj);
+        await validate(validateObj);
         // Update data
-        if(verifyData.valid) {
-            let menuRes = await db.one('INSERT INTO menus(name) VALUES(${name}) RETURNING *', {
-                name: __convertStringLowerUnderscore(name)
-            });
-            return menuRes;
-        }
-        else {
-            throw 'Menu name doesnt meet criteria!'
-        }
-
+        let menuRes = await db.one('INSERT INTO menus(name) VALUES(${name}) RETURNING *', {
+            name: __convertStringLowerUnderscore(name)
+        });
+        return menuRes;
     }
     catch(err) {
         throw err;
@@ -60,20 +54,14 @@ export const updateMenu = async (_id: mod_menuModel["_id"], name: mod_menuModel[
                 value: __convertStringLowerUnderscore(name)
             }
         ];
-        let verifyData = await validate(validateObj);
-        // Update data
-        if(verifyData.valid) {
-            // Set update object
-            let updateMenusObj = {
-                name: __convertStringLowerUnderscore(name)
-            };
-            // Update
-            let menuRes = await db.one(`UPDATE menus SET ${__updateSetQueryGen(updateMenusObj)} WHERE _id='${_id}' RETURNING *`, updateMenusObj);
-            return menuRes;
-        }
-        else {
-            throw 'Menu name doesnt meet criteria!'
-        }
+        await validate(validateObj);
+        // Set update object
+        let updateMenusObj = {
+            name: __convertStringLowerUnderscore(name)
+        };
+        // Update
+        let menuRes = await db.one(`UPDATE menus SET ${__updateSetQueryGen(updateMenusObj)} WHERE _id='${_id}' RETURNING *`, updateMenusObj);
+        return menuRes;
     }
     catch(err) {
         throw err;
