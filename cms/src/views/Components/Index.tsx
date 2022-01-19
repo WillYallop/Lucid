@@ -2,14 +2,20 @@ import { useState, useEffect, useContext } from "react";
 import axios from 'axios';
 
 // Context
-import { PageNotificationContext, PageNotificationContextNoticationsObj } from "../../helper/Context";
+import { 
+    PageNotificationContext, PageNotificationContextNoticationsObj,
+    ModalContext
+} from "../../helper/Context";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
 import ComponentList from "./Components/ComponentList";
 import SidebarMeta from "../../components/Layout/Sidebar/SidebarMeta";
+import SidebarButton from "../../components/Layout/Sidebar/SidebarBtn";
+import RegisterComponentForm from "../../components/Modal/RegisterComponentForm";
 // Functions
 import getApiUri from "../../functions/getApiUri";
-
+// Icons
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 interface unregisteredComponentsData {
     totals: {
@@ -43,6 +49,21 @@ const Components: React.FC = () => {
                 type: type
             }
         ]);
+    }
+
+    // -------------------------------------------------------
+    // Modal 
+    // -------------------------------------------------------
+    const { modalState, setModalState } = useContext(ModalContext);
+
+    const openAddComponentModal = () => {
+        setModalState({
+            ...modalState,
+            state: true,
+            title: 'Register component',
+            body: 'Configure your newly registered component.',
+            element: <RegisterComponentForm/>
+        });
     }
 
     // -------------------------------------------------------
@@ -106,16 +127,22 @@ const Components: React.FC = () => {
 
 
     const siderbar = (
-        <SidebarMeta rows={[
-            {
-                key: 'Unregistered:',
-                data: unregisteredComponents.totals.unregistered
-            },
-            {
-                key: 'Registered:',
-                data: unregisteredComponents.totals.registered
-            }
-        ]}/>
+        <>
+            <SidebarButton 
+            text="Register Component"
+            action={openAddComponentModal}
+            icon={faPlus}/>
+            <SidebarMeta rows={[
+                {
+                    key: 'Unregistered:',
+                    data: unregisteredComponents.totals.unregistered
+                },
+                {
+                    key: 'Registered:',
+                    data: unregisteredComponents.totals.registered
+                }
+            ]}/>
+        </>
     )
 
     return (

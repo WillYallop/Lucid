@@ -23,7 +23,6 @@
         margin-bottom: rem(10);
     }
     &__body {
-
         &__key-row {
             display: flex;
             padding: 0 0 rem(5);
@@ -35,6 +34,20 @@
                     margin-right: rem(10);
                 }
             }
+        }
+    }
+    &__button {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        &:hover {
+            .coreIcon {
+                background-color: map-get($map: $accent_colours, $key: _01_02);
+            }
+        }
+        p {
+            margin-left: rem(10);
+            user-select: none;
         }
     }
 }

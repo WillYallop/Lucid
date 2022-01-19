@@ -1,6 +1,5 @@
 import { ReactElement } from "react"
 
-
 interface MetaRowInterface {
     key: string
     data: string | number
