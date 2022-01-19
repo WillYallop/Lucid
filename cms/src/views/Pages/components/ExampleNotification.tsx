@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 // Context
 import { PageNotificationContext, PageNotificationContextNoticationsObj } from "../../../helper/Context";
 
@@ -6,6 +6,12 @@ const ExampleNotification = () => {
 
     const { notifications, setNotifications } = useContext(PageNotificationContext);
     
+    useEffect(() => {
+        return () => {
+            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
+        }
+    }, []);
+
     const addWarning = () => {
         setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
             ...array,

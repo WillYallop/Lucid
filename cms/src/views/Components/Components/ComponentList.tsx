@@ -93,13 +93,13 @@ const ComponentList: React.FC = () => {
     else {
         return (
             <div className="con">
-                <div className="itemRow loading">
+                <div className="blockCon loading">
                     <UtilityLoading mode="light"/>
                 </div>
-                <div className="itemRow loading">
+                <div className="blockCon loading">
                     <UtilityLoading mode="light"/>
                 </div>
-                <div className="itemRow loading">
+                <div className="blockCon loading">
                     <UtilityLoading mode="light"/>
                 </div>
             </div>

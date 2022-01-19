@@ -2,7 +2,7 @@
     width: 100%;
 }
 
-.itemRow {
+.blockCon {
     padding: rem(10);
     border: $border_style;
     margin-bottom: rem(5);
@@ -12,5 +12,29 @@
         border: none;
         padding: 0;
         overflow: hidden;
+    }
+}
+
+// Sidebar version
+.sidebarCon {
+    &__header {
+        border-bottom: $border_style;
+        padding-bottom: rem(10);
+        margin-bottom: rem(10);
+    }
+    &__body {
+
+        &__key-row {
+            display: flex;
+            padding: 0 0 rem(5);
+            &:last-child {
+                padding-bottom: 0;
+            }
+            p {
+                &:first-child {
+                    margin-right: rem(10);
+                }
+            }
+        }
     }
 }

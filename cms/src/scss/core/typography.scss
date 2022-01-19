@@ -8,4 +8,7 @@ h1, h2 {
 p {
     font-size: rem(16);
     color: map-get($map: $text_colours, $key: _01_02);
+    &.bold {
+        font-weight: bold;
+    }
 }

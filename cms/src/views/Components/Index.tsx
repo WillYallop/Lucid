@@ -6,6 +6,7 @@ import { PageNotificationContext, PageNotificationContextNoticationsObj } from "
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
 import ComponentList from "./Components/ComponentList";
+import SidebarMeta from "../../components/Layout/Sidebar/SidebarMeta";
 // Functions
 import getApiUri from "../../functions/getApiUri";
 
@@ -101,9 +102,20 @@ const Components: React.FC = () => {
         }
     }, []);
 
+    // Sidebar data
+
 
     const siderbar = (
-        <p>I am a sidebar</p>
+        <SidebarMeta rows={[
+            {
+                key: 'Unregistered:',
+                data: unregisteredComponents.totals.unregistered
+            },
+            {
+                key: 'Registered:',
+                data: unregisteredComponents.totals.registered
+            }
+        ]}/>
     )
 
     return (

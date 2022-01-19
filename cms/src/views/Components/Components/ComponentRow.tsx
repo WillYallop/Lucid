@@ -11,7 +11,7 @@ interface ComponentRowProps {
 const ComponentRow: React.FC<ComponentRowProps> = ({ component }) => {
 
     return (
-        <div className="itemRow">
+        <div className="blockCon">
             { component._id }
         </div>
     )
