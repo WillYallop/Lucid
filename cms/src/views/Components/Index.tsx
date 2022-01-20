@@ -132,6 +132,7 @@ const Components: React.FC = () => {
             text="Register Component"
             action={openAddComponentModal}
             icon={faPlus}/>
+            
             <SidebarMeta rows={[
                 {
                     key: 'Unregistered:',
