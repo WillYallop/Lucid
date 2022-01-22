@@ -12,8 +12,14 @@ button {
     background-color: map-get($map: $accent_colours, $key: _01_01);
     &:hover {
         background-color: map-get($map: $accent_colours, $key: _01_02);
+        border: 1px solid map-get($map: $accent_colours, $key: _01_02);
     }
     border-radius: rem(5);
     width: 100%;
     padding: rem(5) $padding;
+    border: 1px solid map-get($map: $accent_colours, $key: _01_01);;
+    &--not-active {
+        background-color: transparent;
+        border: 1px solid rgb(190, 190, 190);
+    }
 }

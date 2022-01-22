@@ -1,4 +1,6 @@
 import { ReactElement } from "react"
+// Components
+import SidebarLayout from './SidebarLayout';
 
 interface MetaRowInterface {
     key: string
@@ -19,14 +21,10 @@ const SidebarMeta: React.FC<SideBarMetaProps> = ({ rows }) => {
     }
 
     return (
-        <div className="blockCon sidebarCon">
-            <div className="sidebarCon__header">
-                <p className="bold">Meta</p>
-            </div>
-            <div className="sidebarCon__body">
-                { metaRows }
-            </div>
-        </div>
+        <SidebarLayout 
+        title="Meta">
+            { metaRows }
+        </SidebarLayout>
     )
 }
 

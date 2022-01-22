@@ -5,16 +5,27 @@ interface ComponentRowProps {
         name: string
         preview_url: string
         _id: string
-    }
+    },
+    expanded: boolean
 }
 
-const ComponentRow: React.FC<ComponentRowProps> = ({ component }) => {
+const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded }) => {
 
-    return (
-        <div className="blockCon">
-            { component._id }
-        </div>
-    )
+    if(expanded) {
+        return (
+            <div className="blockCon">
+                <p>Expanded</p>
+                { component._id }
+            </div>
+        )
+    }
+    else {
+        return (
+            <div className="blockCon">
+                { component._id }
+            </div>
+        )
+    }
 }
 
 export default ComponentRow;

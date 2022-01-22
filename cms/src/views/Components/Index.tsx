@@ -12,6 +12,7 @@ import ComponentList from "./Components/ComponentList";
 import SidebarMeta from "../../components/Layout/Sidebar/SidebarMeta";
 import SidebarButton from "../../components/Layout/Sidebar/SidebarBtn";
 import RegisterComponentForm from "../../components/Modal/RegisterComponentForm";
+import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
 // Functions
 import getApiUri from "../../functions/getApiUri";
 // Icons
@@ -55,7 +56,6 @@ const Components: React.FC = () => {
     // Modal 
     // -------------------------------------------------------
     const { modalState, setModalState } = useContext(ModalContext);
-
     const openAddComponentModal = () => {
         setModalState({
             ...modalState,
@@ -111,6 +111,10 @@ const Components: React.FC = () => {
         })
     }
 
+    // -------------------------------------------------------
+    //  Layout Expand - TODO - make persistent
+    // -------------------------------------------------------
+    const [ componentLayoutExpanded, setComponentLayoutExpanded ] = useState(true);
 
     // -------------------------------------------------------
     // 
@@ -124,7 +128,16 @@ const Components: React.FC = () => {
     }, []);
 
     // Sidebar data
-
+    const sidebarMetaData = [
+        {
+            key: 'Unregistered:',
+            data: unregisteredComponents.totals.unregistered
+        },
+        {
+            key: 'Registered:',
+            data: unregisteredComponents.totals.registered
+        }
+    ];
 
     const siderbar = (
         <>
@@ -132,17 +145,20 @@ const Components: React.FC = () => {
             text="Register Component"
             action={openAddComponentModal}
             icon={faPlus}/>
-            
-            <SidebarMeta rows={[
-                {
-                    key: 'Unregistered:',
-                    data: unregisteredComponents.totals.unregistered
-                },
-                {
-                    key: 'Registered:',
-                    data: unregisteredComponents.totals.registered
-                }
-            ]}/>
+            <SidebarLayout
+            title="Layout">
+                <button 
+                className={`btnStyle1 typography__left ${ !componentLayoutExpanded ? 'btnStyle1--not-active' : '' }`} style={{marginBottom: '5px'}}
+                onClick={() => setComponentLayoutExpanded(true)}>
+                    Expanded
+                </button>
+                <button 
+                className={`btnStyle1 typography__left ${ componentLayoutExpanded ? 'btnStyle1--not-active' : '' }`}
+                onClick={() => setComponentLayoutExpanded(false)}>
+                    Compact
+                </button>
+            </SidebarLayout>
+            <SidebarMeta rows={sidebarMetaData}/>
         </>
     )
 
@@ -152,7 +168,8 @@ const Components: React.FC = () => {
         body="Manage all of your components!"
         sidebar={siderbar}>
             {/* Component List */}
-            <ComponentList/>
+            <ComponentList
+            expanded={componentLayoutExpanded}/>
         </DefaultPage>
     );
 }

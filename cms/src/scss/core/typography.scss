@@ -12,3 +12,13 @@ p {
         font-weight: bold;
     }
 }
+
+.typography {
+
+    &__left {
+        text-align: left;
+    }
+    &__right {
+        text-align: right;
+    }
+}

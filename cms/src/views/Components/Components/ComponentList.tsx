@@ -17,7 +17,11 @@ interface componentData {
     _id: string
 }
 
-const ComponentList: React.FC = () => {
+interface componentListProps {
+    expanded: boolean
+}
+
+const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
@@ -87,7 +91,7 @@ const ComponentList: React.FC = () => {
     const componentRows: Array<ReactElement> = [];
     if(components.length) {
         components.forEach((component) => {
-            componentRows.push(<ComponentRow key={componentRows.length} component={component}/>)
+            componentRows.push(<ComponentRow key={componentRows.length} component={component} expanded={expanded}/>)
         });
     } 
     else {
@@ -116,7 +120,6 @@ const ComponentList: React.FC = () => {
         <div className="con">
             { componentRows }
             { showLoadMore ? <button onClick={loadmore}>Load more</button> : null }
-            
         </div>
     )
 }
