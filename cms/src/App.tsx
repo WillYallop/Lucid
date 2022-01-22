@@ -13,8 +13,7 @@ import Media from "./views/Media/Index";
 import Components from "./views/Components/Index";
 import Style from "./views/Style/Index";
 import Settings from "./views/Settings/Index";
-import EditComponent from "./views/EditComponent/Index";
-import EditPage from "./views/EditPage/Index";
+import Edit from './views/Edit';
 
 import SignIn from './views/SignIn/Index';
 // Components
@@ -49,8 +48,7 @@ const App: React.FC = () => {
                 <Route path="/style" element={<Style />}></Route>
                 <Route path="/settings" element={<Settings />}></Route>
 
-                <Route path="/editpage/:_id" element={<EditPage />}></Route>
-                <Route path="/editcomponent/:_id" element={<EditComponent />}></Route>
+                <Route path="/edit/:mode/:_id" element={<Edit />}></Route>
               </Route>
 
           </Routes>
