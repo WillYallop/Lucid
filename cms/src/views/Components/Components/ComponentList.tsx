@@ -14,6 +14,7 @@ interface componentData {
     description: string
     name: string
     preview_url: string
+    file_path: string
     _id: string
 }
 
@@ -39,7 +40,7 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     // -------------------------------------------------------
     // Components
     // -------------------------------------------------------
-    let [ skip, limit ] = [ 0 , 1 ];
+    let [ skip, limit ] = [ 0 , 10 ];
     const [ components, setComponents ] = useState<Array<componentData>>([]);
     const [ showLoadMore, setShowLoadMore ] = useState(true);
 
@@ -68,6 +69,7 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
                             description
                             preview_url
                             date_added
+                            file_path
                         }
                     }
                 }`
@@ -119,7 +121,7 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     return (
         <div className="con">
             { componentRows }
-            { showLoadMore ? <button onClick={loadmore}>Load more</button> : null }
+            { showLoadMore ? <button className='btnStyle1' onClick={loadmore}>Load more</button> : null }
         </div>
     )
 }
