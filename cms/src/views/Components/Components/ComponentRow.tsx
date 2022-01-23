@@ -1,4 +1,5 @@
 import { ReactElement } from "react"
+import { NavLink } from "react-router-dom";
 // Components
 import CoreIcon from "../../../components/Core/Icon";
 // Icons
@@ -37,7 +38,9 @@ const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded }) => {
                         <li>path: <span>{ component.file_path }</span></li>
                     </ul>
                     <div className="buttonCon">
-                        <button className="btnStyle1 btnStyle1--small">Edit</button>
+                        <NavLink to={`/edit/component/${component._id}`}>
+                            <button className="btnStyle1 btnStyle1--small">Edit</button>
+                        </NavLink >
                         <button className="btnStyle1 btnStyle1--small btnStyle1--danger">Deregister</button>
                     </div>
                 </div>
@@ -58,7 +61,9 @@ const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded }) => {
                         </ul>
                     </div>
                     <div className="componentRow__standard__body__col layout__flex">
-                        <CoreIcon icon={faEdit}/>
+                        <NavLink to={`/edit/component/${component._id}`}>
+                            <CoreIcon icon={faEdit}/>
+                        </NavLink >
                         <CoreIcon icon={faTrashAlt} style={'warning'}/>
                     </div>
                 </div>

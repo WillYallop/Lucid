@@ -1,6 +1,5 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
-
 // Context
 import { PageNotificationContext, PageNotificationContextNoticationsObj } from "../../../helper/Context";
 // Components

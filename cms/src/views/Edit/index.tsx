@@ -7,9 +7,13 @@ import Error404 from "../404";
 const Edit: React.FC = () => {
     const { mode } = useParams();
     const { _id } = useParams();
+
+
     if(_id) {
         if(mode === 'component') {
-            return <EditComponent _id={_id}/>
+            return (
+                <EditComponent _id={_id}/>
+            )
         }
         else if(mode === 'page') {
             return <EditPage _id={_id}/>
