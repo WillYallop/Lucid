@@ -1,5 +1,5 @@
 
-interface textInputProps {
+interface textareaInputProps {
     label: string
     value: string
     id: string
@@ -9,9 +9,9 @@ interface textInputProps {
     updateValue: (value: string) => void
 }
 
-const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required, errorMsg, updateValue }) => {
+const TextareaInput: React.FC<textareaInputProps> = ({ label, value, id, name, required, errorMsg, updateValue }) => {
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
+    const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>)=> {
         const newValue = e.target.value;
         updateValue(newValue);
     }
@@ -19,7 +19,7 @@ const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required,
     return (
         <div className="inputWrapper">
             <label htmlFor={id}>{ label }</label>
-            <input className="inputStyle" value={value} type="text" name={name} id={id} required={required} onChange={onChange}/>
+            <textarea className="inputStyle inputStyle--textarea" value={value} name={name} id={id} required={required} onChange={onChange} />
             <div className="inputError">
                 <p>{ errorMsg }</p>
             </div>
@@ -27,4 +27,4 @@ const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required,
     )
 }
 
-export default TextInput;
+export default TextareaInput;
