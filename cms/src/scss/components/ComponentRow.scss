@@ -6,13 +6,15 @@
         border-radius: 5px 0 0 5px;
         object-fit: cover;
         &--default {
-            background-color: #ECECEC;
+            background-color: map-get($map: $section_colours, $key: _01_01);
             height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             svg {
-                opacity: 0.3;
+                path {
+                    fill: map-get($map: $accent_colours, $key: _01_01);
+                }
             }
         }
     }
@@ -27,7 +29,6 @@
                     svg {
                         height: rem(30);
                         width: rem(30);
-                        opacity: 0.3;
                     }
                 }
                 @include mobile {
@@ -105,6 +106,7 @@
                     color: map-get($map: $text_colours, $key: _01_01);
                     span {
                         color: map-get($map: $text_colours, $key: _01_02);
+                        font-weight: normal;
                     }
                 }
                 ul {

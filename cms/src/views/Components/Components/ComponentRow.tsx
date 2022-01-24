@@ -55,9 +55,9 @@ const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded }) => {
                 </div>
                 <div className="componentRow__standard__body">
                     <div className="componentRow__standard__body__col">
-                        <p className="title">{ component.name } - <span>{ new Date(component.date_added).toLocaleDateString() }</span></p>
+                        <p className="title">{ component.name } - <span>{ component.file_path }</span></p>
                         <ul>
-                            <li>path: <span>{ component.file_path }</span></li>
+                            <li>created: <span>{ new Date(component.date_added).toLocaleDateString() }</span></li>
                         </ul>
                     </div>
                     <div className="componentRow__standard__body__col layout__flex">
