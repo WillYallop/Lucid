@@ -1,0 +1,81 @@
+.inputWrapper {
+    width: 100%;
+    &.invalid {
+        .inputError {
+            display: block;
+        }
+    }
+    .inputStyle {
+        width: 100%;
+        height: rem(40);
+        padding: 0 rem(10);
+        border-radius: rem(5);
+        border: $border_style;
+        margin: rem(5) 0 rem(10);
+        font-size: rem(14);
+        &:focus {
+            outline: none;
+            border-color: map-get($map: $accent_colours, $key: _01_02);
+        }
+        &--select {
+            appearance: none;
+            background-image:
+                linear-gradient(45deg, transparent 50%, black 50%),
+                linear-gradient(135deg, black 50%, transparent 50%),
+                linear-gradient(to right, map-get($accent_colours, _01_01), map-get($accent_colours, _01_01) );
+            background-position:
+                calc(100% - 20px) calc(1em + 2px),
+                calc(100% - 15px) calc(1em + 2px),
+                100% 0;
+            background-size:
+                5px 5px,
+                5px 5px,
+                rem(40) rem(40);
+            background-repeat: no-repeat;
+            &:focus {
+                background-image:
+                    linear-gradient(45deg, black 50%, transparent 50%),
+                    linear-gradient(135deg, transparent 50%, black 50%),
+                    linear-gradient(to right, map-get($accent_colours, _01_02), map-get($accent_colours, _01_02));
+                background-position:
+                    calc(100% - 15px) 1em,
+                    calc(100% - 20px) 1em,
+                    100% 0;
+                background-size:
+                    5px 5px,
+                    5px 5px,
+                    rem(40) rem(40);
+                background-repeat: no-repeat;
+            }
+        }
+        &--textarea {
+            padding: rem(10);
+            resize: none;
+            height: rem(150);
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+    }
+    .inputError {
+        display: none;
+        width: 100%;
+        margin-bottom: rem(10);
+        background-color: map-get($map: $accent_colours, $key: _02_01);
+        padding: rem(5);
+        border-radius: rem(5);
+        p {
+            font-size: rem(14);
+            color: white;
+        }
+    }
+    .describedBy {
+        width: 100%;
+        margin-bottom: rem(10);
+        padding-bottom: rem(10);
+        border-bottom: $border_style;
+        p {
+            font-size: rem(14);
+            line-height: rem(16);
+            max-width: rem(600);
+        }
+    }
+}

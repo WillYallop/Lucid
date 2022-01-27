@@ -44,7 +44,7 @@ const RegisterComponentForm: React.FC = () => {
 
 
     return (
-        <div>
+        <div className="body">
 
             <form onSubmit={validateForm} noValidate={true}>
 
@@ -57,7 +57,8 @@ const RegisterComponentForm: React.FC = () => {
                     required={true}
                     errorMsg={"There was an unexpected error!"}
                     updateValue={setComponentPath}
-                    label="Component File"/>
+                    label="Component File"
+                    described_by="Select the component you wish to register. If it does not appear, it may have been registered before or it could be configured incorrectly!"/>
 
                 {/* Component Name */}
                 <TextInput
@@ -67,19 +68,28 @@ const RegisterComponentForm: React.FC = () => {
                     required={true}
                     errorMsg={"This component name is invalid!"}
                     updateValue={setNameValue}
-                    label="Name"/>
+                    label="Name"
+                    max={10}
+                    min={2}/>
 
                 {/* Component Description */}
                 <TextareaInput 
                     value={descriptionValue}
                     id={"componentDescInp"}
                     name={"Component Description"}
-                    required={false}
+                    required={true}
                     errorMsg={"This description is invalid!"}
                     updateValue={setDescriptionValue}
-                    label="Description"/>
+                    label="Description"
+                    max={200}
+                    min={10}/>
                     
-                <input type="submit" value="Register" />
+                <div className="footer">
+                    <div className="textarea">
+                        <p>After registering a component you will be take to the component editor page. Here you will be able to configure its fields and more.</p>
+                    </div>
+                    <input className="btnStyle1 btnStyle1--small" type="submit" value="Register" />
+                </div>
             </form>
 
         </div>
