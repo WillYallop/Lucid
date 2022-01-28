@@ -29,7 +29,7 @@ const SelectInput: React.FC<textareaInputProps> = ({ label, value, id, name, req
         <div className="inputWrapper">
             <label htmlFor={id}>{ label }</label>
             <select aria-describedby={`${id}-described-by`} className="inputStyle inputStyle--select" value={value} name={name} id={id} required={required} onChange={onChange}>
-                {options.map((val) => <option value={val} >{val}</option>)}
+                {options.map((val, index) => <option value={val} key={index}>{val}</option>)}
             </select>
             <div className="inputError">
                 <p>{ errorMsg }</p>

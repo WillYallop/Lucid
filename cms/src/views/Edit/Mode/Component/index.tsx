@@ -5,7 +5,7 @@ import { PageNotificationContext, PageNotificationContextNoticationsObj } from "
 // Components
 import DefaultPage from '../../../../components/Layout/DefaultPage';
 // Functions
-import getApiUri from "../../../../functions/getApiUri";
+import getApiUrl from "../../../../functions/getApiUrl";
 
 interface mod_componentModel {
     _id: string
@@ -73,7 +73,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
     const getComponentData = () => {
         axios({
-            url: getApiUri(),
+            url: getApiUrl(),
             method: 'post',
             data: {
                 query: `

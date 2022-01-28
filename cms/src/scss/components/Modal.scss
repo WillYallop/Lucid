@@ -43,6 +43,15 @@
             .body {
                 padding: 0 rem(20) rem(20);
             }
+            .errorCon {
+                border-top: $border_style;
+                padding-top: 10px;
+                p {
+                    color: map-get($map: $accent_colours, $key: _02_01);
+                    font-size: rem(14);
+                    line-height: rem(16);
+                }
+            }
             .footer {
                 border-top: $border_style;
                 margin-top: rem(10);

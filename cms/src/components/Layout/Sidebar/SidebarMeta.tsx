@@ -14,7 +14,7 @@ const SidebarMeta: React.FC<SideBarMetaProps> = ({ rows }) => {
 
     const metaRows: Array<ReactElement> = [];
     for(let i = 0; i < rows.length; i++) {
-        metaRows.push(<div className="sidebarCon__body__key-row">
+        metaRows.push(<div className="sidebarCon__body__key-row" key={i}>
             <p>{ rows[i].key }</p>
             <p className="bold">{ rows[i].data }</p>
         </div>)

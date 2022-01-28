@@ -6,7 +6,7 @@ import { PageNotificationContext, PageNotificationContextNoticationsObj } from "
 import ComponentRow from "./ComponentRow";
 import UtilityLoading from '../../../components/Ultility/Loading';
 // Functions
-import getApiUri from "../../../functions/getApiUri";
+import getApiUrl from "../../../functions/getApiUrl";
 
 interface componentData {
     date_added: string
@@ -55,7 +55,7 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
 
     const getAllComponents = (s: number, l: number) => {
         axios({
-            url: getApiUri(),
+            url: getApiUrl(),
             method: 'post',
             data: {
               query: `

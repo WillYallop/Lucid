@@ -14,7 +14,7 @@ import SidebarButton from "../../components/Layout/Sidebar/SidebarBtn";
 import RegisterComponentForm from "../../components/Modal/RegisterComponentForm";
 import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
 // Functions
-import getApiUri from "../../functions/getApiUri";
+import getApiUrl from "../../functions/getApiUrl";
 // Icons
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -72,7 +72,7 @@ const Components: React.FC = () => {
     const [ unregisteredComponents, setUnregisteredComponents ] = useState<unregisteredComponentsData>(defaultUnregisteredComponents);
     const getUnregisteredComponents = () => {
         axios({
-            url: getApiUri(),
+            url: getApiUrl(),
             method: 'post',
             data: {
               query: `
@@ -141,10 +141,16 @@ const Components: React.FC = () => {
 
     const siderbar = (
         <>
-            <SidebarButton 
-            text="Register Component"
-            action={openAddComponentModal}
-            icon={faPlus}/>
+            { 
+                unregisteredComponents.totals.unregistered > 0
+                ?
+                <SidebarButton 
+                text="Register Component"
+                action={openAddComponentModal}
+                icon={faPlus}/>
+                : null
+            }
+
             <SidebarLayout
             title="Layout">
                 <button 

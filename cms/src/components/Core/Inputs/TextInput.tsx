@@ -9,10 +9,11 @@ interface textInputProps {
     described_by?: string
     max?: number
     min?: number
+    pattern?: string
     updateValue: (value: string) => void
 }
 
-const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, described_by, max, min }) => {
+const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, described_by, max, min, pattern }) => {
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
         const newValue = e.target.value;
@@ -38,7 +39,8 @@ const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required,
             required={required} 
             onChange={onChange}
             maxLength={max}
-            minLength={min}/>
+            minLength={min}
+            pattern={pattern}/>
             <div className="inputError">
                 <p>{ errorMsg }</p>
             </div>
