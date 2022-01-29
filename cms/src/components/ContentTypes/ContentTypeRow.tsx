@@ -42,9 +42,8 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType }) => {
         }
     }
 
-
     return (
-        <div className='contentTypeRow blockCon__row-style layout__flex layout__space-between layout__align-center' key={contentType._id}>
+        <div className='contentTypeRow blockCon__row-style layout__flex layout__space-between layout__align-center'>
             <div className="main layout__flex layout__align-center">
                 <div className="icon layout__flex layout__justify-center layout__align-center">
                     { ContentTypeIcon }

@@ -1,7 +1,10 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
 // Context
-import { PageNotificationContext, PageNotificationContextNoticationsObj } from "../../../../helper/Context";
+import { 
+    PageNotificationContext, PageNotificationContextNoticationsObj, 
+    ModalContext 
+} from "../../../../helper/Context";
 // Components
 import DefaultPage from '../../../../components/Layout/DefaultPage';
 import SidebarMeta from "../../../../components/Layout/Sidebar/SidebarMeta";
@@ -10,10 +13,12 @@ import SidebarLayout from '../../../../components/Layout/Sidebar/SidebarLayout';
 import TextareaInput from '../../../../components/Core/Inputs/TextareaInput';
 import TextInput from '../../../../components/Core/Inputs/TextInput';
 import ContentTypeRow, { mod_contentTypesConfigModel } from '../../../../components/ContentTypes/ContentTypeRow';
+import CoreIcon from '../../../../components/Core/Icon';
+import AddComponentContentType from '../../../../components/Modal/AddComponentContentType';
 // Functions
 import getApiUrl from "../../../../functions/getApiUrl";
 // Icons
-import { faSave, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSave, faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 interface mod_componentModel {
     _id: string
@@ -44,6 +49,20 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 type: type
             }
         ]);
+    }
+
+    // -------------------------------------------------------
+    // Modal 
+    // -------------------------------------------------------
+    const { modalState, setModalState } = useContext(ModalContext);
+    const openAddContentTypeModal = () => {
+        setModalState({
+            ...modalState,
+            state: true,
+            title: 'Add content type',
+            body: 'Create a configure a new content type!',
+            element: <AddComponentContentType/>
+        });
     }
 
     // -------------------------------------------------------
@@ -210,7 +229,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     const contentTypeRows: Array<ReactElement> = [];
     if(component.content_types) {
         for(let i = 0; i < component.content_types.length; i++) {
-            contentTypeRows.push(<ContentTypeRow contentType={ component.content_types[i]}/>);
+            contentTypeRows.push(<ContentTypeRow key={component.content_types[i]._id} contentType={ component.content_types[i]}/>);
         }
     }
     
@@ -233,7 +252,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             <div className="manageContentTypesCon blockCon blockCon--margin-top">
                 <div className="header layout__flex layout__space-between layout__align-center">
                     <p className="bold">Content Types</p>
-                    <button className="btnStyle1 btnStyle1--small">Add Field</button>
+                    <button className='btnStyleBlank' onClick={openAddContentTypeModal}><CoreIcon icon={faPlus}/></button>
                 </div>
                 <div className="layout">
                     { contentTypeRows }
