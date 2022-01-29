@@ -7,14 +7,17 @@ interface SideBarButtonProps {
     action: () => void;
     text: string
     icon: IconDefinition
+    style?: 'warning'
 }
 
-const SidebarButton: React.FC<SideBarButtonProps> = ({ action, text, icon }) => {
+const SidebarButton: React.FC<SideBarButtonProps> = ({ action, text, icon, style }) => {
 
     return (
         <div className="blockCon sidebarCon">
-            <div className="sidebarCon__button" onClick={() => action()}>
-                <CoreIcon icon={icon}/>
+            <div className={`sidebarCon__button ${style}`} onClick={() => action()}>
+                <CoreIcon 
+                icon={icon}
+                style={style}/>
                 <p>{ text }</p>
             </div>
         </div>

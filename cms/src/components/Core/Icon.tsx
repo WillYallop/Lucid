@@ -3,7 +3,7 @@ import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 
 interface CoreIconProps {
     icon: IconDefinition
-    style?: string
+    style?: 'warning'
 }
 
 const CoreIcon: React.FC<CoreIconProps> = ({ icon, style }) => {
