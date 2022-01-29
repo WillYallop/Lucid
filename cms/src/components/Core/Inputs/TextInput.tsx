@@ -1,6 +1,6 @@
 
 interface textInputProps {
-    label: string
+    label?: string
     value: string
     id: string
     name: string
@@ -10,10 +10,11 @@ interface textInputProps {
     max?: number
     min?: number
     pattern?: string
+    style?: '--no-margin'
     updateValue: (value: string) => void
 }
 
-const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, described_by, max, min, pattern }) => {
+const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, described_by, max, min, pattern, style }) => {
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
         const newValue = e.target.value;
@@ -28,10 +29,10 @@ const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required,
 
     return (
         <div className="inputWrapper">
-            <label htmlFor={id}>{ label }</label>
+            { label ? <label htmlFor={id}>{ label }</label> : null }
             <input 
             aria-describedby={`${id}-described-by`} 
-            className="inputStyle" 
+            className={`inputStyle ${style}`} 
             value={value} 
             type="text" 
             name={name} 

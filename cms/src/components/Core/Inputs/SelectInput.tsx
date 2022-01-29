@@ -1,7 +1,7 @@
 import React from "react"
 
 interface textareaInputProps {
-    label: string
+    label?: string
     value: string
     id: string
     name: string
@@ -9,10 +9,11 @@ interface textareaInputProps {
     errorMsg: string
     options: Array<string>
     described_by?: string
+    style?: '--no-margin'
     updateValue: (value: string) => void
 }
 
-const SelectInput: React.FC<textareaInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, options, described_by }) => {
+const SelectInput: React.FC<textareaInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, options, described_by, style }) => {
 
     const onChange = (e: React.ChangeEvent<HTMLSelectElement>)=> {
         const newValue = e.target.value;
@@ -27,8 +28,8 @@ const SelectInput: React.FC<textareaInputProps> = ({ label, value, id, name, req
 
     return (
         <div className="inputWrapper">
-            <label htmlFor={id}>{ label }</label>
-            <select aria-describedby={`${id}-described-by`} className="inputStyle inputStyle--select" value={value} name={name} id={id} required={required} onChange={onChange}>
+            { label ? <label htmlFor={id}>{ label }</label> : null }
+            <select aria-describedby={`${id}-described-by`} className={`inputStyle inputStyle--select ${style}`} value={value} name={name} id={id} required={required} onChange={onChange}>
                 {options.map((val, index) => <option value={val} key={index}>{val}</option>)}
             </select>
             <div className="inputError">

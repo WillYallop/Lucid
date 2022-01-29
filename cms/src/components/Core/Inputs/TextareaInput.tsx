@@ -1,6 +1,6 @@
 
 interface textareaInputProps {
-    label: string
+    label?: string
     value: string
     id: string
     name: string
@@ -9,10 +9,11 @@ interface textareaInputProps {
     described_by?: string
     max?: number
     min?: number
+    style?: '--no-margin'
     updateValue: (value: string) => void
 }
 
-const TextareaInput: React.FC<textareaInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, described_by, max, min }) => {
+const TextareaInput: React.FC<textareaInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, described_by, max, min, style }) => {
 
     const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>)=> {
         const newValue = e.target.value;
@@ -27,10 +28,10 @@ const TextareaInput: React.FC<textareaInputProps> = ({ label, value, id, name, r
 
     return (
         <div className="inputWrapper">
-            <label htmlFor={id}>{ label }</label>
+            { label ? <label htmlFor={id}>{ label }</label> : null }
             <textarea 
             aria-describedby={`${id}-described-by`} 
-            className="inputStyle inputStyle--textarea" 
+            className={`inputStyle inputStyle--textarea ${style}`} 
             value={value} 
             name={name} 
             id={id} 
