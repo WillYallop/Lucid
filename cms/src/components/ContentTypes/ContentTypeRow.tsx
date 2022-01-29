@@ -3,6 +3,7 @@ import CoreIcon from '../../components/Core/Icon';
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt, faFont, faInfinity, faKeyboard } from '@fortawesome/free-solid-svg-icons';
+import { ReactElement } from 'react';
 
 interface contentTypeProps {
     contentType: mod_contentTypesConfigModel
@@ -42,23 +43,42 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType }) => {
         }
     }
 
+    let repeaterBodyItems: Array<ReactElement> = []; 
+    if(contentType.type === 'repeater' && contentType.fields) {
+        for(let i = 0; i < contentType.fields.length; i++) {
+            repeaterBodyItems.push(<ContentTypeRow key={contentType.fields[i]._id} contentType={ contentType.fields[i]}/>)
+        }
+        repeaterBodyItems.push(<button className={`btnStyle1 ${ contentType.fields.length ? 'btnStyle1--margin-top' : '' }`}>Add Content Type</button>)
+    }
+
     return (
-        <div className='contentTypeRow blockCon__row-style layout__flex layout__space-between layout__align-center'>
-            <div className="main layout__flex layout__align-center">
-                <div className="icon layout__flex layout__justify-center layout__align-center">
-                    { ContentTypeIcon }
+        <>
+            <div className='contentTypeRow blockCon__row-style layout__flex layout__space-between layout__align-center'>
+                <div className="main layout__flex layout__align-center">
+                    <div className="icon layout__flex layout__justify-center layout__align-center">
+                        { ContentTypeIcon }
+                    </div>
+                    <div className="textarea">
+                        <p className='bold capitalise'>{ contentType.name.replaceAll('_', ' ') }</p>
+                        <p>{ contentType.type }</p>
+                    </div>
                 </div>
-                <div className="textarea">
-                    <p className='bold capitalise'>{ contentType.name.replaceAll('_', ' ') }</p>
-                    <p>{ contentType.type }</p>
+                <div className="iconCol layout__flex">
+                    <CoreIcon icon={faEdit}/>
+                    <CoreIcon icon={faTrashAlt} style={'warning'}/>
                 </div>
             </div>
-            <div className="iconCol layout__flex">
-                <CoreIcon icon={faEdit}/>
-                <CoreIcon icon={faTrashAlt} style={'warning'}/>
-            </div>
-        </div>
+            { 
+                repeaterBodyItems.length 
+                ? 
+                    <div className='contentTypeRowBody'>
+                        { repeaterBodyItems } 
+                    </div>
+                : null 
+            }
+        </>
     )
+
 }
 
 export default ContentTypeRow;
