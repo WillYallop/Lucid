@@ -61,9 +61,12 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             state: true,
             title: 'Add content type',
             body: 'Create a configure a new content type!',
-            element: <AddComponentContentType/>
+            element: <AddComponentContentType 
+                component__id={_id}
+                successCallback={addContentTypeSuccessCallback}/>
         });
     }
+
 
     // -------------------------------------------------------
     // Component 
@@ -99,7 +102,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                                     max_length
                                     min_length
                                     default_num
-                                    default_srt
+                                    default_str
                                 }
                                 fields {
                                     _id
@@ -112,7 +115,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                                         max_length
                                         min_length
                                         default_num
-                                        default_srt
+                                        default_str
                                     }
                                 }
                             }
@@ -146,7 +149,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         });
         updateAllowSave(true);
     }
-
     // Update name
     const updateComponentName = (value: string) => {
         setComponent({
@@ -158,6 +160,25 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         updateAllowSave(true);
     }
 
+    // Callback for adding new content type
+    const addContentTypeSuccessCallback = (contentType: mod_contentTypesConfigModel) => {
+        // Add new content type to component data
+        const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
+        newContentTypeArr.push(contentType);
+        setComponent({
+            ...component,
+            ...{
+                content_types: newContentTypeArr
+            }
+        });
+        // Close modal
+        setModalState({
+            ...modalState,
+            state: false,
+        });
+        // Add success message
+        addNotification('You have successfully added a new content type!', 'success');
+    }
 
     // -------------------------------------------------------
     // First load
@@ -166,6 +187,12 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         getComponentData();
         return () => {
             setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
+            setComponent({} as mod_componentModel);
+            // Close modal
+            setModalState({
+                ...modalState,
+                state: false,
+            });
         }
     }, []);
 

@@ -1,5 +1,6 @@
 import { ReactElement, useState } from 'react';
 import { mod_contentTypesConfigModel } from '../ContentTypes/ContentTypeRow';
+import axios from 'axios';
 // Components
 import SelectInput from '../Core/Inputs/SelectInput';
 import TextInput from '../Core/Inputs/TextInput';
@@ -12,12 +13,30 @@ import formValidationHandler from "../../functions/formValidationHandler";
 import getApiUrl from "../../functions/getApiUrl";
 import validatorConfig from '../../functions/validatorConfig';
 
-const AddComponentContentType: React.FC = () => {
+interface AddComponentContentTypeProps {
+    component__id: string
+    successCallback: (configType: mod_contentTypesConfigModel) => void
+}
+
+const AddComponentContentType: React.FC<AddComponentContentTypeProps> = ({ component__id, successCallback }) => {
 
     // -------------------------------------------------------
     // Extended Form
     // -------------------------------------------------------
     const [ extendedForm, setExtendedForm ] = useState<ReactElement>(<ExtendedFormText/>);
+
+    // -------------------------------------------------------
+    // Form Error
+    // -------------------------------------------------------
+    const [ formError, setFormError ] = useState({
+        error: false,
+        message: ''
+    });
+    const errorConEle = (
+        <div className="errorCon">
+            <p>{ formError.message }</p>
+        </div>  
+    );
 
     // -------------------------------------------------------
     // Types
@@ -58,7 +77,84 @@ const AddComponentContentType: React.FC = () => {
         formValidationHandler({
             e: e,
             onValidatePass: (fields) => {
-                console.log(fields);
+                // Generate the content type config object
+                let configObj = `{`;
+                for(let prop in fields) {
+                    if(prop != 'name' && prop != 'type') {
+                        if(prop === 'default_str') configObj += `${prop}: "${fields[prop]}"`;
+                        else configObj += `${prop}: ${parseInt(fields[prop])}`;
+                    }
+                }
+                configObj += `}`
+                // Query
+                const query = `
+                    mutation {
+                        content_type_config {
+                            create_single 
+                            (
+                                component_id: "${component__id}"
+                                content_type: {
+                                    name: "${name}"
+                                    type: "${type}"
+                                    config: ${configObj}
+                                }
+                            )
+                            {
+                                _id
+                                name
+                                type
+                                config {
+                                  max_range
+                                  min_range
+                                  max_length
+                                  min_length
+                                  max_repeats
+                                }
+                                fields {
+                                  _id
+                                  name
+                                  type
+                                  config {
+                                    max_range
+                                    min_range
+                                    max_length
+                                    min_length
+                                    max_repeats
+                                    default_str
+                                    default_num
+                                  }
+                                }
+                            }
+                        }
+                    }
+                `;
+                axios({
+                    url: getApiUrl(),
+                    method: 'post',
+                    data: {
+                        query: query
+                    }
+                })
+                .then((result) => {
+                    console.log(result);
+                    const newContentType: mod_contentTypesConfigModel = result.data.data.content_type_config.create_single;
+                    if(newContentType) {
+                        successCallback(newContentType);
+                    }
+                    else {
+                        setFormError({
+                            error: true,
+                            message: result.data.errors[0].message
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.log(err);
+                    setFormError({
+                        error: true,
+                        message: 'An unexpected error occured when registering the components new content type!'
+                    });
+                })
             }
         })
     }
@@ -98,6 +194,8 @@ const AddComponentContentType: React.FC = () => {
                     <p className="bold">Configuration</p>
                 </div>
                 { extendedForm }
+
+                { formError.error ? errorConEle : null }
 
                 <div className="footer">
                     <div className="textarea">

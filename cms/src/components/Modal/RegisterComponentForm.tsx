@@ -132,7 +132,6 @@ const RegisterComponentForm: React.FC = () => {
                             message: result.data.errors[0].message
                         });
                     }
-
                 })
                 .catch((err) => {
                     setFormError({
