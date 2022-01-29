@@ -57,6 +57,9 @@
         &.--no-margin {
             margin: 0;
         }
+        &.--no-margin-bottom {
+            margin-bottom: 0;
+        }
     }
     .inputError {
         display: none;
@@ -69,6 +72,10 @@
             font-size: rem(14);
             line-height: rem(16);
             color: white;
+        }
+        &.--no-margin-bottom {
+            margin-bottom: 0;
+            margin-top: rem(10);
         }
     }
     .describedBy {
@@ -154,4 +161,17 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 input[type="number"] {
     -moz-appearance: textfield;
+}
+
+.errorCon {
+    border-top: $border_style;
+    padding-top: 10px;
+    &__margin-top {
+        margin-top: rem(10);
+    }
+    p {
+        color: map-get($map: $accent_colours, $key: _02_01);
+        font-size: rem(14);
+        line-height: rem(16);
+    }
 }

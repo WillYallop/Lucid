@@ -83,7 +83,7 @@ const RegisterComponentForm: React.FC = () => {
         .catch(() => {
             setFormError({
                 error: true,
-                message: 'An unexpected error occured while getting the unregistered components!'
+                message: 'An unexpected error occured while registering the components!'
             });
         })
     }

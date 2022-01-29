@@ -9,12 +9,13 @@ import {
 import DefaultPage from '../../../../components/Layout/DefaultPage';
 import SidebarMeta from "../../../../components/Layout/Sidebar/SidebarMeta";
 import SidebarButton from "../../../../components/Layout/Sidebar/SidebarBtn";
+import SidebarFormSubmit from "../../../../components/Layout/Sidebar/SidebarFormSubmit";
 import SidebarLayout from '../../../../components/Layout/Sidebar/SidebarLayout';
 import TextareaInput from '../../../../components/Core/Inputs/TextareaInput';
-import TextInput from '../../../../components/Core/Inputs/TextInput';
 import ContentTypeRow, { mod_contentTypesConfigModel } from '../../../../components/ContentTypes/ContentTypeRow';
 import CoreIcon from '../../../../components/Core/Icon';
 import AddComponentContentType from '../../../../components/Modal/AddComponentContentType';
+import ComponentDataForm from './Components/ComponentDataForm';
 // Functions
 import getApiUrl from "../../../../functions/getApiUrl";
 // Icons
@@ -37,6 +38,8 @@ interface editComponentProps {
 }
 
 const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
+    const [ componentName, setComponentName ] = useState('');
+
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
@@ -67,7 +70,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         });
     }
 
-
     // -------------------------------------------------------
     // Component 
     // -------------------------------------------------------
@@ -95,28 +97,10 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                                 _id
                                 name
                                 type
-                                config  {
-                                    max_repeats
-                                    max_range
-                                    min_range
-                                    max_length
-                                    min_length
-                                    default_num
-                                    default_str
-                                }
                                 fields {
                                     _id
                                     name
                                     type
-                                    config {
-                                        max_repeats
-                                        max_range
-                                        min_range
-                                        max_length
-                                        min_length
-                                        default_num
-                                        default_str
-                                    }
                                 }
                             }
                         }
@@ -131,6 +115,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 ...component,
                 ...componentData
             });
+            setComponentName(componentData.name);
         })
         .catch((err) => {
             console.log(err);
@@ -204,7 +189,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         
     }
 
-
     // -------------------------------------------------------
     // Sidebar
     // -------------------------------------------------------
@@ -213,10 +197,10 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             {
                 allowSave
                 ?
-                <SidebarButton 
-                text="Save Changes"
-                action={saveComponentData}
-                icon={faSave}/>
+                <SidebarFormSubmit
+                    text="Save Changes"
+                    formID={'compDataForm'}
+                    icon={faSave}/>
                 :
                 null
             }
@@ -236,20 +220,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                         data: new Date(component.date_modified).toLocaleDateString()
                     }
                 ]}/>
-            <SidebarLayout
-                title="Description">
-                {/* Component Description */}
-                <TextareaInput
-                    value={component.description}
-                    id={"componentDescInp"}
-                    name={"comp_desc"}
-                    required={true}
-                    errorMsg={`Description can only include the following characters: [A-Za-z \-\!,?._'@] and be a minimum of 0 and maximum of 400 characters long!`}
-                    updateValue={updateComponentDescription}
-                    min={0}
-                    max={400}
-                    style={'--no-margin'}/>
-            </SidebarLayout>
         </>
     )
 
@@ -262,29 +232,45 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     
     return (
         <DefaultPage
-        title="Edit Component"
+        title={`Edit - ${componentName}`}
         body="Manage your components fields and content types!"
         sidebar={sidebar}>
 
-            {/* Component name input */}
-            <TextInput
-                value={component.name}
-                id={"componentNameInp"}
-                name={"comp_name"}
-                required={true}
-                errorMsg={`Name can only include the following characters: [A-Za-z -!,?._'"@] and be a minimum of 2 and maximum of 60 characters long!`}
-                updateValue={updateComponentName}
-                style={'--no-margin'}/>
-
-            <div className="manageContentTypesCon blockCon blockCon--margin-top">
+            {/* Component Data */}
+            <section className="section blockCon">
+                <div className="header layout__flex layout__space-between layout__align-center">
+                    <p className="bold">Component Data</p>
+                </div>
+                <div className="body layout">
+                    <ComponentDataForm
+                        component__id={_id}
+                        name={{
+                            value: component.name,
+                            update: updateComponentName
+                        }}
+                        description={{
+                            value: component.description,
+                            update: updateComponentDescription
+                        }}
+                        successCallback={() => {
+                            // Add success message
+                            addNotification('You have successfully update the components data!', 'success');
+                            updateAllowSave(false);
+                            setComponentName(component.name);
+                        }}/>
+                </div>
+            </section>
+            
+            {/* Content Types */}
+            <section className="section blockCon">
                 <div className="header layout__flex layout__space-between layout__align-center">
                     <p className="bold">Content Types</p>
                     <button className='btnStyleBlank' onClick={openAddContentTypeModal}><CoreIcon icon={faPlus}/></button>
                 </div>
-                <div className="layout">
+                <div className="body layout">
                     { contentTypeRows }
                 </div>
-            </div>
+            </section>
 
         </DefaultPage>
     )

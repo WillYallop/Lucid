@@ -9,7 +9,7 @@ interface textareaInputProps {
     described_by?: string
     max?: number
     min?: number
-    style?: '--no-margin'
+    style?: '--no-margin' | '--no-margin-bottom'
     updateValue: (value: string) => void
 }
 
@@ -30,16 +30,16 @@ const TextareaInput: React.FC<textareaInputProps> = ({ label, value, id, name, r
         <div className="inputWrapper">
             { label ? <label htmlFor={id}>{ label }</label> : null }
             <textarea 
-            aria-describedby={`${id}-described-by`} 
-            className={`inputStyle inputStyle--textarea ${ style ? style : '' }`} 
-            value={value} 
-            name={name} 
-            id={id} 
-            required={required} 
-            onChange={onChange} 
-            maxLength={max}
-            minLength={min}/>
-            <div className="inputError">
+                aria-describedby={`${id}-described-by`} 
+                className={`inputStyle inputStyle--textarea ${ style ? style : '' }`} 
+                value={value} 
+                name={name} 
+                id={id} 
+                required={required} 
+                onChange={onChange} 
+                maxLength={max}
+                minLength={min}/>
+            <div className={`inputError ${ style ? style : '' }`}>
                 <p>{ errorMsg }</p>
             </div>
             { described_by ?  describedBy : null }

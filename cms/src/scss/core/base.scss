@@ -1,4 +1,5 @@
 body {
     font-family: 'Be Vietnam Pro', sans-serif;
     font-size: $html_font_size;
+    background-color: map-get($map: $section_colours, $key: _03_01);
 }
