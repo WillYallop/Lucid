@@ -136,6 +136,17 @@
     }
 }
 
+.headerRow {
+    border-bottom: $border_style;
+    padding-bottom: rem(10);
+    margin-top: rem(15);
+    margin-bottom: rem(5);
+    p {
+        font-size: rem(14);
+        line-height: rem(16);
+    }
+}
+
 input[type="number"]::-webkit-outer-spin-button,
 input[type="number"]::-webkit-inner-spin-button {
     -webkit-appearance: none;

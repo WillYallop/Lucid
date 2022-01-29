@@ -66,6 +66,7 @@ const AddComponentContentType: React.FC = () => {
     return (
         <div className="body">
             <form onSubmit={validateForm} noValidate={true}>
+
                 {/* Content Type - type */}
                 <SelectInput 
                     value={type}
@@ -93,6 +94,9 @@ const AddComponentContentType: React.FC = () => {
                     pattern={validatorConfig.cont_name.frontend_string}/>
 
                 {/* Extended form */}
+                <div className="headerRow">
+                    <p className="bold">Configuration</p>
+                </div>
                 { extendedForm }
 
                 <div className="footer">
