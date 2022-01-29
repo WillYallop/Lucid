@@ -31,7 +31,7 @@ const TextareaInput: React.FC<textareaInputProps> = ({ label, value, id, name, r
             { label ? <label htmlFor={id}>{ label }</label> : null }
             <textarea 
             aria-describedby={`${id}-described-by`} 
-            className={`inputStyle inputStyle--textarea ${style}`} 
+            className={`inputStyle inputStyle--textarea ${ style ? style : '' }`} 
             value={value} 
             name={name} 
             id={id} 

@@ -8,7 +8,7 @@ interface CoreIconProps {
 
 const CoreIcon: React.FC<CoreIconProps> = ({ icon, style }) => {
     return (
-        <div className={`coreIcon ${style}`}>
+        <div className={`coreIcon ${ style ? style : '' }`}>
             <FontAwesomeIcon icon={icon}/>
         </div>
     )

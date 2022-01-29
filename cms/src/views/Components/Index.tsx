@@ -130,11 +130,11 @@ const Components: React.FC = () => {
     // Sidebar data
     const sidebarMetaData = [
         {
-            key: 'Unregistered:',
+            key: 'unregistered:',
             data: unregisteredComponents.totals.unregistered
         },
         {
-            key: 'Registered:',
+            key: 'registered:',
             data: unregisteredComponents.totals.registered
         }
     ];

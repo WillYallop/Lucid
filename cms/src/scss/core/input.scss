@@ -54,6 +54,9 @@
             height: rem(150);
             font-family: 'Be Vietnam Pro', sans-serif;
         }
+        &.--no-margin {
+            margin: 0;
+        }
     }
     .inputError {
         display: none;

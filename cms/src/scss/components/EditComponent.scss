@@ -1,0 +1,34 @@
+.manageContentTypesCon {
+    .header {
+        margin: 0 0 rem(10);
+    }
+    .contentTypeRow {
+        .main {
+            padding-right: rem(20);
+            .icon {
+                background-color: map-get($map: $section_colours, $key: _01_01);
+                height: rem(40);
+                width: rem(40);
+                min-width: rem(40);
+                border-radius: rem(5);
+                svg {
+                    path {
+                        fill: map-get($map: $accent_colours, $key: _01_01)
+                    }
+                }
+            }
+            .textarea {
+                padding-left: rem(10);
+                font-size: rem(14);
+                line-height: rem(16);
+            }
+        }
+        .iconCol {
+            .coreIcon {
+                &:first-child {
+                    margin-right: rem(10);
+                }
+            }
+        }
+    }
+}

@@ -32,7 +32,7 @@ const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required,
             { label ? <label htmlFor={id}>{ label }</label> : null }
             <input 
             aria-describedby={`${id}-described-by`} 
-            className={`inputStyle ${style}`} 
+            className={`inputStyle ${ style ? style : '' }`} 
             value={value} 
             type="text" 
             name={name} 

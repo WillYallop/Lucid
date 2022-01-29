@@ -4,8 +4,16 @@ import axios from 'axios';
 import { PageNotificationContext, PageNotificationContextNoticationsObj } from "../../../../helper/Context";
 // Components
 import DefaultPage from '../../../../components/Layout/DefaultPage';
+import SidebarMeta from "../../../../components/Layout/Sidebar/SidebarMeta";
+import SidebarButton from "../../../../components/Layout/Sidebar/SidebarBtn";
+import SidebarLayout from '../../../../components/Layout/Sidebar/SidebarLayout';
+import TextareaInput from '../../../../components/Core/Inputs/TextareaInput';
+import TextInput from '../../../../components/Core/Inputs/TextInput';
+import ContentTypeRow, { mod_contentTypesConfigModel } from '../../../../components/ContentTypes/ContentTypeRow';
 // Functions
 import getApiUrl from "../../../../functions/getApiUrl";
+// Icons
+import { faSave, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 interface mod_componentModel {
     _id: string
@@ -16,25 +24,7 @@ interface mod_componentModel {
     preview_url: string
     date_added: string
     date_modified: string
-
     content_types?: Array<mod_contentTypesConfigModel>
-}
-
-interface mod_contentTypesConfigModel {
-    _id: string
-    name: string // this is the custom name the user gives to the content type
-    type: 'text' | 'email' | `rich_media` | 'number' | `range` | 'repeater' | 'select' | 'date' | 'media' | 'boolean' | 'json'
-    config: {
-        max_length?: number
-        min_length?: number
-        max_range?: number
-        min_range?: number
-        default_num?: number
-        default_srt?: string
-        max_repeats?: number
-    }
-    // Only type of repeater has this:
-    fields?: Array<mod_contentTypesConfigModel>
 }
 
 interface editComponentProps {
@@ -59,18 +49,9 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     // -------------------------------------------------------
     // Component 
     // -------------------------------------------------------
+    const [ allowSave, updateAllowSave ] = useState(false);
+
     const [ component, setComponent ] = useState({} as mod_componentModel);
-
-    console.log(_id)
-
-    // First load
-    useEffect(() => {
-        getComponentData();
-        return () => {
-            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
-        }
-    }, []);
-
     const getComponentData = () => {
         axios({
             url: getApiUrl(),
@@ -135,32 +116,132 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         })
     }
 
-    if(Object.keys(component).length) {
-        return (
-            <DefaultPage
-            title="Edit Component"
-            body="Manage your components fields and content types!">
-                <div>
-                    <ul>
-                        <li><b>_id:</b> { component._id }</li>
-                        <li><b>File name:</b> { component.file_name }</li>
-                        <li><b>Name:</b> { component.name }</li>
-                        <li><b>Description:</b> { component.description }</li>
-                    </ul>
-                </div>
-            </DefaultPage>
-        )
+    // Update data
+    // Update description 
+    const updateComponentDescription = (value: string) => {
+        setComponent({
+            ...component,
+            ...{
+                description: value
+            }
+        });
+        updateAllowSave(true);
     }
-    else {
-        return (
-            <DefaultPage
-            title="Edit Component"
-            body="Manage your components fields and content types!">
-                <div>
-                </div>
-            </DefaultPage>
-        )
+
+    // Update name
+    const updateComponentName = (value: string) => {
+        setComponent({
+            ...component,
+            ...{
+                name: value
+            }
+        });
+        updateAllowSave(true);
     }
+
+
+    // -------------------------------------------------------
+    // First load
+    // -------------------------------------------------------
+    useEffect(() => {
+        getComponentData();
+        return () => {
+            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
+        }
+    }, []);
+
+
+    // -------------------------------------------------------
+    // Save component data
+    // -------------------------------------------------------
+    const saveComponentData = () => {
+        
+    }
+
+
+    // -------------------------------------------------------
+    // Sidebar
+    // -------------------------------------------------------
+    const sidebar = (
+        <>  
+            {
+                allowSave
+                ?
+                <SidebarButton 
+                text="Save Changes"
+                action={saveComponentData}
+                icon={faSave}/>
+                :
+                null
+            }
+            <SidebarButton 
+                text="Deregister"
+                action={saveComponentData}
+                icon={faTrashAlt}
+                style={'warning'}/>
+            <SidebarMeta 
+                rows={[
+                    {
+                        key: 'created:',
+                        data: new Date(component.date_added).toLocaleDateString()
+                    },
+                    {
+                        key: 'last edited:',
+                        data: new Date(component.date_modified).toLocaleDateString()
+                    }
+                ]}/>
+            <SidebarLayout
+                title="Description">
+                {/* Component Description */}
+                <TextareaInput
+                    value={component.description}
+                    id={"componentDescInp"}
+                    name={"comp_desc"}
+                    required={true}
+                    errorMsg={`Description can only include the following characters: [A-Za-z \-\!,?._'@] and be a minimum of 0 and maximum of 400 characters long!`}
+                    updateValue={updateComponentDescription}
+                    min={0}
+                    max={400}
+                    style={'--no-margin'}/>
+            </SidebarLayout>
+        </>
+    )
+
+    const contentTypeRows: Array<ReactElement> = [];
+    if(component.content_types) {
+        for(let i = 0; i < component.content_types.length; i++) {
+            contentTypeRows.push(<ContentTypeRow contentType={ component.content_types[i]}/>);
+        }
+    }
+    
+    return (
+        <DefaultPage
+        title="Edit Component"
+        body="Manage your components fields and content types!"
+        sidebar={sidebar}>
+
+            {/* Component name input */}
+            <TextInput
+                value={component.name}
+                id={"componentNameInp"}
+                name={"comp_name"}
+                required={true}
+                errorMsg={`Name can only include the following characters: [A-Za-z -!,?._'"@] and be a minimum of 2 and maximum of 60 characters long!`}
+                updateValue={updateComponentName}
+                style={'--no-margin'}/>
+
+            <div className="manageContentTypesCon blockCon blockCon--margin-top">
+                <div className="header layout__flex layout__space-between layout__align-center">
+                    <p className="bold">Content Types</p>
+                    <button className="btnStyle1 btnStyle1--small">Add Field</button>
+                </div>
+                <div className="layout">
+                    { contentTypeRows }
+                </div>
+            </div>
+
+        </DefaultPage>
+    )
 }
 
 export default EditComponent;
