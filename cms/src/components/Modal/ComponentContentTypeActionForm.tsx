@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { mod_contentTypesConfigModel } from '../ContentTypes/ContentTypeRow';
 import axios from 'axios';
 // Components
@@ -12,21 +12,46 @@ import ExtendedFormNumber from '../ContentTypes/ExtendedForms/Number';
 import formValidationHandler from "../../functions/formValidationHandler";
 import getApiUrl from "../../functions/getApiUrl";
 import validatorConfig from '../../functions/validatorConfig';
+import formatLucidError from '../../functions/formatLucidError';
 
 interface ComponentContentTypeActionFormProps {
     component__id: string
-    successCallback: (configType: mod_contentTypesConfigModel) => void
+    successCallback: (configType: mod_contentTypesConfigModel, actionType: 'update' | 'create', repeater__id?: string) => void
 
-    contentType__id?: string
-    actionType: 'update' | 'create' | 'repeater'
+    contentType?: mod_contentTypesConfigModel
+    repeater__id?: string
+    actionType: 'update' | 'create'
 }
 
-const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormProps> = ({ component__id, successCallback, contentType__id, actionType }) => {
+const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormProps> = ({ component__id, successCallback, contentType, actionType, repeater__id }) => {
+
+    const getTypeExtendedForm = (type: mod_contentTypesConfigModel["type"]) => {
+        switch(type) {
+            case 'text': {
+                return <ExtendedFormText config={contentType?.config}/>;
+            }
+            case 'number': {
+                return <ExtendedFormNumber config={contentType?.config}/>;
+            }
+            case 'repeater': {
+                return <ExtendedFormRepeater config={contentType?.config}/>;
+            }
+            default: {
+                return <ExtendedFormText/>;
+            }
+        }
+    }
 
     // -------------------------------------------------------
     // Extended Form
     // -------------------------------------------------------
-    const [ extendedForm, setExtendedForm ] = useState<ReactElement>(<ExtendedFormText/>);
+    let defaultType: mod_contentTypesConfigModel["type"] = 'text';
+    let defaultExtendedForm = <ExtendedFormText/>;
+    if(actionType === 'update' && contentType) {
+        defaultType = contentType.type;
+        defaultExtendedForm = getTypeExtendedForm(defaultType);
+    }
+    const [ extendedForm, setExtendedForm ] = useState<ReactElement>(defaultExtendedForm);
 
     // -------------------------------------------------------
     // Form Error
@@ -44,34 +69,175 @@ const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormPro
     // -------------------------------------------------------
     // Types
     // -------------------------------------------------------
-    const [ type, setType ] = useState<mod_contentTypesConfigModel["type"]>('text');
+    const [ type, setType ] = useState<mod_contentTypesConfigModel["type"]>(defaultType);
     const typeOptions: Array<mod_contentTypesConfigModel["type"]> = [
         'text',
-        'number',
-        'repeater'
+        'number'
     ];
+    if(!repeater__id) typeOptions.push('repeater');
+
     const updateSelectedType = (value: any) => {
         setType(value);
-        switch(value) {
-            case 'text': {
-                setExtendedForm(<ExtendedFormText/>);
-                break;
-            }
-            case 'number': {
-                setExtendedForm(<ExtendedFormNumber/>);
-                break;
-            }
-            case 'repeater': {
-                setExtendedForm(<ExtendedFormRepeater/>);
-                break;
-            }
-        }
+        setExtendedForm(getTypeExtendedForm(value))
     }
 
     // -------------------------------------------------------
     // Name
     // -------------------------------------------------------
-    const [ name, setName ] = useState<mod_contentTypesConfigModel["name"]>('');
+    const [ name, setName ] = useState<mod_contentTypesConfigModel["name"]>(contentType?.name || '');
+
+    // -------------------------------------------------------
+    // Actions
+    // -------------------------------------------------------
+    // Create
+    const createContentTypeAction = (configObj: string) => {
+        // Query
+        const query = `
+            mutation {
+                content_type_config {
+                    create_single 
+                    (
+                        component_id: "${component__id}"
+                        content_type: {
+                            name: "${name}"
+                            type: "${type}"
+                            config: ${configObj}
+                        }
+                        repeaterField: ${ repeater__id ? 'true' : 'false' }
+                        ${ repeater__id ? 'repeaterID: "'+repeater__id+'"' : '' }
+                    )
+                    {
+                        _id
+                        name
+                        type
+                        config {
+                            max_range
+                            min_range
+                            max_length
+                            min_length
+                            max_repeats
+                            default_str
+                            default_num
+                        }
+                        fields {
+                            _id
+                            name
+                            type
+                            config {
+                                max_range
+                                min_range
+                                max_length
+                                min_length
+                                max_repeats
+                                default_str
+                                default_num
+                            }
+                        }
+                    }
+                }
+            }`;
+
+        console.log(query);
+        axios({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        })
+        .then((result) => {
+            const newContentType: mod_contentTypesConfigModel = result.data.data.content_type_config.create_single;
+            if(newContentType) {
+                successCallback(newContentType, actionType, repeater__id);
+            }
+            else {
+                setFormError({
+                    error: true,
+                    message: formatLucidError(result.data.errors[0].message).message
+                });
+            }
+        })
+        .catch((err) => {
+            setFormError({
+                error: true,
+                message: 'An unexpected error occured when registering the components new content type!'
+            });
+        })
+    }
+    // Update
+    const updateContentTypeAction = (configObj: string) => {
+        const query = `mutation {
+                content_type_config {
+                    update_single
+                    (
+                        component_id: "${component__id}"
+                        content_type: {
+                            _id: "${contentType?._id}"
+                            name: "${name}"
+                            type: "${type}"
+                            config: ${configObj}
+                        }
+                        repeaterField: ${ repeater__id ? 'true' : 'false' }
+                        ${ repeater__id ? 'repeaterID: "'+repeater__id+'"' : '' }
+                    ) 
+                    {
+                        _id
+                        name
+                        type
+                        config {
+                            max_range
+                            min_range
+                            max_length
+                            min_length
+                            max_repeats
+                            default_str
+                            default_num
+                        }
+                        fields {
+                            _id
+                            name
+                            type
+                            config {
+                                max_range
+                                min_range
+                                max_length
+                                min_length
+                                max_repeats
+                                default_str
+                                default_num
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+        axios({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        })
+        .then((result) => {
+            const newContentType: mod_contentTypesConfigModel = result.data.data.content_type_config.update_single;
+            if(newContentType) {
+                successCallback(newContentType, actionType, repeater__id);
+            }
+            else {
+                setFormError({
+                    error: true,
+                    message: formatLucidError(result.data.errors[0].message).message
+                });
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            setFormError({
+                error: true,
+                message: 'An unexpected error occured when updating the components content type!'
+            });
+        })
+    }
 
     // -------------------------------------------------------
     // Form validate
@@ -84,80 +250,14 @@ const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormPro
                 let configObj = `{`;
                 for(let prop in fields) {
                     if(prop != 'name' && prop != 'type') {
-                        if(prop === 'default_str') configObj += `${prop}: "${fields[prop]}"`;
-                        else configObj += `${prop}: ${parseInt(fields[prop])}`;
+                        if(prop === 'default_str') configObj += `${prop}: "${fields[prop]}" `;
+                        else configObj += `${prop}: ${parseInt(fields[prop])} `;
                     }
                 }
-                configObj += `}`
-                // Query
-                const query = `
-                    mutation {
-                        content_type_config {
-                            create_single 
-                            (
-                                component_id: "${component__id}"
-                                content_type: {
-                                    name: "${name}"
-                                    type: "${type}"
-                                    config: ${configObj}
-                                }
-                            )
-                            {
-                                _id
-                                name
-                                type
-                                config {
-                                  max_range
-                                  min_range
-                                  max_length
-                                  min_length
-                                  max_repeats
-                                }
-                                fields {
-                                  _id
-                                  name
-                                  type
-                                  config {
-                                    max_range
-                                    min_range
-                                    max_length
-                                    min_length
-                                    max_repeats
-                                    default_str
-                                    default_num
-                                  }
-                                }
-                            }
-                        }
-                    }
-                `;
-                axios({
-                    url: getApiUrl(),
-                    method: 'post',
-                    data: {
-                        query: query
-                    }
-                })
-                .then((result) => {
-                    console.log(result);
-                    const newContentType: mod_contentTypesConfigModel = result.data.data.content_type_config.create_single;
-                    if(newContentType) {
-                        successCallback(newContentType);
-                    }
-                    else {
-                        setFormError({
-                            error: true,
-                            message: result.data.errors[0].message
-                        });
-                    }
-                })
-                .catch((err) => {
-                    console.log(err);
-                    setFormError({
-                        error: true,
-                        message: 'An unexpected error occured when registering the components new content type!'
-                    });
-                })
+                configObj += `}`;
+                // Perform query action
+                if(actionType === 'create') createContentTypeAction(configObj);
+                else updateContentTypeAction(configObj);
             }
         })
     }
@@ -202,9 +302,21 @@ const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormPro
 
                 <div className="footer">
                     <div className="textarea">
-                        <p>Once created you will be take back to the edit component page!</p>
+                        {
+                            actionType === 'create'
+                            ? 
+                            <p>Once created you will be take back to the edit component page!</p>
+                            : 
+                            <p>Once updated you will be take back to the edit component page!</p>
+                        }
                     </div>
-                    <input className="btnStyle1 btnStyle1--small" type="submit" value="Create" />
+                    {
+                        actionType === 'create'
+                        ? 
+                        <input className="btnStyle1 btnStyle1--small" type="submit" value="Create"/>
+                        : 
+                        <input className="btnStyle1 btnStyle1--small" type="submit" value="Update"/>
+                    }
                 </div>
             </form>
         </div>

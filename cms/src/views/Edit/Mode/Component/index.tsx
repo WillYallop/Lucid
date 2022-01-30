@@ -56,7 +56,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     // Modal 
     // -------------------------------------------------------
     const { modalState, setModalState } = useContext(ModalContext);
-    const openContentTypeActionModal = (actionType: 'update' | 'create' | 'repeater', contentType__id?: string) => {
+    const openContentTypeActionModal = (actionType: 'update' | 'create', contentType?: mod_contentTypesConfigModel, repeater__id?: string) => {
         let title,body;
         if(actionType === 'create') {
             title = 'Add a content type';
@@ -66,10 +66,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             title = 'Update content type';
             body = 'Update your content types configuration!';
         }
-        else {
-            title = 'Add a content type';
-            body = 'Create a new content type for the repeater!';
-        }
         setModalState({
             ...modalState,
             state: true,
@@ -77,9 +73,10 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             body: body,
             element: <ComponentContentTypeActionForm
                 component__id={_id}
-                successCallback={addContentTypeSuccessCallback}
-                contentType__id={contentType__id}
-                actionType={actionType}/>
+                successCallback={contentTypeActionFormSuccessCallback}
+                contentType={contentType}
+                actionType={actionType}
+                repeater__id={repeater__id}/>
         });
     }
 
@@ -110,10 +107,28 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                                 _id
                                 name
                                 type
+                                config {
+                                    max_repeats
+                                    max_range
+                                    min_range
+                                    max_length
+                                    min_length
+                                    default_num
+                                    default_str
+                                }
                                 fields {
                                     _id
                                     name
                                     type
+                                    config {
+                                        max_repeats
+                                        max_range
+                                        min_range
+                                        max_length
+                                        min_length
+                                        default_num
+                                        default_str
+                                    }
                                 }
                             }
                         }
@@ -159,23 +174,76 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     }
 
     // Callback for adding new content type
-    const addContentTypeSuccessCallback = (contentType: mod_contentTypesConfigModel) => {
-        // Add new content type to component data
-        const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
-        newContentTypeArr.push(contentType);
-        setComponent({
-            ...component,
-            ...{
-                content_types: newContentTypeArr
+    const contentTypeActionFormSuccessCallback = (contentType: mod_contentTypesConfigModel, actionType: 'update' | 'create', repeater__id?: string) => {
+        if(actionType === 'create') {
+            if(repeater__id) {
+                // Add new content type to component data
+                const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
+                const repeaterField = newContentTypeArr.find( x => x._id === repeater__id );
+                if(repeaterField && repeaterField.fields) {
+                    repeaterField.fields.push(contentType);
+                    setComponent({
+                        ...component,
+                        ...{
+                            content_types: newContentTypeArr
+                        }
+                    });
+                }
             }
-        });
+            else {
+                // Add new content type to component data
+                const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
+                newContentTypeArr.push(contentType);
+                setComponent({
+                    ...component,
+                    ...{
+                        content_types: newContentTypeArr
+                    }
+                });
+            }
+            // Add success message
+            addNotification('You have successfully added a new content type!', 'success');
+        }
+        else {
+            if(repeater__id) {
+                // Add new content type to component data
+                const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
+                const repeaterField = newContentTypeArr.find( x => x._id === repeater__id );
+                if(repeaterField && repeaterField.fields) {
+                    const updatedIndex = repeaterField.fields.findIndex( x => x._id === contentType._id );
+                    if(updatedIndex != -1) {
+                        repeaterField.fields[updatedIndex] = contentType;
+                        setComponent({
+                            ...component,
+                            ...{
+                                content_types: newContentTypeArr
+                            }
+                        });
+                    }
+                }
+            }
+            else {
+                // Add new content type to component data
+                const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
+                const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType._id );
+                if(updatedIndex != -1) {
+                    newContentTypeArr[updatedIndex] = contentType;
+                    setComponent({
+                        ...component,
+                        ...{
+                            content_types: newContentTypeArr
+                        }
+                    });
+                }
+            }
+            // Add success message
+            addNotification(`You have successfully update the "${contentType.name}" content type!`, 'success');
+        }
         // Close modal
         setModalState({
             ...modalState,
             state: false,
         });
-        // Add success message
-        addNotification('You have successfully added a new content type!', 'success');
     }
 
     // -------------------------------------------------------
@@ -196,13 +264,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
 
     // -------------------------------------------------------
-    // Save component data
-    // -------------------------------------------------------
-    const saveComponentData = () => {
-        
-    }
-
-    // -------------------------------------------------------
     // Sidebar
     // -------------------------------------------------------
     const sidebar = (
@@ -219,7 +280,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             }
             <SidebarButton 
                 text="Deregister"
-                action={saveComponentData}
+                action={() => { alert('deregister') }}
                 icon={faTrashAlt}
                 style={'warning'}/>
             <SidebarMeta 

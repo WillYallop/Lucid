@@ -2,12 +2,24 @@
 import { useState } from "react";
 import SwitchInput from "../../Core/Inputs/SwitchInput";
 import NumberInput from "../../Core/Inputs/NumberInput";
+import { mod_contentTypesConfigModel } from '../ContentTypeRow';
 
-const ExtendedFormRepeater: React.FC = () => {
+interface ExtendedFormRepeaterProps {
+    config?: mod_contentTypesConfigModel["config"]
+}
+
+const ExtendedFormRepeater: React.FC<ExtendedFormRepeaterProps> = ({ config }) => {
+
+    const showState = {
+        maxRepeats: config?.max_repeats != undefined ? true : false
+    }
+    const starterValues = {
+        maxRepeats: config?.max_repeats != undefined ? config.max_repeats : 20
+    }
 
     // Default value
-    const [ showMaxRepeatsInp, setShowMaxRepeatsInp ] = useState(false);
-    const [ maxRepeats, setMaxRepeats ] = useState(20);
+    const [ showMaxRepeatsInp, setShowMaxRepeatsInp ] = useState(showState.maxRepeats);
+    const [ maxRepeats, setMaxRepeats ] = useState(starterValues.maxRepeats);
 
     return (
         <>  

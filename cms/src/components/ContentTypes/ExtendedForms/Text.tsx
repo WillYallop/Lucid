@@ -3,18 +3,34 @@ import { useState } from "react";
 import SwitchInput from "../../Core/Inputs/SwitchInput";
 import TextInput from "../../Core/Inputs/TextInput";
 import NumberInput from "../../Core/Inputs/NumberInput";
+import { mod_contentTypesConfigModel } from '../ContentTypeRow';
 
-const ExtendedFormText: React.FC = () => {
+interface ExtendedFormTextProps {
+    config?: mod_contentTypesConfigModel["config"]
+}
+
+const ExtendedFormText: React.FC<ExtendedFormTextProps> = ({ config }) => {
+
+    const showState = {
+        default: config?.default_str != undefined ? true : false,
+        min: config?.min_length != undefined ? true : false,
+        max: config?.max_length != undefined ? true : false
+    }
+    const starterValues = {
+        default: config?.default_str != undefined ? config.default_str : '',
+        min:  config?.min_length != undefined ? config.min_length : 0,
+        max: config?.max_length != undefined ? config.max_length : 100
+    }
 
     // Default value
-    const [ showDefaultValueInp, setShowDefaultValueInp ] = useState(false);
-    const [ defaultValue, setDefaultValue ] = useState('');
+    const [ showDefaultValueInp, setShowDefaultValueInp ] = useState(showState.default);
+    const [ defaultValue, setDefaultValue ] = useState(starterValues.default);
     // Minimum value
-    const [ showMinValueInp, setShowMinValueInp ] = useState(false);
-    const [ minLength, setMinLength ] = useState(0);
+    const [ showMinValueInp, setShowMinValueInp ] = useState(showState.min);
+    const [ minLength, setMinLength ] = useState(starterValues.min);
     // Maximum value
-    const [ showMaxValueInp, setShowMaxValueInp ] = useState(false);
-    const [ maxLength, setMaxLength ] = useState(100);
+    const [ showMaxValueInp, setShowMaxValueInp ] = useState(showState.max);
+    const [ maxLength, setMaxLength ] = useState(starterValues.max);
 
     return (
         <>  
