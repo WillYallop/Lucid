@@ -13,12 +13,15 @@ import formValidationHandler from "../../functions/formValidationHandler";
 import getApiUrl from "../../functions/getApiUrl";
 import validatorConfig from '../../functions/validatorConfig';
 
-interface AddComponentContentTypeProps {
+interface ComponentContentTypeActionFormProps {
     component__id: string
     successCallback: (configType: mod_contentTypesConfigModel) => void
+
+    contentType__id?: string
+    actionType: 'update' | 'create' | 'repeater'
 }
 
-const AddComponentContentType: React.FC<AddComponentContentTypeProps> = ({ component__id, successCallback }) => {
+const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormProps> = ({ component__id, successCallback, contentType__id, actionType }) => {
 
     // -------------------------------------------------------
     // Extended Form
@@ -208,4 +211,4 @@ const AddComponentContentType: React.FC<AddComponentContentTypeProps> = ({ compo
     )
 }
 
-export default AddComponentContentType;
+export default ComponentContentTypeActionForm;

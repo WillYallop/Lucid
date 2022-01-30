@@ -10,11 +10,9 @@ import DefaultPage from '../../../../components/Layout/DefaultPage';
 import SidebarMeta from "../../../../components/Layout/Sidebar/SidebarMeta";
 import SidebarButton from "../../../../components/Layout/Sidebar/SidebarBtn";
 import SidebarFormSubmit from "../../../../components/Layout/Sidebar/SidebarFormSubmit";
-import SidebarLayout from '../../../../components/Layout/Sidebar/SidebarLayout';
-import TextareaInput from '../../../../components/Core/Inputs/TextareaInput';
 import ContentTypeRow, { mod_contentTypesConfigModel } from '../../../../components/ContentTypes/ContentTypeRow';
 import CoreIcon from '../../../../components/Core/Icon';
-import AddComponentContentType from '../../../../components/Modal/AddComponentContentType';
+import ComponentContentTypeActionForm from '../../../../components/Modal/ComponentContentTypeActionForm';
 import ComponentDataForm from './Components/ComponentDataForm';
 // Functions
 import getApiUrl from "../../../../functions/getApiUrl";
@@ -58,15 +56,30 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     // Modal 
     // -------------------------------------------------------
     const { modalState, setModalState } = useContext(ModalContext);
-    const openAddContentTypeModal = () => {
+    const openContentTypeActionModal = (actionType: 'update' | 'create' | 'repeater', contentType__id?: string) => {
+        let title,body;
+        if(actionType === 'create') {
+            title = 'Add a content type';
+            body = 'Create a configure a new content type!';
+        }
+        else if (actionType === 'update') {
+            title = 'Update content type';
+            body = 'Update your content types configuration!';
+        }
+        else {
+            title = 'Add a content type';
+            body = 'Create a new content type for the repeater!';
+        }
         setModalState({
             ...modalState,
             state: true,
-            title: 'Add content type',
-            body: 'Create a configure a new content type!',
-            element: <AddComponentContentType 
+            title: title,
+            body: body,
+            element: <ComponentContentTypeActionForm
                 component__id={_id}
-                successCallback={addContentTypeSuccessCallback}/>
+                successCallback={addContentTypeSuccessCallback}
+                contentType__id={contentType__id}
+                actionType={actionType}/>
         });
     }
 
@@ -226,7 +239,12 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     const contentTypeRows: Array<ReactElement> = [];
     if(component.content_types) {
         for(let i = 0; i < component.content_types.length; i++) {
-            contentTypeRows.push(<ContentTypeRow key={component.content_types[i]._id} contentType={ component.content_types[i]}/>);
+            contentTypeRows.push(
+                <ContentTypeRow 
+                    key={component.content_types[i]._id} 
+                    contentType={ component.content_types[i]}
+                    actionForm={openContentTypeActionModal}/>
+            );
         }
     }
     
@@ -265,7 +283,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             <section className="section blockCon">
                 <div className="header layout__flex layout__space-between layout__align-center">
                     <p className="bold">Content Types</p>
-                    <button className='btnStyleBlank' onClick={openAddContentTypeModal}><CoreIcon icon={faPlus}/></button>
+                    <button className='btnStyleBlank' onClick={() => openContentTypeActionModal('create')}><CoreIcon icon={faPlus}/></button>
                 </div>
                 <div className="body layout">
                     { contentTypeRows }

@@ -7,6 +7,7 @@ import { ReactElement } from 'react';
 
 interface contentTypeProps {
     contentType: mod_contentTypesConfigModel
+    actionForm: (actionType: 'update' | 'create' | 'repeater', contentType__id?: string) => void
 }
 export interface mod_contentTypesConfigModel {
     _id: string
@@ -25,7 +26,7 @@ export interface mod_contentTypesConfigModel {
     fields?: Array<mod_contentTypesConfigModel>
 }
 
-const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType }) => {
+const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm }) => {
 
     let ContentTypeIcon;
     switch(contentType.type) {
@@ -46,9 +47,20 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType }) => {
     let repeaterBodyItems: Array<ReactElement> = []; 
     if(contentType.type === 'repeater' && contentType.fields) {
         for(let i = 0; i < contentType.fields.length; i++) {
-            repeaterBodyItems.push(<ContentTypeRow key={contentType.fields[i]._id} contentType={ contentType.fields[i]}/>)
+            repeaterBodyItems.push(
+                <ContentTypeRow 
+                    key={contentType.fields[i]._id} 
+                    contentType={ contentType.fields[i]} 
+                    actionForm={actionForm}/>
+            )
         }
-        repeaterBodyItems.push(<button className={`btnStyle1 ${ contentType.fields.length ? 'btnStyle1--margin-top' : '' }`}>Add Content Type</button>)
+        repeaterBodyItems.push(
+            <button 
+                key={contentType._id+'-addContentTypeBtn'} 
+                className={`btnStyle1 ${ contentType.fields.length ? 'btnStyle1--margin-top' : '' }`}
+                onClick={() => actionForm('repeater', contentType._id)}>
+                Add Content Type
+            </button>);
     }
 
     return (
@@ -64,7 +76,9 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType }) => {
                     </div>
                 </div>
                 <div className="iconCol layout__flex">
-                    <CoreIcon icon={faEdit}/>
+                    <button className='btnStyleBlank' onClick={() => actionForm('update', contentType._id)}>
+                        <CoreIcon icon={faEdit}/>
+                    </button>
                     <CoreIcon icon={faTrashAlt} style={'warning'}/>
                 </div>
             </div>
