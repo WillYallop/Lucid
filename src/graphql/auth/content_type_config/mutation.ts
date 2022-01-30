@@ -55,10 +55,12 @@ const createContentType: GraphQLFieldConfig<any, any, any> = {
                     })
                 })
             )
-        }
+        },
+        repeaterField: { type: GraphQLNonNull(GraphQLBoolean) },
+        repeaterID: { type: GraphQLID }
     },
     resolve: (_, args) => {
-        return createSingleContentTypeConfig(args.component_id, args.content_type);
+        return createSingleContentTypeConfig(args.component_id, args.content_type, args.repeaterField, args.repeaterID);
     }
 }
 

@@ -6,7 +6,7 @@ import Header from "../components/Layout/Header";
 import Navigation from "../components/Layout/Navigation/Navigation";
 import Modal from '../components/Modal/Modal';
 // Functions
-import getApiUri from "../functions/getApiUri";
+import getApiUrl from "../functions/getApiUrl";
 
 
 
@@ -27,7 +27,7 @@ const MainLayout: React.FC = () => {
 
     const checkAPIConnection = () => {
         axios({
-            url: getApiUri(),
+            url: getApiUrl(),
             method: 'post',
             data: {
               query: `

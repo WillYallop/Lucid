@@ -20,9 +20,9 @@ export const deleteSingleContentTypeConfig = async (componentID: mod_componentMo
 }
 
 // Create single content type config
-export const createSingleContentTypeConfig = async (componentID: mod_componentModel["_id"], contentType: cont_cont_saveSingleInp) => {
+export const createSingleContentTypeConfig = async (componentID: mod_componentModel["_id"], contentType: cont_cont_saveSingleInp, repeaterField: boolean, repeaterID: mod_contentTypesConfigModel["_id"]) => {
     try {
-        let content_type = await contentTypeController.saveSingle(componentID, contentType);
+        let content_type = await contentTypeController.saveSingle(componentID, contentType, repeaterField, repeaterID);
         return content_type;
     }
     catch(err) {

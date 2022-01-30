@@ -1,23 +1,27 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
-
 // Context
 import { PageNotificationContext, PageNotificationContextNoticationsObj } from "../../../helper/Context";
 // Components
 import ComponentRow from "./ComponentRow";
 import UtilityLoading from '../../../components/Ultility/Loading';
 // Functions
-import getApiUri from "../../../functions/getApiUri";
+import getApiUrl from "../../../functions/getApiUrl";
 
 interface componentData {
     date_added: string
     description: string
     name: string
     preview_url: string
+    file_path: string
     _id: string
 }
 
-const ComponentList: React.FC = () => {
+interface componentListProps {
+    expanded: boolean
+}
+
+const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
@@ -35,7 +39,7 @@ const ComponentList: React.FC = () => {
     // -------------------------------------------------------
     // Components
     // -------------------------------------------------------
-    let [ skip, limit ] = [ 0 , 1 ];
+    let [ skip, limit ] = [ 0 , 10 ];
     const [ components, setComponents ] = useState<Array<componentData>>([]);
     const [ showLoadMore, setShowLoadMore ] = useState(true);
 
@@ -51,7 +55,7 @@ const ComponentList: React.FC = () => {
 
     const getAllComponents = (s: number, l: number) => {
         axios({
-            url: getApiUri(),
+            url: getApiUrl(),
             method: 'post',
             data: {
               query: `
@@ -64,6 +68,7 @@ const ComponentList: React.FC = () => {
                             description
                             preview_url
                             date_added
+                            file_path
                         }
                     }
                 }`
@@ -87,19 +92,19 @@ const ComponentList: React.FC = () => {
     const componentRows: Array<ReactElement> = [];
     if(components.length) {
         components.forEach((component) => {
-            componentRows.push(<ComponentRow key={componentRows.length} component={component}/>)
+            componentRows.push(<ComponentRow key={componentRows.length} component={component} expanded={expanded}/>)
         });
     } 
     else {
         return (
             <div className="con">
-                <div className="itemRow loading">
+                <div className="blockCon loading">
                     <UtilityLoading mode="light"/>
                 </div>
-                <div className="itemRow loading">
+                <div className="blockCon loading">
                     <UtilityLoading mode="light"/>
                 </div>
-                <div className="itemRow loading">
+                <div className="blockCon loading">
                     <UtilityLoading mode="light"/>
                 </div>
             </div>
@@ -115,8 +120,7 @@ const ComponentList: React.FC = () => {
     return (
         <div className="con">
             { componentRows }
-            { showLoadMore ? <button onClick={loadmore}>Load more</button> : null }
-            
+            { showLoadMore ? <button className='btnStyle1' onClick={loadmore}>Load more</button> : null }
         </div>
     )
 }

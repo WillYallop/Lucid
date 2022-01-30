@@ -3,11 +3,12 @@ import { IconDefinition } from '@fortawesome/fontawesome-common-types';
 
 interface CoreIconProps {
     icon: IconDefinition
+    style?: 'warning'
 }
 
-const CoreIcon: React.FC<CoreIconProps> = ({ icon }) => {
+const CoreIcon: React.FC<CoreIconProps> = ({ icon, style }) => {
     return (
-        <div className="coreIcon">
+        <div className={`coreIcon ${ style ? style : '' }`}>
             <FontAwesomeIcon icon={icon}/>
         </div>
     )

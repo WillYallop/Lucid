@@ -61,7 +61,7 @@ EXAMPLE CONTENT_TYPE CONFIG FILE
 // ------------------------------------ ------------------------------------
 // save single component content type
 // ------------------------------------ ------------------------------------
-const saveSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_saveSingleInp): Promise<mod_contentTypesConfigModel> => {
+const saveSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_saveSingleInp, repeaterField: boolean, repeaterID?: mod_contentTypesConfigModel["_id"]): Promise<mod_contentTypesConfigModel> => {
     try {
         const origin = 'contentTypeController.saveSingle';
         // Check if file ith component ID exists in theme/config/content_types and save a single component content type object to it
@@ -76,22 +76,6 @@ const saveSingle = async (componentID: mod_componentModel["_id"], contentType: c
                 value: __convertStringLowerUnderscore(contentType.name) // only the contentType.name is user inputted, so we assume the rest is correct
             }
         ];
-        // If we are saving a repeater with fields - verify their data as well!
-        let newRepeaterFieldArray: Array<mod_contentTypesConfigModel> = [];
-        if(contentType.type === 'repeater' && contentType.fields != undefined) {
-            for(let i = 0; i < contentType.fields.length; i++) {
-                validateArray.push({
-                    method: 'cont_name',
-                    value: __convertStringLowerUnderscore(contentType.fields[i].name) 
-                });
-                newRepeaterFieldArray.push({
-                    _id: uuidv1(),
-                    name: __convertStringLowerUnderscore(contentType.fields[i].name),
-                    type: contentType.fields[i].type,
-                    config: contentType.fields[i].config
-                });
-            }
-        };
 
         // Verify
         await validate(validateArray);
@@ -107,23 +91,59 @@ const saveSingle = async (componentID: mod_componentModel["_id"], contentType: c
                 type: contentType.type,
                 config: contentType.config
             };
-            if(contentType.type === 'repeater') contentTypeObj.fields = newRepeaterFieldArray;
+            if(contentType.type === 'repeater') contentTypeObj.fields = [];
+            
+            // Content type data
             let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
-            let findDuplicateName = contentTypeFileData.findIndex(x => x.name === contentTypeObj.name);
-            if (findDuplicateName === -1) {
-                // Does not exist
-                // Add to array and save
-                contentTypeFileData.push(contentTypeObj);
-                await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
-                return contentTypeObj
+
+            if(repeaterField) {
+                // We are saving a repeater field to a repeater content type
+                let repeaterContentType = contentTypeFileData.find( x => x._id === repeaterID );
+                if(repeaterContentType && repeaterContentType.fields) {
+                    // Find duplicate
+                    let findDuplicateFieldName = repeaterContentType.fields.findIndex( x => x.name === contentTypeObj.name );
+                    if (findDuplicateFieldName === -1) {
+                        // Does not exist
+                        // Add to array and save
+                        repeaterContentType.fields.push(contentTypeObj);
+                        await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
+                        return contentTypeObj
+                    }
+                    else {
+                        throw __generateErrorString({
+                            code: 403,
+                            origin: origin,
+                            message: `Content type with name "${__convertStringLowerUnderscore(contentType.name)}" has already been registered for repeater content type with ID "${repeaterID}"!.`
+                        });
+                    }
+                }
+                else {
+                    throw __generateErrorString({
+                        code: 403,
+                        origin: origin,
+                        message: `Repeater content type with ID "${repeaterID}" cannot be found!`
+                    });
+                }
             }
             else {
-                throw __generateErrorString({
-                    code: 403,
-                    origin: origin,
-                    message: `Content type with name "${__convertStringLowerUnderscore(contentType.name)}" has already been registered.`
-                });
+                // We are saving a top level content type
+                let findDuplicateName = contentTypeFileData.findIndex(x => x.name === contentTypeObj.name);
+                if (findDuplicateName === -1) {
+                    // Does not exist
+                    // Add to array and save
+                    contentTypeFileData.push(contentTypeObj);
+                    await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
+                    return contentTypeObj
+                }
+                else {
+                    throw __generateErrorString({
+                        code: 403,
+                        origin: origin,
+                        message: `Content type with name "${__convertStringLowerUnderscore(contentType.name)}" has already been registered.`
+                    });
+                }
             }
+
         }
         else {
             throw __generateErrorString({
@@ -284,7 +304,12 @@ const updateSingle = async (componentID: mod_componentModel["_id"], contentType:
             // save data
             const mergeAndSaveContentTypeFileData = async (existing: mod_contentTypesConfigModel, topLevelInd: number, filedLevelInd?: number) => {
                 try {
+                    // Merge object minus, config which overwrites
                     let newContentTypeObj: mod_contentTypesConfigModel = merge(existing, contentType);
+                    if(contentType.config) newContentTypeObj.config = contentType.config;
+                    // Delete fields object if going from a repeater type to another
+                    if(newContentTypeObj.type != 'repeater' && newContentTypeObj.fields) delete newContentTypeObj['fields'];
+
                     if(repeaterField) {
                         // @ts-ignore: Unreachable code error
                         contentTypeFileData[topLevelInd].fields[filedLevelInd] = newContentTypeObj;

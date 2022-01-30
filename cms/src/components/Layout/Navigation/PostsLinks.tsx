@@ -11,7 +11,7 @@ import { faFile } from '@fortawesome/free-solid-svg-icons';
 // Context
 import { ModalContext } from "../../../helper/Context";
 // Functions
-import getApiUri from "../../../functions/getApiUri";
+import getApiUrl from "../../../functions/getApiUrl";
 
 // Types
 interface cont_post_postDeclaration {
@@ -50,7 +50,7 @@ const NavigationPostLinks: React.FC = () => {
 
     const getAllPosts = () => {
         axios({
-            url: getApiUri(),
+            url: getApiUrl(),
             method: 'post',
             data: {
               query: `

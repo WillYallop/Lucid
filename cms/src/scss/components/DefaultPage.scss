@@ -4,6 +4,9 @@
         margin: $padding;
         border-bottom: $border_style;
         padding-bottom: rem(10);
+        h1 {
+            text-transform: capitalize;
+        }
     }
     .content {
         display: flex;
@@ -21,6 +24,15 @@
         // Main
         .main {
             width: 100%;
+            .section {
+                .header {
+                    margin: 0 0 rem(10);
+                    min-height: rem(41);
+                }
+                .body {
+                    
+                }
+            }
         }
         // Siderbar
         .sidebar {

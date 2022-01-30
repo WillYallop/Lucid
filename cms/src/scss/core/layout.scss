@@ -1,16 +1,102 @@
-.con {
-    width: 100%;
+.layout {
+    
+    &__flex {
+        display: flex;
+    }
+    &__space-between {
+        justify-content: space-between;
+    }
+    &__align-center {
+        align-items: center;
+    }
+    &__justify-center {
+        justify-content: center;
+    }
+    &__hide {
+        display: none;
+    }
 }
 
-.itemRow {
+.blockCon {
     padding: rem(10);
     border: $border_style;
     margin-bottom: rem(5);
     border-radius: rem(5);
+    background-color: map-get($map: $section_colours, $key: _02_01);
     &.loading {
         height: rem(60);
         border: none;
         padding: 0;
         overflow: hidden;
     }
+    &--margin-top {
+        margin-top: rem(10);
+    }
+    &__row-style {
+        border-bottom: $border_style;
+        padding: rem(10) rem(0);
+        &:first-child {
+            padding-top: 0;
+        }
+        &:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+    }
+}
+
+// Sidebar version
+.sidebarCon {
+    &__header {
+        border-bottom: $border_style;
+        padding-bottom: rem(10);
+        margin-bottom: rem(10);
+    }
+    &__body {
+        &__key-row {
+            display: flex;
+            padding: 0 0 rem(5);
+            &:last-child {
+                padding-bottom: 0;
+            }
+            p {
+                font-size: rem(14);
+                line-height: rem(16);
+                &:first-child {
+                    margin-right: rem(10);
+                }
+            }
+        }
+    }
+    &__button {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        &:hover {
+            .coreIcon {
+                background-color: map-get($map: $accent_colours, $key: _01_02);
+            }
+        }
+        &.warning {
+            &:hover {
+                .coreIcon {
+                    background-color: darken($color: map-get($map: $accent_colours, $key: _02_01), $amount: 10%);
+                }
+            }
+        }
+        p {
+            margin-left: rem(10);
+            user-select: none;
+        }
+    }
+}
+
+// Note
+.noteRow {
+    padding: rem(10);
+    background-color: lighten($color: map-get($map: $section_colours, $key: _02_02), $amount: 5%);
+    border-radius: 0 rem(5) rem(5) 0;
+    margin-top: rem(10);
+    border-left: 5px solid map-get($map: $accent_colours, $key: _01_01);
+    font-size: rem(14);
 }

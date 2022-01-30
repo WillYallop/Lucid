@@ -16,6 +16,7 @@
 @import './core/buttons.scss';
 @import './core/typography.scss';
 @import './core/layout.scss';
+@import './core/input.scss';
 
 // Layouts
 @import './layouts/mainLayout.scss';
@@ -28,3 +29,5 @@
 @import './components/Modal.scss';
 @import './components/DefaultPage.scss';
 @import './components/Core/Notifications.scss';
+@import './components/ComponentRow.scss';
+@import './components/ComponentContentTypeRow.scss';

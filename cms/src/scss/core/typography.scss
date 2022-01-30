@@ -5,7 +5,27 @@ h1, h2 {
     color: map-get($map: $text_colours, $key: _01_01);
 }
 
+label {
+    font-size: rem(14);
+    color: map-get($map: $text_colours, $key: _01_02);
+}
 p {
     font-size: rem(16);
     color: map-get($map: $text_colours, $key: _01_02);
+    &.bold {
+        font-weight: bold;
+    }
+    &.capitalise {
+        text-transform: capitalize;
+    }
+}
+
+.typography {
+
+    &__left {
+        text-align: left;
+    }
+    &__right {
+        text-align: right;
+    }
 }

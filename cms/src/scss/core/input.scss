@@ -1,0 +1,182 @@
+.inputWrapper {
+    width: 100%;
+    &.invalid {
+        .inputError {
+            display: block;
+        }
+    }
+    .inputStyle {
+        width: 100%;
+        height: rem(40);
+        padding: 0 rem(10);
+        border-radius: rem(5);
+        border: $border_style;
+        margin: rem(5) 0 rem(10);
+        font-size: rem(14);
+        font-family: 'Be Vietnam Pro', sans-serif;
+        &:focus {
+            outline: none;
+            border-color: map-get($map: $accent_colours, $key: _01_02);
+        }
+        &--select {
+            appearance: none;
+            background-image:
+                linear-gradient(45deg, transparent 50%, black 50%),
+                linear-gradient(135deg, black 50%, transparent 50%),
+                linear-gradient(to right, map-get($accent_colours, _01_01), map-get($accent_colours, _01_01) );
+            background-position:
+                calc(100% - 20px) calc(1em + 2px),
+                calc(100% - 15px) calc(1em + 2px),
+                100% 0;
+            background-size:
+                5px 5px,
+                5px 5px,
+                rem(40) rem(40);
+            background-repeat: no-repeat;
+            &:focus {
+                background-image:
+                    linear-gradient(45deg, black 50%, transparent 50%),
+                    linear-gradient(135deg, transparent 50%, black 50%),
+                    linear-gradient(to right, map-get($accent_colours, _01_02), map-get($accent_colours, _01_02));
+                background-position:
+                    calc(100% - 15px) 1em,
+                    calc(100% - 20px) 1em,
+                    100% 0;
+                background-size:
+                    5px 5px,
+                    5px 5px,
+                    rem(40) rem(40);
+                background-repeat: no-repeat;
+            }
+        }
+        &--textarea {
+            padding: rem(10);
+            resize: none;
+            height: rem(150);
+        }
+        &.--no-margin {
+            margin: 0;
+        }
+        &.--no-margin-bottom {
+            margin-bottom: 0;
+        }
+    }
+    .inputError {
+        display: none;
+        width: 100%;
+        margin-bottom: rem(10);
+        background-color: map-get($map: $accent_colours, $key: _02_01);
+        padding: rem(5);
+        border-radius: rem(5);
+        p {
+            font-size: rem(14);
+            line-height: rem(16);
+            color: white;
+        }
+        &.--no-margin-bottom {
+            margin-bottom: 0;
+            margin-top: rem(10);
+        }
+    }
+    .describedBy {
+        width: 100%;
+
+        p {
+            font-size: rem(14);
+            line-height: rem(16);
+        }
+    }
+    .speratorRow {
+        display: block;
+        margin-bottom: rem(10);
+        padding-bottom: rem(10);
+        border-bottom: $border_style;
+    }
+}
+
+.switchInput {
+    @include animate;
+    width: 50px;
+    height: 26px;
+    background-color: #E3E3E3;
+    border: 1px solid #D6D6D6;
+    border-radius: rem(20);
+    position: relative;
+    cursor: pointer;
+    &::after {
+        @include animate;
+        content: '';
+        position: absolute;
+        left: rem(2);
+        top: rem(2);
+        bottom: rem(2);
+        background-color: white;
+        border: 1px solid #C1C1C1;
+        border-radius: 50%;
+        width: rem(20);
+    }
+    &.active {
+        background-color:  map-get($map: $accent_colours, $key: _01_01);
+        border: 1px solid darken($color: map-get($map: $accent_colours, $key: _01_01), $amount: 10%);
+        &::after {
+            left: rem(26);
+            border: 1px solid darken($color: map-get($map: $accent_colours, $key: _01_01), $amount: 10%);
+        }
+    }
+}
+
+.switchLabelRow {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: rem(5);
+    padding-bottom: rem(5);
+    border-bottom: $border_style;
+    &:last-child {
+        border-bottom: none;
+    }
+    &.active {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        align-items: flex-end;
+        border-bottom: none;
+    }
+    &--not-border {
+        border-bottom: none;
+    }
+}
+
+.headerRow {
+    border-bottom: $border_style;
+    padding-bottom: rem(10);
+    margin-top: rem(15);
+    margin-bottom: rem(5);
+    p {
+        font-size: rem(14);
+        line-height: rem(16);
+    }
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.errorCon {
+    border-top: $border_style;
+    padding-top: 10px;
+    &__margin-top {
+        margin-top: rem(10);
+    }
+    p {
+        color: map-get($map: $accent_colours, $key: _02_01);
+        font-size: rem(14);
+        line-height: rem(16);
+    }
+}
+

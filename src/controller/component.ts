@@ -246,7 +246,7 @@ const getUnregistered = async (): Promise<cont_comp_getUnregisteredRes> => {
             // Remove the /components/ from the file_path res
             component.file_path = component.file_path.replace('/components/', '');
             let findMatch = registeredComponents.findIndex( x => x.file_path === component.file_path);
-            if(findMatch != -1) {
+            if(findMatch === -1) {
                 // Is unregistered!
                 unregisteredComponents.push(component);
             }

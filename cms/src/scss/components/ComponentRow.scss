@@ -1,0 +1,133 @@
+.componentRow {
+    padding: 5px;
+    .componentImg {
+        width: 100%;
+        height: 100%;
+        border-radius: 5px 0 0 5px;
+        object-fit: cover;
+        &--default {
+            background-color: map-get($map: $section_colours, $key: _01_01);
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            svg {
+                path {
+                    fill: map-get($map: $accent_colours, $key: _01_01);
+                }
+            }
+        }
+    }
+
+    &__extended {
+        display: flex;
+        flex-wrap: wrap;
+        &__image {
+            width: rem(200);
+            .componentImg {
+                &--default {
+                    svg {
+                        height: rem(30);
+                        width: rem(30);
+                    }
+                }
+                @include mobile {
+                    height: rem(200);
+                }
+            }
+            @include mobile {
+                width: 100%;
+                margin-bottom: rem(10);
+            }
+        }
+        &__body {
+            width: calc(100% - 200px);
+            padding: rem(5) rem(5) rem(5) rem(10);
+            @include mobile {
+                width: 100%;
+            }
+            .title {
+                font-weight: bold;
+                margin-bottom: rem(5);
+                text-transform: capitalize;
+                font-size: rem(14);
+                color: map-get($map: $text_colours, $key: _01_01);
+            }
+            .description {
+                font-size: rem(14);
+                line-height: rem(18);
+                color: map-get($map: $text_colours, $key: _01_02);
+            }
+            ul {
+                margin-top: rem(10);
+                li {
+                    font-size: rem(14);
+                    color: map-get($map: $text_colours, $key: _01_02);
+                    span {
+                        color: darken($color: map-get($map: $text_colours, $key: _01_02), $amount: 10%);
+                    }
+                }
+            }
+            .buttonCon {
+                margin-top: rem(10);
+                button {
+                    &:first-child {
+                        margin-right: rem(10);
+                    }
+                }
+            }
+        }
+    }
+    &__standard {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        position: relative;
+        &__image {
+            width: rem(50);
+            height: rem(50);
+        }
+        &__body {
+            width: calc(100% - 50px);
+            padding: rem(5) rem(5) rem(5) rem(10);
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            @include smallMobile {
+                flex-direction: column;
+            }
+            &__col {
+                .title {
+                    font-weight: bold;
+                    margin-bottom: rem(5);
+                    text-transform: capitalize;
+                    font-size: rem(14);
+                    line-height: rem(16);
+                    color: map-get($map: $text_colours, $key: _01_01);
+                    span {
+                        color: map-get($map: $text_colours, $key: _01_02);
+                        font-weight: normal;
+                    }
+                }
+                ul {
+                    margin-top: rem(5);
+                    li {
+                        font-size: rem(14);
+                        color: map-get($map: $text_colours, $key: _01_02);
+                        span {
+                            color: darken($color: map-get($map: $text_colours, $key: _01_02), $amount: 10%);
+                        }
+                    }
+                }
+                .coreIcon {
+                    &:first-child {
+                        margin-right: rem(10);
+                    }
+                    @include smallMobile {
+                        margin-top: rem(5);
+                    }
+                }
+            }
+        }
+    }
+}
