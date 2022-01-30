@@ -14,7 +14,7 @@ interface numberInputProps {
     updateValue: (value: number) => void
 }
 
-const NumberInput: React.FC<numberInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, described_by, max, min, pattern, style }) => {
+const NumberInput: React.FC<numberInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, described_by, max, min, pattern, style, children }) => {
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
         const newValue = e.target.value;
@@ -45,7 +45,19 @@ const NumberInput: React.FC<numberInputProps> = ({ label, value, id, name, requi
             <div className="inputError">
                 <p>{ errorMsg }</p>
             </div>
-            { described_by ?  describedBy : null }
+            { 
+                children 
+            ?
+                <> 
+                    { described_by ?  describedBy : null }
+                    { children } 
+                    <span className="speratorRow"></span>
+                </> 
+            : 
+                <> 
+                    { described_by ? <>{describedBy}<span className="speratorRow"></span></> : null }
+                </> 
+            }
         </div>
     )
 }

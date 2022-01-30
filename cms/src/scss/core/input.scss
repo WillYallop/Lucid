@@ -80,13 +80,17 @@
     }
     .describedBy {
         width: 100%;
-        margin-bottom: rem(10);
-        padding-bottom: rem(10);
-        border-bottom: $border_style;
+
         p {
             font-size: rem(14);
             line-height: rem(16);
         }
+    }
+    .speratorRow {
+        display: block;
+        margin-bottom: rem(10);
+        padding-bottom: rem(10);
+        border-bottom: $border_style;
     }
 }
 
@@ -175,3 +179,4 @@ input[type="number"] {
         line-height: rem(16);
     }
 }
+

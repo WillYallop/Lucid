@@ -13,7 +13,7 @@ interface textareaInputProps {
     updateValue: (value: string) => void
 }
 
-const SelectInput: React.FC<textareaInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, options, described_by, style }) => {
+const SelectInput: React.FC<textareaInputProps> = ({ label, value, id, name, required, errorMsg, updateValue, options, described_by, style, children }) => {
 
     const onChange = (e: React.ChangeEvent<HTMLSelectElement>)=> {
         const newValue = e.target.value;
@@ -35,7 +35,19 @@ const SelectInput: React.FC<textareaInputProps> = ({ label, value, id, name, req
             <div className="inputError">
                 <p>{ errorMsg }</p>
             </div>
-            { described_by ?  describedBy : null }
+            { 
+                children 
+            ?
+                <> 
+                    { described_by ?  describedBy : null }
+                    { children } 
+                    <span className="speratorRow"></span>
+                </> 
+            : 
+                <> 
+                    { described_by ? <>{describedBy}<span className="speratorRow"></span></> : null }
+                </> 
+            }
         </div>
     )
 }

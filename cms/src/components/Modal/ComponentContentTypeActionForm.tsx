@@ -262,6 +262,11 @@ const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormPro
         })
     }
 
+    // Format name value
+    const formatName = (value: string) => {
+        return value.replaceAll(' ', '_').toLowerCase();
+    }
+
     return (
         <div className="body">
             <form onSubmit={validateForm} noValidate={true}>
@@ -289,8 +294,10 @@ const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormPro
                     label={'Name'}
                     max={100}
                     min={2}
-                    described_by={'This is the unique content type name, note this value is used in your liquid template as the varaible to reference its data. It will be formated like this: Example Name => example_name'}
-                    pattern={validatorConfig.cont_name.frontend_string}/>
+                    described_by={'This is the unique content type name, you can use the bellow to reference its data in your liquid templates.'}
+                    pattern={validatorConfig.cont_name.frontend_string}>
+                    { name ? <div className='noteRow'> { formatName(name) } </div> : null }
+                </TextInput>
 
                 {/* Extended form */}
                 <div className="headerRow">
