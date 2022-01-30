@@ -12,7 +12,9 @@ export const deleteSingleContentTypeConfig = async (componentID: mod_componentMo
         // Remove all instances of this content type from page components in the database
         deleteAllPageComponentContentTypes(componentID, contentTypeID);
         await contentTypeController.deleteSingle(componentID, contentTypeID);
-        return true;
+        return {
+            deleted: true
+        };
     }
     catch(err) {
         throw err;

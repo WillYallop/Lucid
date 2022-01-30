@@ -238,11 +238,13 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
                 break;
             }
             if(contentType.type === 'repeater') {
+                console.log('REPEATER')
                 // check all of its fields for the match
                 if(contentType.fields) {
-                    for(let ii = 0; i < contentType.fields.length; ii++) {
+                    for(let ii = 0; ii < contentType.fields.length; ii++) {
                         let subContentType =  contentType.fields[ii];
                         if(subContentType._id === contentTypeID) {
+                            console.log('FOUND');
                             foundIndex = ii;
                             repeaterIndex = i;
                             inRepeater = true;

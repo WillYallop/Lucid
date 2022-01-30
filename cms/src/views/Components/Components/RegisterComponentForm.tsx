@@ -4,15 +4,15 @@ import { useNavigate } from "react-router-dom";
 // Context
 import { 
     ModalContext
-} from "../../helper/Context";
+} from "../../../helper/Context";
 // Components
-import TextInput from "../Core/Inputs/TextInput";
-import TextareaInput from "../Core/Inputs/TextareaInput";
-import SelectInput from "../Core/Inputs/SelectInput";
+import TextInput from "../../../components/Core/Inputs/TextInput";
+import TextareaInput from "../../../components/Core/Inputs/TextareaInput";
+import SelectInput from "../../../components/Core/Inputs/SelectInput";
 // Functions
-import formValidationHandler from "../../functions/formValidationHandler";
-import getApiUrl from "../../functions/getApiUrl";
-import validatorConfig from '../../functions/validatorConfig';
+import formValidationHandler from "../../../functions/formValidationHandler";
+import getApiUrl from "../../../functions/getApiUrl";
+import validatorConfig from '../../../functions/validatorConfig';
 
 
 const RegisterComponentForm: React.FC = () => {

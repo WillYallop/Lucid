@@ -9,6 +9,7 @@ interface contentTypeProps {
     contentType: mod_contentTypesConfigModel
     actionForm: (actionType: 'update' | 'create', contentType?: mod_contentTypesConfigModel, repeater__id?: string) => void
     repeater__id?: string
+    deleteCallback: (contentType__id: mod_contentTypesConfigModel["_id"], repeater__id?: mod_contentTypesConfigModel["_id"]) => void
 }
 export interface mod_contentTypesConfigModel {
     _id: string
@@ -23,7 +24,7 @@ export interface mod_contentTypesConfigModel {
     fields?: Array<mod_contentTypesConfigModel>
 }
 
-const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, repeater__id }) => {
+const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, repeater__id, deleteCallback }) => {
 
     let ContentTypeIcon;
     switch(contentType.type) {
@@ -41,6 +42,7 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, r
         }
     }
 
+    // Add repeater sub content type fields
     let repeaterBodyItems: Array<ReactElement> = []; 
     if(contentType.type === 'repeater' && contentType.fields) {
         for(let i = 0; i < contentType.fields.length; i++) {
@@ -49,7 +51,8 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, r
                     key={contentType.fields[i]._id} 
                     contentType={ contentType.fields[i]} 
                     actionForm={actionForm}
-                    repeater__id={contentType._id}/>
+                    repeater__id={contentType._id}
+                    deleteCallback={deleteCallback}/>
             )
         }
         repeaterBodyItems.push(
@@ -86,7 +89,20 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, r
                         </button>
                     }
 
-                    <CoreIcon icon={faTrashAlt} style={'warning'}/>
+                    {
+                        repeater__id
+                        ?
+                        <button className='btnStyleBlank' onClick={() => deleteCallback(contentType._id, repeater__id)}>
+                            <CoreIcon icon={faTrashAlt} style={'warning'}/>
+                        </button>
+                        :
+                        <button className='btnStyleBlank' onClick={() => deleteCallback(contentType._id)}>
+                            <CoreIcon icon={faTrashAlt} style={'warning'}/>
+                        </button>
+                    }
+
+
+                    
                 </div>
             </div>
             { 

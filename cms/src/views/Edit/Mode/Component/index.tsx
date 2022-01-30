@@ -12,10 +12,11 @@ import SidebarButton from "../../../../components/Layout/Sidebar/SidebarBtn";
 import SidebarFormSubmit from "../../../../components/Layout/Sidebar/SidebarFormSubmit";
 import ContentTypeRow, { mod_contentTypesConfigModel } from '../../../../components/ContentTypes/ContentTypeRow';
 import CoreIcon from '../../../../components/Core/Icon';
-import ComponentContentTypeActionForm from '../../../../components/Modal/ComponentContentTypeActionForm';
+import ComponentContentTypeActionForm from './Components/ContentTypeActionForm';
 import ComponentDataForm from './Components/ComponentDataForm';
 // Functions
 import getApiUrl from "../../../../functions/getApiUrl";
+import formatLucidError from '../../../../functions/formatLucidError';
 // Icons
 import { faSave, faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 
@@ -238,13 +239,75 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         });
     }
 
+    // Delete component
+    const deleteComponent = (contentType__id: mod_contentTypesConfigModel["_id"], repeater__id?: mod_contentTypesConfigModel["_id"]) => {
+        console.log(repeater__id);
+        console.log('here');
+        const query = `mutation
+            {
+                content_type_config 
+                {
+                    delete_single 
+                    (
+                        component_id: "${_id}"
+                        content_type_id: "${contentType__id}"
+                    )
+                    {
+                        deleted
+                    }
+                }
+            }`;
+        axios({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        })
+        .then((result) => {
+            const componentData = result.data.data.content_type_config.delete_single;
+            if(componentData) {
+                if(componentData.deleted) {
+                    // Add new content type to component data
+                    const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
+                    if(repeater__id) {
+                        const repeaterField = newContentTypeArr.find( x => x._id === repeater__id );
+                        if(repeaterField && repeaterField.fields) {
+                            const updatedIndex = repeaterField.fields.findIndex( x => x._id === contentType__id );
+                            if(updatedIndex != -1) repeaterField.fields.splice(updatedIndex, 1);
+                        }
+                    }
+                    else {
+                        const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType__id );
+                        if(updatedIndex != -1) newContentTypeArr.splice(updatedIndex, 1);
+                    }
+                    setComponent({
+                        ...component,
+                        ...{
+                            content_types: newContentTypeArr
+                        }
+                    });
+                    // Add success message
+                    addNotification(`You have successfully deleted the content type!`, 'success');
+                }
+            }
+            else {
+                addNotification(formatLucidError(result.data.errors[0].message).message, 'error');
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+            addNotification(`There was an error while deleting the content type with ID "${contentType__id}"!`, 'error');
+        })
+    }
+
     // -------------------------------------------------------
     // First load
     // -------------------------------------------------------
     useEffect(() => {
         getComponentData();
         return () => {
-            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
+            setNotifications([]);
             setComponent({} as mod_componentModel);
             // Close modal
             setModalState({
@@ -296,7 +359,8 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 <ContentTypeRow 
                     key={component.content_types[i]._id} 
                     contentType={ component.content_types[i]}
-                    actionForm={openContentTypeActionModal}/>
+                    actionForm={openContentTypeActionModal}
+                    deleteCallback={deleteComponent}/>
             );
         }
     }

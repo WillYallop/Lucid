@@ -1,20 +1,20 @@
 import { ReactElement, useEffect, useState } from 'react';
-import { mod_contentTypesConfigModel } from '../ContentTypes/ContentTypeRow';
+import { mod_contentTypesConfigModel } from '../../../../../components/ContentTypes/ContentTypeRow';
 import axios from 'axios';
 // Components
-import SelectInput from '../Core/Inputs/SelectInput';
-import TextInput from '../Core/Inputs/TextInput';
+import SelectInput from '../../../../../components/Core/Inputs/SelectInput';
+import TextInput from '../../../../../components/Core/Inputs/TextInput';
 // Extended forms
-import ExtendedFormText from '../ContentTypes/ExtendedForms/Text';
-import ExtendedFormRepeater from '../ContentTypes/ExtendedForms/Repeater';
-import ExtendedFormNumber from '../ContentTypes/ExtendedForms/Number';
+import ExtendedFormText from '../../../../../components/ContentTypes/ExtendedForms/Text';
+import ExtendedFormRepeater from '../../../../../components/ContentTypes/ExtendedForms/Repeater';
+import ExtendedFormNumber from '../../../../../components/ContentTypes/ExtendedForms/Number';
 // Functions
-import formValidationHandler from "../../functions/formValidationHandler";
-import getApiUrl from "../../functions/getApiUrl";
-import validatorConfig from '../../functions/validatorConfig';
-import formatLucidError from '../../functions/formatLucidError';
+import formValidationHandler from "../../../../../functions/formValidationHandler";
+import getApiUrl from "../../../../../functions/getApiUrl";
+import validatorConfig from '../../../../../functions/validatorConfig';
+import formatLucidError from '../../../../../functions/formatLucidError';
 
-interface ComponentContentTypeActionFormProps {
+interface ContentTypeActionFormProps {
     component__id: string
     successCallback: (configType: mod_contentTypesConfigModel, actionType: 'update' | 'create', repeater__id?: string) => void
 
@@ -23,7 +23,7 @@ interface ComponentContentTypeActionFormProps {
     actionType: 'update' | 'create'
 }
 
-const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormProps> = ({ component__id, successCallback, contentType, actionType, repeater__id }) => {
+const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component__id, successCallback, contentType, actionType, repeater__id }) => {
 
     const getTypeExtendedForm = (type: mod_contentTypesConfigModel["type"]) => {
         switch(type) {
@@ -313,4 +313,4 @@ const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormPro
     )
 }
 
-export default ComponentContentTypeActionForm;
+export default ContentTypeActionForm;
