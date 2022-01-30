@@ -225,10 +225,42 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
             }
         ]);
         let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
-        let findContentTypeIndex = contentTypeFileData.findIndex(x => x._id === contentTypeID);
-        if (findContentTypeIndex != -1) {
+
+
+        let foundIndex = -1;
+        let repeaterIndex = -1;
+        let inRepeater = false;
+        // Find content type and repeater field content with matching ID 
+        for(let i = 0; i < contentTypeFileData.length; i++) {
+            let contentType = contentTypeFileData[i];
+            if(contentType._id === contentTypeID) {
+                foundIndex = i;
+                break;
+            }
+            if(contentType.type === 'repeater') {
+                // check all of its fields for the match
+                if(contentType.fields) {
+                    for(let ii = 0; i < contentType.fields.length; ii++) {
+                        let subContentType =  contentType.fields[ii];
+                        if(subContentType._id === contentTypeID) {
+                            foundIndex = ii;
+                            repeaterIndex = i;
+                            inRepeater = true;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(foundIndex != -1) {
             // Remove from array and write to file
-            contentTypeFileData.splice(findContentTypeIndex, 1);
+            if(!inRepeater) contentTypeFileData.splice(foundIndex, 1);
+            else {
+                if(repeaterIndex != -1) {
+                    contentTypeFileData[repeaterIndex].fields?.splice(foundIndex, 1);
+                }
+            }
             await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
         }
         else {
@@ -238,6 +270,7 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
                 message: `Cannot delete content type with ID: "${contentTypeID}" for component with ID: "${contentTypeID}" because it cannot be found!`
             });
         }
+
     }
     catch(err) {
         throw err;
