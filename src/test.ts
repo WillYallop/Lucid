@@ -56,7 +56,7 @@ import { validate, componentController, postsController, themeController, genera
 //     id: '445a92a0-64fe-11ec-aab2-15b263b74864',
 //     name: 'test_text_two',
 //     config: {
-//         max_length: 20
+//         max: 20
 //     }
 // })
 // .then((res) => {
@@ -77,15 +77,15 @@ import { validate, componentController, postsController, themeController, genera
 //     name: 'test_repeater',
 //     type: 'repeater',
 //     config: {
-//         max_repeats: 10
+//         max: "10"
 //     },
 //     fields: [
 //         {
 //             name: 'test_text_two',
 //             type: 'text',
 //             config: {
-//                 max_length: 20,
-//                 min_length: 400
+//                 max: "20",
+//                 min: "400"
 //             }
 //         },
 //         {

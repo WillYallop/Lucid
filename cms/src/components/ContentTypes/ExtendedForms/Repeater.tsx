@@ -11,10 +11,10 @@ interface ExtendedFormRepeaterProps {
 const ExtendedFormRepeater: React.FC<ExtendedFormRepeaterProps> = ({ config }) => {
 
     const showState = {
-        maxRepeats: config?.max_repeats != undefined ? true : false
+        maxRepeats: config?.max != undefined ? true : false
     }
     const starterValues = {
-        maxRepeats: config?.max_repeats != undefined ? config.max_repeats : 20
+        maxRepeats: config?.max != undefined ? parseInt(config.max) : 20
     }
 
     // Default value
@@ -37,7 +37,7 @@ const ExtendedFormRepeater: React.FC<ExtendedFormRepeaterProps> = ({ config }) =
                 <NumberInput
                     value={maxRepeats}
                     id={"maxRepeatsInp"}
-                    name={"max_repeats"}
+                    name={"max"}
                     required={true}
                     errorMsg={`Make sure the field is not empty!`}
                     updateValue={setMaxRepeats}/>

@@ -11,14 +11,14 @@ interface ExtendedFormNumberProps {
 const ExtendedFormNumber: React.FC<ExtendedFormNumberProps> = ({ config }) => {
 
     const showState = {
-        default: config?.default_num != undefined ? true : false,
-        min: config?.min_length != undefined ? true : false,
-        max: config?.max_length != undefined ? true : false
+        default: config?.default != undefined ? true : false,
+        min: config?.min != undefined ? true : false,
+        max: config?.max != undefined ? true : false
     }
     const starterValues = {
-        default: config?.default_num != undefined ? config.default_num : 0,
-        min:  config?.min_length != undefined ? config.min_length : 0,
-        max: config?.max_length != undefined ? config.max_length : 100
+        default: config?.default != undefined ? parseInt(config.default) : 0,
+        min:  config?.min != undefined ? parseInt(config.min) : 0,
+        max: config?.max != undefined ? parseInt(config.max) : 100
     }
 
     // Default value
@@ -47,7 +47,7 @@ const ExtendedFormNumber: React.FC<ExtendedFormNumberProps> = ({ config }) => {
                 <NumberInput
                     value={defaultValue}
                     id={"defaultNumInp"}
-                    name={"default_num"}
+                    name={"default"}
                     required={true}
                     errorMsg={`Make sure the field is not empty, and matches the min and max values if those options are active!`}
                     updateValue={setDefaultValue}
@@ -69,7 +69,7 @@ const ExtendedFormNumber: React.FC<ExtendedFormNumberProps> = ({ config }) => {
                 <NumberInput
                     value={minLength}
                     id={"minumumLengthInp"}
-                    name={"min_length"}
+                    name={"min"}
                     required={true}
                     errorMsg={`Make sure the field is not empty!`}
                     updateValue={setMinLength}/>
@@ -89,7 +89,7 @@ const ExtendedFormNumber: React.FC<ExtendedFormNumberProps> = ({ config }) => {
                 <NumberInput
                     value={maxLength}
                     id={"maximumLengthInp"}
-                    name={"max_length"}
+                    name={"max"}
                     required={true}
                     errorMsg={`Make sure the field is not empty!`}
                     updateValue={setMaxLength}/>

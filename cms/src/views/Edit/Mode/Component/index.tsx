@@ -108,26 +108,18 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                                 name
                                 type
                                 config {
-                                    max_repeats
-                                    max_range
-                                    min_range
-                                    max_length
-                                    min_length
-                                    default_num
-                                    default_str
+                                    max
+                                    min
+                                    default
                                 }
                                 fields {
                                     _id
                                     name
                                     type
                                     config {
-                                        max_repeats
-                                        max_range
-                                        min_range
-                                        max_length
-                                        min_length
-                                        default_num
-                                        default_str
+                                        max
+                                        min
+                                        default
                                     }
                                 }
                             }

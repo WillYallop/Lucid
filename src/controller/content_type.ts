@@ -14,8 +14,8 @@ EXAMPLE CONTENT_TYPE CONFIG FILE
         "name": "test_text",
         "type": "text",
         "config": {
-            "max_length": 0,
-            "min_length": 200
+            "max": "0",
+            "min": "200"
         }
     },
     {
@@ -39,8 +39,8 @@ EXAMPLE CONTENT_TYPE CONFIG FILE
                 "name": "test_text_2",
                 "type": "text",
                 "config": {
-                    "max_length": 0,
-                    "min_length": 200
+                    "max": "0",
+                    "min": "200"
                 }
             },
             {

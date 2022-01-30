@@ -55,34 +55,18 @@ export const ContentTypeConfigArgs = new GraphQLInputObjectType({
     name: 'ContentTypeConfigArgs',
     description: 'Config model for content type fields',
     fields: () => ({
-        max_repeats: {
-            type: GraphQLInt,
-            description: 'Max repeats'
-        },
-        max_range: {
-            type: GraphQLInt,
-            description: 'Max range'
-        },
-        min_range: {
-            type: GraphQLInt,
-            description: 'Min range'
-        },
-        max_length: {
-            type: GraphQLInt,
-            description: 'Max text length'
-        },
-        min_length: {
-            type: GraphQLInt,
-            description: 'Min text length'
-        },
-        default_num: {
-            type: GraphQLInt,
-            description: 'Default number'
-        },
-        default_str: {
+        max: {
             type: GraphQLString,
-            description: 'Default string'
-        }
+            description: 'Max value/value'
+        },
+        min: {
+            type: GraphQLString,
+            description: 'Min value/value'
+        },
+        default: {
+            type: GraphQLString,
+            description: 'Default value'
+        },
     })
 });
 
@@ -91,33 +75,17 @@ export const ContentTypeConfig = new GraphQLObjectType({
     name: 'ContentTypeConfig',
     description: 'Config model for content type fields',
     fields: () => ({
-        max_repeats: {
-            type: GraphQLInt,
-            description: 'Max repeats'
-        },
-        max_range: {
-            type: GraphQLInt,
-            description: 'Max range'
-        },
-        min_range: {
-            type: GraphQLInt,
-            description: 'Min range'
-        },
-        max_length: {
-            type: GraphQLInt,
-            description: 'Max text length'
-        },
-        min_length: {
-            type: GraphQLInt,
-            description: 'Min text length'
-        },
-        default_num: {
-            type: GraphQLInt,
-            description: 'Default number'
-        },
-        default_str: {
+        max: {
             type: GraphQLString,
-            description: 'Default string'
+            description: 'Max value/value'
+        },
+        min: {
+            type: GraphQLString,
+            description: 'Min value/value'
+        },
+        default: {
+            type: GraphQLString,
+            description: 'Default value'
         }
     })
 });

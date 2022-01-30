@@ -4,8 +4,8 @@
         "name": "test_text",
         "type": "text",
         "config": {
-            "max_length": 0,
-            "min_length": 200
+            "max": "0",
+            "min": "200"
         }
     },
     {

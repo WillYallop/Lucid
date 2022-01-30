@@ -8,13 +8,9 @@ interface mod_contentTypesConfigModel {
     name: string // this is the custom name the user gives to the content type
     type: 'text' | 'email' | `rich_media` | 'number' | `range` | 'repeater' | 'select' | 'date' | 'media' | 'boolean' | 'json'
     config: {
-        max_length?: number
-        min_length?: number
-        max_range?: number
-        min_range?: number
-        default_num?: number
-        default_str?: string
-        max_repeats?: number
+        max?: string
+        min?: string
+        default?: string
     }
     // Only type of repeater has this:
     fields?: Array<mod_contentTypesConfigModel>

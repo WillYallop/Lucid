@@ -12,14 +12,14 @@ interface ExtendedFormTextProps {
 const ExtendedFormText: React.FC<ExtendedFormTextProps> = ({ config }) => {
 
     const showState = {
-        default: config?.default_str != undefined ? true : false,
-        min: config?.min_length != undefined ? true : false,
-        max: config?.max_length != undefined ? true : false
+        default: config?.default != undefined ? true : false,
+        min: config?.min != undefined ? true : false,
+        max: config?.max != undefined ? true : false
     }
     const starterValues = {
-        default: config?.default_str != undefined ? config.default_str : '',
-        min:  config?.min_length != undefined ? config.min_length : 0,
-        max: config?.max_length != undefined ? config.max_length : 100
+        default: config?.default != undefined ? config.default : '',
+        min:  config?.min != undefined ? parseInt(config.min) : 0,
+        max: config?.max != undefined ? parseInt(config.max) : 100
     }
 
     // Default value
@@ -70,7 +70,7 @@ const ExtendedFormText: React.FC<ExtendedFormTextProps> = ({ config }) => {
                 <NumberInput
                     value={minLength}
                     id={"minumumLengthInp"}
-                    name={"min_length"}
+                    name={"min"}
                     required={true}
                     errorMsg={`Make sure the field is not empty!`}
                     updateValue={setMinLength}/>
@@ -90,7 +90,7 @@ const ExtendedFormText: React.FC<ExtendedFormTextProps> = ({ config }) => {
                 <NumberInput
                     value={maxLength}
                     id={"maximumLengthInp"}
-                    name={"max_length"}
+                    name={"max"}
                     required={true}
                     errorMsg={`Make sure the field is not empty!`}
                     updateValue={setMaxLength}/>

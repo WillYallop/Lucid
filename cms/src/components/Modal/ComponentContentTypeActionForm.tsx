@@ -111,26 +111,18 @@ const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormPro
                         name
                         type
                         config {
-                            max_range
-                            min_range
-                            max_length
-                            min_length
-                            max_repeats
-                            default_str
-                            default_num
+                            max
+                            min
+                            default
                         }
                         fields {
                             _id
                             name
                             type
                             config {
-                                max_range
-                                min_range
-                                max_length
-                                min_length
-                                max_repeats
-                                default_str
-                                default_num
+                                max
+                                min
+                                default
                             }
                         }
                     }
@@ -185,26 +177,18 @@ const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormPro
                         name
                         type
                         config {
-                            max_range
-                            min_range
-                            max_length
-                            min_length
-                            max_repeats
-                            default_str
-                            default_num
+                            max
+                            min
+                            default
                         }
                         fields {
                             _id
                             name
                             type
                             config {
-                                max_range
-                                min_range
-                                max_length
-                                min_length
-                                max_repeats
-                                default_str
-                                default_num
+                                max
+                                min
+                                default
                             }
                         }
                     }
@@ -250,8 +234,7 @@ const ComponentContentTypeActionForm: React.FC<ComponentContentTypeActionFormPro
                 let configObj = `{`;
                 for(let prop in fields) {
                     if(prop != 'name' && prop != 'type') {
-                        if(prop === 'default_str') configObj += `${prop}: "${fields[prop]}" `;
-                        else configObj += `${prop}: ${parseInt(fields[prop])} `;
+                        configObj += `${prop}: "${fields[prop]}" `;
                     }
                 }
                 configObj += `}`;
