@@ -23,7 +23,7 @@ This custom tag handles importing javascript into your component or page. It has
 
 - The ```src``` paramater is relative to the theme/assets directory!
 - the ```visibleID``` should be the coresponding element ID you want to load the script with when it enters the browser viewbox. This is only used if the ```load``` paramater is set to ```visible```!
-- ```async``` and ```await``` are only applied if the ```load``` paramater is set to ```onload```!
+- ```async``` and ```defer``` are only applied if the ```load``` paramater is set to ```onload```!
 
 Example tag:
 ```
@@ -32,7 +32,7 @@ Example tag:
     "load": "visible",
     "visibleID": "id123",
     "async": true,
-    "await": true
+    "defer": true
 } %}
 ```
 
@@ -43,7 +43,7 @@ Interface:
     load: 'visible' | 'onload'
     visibleID?: string
     async?: boolean
-    await?: boolean
+    defer?: boolean
 }
 ```
 
