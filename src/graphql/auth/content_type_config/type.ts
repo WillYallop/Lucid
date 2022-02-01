@@ -1,4 +1,4 @@
-import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLInputObjectType, GraphQLList } from 'graphql';
+import { GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInputObjectType } from 'graphql';
 
 //  Component content_type
 export const ComponentContentTypeConfig = new GraphQLObjectType({
@@ -21,35 +21,13 @@ export const ComponentContentTypeConfig = new GraphQLObjectType({
             type: GraphQLNonNull(ContentTypeConfig), 
             description: 'Component content type config'
         },
-        fields: {
-            type: GraphQLList(ComponentContentTypeModelFields),
-            description: 'Only used for the repeater content type'
+        parent: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'Components content type parent'
         }
     })
 });
 
-export const ComponentContentTypeModelFields = new GraphQLObjectType({
-    name: 'ComponentContentTypeModelFields',
-    description: 'Component content type model fields',
-    fields: () => ({
-        _id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: 'Component content type database ID'
-        },
-        name: {
-            type: GraphQLNonNull(GraphQLString),
-            description: 'Component content type name'
-        },
-        type: {
-            type: GraphQLNonNull(GraphQLString),
-            description: 'Component content type type'
-        },
-        config: {
-            type: GraphQLNonNull(ContentTypeConfig), 
-            description: 'Component content type config'
-        }
-    })
-});
 
 export const ContentTypeConfigArgs = new GraphQLInputObjectType({
     name: 'ContentTypeConfigArgs',

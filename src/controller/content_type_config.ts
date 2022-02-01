@@ -72,7 +72,7 @@ const saveSingle = async (componentID: mod_componentModel["_id"], contentType: m
             }
             else {
                 let message = `Content type with name "${contentType.name}" has already been registered.`;
-                if(contentType.parent != false) message = `Content type with name "${contentType.name}" has already been registered for parent with ID of "${contentType.parent}".`;
+                if(contentType.parent != 'root') message = `Content type with name "${contentType.name}" has already been registered for parent with ID of "${contentType.parent}".`;
                 throw __generateErrorString({
                     code: 403,
                     origin: origin,
@@ -200,7 +200,7 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
 // ------------------------------------ ------------------------------------
 // update single component content type
 // ------------------------------------ ------------------------------------
-const updateSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_updateSingleInp, repeaterField: boolean,): Promise<mod_contentTypesConfigModel> => {
+const updateSingle = async (componentID: mod_componentModel["_id"], contentType: cont_cont_updateSingleInp): Promise<mod_contentTypesConfigModel> => {
     try {
         const origin = 'contentTypeConfigController.updateSingle';
         if(Object.entries(contentType).length) {
@@ -270,7 +270,7 @@ const updateSingle = async (componentID: mod_componentModel["_id"], contentType:
                 // If its type is repeater, make sure no other content types point to it as its parent
                 if(contentTypeFileData[contentTypeIndex].type === 'repeater') {
                     for(let i = 0; i < contentTypeFileData.length; i++) {
-                        if(contentTypeFileData[i].parent === contentTypeFileData[contentTypeIndex]._id) contentTypeFileData[i].parent = false;
+                        if(contentTypeFileData[i].parent === contentTypeFileData[contentTypeIndex]._id) contentTypeFileData[i].parent = 'root';
                     }
                 }
 

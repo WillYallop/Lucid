@@ -13,7 +13,7 @@ interface mod_contentTypesConfigModel {
         default?: string
     }
     // Only type of repeater has this:
-    parent: false | mod_contentTypesConfigModel["_id"]
+    parent: 'root' | mod_contentTypesConfigModel["_id"]
 }
 
 interface mod_pageComponentsModel {
