@@ -166,12 +166,21 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
         ]);
         let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
 
-        const findContentTypeIndex = contentTypeFileData.findIndex( x => x._id === contentTypeID);
+        let findContentTypeIndex = contentTypeFileData.findIndex( x => x._id === contentTypeID);
         if(findContentTypeIndex != -1) {
 
             // If its a repeater - check if it has existing children content types and delete them as well
+            if(contentTypeFileData[findContentTypeIndex].type === 'repeater') {
+                for(let i = 0; i < contentTypeFileData.length; i++) {
+                    if(contentTypeFileData[i].parent === contentTypeFileData[findContentTypeIndex]._id) {
+                        // Remove from array
+                        contentTypeFileData.splice(i, 1);
+                    }
+                }
+            }
 
             // Remove from array and write to file
+            findContentTypeIndex = contentTypeFileData.findIndex( x => x._id === contentTypeID);
             contentTypeFileData.splice(findContentTypeIndex, 1);
             await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
         }
@@ -254,9 +263,17 @@ const updateSingle = async (componentID: mod_componentModel["_id"], contentType:
                         message: `Content type with name: "${contentType.name}" already exists! Please choose another name!`
                     });
                 }
-                // Merge and save data!
+                // Merge and save data - for the given content type!
                 contentTypeFileData[contentTypeIndex] = merge(contentTypeFileData[contentTypeIndex], contentType);
                 if(contentType.config) contentTypeFileData[contentTypeIndex].config = contentType.config;
+
+                // If its type is repeater, make sure no other content types point to it as its parent
+                if(contentTypeFileData[contentTypeIndex].type === 'repeater') {
+                    for(let i = 0; i < contentTypeFileData.length; i++) {
+                        if(contentTypeFileData[i].parent === contentTypeFileData[contentTypeIndex]._id) contentTypeFileData[i].parent = false;
+                    }
+                }
+
                 await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
                 return contentTypeFileData[contentTypeIndex];
             }
