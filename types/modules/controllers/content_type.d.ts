@@ -7,6 +7,7 @@ interface cont_cont_updateSingleInp {
     name?: mod_contentTypesConfigModel["name"]
     type?: mod_contentTypesConfigModel["type"]
     config?: mod_contentTypesConfigModel["config"]
+    parent?: mod_contentTypesConfigModel["parent"]
 }
 
 // updateSingleContentType()
