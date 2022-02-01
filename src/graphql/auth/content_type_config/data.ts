@@ -24,6 +24,7 @@ export const deleteSingleContentTypeConfig = async (componentID: mod_componentMo
 // Create single content type config
 export const createSingleContentTypeConfig = async (componentID: mod_componentModel["_id"], contentType: mod_contentTypesConfigModel) => {
     try {
+        if(!contentType.parent) contentType.parent = 'root';
         let content_type = await contentTypeController.saveSingle(componentID, contentType);
         return content_type;
     }

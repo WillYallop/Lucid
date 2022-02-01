@@ -51,6 +51,10 @@ const createContentType: GraphQLFieldConfig<any, any, any> = {
                         config: {
                             type: GraphQLNonNull(ContentTypeConfigArgs), 
                             description: 'Component content type config'
+                        },
+                        parent: {
+                            type: GraphQLString,
+                            description: 'Components content type parent'
                         }
                     })
                 })

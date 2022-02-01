@@ -166,22 +166,41 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
         ]);
         let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
 
-        let findContentTypeIndex = contentTypeFileData.findIndex( x => x._id === contentTypeID);
-        if(findContentTypeIndex != -1) {
+        let index = contentTypeFileData.findIndex( x => x._id === contentTypeID);
+        if(index != -1) {
 
-            // If its a repeater - check if it has existing children content types and delete them as well
-            if(contentTypeFileData[findContentTypeIndex].type === 'repeater') {
+            let deleteIndexs: Array<number> = [];
+            const deleteRepeater = async (repeaterIndex: number) => {
+                // Add repeater id to delete it later
+                let repeaterID = contentTypeFileData[repeaterIndex]._id;
+                deleteIndexs.push(repeaterIndex);
+                // Find all objects with this repeater as its parent
                 for(let i = 0; i < contentTypeFileData.length; i++) {
-                    if(contentTypeFileData[i].parent === contentTypeFileData[findContentTypeIndex]._id) {
-                        // Remove from array
-                        contentTypeFileData.splice(i, 1);
+                    if(contentTypeFileData[i].parent === repeaterID) {
+                        if(contentTypeFileData[i].type === 'repeater') {
+                            await deleteRepeater(i);
+                        }
+                        else {
+                            deleteIndexs.push(i);
+                        }
                     }
                 }
             }
 
-            // Remove from array and write to file
-            findContentTypeIndex = contentTypeFileData.findIndex( x => x._id === contentTypeID);
-            contentTypeFileData.splice(findContentTypeIndex, 1);
+            if(contentTypeFileData[index].type === 'repeater') {
+                await deleteRepeater(index);
+                // Loop over deleteIDs array and delete them
+                deleteIndexs.sort((a,b) => { return a - b; });
+                for (let i = deleteIndexs.length -1; i >= 0; i--) {
+                    contentTypeFileData.splice(deleteIndexs[i], 1);
+                }
+            }
+            else {
+                // Delete as useual
+                contentTypeFileData.splice(index, 1);
+            }
+            
+            // Save
             await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
         }
         else {
