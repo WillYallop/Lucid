@@ -27,7 +27,7 @@ EXAMPLE CONTENT_TYPE CONFIG FILE
 // ------------------------------------ ------------------------------------
 const saveSingle = async (componentID: mod_componentModel["_id"], contentType: mod_contentTypesConfigModel): Promise<mod_contentTypesConfigModel> => {
     try {
-        const origin = 'contentTypeController.saveSingle';
+        const origin = 'contentTypeConfigController.saveSingle';
         // Check if file ith component ID exists in theme/config/content_types and save a single component content type object to it
         // Else create the file and save a single component content type object to it
         let validateArray: Array<vali_validateFieldObj> = [
@@ -118,7 +118,30 @@ const getAll = async (componentID: mod_componentModel["_id"]): Promise<Array<mod
 // ------------------------------------ ------------------------------------
 const getSingle = async (componentID: mod_componentModel["_id"], _id: mod_contentTypesConfigModel["_id"]): Promise<mod_contentTypesConfigModel> => {
     try {
-
+        const origin = 'contentTypeConfigController.getSingle';
+        await validate([
+            {
+                method: 'uuidVerify',
+                value: componentID
+            },
+            {
+                method: 'uuidVerify',
+                value: _id
+            }
+        ]);
+        let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
+        // Find single
+        let findContentType = contentTypeFileData.find( x => x._id === _id);
+        if(findContentType) {
+            return findContentType;
+        }
+        else {
+            throw __generateErrorString({
+                code: 404,
+                origin: origin,
+                message: `Cannot find content type with ID: "${_id}" for component with ID: "${componentID}"!`
+            });
+        }
     }
     catch(err) {
         throw err;
