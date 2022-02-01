@@ -99,13 +99,23 @@ const saveSingle = async (componentID: mod_componentModel["_id"], contentType: m
 // ------------------------------------ ------------------------------------
 const getAll = async (componentID: mod_componentModel["_id"]): Promise<Array<mod_contentTypesConfigModel>> => {
     try {
-
+        await validate([
+            {
+                method: 'uuidVerify',
+                value: componentID
+            }
+        ]);
+        let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
+        return contentTypeFileData;
     }
     catch(err) {
         throw err;
     }
 }
 
+// ------------------------------------ ------------------------------------
+// get single content type config
+// ------------------------------------ ------------------------------------
 const getSingle = async (componentID: mod_componentModel["_id"], _id: mod_contentTypesConfigModel["_id"]): Promise<mod_contentTypesConfigModel> => {
     try {
 
@@ -115,6 +125,7 @@ const getSingle = async (componentID: mod_componentModel["_id"], _id: mod_conten
     }
 }
 
+// ------------------------------------ ------------------------------------
 // delete single component content type
 // ------------------------------------ ------------------------------------
 const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
