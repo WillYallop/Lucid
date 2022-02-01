@@ -153,8 +153,32 @@ const getSingle = async (componentID: mod_componentModel["_id"], _id: mod_conten
 // ------------------------------------ ------------------------------------
 const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
     try {
+        const origin = 'contentTypeConfigController.deleteSingle';
+        await validate([
+            {
+                method: 'uuidVerify',
+                value: componentID
+            },
+            {
+                method: 'uuidVerify',
+                value: contentTypeID
+            }
+        ]);
+        let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
 
-
+        const findContentTypeIndex = contentTypeFileData.findIndex( x => x._id === contentTypeID);
+        if(findContentTypeIndex != -1) {
+            // Remove from array and write to file
+            contentTypeFileData.splice(findContentTypeIndex, 1);
+            await writeSingleFile(`/config/content_types/${componentID}.json`, 'json', contentTypeFileData);
+        }
+        else {
+            throw __generateErrorString({
+                code: 404,
+                origin: origin,
+                message: `Cannot delete content type with ID of: "${contentTypeID}" because it cannot be found!`
+            });
+        }
     }
     catch(err) {
         throw err;

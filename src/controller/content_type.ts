@@ -226,7 +226,6 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
         ]);
         let contentTypeFileData: Array<mod_contentTypesConfigModel> = await getSingleFileContent(`/config/content_types/${componentID}.json`, 'json');
 
-
         let foundIndex = -1;
         let repeaterIndex = -1;
         let inRepeater = false;
