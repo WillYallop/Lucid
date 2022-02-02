@@ -1,4 +1,3 @@
-import db from '../../../db';
 import { contentTypeController } from '../../../index';
 import { deleteAllPageComponentContentTypes } from '../content_type/data';
 
@@ -52,6 +51,17 @@ export const getAllContentTypeConfig = async (componentID: mod_componentModel["_
     try {
         let content_types = await contentTypeController.getAll(componentID);
         return content_types;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Get single content type config
+export const getSingleContentTypeConfig = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
+    try {
+        let content_type = await contentTypeController.getSingle(componentID, contentTypeID);
+        return content_type;
     }
     catch(err) {
         throw err;
