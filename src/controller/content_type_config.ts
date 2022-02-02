@@ -189,7 +189,7 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
 
             if(contentTypeFileData[index].type === 'repeater') {
                 await deleteRepeater(index);
-                // Loop over deleteIDs array and delete them
+                // Loop over deleteIndexs array and delete them
                 deleteIndexs.sort((a,b) => { return a - b; });
                 for (let i = deleteIndexs.length -1; i >= 0; i--) {
                     contentTypeFileData.splice(deleteIndexs[i], 1);
@@ -282,14 +282,38 @@ const updateSingle = async (componentID: mod_componentModel["_id"], contentType:
                         message: `Content type with name: "${contentType.name}" already exists! Please choose another name!`
                     });
                 }
+
+                const originalType = contentTypeFileData[contentTypeIndex].type;
+
                 // Merge and save data - for the given content type!
                 contentTypeFileData[contentTypeIndex] = merge(contentTypeFileData[contentTypeIndex], contentType);
                 if(contentType.config) contentTypeFileData[contentTypeIndex].config = contentType.config;
 
-                // If its type is repeater, make sure no other content types point to it as its parent
-                if(contentTypeFileData[contentTypeIndex].type === 'repeater') {
+                // Recusive function to delete all reapters children 
+                let deleteIndexs: Array<number> = [];
+                const deleteRepeaterChildren = async (repeaterIndex: number, firstIteration: boolean) => {
+                    // Add repeater id to delete it later
+                    let repeaterID = contentTypeFileData[repeaterIndex]._id;
+                    if(!firstIteration) deleteIndexs.push(repeaterIndex);
+                    // Find all objects with this repeater as its parent
                     for(let i = 0; i < contentTypeFileData.length; i++) {
-                        if(contentTypeFileData[i].parent === contentTypeFileData[contentTypeIndex]._id) contentTypeFileData[i].parent = 'root';
+                        if(contentTypeFileData[i].parent === repeaterID) {
+                            if(contentTypeFileData[i].type === 'repeater') {
+                                await deleteRepeaterChildren(i, false);
+                            }
+                            else {
+                                deleteIndexs.push(i);
+                            }
+                        }
+                    }
+                }
+
+                if(originalType === 'repeater' && contentTypeFileData[contentTypeIndex].type != 'repeater') {
+                    await deleteRepeaterChildren(contentTypeIndex, true);
+                    // Loop over deleteIndexs array and delete them
+                    deleteIndexs.sort((a,b) => { return a - b; });
+                    for (let i = deleteIndexs.length -1; i >= 0; i--) {
+                        contentTypeFileData.splice(deleteIndexs[i], 1);
                     }
                 }
 
