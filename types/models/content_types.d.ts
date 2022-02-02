@@ -12,7 +12,6 @@ interface mod_contentTypesConfigModel {
         min?: string
         default?: string
     }
-    // Only type of repeater has this:
     parent: 'root' | mod_contentTypesConfigModel["_id"]
 }
 

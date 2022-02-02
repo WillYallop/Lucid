@@ -108,20 +108,11 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                                 _id
                                 name
                                 type
+                                parent
                                 config {
                                     max
                                     min
                                     default
-                                }
-                                fields {
-                                    _id
-                                    name
-                                    type
-                                    config {
-                                        max
-                                        min
-                                        default
-                                    }
                                 }
                             }
                         }
@@ -173,15 +164,15 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 // Add new content type to component data
                 const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
                 const repeaterField = newContentTypeArr.find( x => x._id === repeater__id );
-                if(repeaterField && repeaterField.fields) {
-                    repeaterField.fields.push(contentType);
-                    setComponent({
-                        ...component,
-                        ...{
-                            content_types: newContentTypeArr
-                        }
-                    });
-                }
+                // if(repeaterField && repeaterField.fields) {
+                //     repeaterField.fields.push(contentType);
+                //     setComponent({
+                //         ...component,
+                //         ...{
+                //             content_types: newContentTypeArr
+                //         }
+                //     });
+                // }
             }
             else {
                 // Add new content type to component data
@@ -202,18 +193,18 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 // Add new content type to component data
                 const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
                 const repeaterField = newContentTypeArr.find( x => x._id === repeater__id );
-                if(repeaterField && repeaterField.fields) {
-                    const updatedIndex = repeaterField.fields.findIndex( x => x._id === contentType._id );
-                    if(updatedIndex != -1) {
-                        repeaterField.fields[updatedIndex] = contentType;
-                        setComponent({
-                            ...component,
-                            ...{
-                                content_types: newContentTypeArr
-                            }
-                        });
-                    }
-                }
+                // if(repeaterField && repeaterField.fields) {
+                //     const updatedIndex = repeaterField.fields.findIndex( x => x._id === contentType._id );
+                //     if(updatedIndex != -1) {
+                //         repeaterField.fields[updatedIndex] = contentType;
+                //         setComponent({
+                //             ...component,
+                //             ...{
+                //                 content_types: newContentTypeArr
+                //             }
+                //         });
+                //     }
+                // }
             }
             else {
                 // Add new content type to component data
@@ -241,8 +232,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
     // Delete component
     const deleteComponent = (contentType__id: mod_contentTypesConfigModel["_id"], repeater__id?: mod_contentTypesConfigModel["_id"]) => {
-        console.log(repeater__id);
-        console.log('here');
         const query = `mutation
             {
                 content_type_config 
@@ -272,10 +261,10 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                     const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
                     if(repeater__id) {
                         const repeaterField = newContentTypeArr.find( x => x._id === repeater__id );
-                        if(repeaterField && repeaterField.fields) {
-                            const updatedIndex = repeaterField.fields.findIndex( x => x._id === contentType__id );
-                            if(updatedIndex != -1) repeaterField.fields.splice(updatedIndex, 1);
-                        }
+                        // if(repeaterField && repeaterField.fields) {
+                        //     const updatedIndex = repeaterField.fields.findIndex( x => x._id === contentType__id );
+                        //     if(updatedIndex != -1) repeaterField.fields.splice(updatedIndex, 1);
+                        // }
                     }
                     else {
                         const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType__id );
@@ -352,19 +341,62 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         </>
     )
 
+
+
+
+
+
+
+    // <ContentTypeRow 
+    // key={component.content_types[i]._id} 
+    // contentType={ component.content_types[i]}
+    // actionForm={openContentTypeActionModal}
+    // deleteCallback={deleteComponent}/>
+    
+    const getContentTypeChildren = (contentType__id: mod_contentTypesConfigModel["_id"]): Array<ReactElement> => {
+        const result: Array<ReactElement> = [];
+        // Loop through component.content_types and find ones with parent ID matching to contentType_id and reurn
+        if(component.content_types) { 
+            component.content_types.filter( x => {
+                if(x.parent === contentType__id) {
+                    result.push(<ContentTypeRow 
+                        key={x._id} 
+                        contentType={x}
+                        actionForm={openContentTypeActionModal}
+                        deleteCallback={deleteComponent}
+                        getChildren={getContentTypeChildren}/>);
+                }
+            });
+        }
+        return result;
+    }
+
     const contentTypeRows: Array<ReactElement> = [];
     if(component.content_types) {
-        for(let i = 0; i < component.content_types.length; i++) {
-            contentTypeRows.push(
-                <ContentTypeRow 
-                    key={component.content_types[i]._id} 
-                    contentType={ component.content_types[i]}
+        component.content_types.forEach((contentType) => {
+            // Add normally
+            if(contentType.parent === 'root') {
+                contentTypeRows.push(<ContentTypeRow 
+                    key={contentType._id} 
+                    contentType={contentType}
                     actionForm={openContentTypeActionModal}
-                    deleteCallback={deleteComponent}/>
-            );
-        }
+                    deleteCallback={deleteComponent}
+                    getChildren={getContentTypeChildren}/>)
+            }
+        });
     }
     
+
+
+
+
+
+
+
+
+
+
+
     return (
         <DefaultPage
         title={`Edit - ${componentName}`}
