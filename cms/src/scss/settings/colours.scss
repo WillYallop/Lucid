@@ -1,9 +1,13 @@
 
 $accent_colours: (
     // Main accent
-    _01_01: #F8ED21,
-    _01_02: darken(#F8ED21, 10%),
-    _01_03: #2E2D29, // accent colour
+    _01_01: #C5EFCB,
+    _01_02: darken(#C5EFCB, 10%),
+    _01_03: #181D19, // accent colour
+
+    _03_01: #758173, //secondary accent
+    _03_02: darken(#758173, 10%),
+    _03_03: #E2E4E1, // contrast
 
     // Status colours
     _02_01: #ED254E, // error
@@ -12,13 +16,13 @@ $accent_colours: (
 );
 
 $section_colours: (
-    _01_01: #222222, // Header / Nav Bg
-    _01_02: #333333, // _01_01 contrast
+    _01_01: #020402, // Header / Nav Bg
+    _01_02: #101010, // _01_01 contrast
 
-    _02_01: #FFFFFF, // Content con bg
-    _02_02: #E5E5E5, // _02_01 contrast
+    _02_01: #2B2B2B, // Content con bg
+    _02_02: #343434, // _02_01 contrast
 
-    _03_01: #F5F5F5, // background
+    _03_01: #191919, // background
 
     // Loading
     _05_01: #1D1D1D, // Loading dark
@@ -27,9 +31,9 @@ $section_colours: (
 
 $text_colours: (
     // Light
-    _01_01: #222222, // title
-    _01_02: #4E4E4E, // body
+    _01_01: #F6F6F6, // title
+    _01_02: #CECECE, // body
     // Dark
-    _02_01: #FFFFFF, // title
-    _02_02: #ececec // body
+    _02_01: #222222, // title
+    _02_02: #4E4E4E // body
 );

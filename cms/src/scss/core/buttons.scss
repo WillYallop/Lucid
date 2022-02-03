@@ -19,16 +19,22 @@ button {
     padding: rem(5) $padding;
     border: 1px solid map-get($map: $accent_colours, $key: _01_01);
     cursor: pointer;
+    color: map-get($map: $text_colours, $key: _02_01);
     &--not-active {
         background-color: transparent;
-        border: 1px solid rgb(190, 190, 190);
+        color: map-get($map: $text_colours, $key: _01_02);
+        border: 1px solid map-get($map: $section_colours, $key: _02_02);
+        &:hover {
+            color: map-get($map: $text_colours, $key: _02_01);
+        }
     }
     &--small {
         width: auto;
     }
     &--danger {
         background-color: transparent;
-        border: 1px solid rgb(190, 190, 190);
+        color: map-get($map: $text_colours, $key: _01_02);
+        border: 1px solid map-get($map: $section_colours, $key: _02_02);
         &:hover {
             background-color: map-get($map: $accent_colours, $key: _02_01);
             border: 1px solid map-get($map: $accent_colours, $key: _02_01);

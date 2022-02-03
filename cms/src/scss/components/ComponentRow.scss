@@ -6,14 +6,14 @@
         border-radius: 5px 0 0 5px;
         object-fit: cover;
         &--default {
-            background-color: map-get($map: $section_colours, $key: _01_01);
+            background-color: map-get($map: $accent_colours, $key: _03_01);
             height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             svg {
                 path {
-                    fill: map-get($map: $accent_colours, $key: _01_01);
+                    fill: map-get($map: $accent_colours, $key:_03_03);
                 }
             }
         }

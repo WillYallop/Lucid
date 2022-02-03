@@ -24,7 +24,7 @@
         .content {
             width: 100%;
             max-width: rem(800);
-            background-color: white;
+            background-color: map-get($map: $section_colours, $key: _03_01);
             margin: auto;
             pointer-events: all;
             border-radius: rem(10);
@@ -76,7 +76,7 @@
         left: 0;
         right: 0;
         backdrop-filter: blur(8px);
-        background-color: rgba(0, 0, 0, 0.5);
+        background-color: rgba(255, 255, 255, 0.2);
         cursor: pointer;
     }
 }

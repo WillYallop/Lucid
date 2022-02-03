@@ -14,6 +14,9 @@
         margin: rem(5) 0 rem(10);
         font-size: rem(14);
         font-family: 'Be Vietnam Pro', sans-serif;
+        background-color: map-get($map: $section_colours, $key: _02_01);
+        border: 1px solid map-get($map: $section_colours, $key: _02_02);
+        color: map-get($map: $text_colours, $key: _01_01);
         &:focus {
             outline: none;
             border-color: map-get($map: $accent_colours, $key: _01_02);
@@ -98,8 +101,8 @@
     @include animate;
     width: 50px;
     height: 26px;
-    background-color: #E3E3E3;
-    border: 1px solid #D6D6D6;
+    background-color: map-get($map: $section_colours, $key: _02_01);
+    border: 1px solid map-get($map: $section_colours, $key: _02_02);
     border-radius: rem(20);
     position: relative;
     cursor: pointer;
@@ -121,6 +124,7 @@
         &::after {
             left: rem(26);
             border: 1px solid darken($color: map-get($map: $accent_colours, $key: _01_01), $amount: 10%);
+            background-color: map-get($map: $accent_colours, $key: _03_02);
         }
     }
 }

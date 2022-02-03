@@ -34,7 +34,6 @@
                     width: 100%;
                     display: flex;
                     align-items: center;
-                    
                     .coreIcon {
                         margin-right: rem(10);
                     }
@@ -44,16 +43,16 @@
                 }
                 a {
                     opacity: 0.3;
-                    color: map-get($map: $text_colours, $key: _02_02);
+                    color: map-get($map: $text_colours, $key: _01_01);
                     text-transform: capitalize;
                     &:hover {
                         opacity: 1;
                     }
                     &.active {
                         opacity: 1;
-                        color: map-get($map: $text_colours, $key: _02_01);
+                        color: map-get($map: $text_colours, $key: _01_01);
                         &:hover {
-                            color: map-get($map: $text_colours, $key: _02_02);
+                            color: map-get($map: $text_colours, $key: _01_02);
                             .coreIcon {
                                 background-color: map-get($map: $accent_colours, $key: _01_02);
                             }

@@ -2,14 +2,14 @@
     .main {
         padding-right: rem(20);
         .icon {
-            background-color: map-get($map: $section_colours, $key: _01_01);
+            background-color: map-get($map: $accent_colours, $key: _03_01);
             height: rem(40);
             width: rem(40);
             min-width: rem(40);
             border-radius: rem(5);
             svg {
                 path {
-                    fill: map-get($map: $accent_colours, $key: _01_01)
+                    fill: map-get($map: $accent_colours, $key: _03_03);
                 }
             }
         }
