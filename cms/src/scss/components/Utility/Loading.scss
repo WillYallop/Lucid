@@ -1,3 +1,11 @@
+.loadingCon {
+  border-radius: rem(5);
+  overflow: hidden;
+  &__large {
+    height: rem(400);
+  }
+}
+
 .loadingSkeleton {
   display: inline-block;
   height: 1em;

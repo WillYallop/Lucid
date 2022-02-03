@@ -4,6 +4,7 @@ import axios from 'axios';
 // Components
 import SelectInput from '../../../../../components/Core/Inputs/SelectInput';
 import TextInput from '../../../../../components/Core/Inputs/TextInput';
+import UtilityLoading from '../../../../../components/Ultility/Loading';
 // Extended forms
 import ExtendedFormText from '../../../../../components/ContentTypes/ExtendedForms/Text';
 import ExtendedFormRepeater from '../../../../../components/ContentTypes/ExtendedForms/Repeater';
@@ -16,42 +17,112 @@ import formatLucidError from '../../../../../functions/formatLucidError';
 
 interface ContentTypeActionFormProps {
     component__id: string
-    successCallback: (configType: mod_contentTypesConfigModel, actionType: 'update' | 'create', repeater__id?: string) => void
-
-    contentType?: mod_contentTypesConfigModel
-    repeater__id?: string
+    contentType__id: mod_contentTypesConfigModel["_id"]
+    successCallback: (configType: mod_contentTypesConfigModel, actionType: 'update' | 'create', parent_id?: string) => void
     actionType: 'update' | 'create'
 }
 
-const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component__id, successCallback, contentType, actionType, repeater__id }) => {
+const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component__id, successCallback, contentType__id, actionType }) => {
 
-    const getTypeExtendedForm = (type: mod_contentTypesConfigModel["type"]) => {
+    const [ type, setType ] = useState<mod_contentTypesConfigModel["type"]>('text');
+    const [ name, setName ] = useState<mod_contentTypesConfigModel["name"]>('');
+    const [ contentType, setContentType ] = useState({} as mod_contentTypesConfigModel);
+    const [ loadingState, setLoadingState ] = useState(true);
+
+    // -------------------------------------------------------
+    // Extended Form
+    // -------------------------------------------------------
+    const [ extendedForm, setExtendedForm ] = useState<ReactElement>();
+    const setTypeExtendedForm = (type: mod_contentTypesConfigModel["type"], content?: mod_contentTypesConfigModel) => {
         switch(type) {
             case 'text': {
-                return <ExtendedFormText config={contentType?.config}/>;
+                setExtendedForm(<ExtendedFormText config={content?.config}/>);
+                break;
             }
             case 'number': {
-                return <ExtendedFormNumber config={contentType?.config}/>;
+                setExtendedForm(<ExtendedFormNumber config={content?.config}/>);
+                break;
             }
             case 'repeater': {
-                return <ExtendedFormRepeater config={contentType?.config}/>;
+                setExtendedForm(<ExtendedFormRepeater config={content?.config}/>);
+                break;
             }
             default: {
-                return <ExtendedFormText/>;
+                setExtendedForm(<ExtendedFormText/>);
+                break;
             }
         }
     }
 
     // -------------------------------------------------------
-    // Extended Form
+    // Types
+    // ------------------------------------------------------- 
+    const typeOptions: Array<mod_contentTypesConfigModel["type"]> = [
+        'text',
+        'number',
+        'repeater'
+    ];
+
     // -------------------------------------------------------
-    let defaultType: mod_contentTypesConfigModel["type"] = 'text';
-    let defaultExtendedForm = <ExtendedFormText/>;
-    if(actionType === 'update' && contentType) {
-        defaultType = contentType.type;
-        defaultExtendedForm = getTypeExtendedForm(defaultType);
+    // Name
+    // -------------------------------------------------------
+    const updateSelectedType = (value: any) => {
+        setType(value);
+        setTypeExtendedForm(value);
     }
-    const [ extendedForm, setExtendedForm ] = useState<ReactElement>(defaultExtendedForm);
+
+    // -------------------------------------------------------
+    // First load
+    // -------------------------------------------------------
+    const getContentType = () => {
+        axios({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: `
+                query {
+                    content_type_config {
+                        get_single (
+                            component_id: "${component__id}"
+                            content_type_id: "${contentType__id}"
+                        )
+                        {
+                            _id
+                            name
+                            type
+                            parent
+                            config {
+                                min
+                                max
+                                default
+                            }
+                        }
+                    }
+                }`
+            }
+        })
+        .then((result) => {
+            const contentTypeData = result.data.data.content_type_config.get_single || {};
+            setType(contentTypeData.type);
+            setName(contentTypeData.name);
+            setLoadingState(false);
+            setTypeExtendedForm(contentTypeData.type, contentTypeData);
+            setContentType(contentTypeData);
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    }
+    useEffect(() => {
+        if(actionType === 'update') { getContentType() }
+        else {
+            setLoadingState(false);
+            setTypeExtendedForm('text');
+        }
+        return () => {
+            setContentType({} as mod_contentTypesConfigModel);
+        }
+    }, []);
 
     // -------------------------------------------------------
     // Form Error
@@ -65,26 +136,6 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
             <p>{ formError.message }</p>
         </div>  
     );
-
-    // -------------------------------------------------------
-    // Types
-    // -------------------------------------------------------
-    const [ type, setType ] = useState<mod_contentTypesConfigModel["type"]>(defaultType);
-    const typeOptions: Array<mod_contentTypesConfigModel["type"]> = [
-        'text',
-        'number'
-    ];
-    if(!repeater__id) typeOptions.push('repeater');
-
-    const updateSelectedType = (value: any) => {
-        setType(value);
-        setExtendedForm(getTypeExtendedForm(value))
-    }
-
-    // -------------------------------------------------------
-    // Name
-    // -------------------------------------------------------
-    const [ name, setName ] = useState<mod_contentTypesConfigModel["name"]>(contentType?.name || '');
 
     // -------------------------------------------------------
     // Actions
@@ -101,29 +152,19 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
                         content_type: {
                             name: "${name}"
                             type: "${type}"
+                            parent: "${contentType__id}"
                             config: ${configObj}
                         }
-                        repeaterField: ${ repeater__id ? 'true' : 'false' }
-                        ${ repeater__id ? 'repeaterID: "'+repeater__id+'"' : '' }
                     )
                     {
                         _id
                         name
                         type
+                        parent
                         config {
                             max
                             min
                             default
-                        }
-                        fields {
-                            _id
-                            name
-                            type
-                            config {
-                                max
-                                min
-                                default
-                            }
                         }
                     }
                 }
@@ -140,7 +181,7 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
         .then((result) => {
             const newContentType: mod_contentTypesConfigModel = result.data.data.content_type_config.create_single;
             if(newContentType) {
-                successCallback(newContentType, actionType, repeater__id);
+                successCallback(newContentType, actionType);
             }
             else {
                 setFormError({
@@ -167,29 +208,19 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
                             _id: "${contentType?._id}"
                             name: "${name}"
                             type: "${type}"
+                            parent: "${contentType.parent}"
                             config: ${configObj}
                         }
-                        repeaterField: ${ repeater__id ? 'true' : 'false' }
-                        ${ repeater__id ? 'repeaterID: "'+repeater__id+'"' : '' }
                     ) 
                     {
                         _id
                         name
                         type
+                        parent
                         config {
                             max
                             min
                             default
-                        }
-                        fields {
-                            _id
-                            name
-                            type
-                            config {
-                                max
-                                min
-                                default
-                            }
                         }
                     }
                 }
@@ -205,7 +236,7 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
         .then((result) => {
             const newContentType: mod_contentTypesConfigModel = result.data.data.content_type_config.update_single;
             if(newContentType) {
-                successCallback(newContentType, actionType, repeater__id);
+                successCallback(newContentType, actionType);
             }
             else {
                 setFormError({
@@ -250,67 +281,79 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
         return value.replaceAll(' ', '_').toLowerCase();
     }
 
-    return (
-        <div className="body">
-            <form onSubmit={validateForm} noValidate={true}>
-
-                {/* Content Type - type */}
-                <SelectInput 
-                    value={type}
-                    options={typeOptions}
-                    id={"contentTypeTypeSel"}
-                    name={"type"}
-                    required={true}
-                    errorMsg={"There was an unexpected error!"}
-                    updateValue={updateSelectedType}
-                    label="Type"
-                    described_by="The type controls what data can be passed to the component."/>
-
-                {/* Content Type = name */}
-                <TextInput 
-                    value={name}
-                    id={'contentTypeNameInp'}
-                    name={'name'}
-                    required={true}
-                    errorMsg={'Name must only include the following characters: [A-Z_a-z ] and be a minimum of 2 characters and a maximum of 100!'}
-                    updateValue={setName}
-                    label={'Name'}
-                    max={100}
-                    min={2}
-                    described_by={'This is the unique content type name, you can use the bellow to reference its data in your liquid templates.'}
-                    pattern={validatorConfig.cont_name.frontend_string}>
-                    { name ? <div className='noteRow'> { formatName(name) } </div> : null }
-                </TextInput>
-
-                {/* Extended form */}
-                <div className="headerRow">
-                    <p className="bold">Configuration</p>
+    // Loading
+    if(loadingState) {
+        return (
+            <div className="body">
+                <div className="loadingCon loadingCon__large">
+                    <UtilityLoading mode="light"/>
                 </div>
-                { extendedForm }
-
-                { formError.error ? errorConEle : null }
-
-                <div className="footer">
-                    <div className="textarea">
+            </div>
+        )
+    }
+    else {
+        return (
+            <div className="body">
+                <form onSubmit={validateForm} noValidate={true}>
+    
+                    {/* Content Type - type */}
+                    <SelectInput 
+                        value={type}
+                        options={typeOptions}
+                        id={"contentTypeTypeSel"}
+                        name={"type"}
+                        required={true}
+                        errorMsg={"There was an unexpected error!"}
+                        updateValue={updateSelectedType}
+                        label="Type"
+                        described_by="The type controls what data can be passed to the component."/>
+    
+                    {/* Content Type = name */}
+                    <TextInput 
+                        value={name}
+                        id={'contentTypeNameInp'}
+                        name={'name'}
+                        required={true}
+                        errorMsg={'Name must only include the following characters: [A-Z_a-z ] and be a minimum of 2 characters and a maximum of 100!'}
+                        updateValue={setName}
+                        label={'Name'}
+                        max={100}
+                        min={2}
+                        described_by={'This is the unique content type name, you can use the bellow to reference its data in your liquid templates.'}
+                        pattern={validatorConfig.cont_name.frontend_string}>
+                        { name ? <div className='noteRow'> { formatName(name) } </div> : null }
+                    </TextInput>
+    
+                    {/* Extended form */}
+                    <div className="headerRow">
+                        <p className="bold">Configuration</p>
+                    </div>
+                    { extendedForm }
+    
+                    { formError.error ? errorConEle : null }
+    
+                    <div className="footer">
+                        <div className="textarea">
+                            {
+                                actionType === 'create'
+                                ? 
+                                <p>Once created you will be take back to the edit component page!</p>
+                                : 
+                                <p>Once updated you will be take back to the edit component page!</p>
+                            }
+                        </div>
                         {
                             actionType === 'create'
                             ? 
-                            <p>Once created you will be take back to the edit component page!</p>
+                            <input className="btnStyle1 btnStyle1--small" type="submit" value="Create"/>
                             : 
-                            <p>Once updated you will be take back to the edit component page!</p>
+                            <input className="btnStyle1 btnStyle1--small" type="submit" value="Update"/>
                         }
                     </div>
-                    {
-                        actionType === 'create'
-                        ? 
-                        <input className="btnStyle1 btnStyle1--small" type="submit" value="Create"/>
-                        : 
-                        <input className="btnStyle1 btnStyle1--small" type="submit" value="Update"/>
-                    }
-                </div>
-            </form>
-        </div>
-    )
+                </form>
+            </div>
+        )
+    }
 }
 
 export default ContentTypeActionForm;

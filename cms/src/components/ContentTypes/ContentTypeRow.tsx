@@ -7,7 +7,7 @@ import { ReactElement } from 'react';
 
 interface contentTypeProps {
     contentType: mod_contentTypesConfigModel
-    actionForm: (actionType: 'update' | 'create', contentType?: mod_contentTypesConfigModel, repeater__id?: string) => void
+    actionForm: (actionType: 'update' | 'create', contentType__id: mod_contentTypesConfigModel["_id"]) => void
     deleteCallback: (contentType__id: mod_contentTypesConfigModel["_id"], repeater__id?: mod_contentTypesConfigModel["_id"]) => void
     getChildren: (contentType__id: mod_contentTypesConfigModel["_id"]) => Array<ReactElement>
 }
@@ -70,14 +70,14 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, d
                     {
                         contentType.type === 'repeater'
                         ?
-                        <button className='btnStyleBlank' onClick={() => actionForm('create', undefined, contentType._id)}>
+                        <button className='btnStyleBlank' onClick={() => actionForm('create', contentType._id)}>
                             <CoreIcon icon={faPlus}/>
                         </button>
                         :
                         null
                     }
                     {/* Edit this row */}
-                    <button className='btnStyleBlank' onClick={() => actionForm('update', contentType)}>
+                    <button className='btnStyleBlank' onClick={() => actionForm('update', contentType._id)}>
                         <CoreIcon icon={faEdit}/>
                     </button>
                     {/* Delete this row */}
