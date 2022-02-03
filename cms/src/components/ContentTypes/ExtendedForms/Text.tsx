@@ -48,7 +48,7 @@ const ExtendedFormText: React.FC<ExtendedFormTextProps> = ({ config }) => {
                 <TextInput
                     value={defaultValue}
                     id={"defaultValueInp"}
-                    name={"default_str"}
+                    name={"default"}
                     required={true}
                     errorMsg={`Make sure the field is not empty, and if the min and max length are set that it meets them.`}
                     updateValue={setDefaultValue}

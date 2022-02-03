@@ -57,7 +57,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     // Modal 
     // -------------------------------------------------------
     const { modalState, setModalState } = useContext(ModalContext);
-    const openContentTypeActionModal = (actionType: 'update' | 'create', contentType?: mod_contentTypesConfigModel, repeater__id?: string) => {
+    const openContentTypeActionModal = (actionType: 'update' | 'create', contentType__id: mod_contentTypesConfigModel["_id"]) => {
         let title,body;
         if(actionType === 'create') {
             title = 'Add a content type';
@@ -75,9 +75,8 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             element: <ComponentContentTypeActionForm
                 component__id={_id}
                 successCallback={contentTypeActionFormSuccessCallback}
-                contentType={contentType}
                 actionType={actionType}
-                repeater__id={repeater__id}/>
+                contentType__id={contentType__id}/>
         });
     }
 
@@ -108,20 +107,11 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                                 _id
                                 name
                                 type
+                                parent
                                 config {
                                     max
                                     min
                                     default
-                                }
-                                fields {
-                                    _id
-                                    name
-                                    type
-                                    config {
-                                        max
-                                        min
-                                        default
-                                    }
                                 }
                             }
                         }
@@ -168,66 +158,30 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
     // Callback for adding new content type
     const contentTypeActionFormSuccessCallback = (contentType: mod_contentTypesConfigModel, actionType: 'update' | 'create', repeater__id?: string) => {
+        const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
         if(actionType === 'create') {
-            if(repeater__id) {
-                // Add new content type to component data
-                const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
-                const repeaterField = newContentTypeArr.find( x => x._id === repeater__id );
-                if(repeaterField && repeaterField.fields) {
-                    repeaterField.fields.push(contentType);
-                    setComponent({
-                        ...component,
-                        ...{
-                            content_types: newContentTypeArr
-                        }
-                    });
+            // Add new content type to component data
+            newContentTypeArr.push(contentType);
+            setComponent({
+                ...component,
+                ...{
+                    content_types: newContentTypeArr
                 }
-            }
-            else {
-                // Add new content type to component data
-                const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
-                newContentTypeArr.push(contentType);
+            });
+            // Add success message
+            addNotification('You have successfully added a new content type!', 'success');
+        }
+        else {
+            // Add new content type to component data
+            const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType._id );
+            if(updatedIndex != -1) {
+                newContentTypeArr[updatedIndex] = contentType;
                 setComponent({
                     ...component,
                     ...{
                         content_types: newContentTypeArr
                     }
                 });
-            }
-            // Add success message
-            addNotification('You have successfully added a new content type!', 'success');
-        }
-        else {
-            if(repeater__id) {
-                // Add new content type to component data
-                const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
-                const repeaterField = newContentTypeArr.find( x => x._id === repeater__id );
-                if(repeaterField && repeaterField.fields) {
-                    const updatedIndex = repeaterField.fields.findIndex( x => x._id === contentType._id );
-                    if(updatedIndex != -1) {
-                        repeaterField.fields[updatedIndex] = contentType;
-                        setComponent({
-                            ...component,
-                            ...{
-                                content_types: newContentTypeArr
-                            }
-                        });
-                    }
-                }
-            }
-            else {
-                // Add new content type to component data
-                const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
-                const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType._id );
-                if(updatedIndex != -1) {
-                    newContentTypeArr[updatedIndex] = contentType;
-                    setComponent({
-                        ...component,
-                        ...{
-                            content_types: newContentTypeArr
-                        }
-                    });
-                }
             }
             // Add success message
             addNotification(`You have successfully update the "${contentType.name}" content type!`, 'success');
@@ -241,8 +195,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
     // Delete component
     const deleteComponent = (contentType__id: mod_contentTypesConfigModel["_id"], repeater__id?: mod_contentTypesConfigModel["_id"]) => {
-        console.log(repeater__id);
-        console.log('here');
         const query = `mutation
             {
                 content_type_config 
@@ -270,17 +222,8 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 if(componentData.deleted) {
                     // Add new content type to component data
                     const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
-                    if(repeater__id) {
-                        const repeaterField = newContentTypeArr.find( x => x._id === repeater__id );
-                        if(repeaterField && repeaterField.fields) {
-                            const updatedIndex = repeaterField.fields.findIndex( x => x._id === contentType__id );
-                            if(updatedIndex != -1) repeaterField.fields.splice(updatedIndex, 1);
-                        }
-                    }
-                    else {
-                        const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType__id );
-                        if(updatedIndex != -1) newContentTypeArr.splice(updatedIndex, 1);
-                    }
+                    const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType__id );
+                    if(updatedIndex != -1) newContentTypeArr.splice(updatedIndex, 1);
                     setComponent({
                         ...component,
                         ...{
@@ -352,19 +295,44 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         </>
     )
 
+
+    // -------------------------------------------------------
+    // Recursive render helper
+    // -------------------------------------------------------
+    const getContentTypeChildren = (contentType__id: mod_contentTypesConfigModel["_id"]): Array<ReactElement> => {
+        const result: Array<ReactElement> = [];
+        // Loop through component.content_types and find ones with parent ID matching to contentType_id and reurn
+        if(component.content_types) { 
+            component.content_types.filter( x => {
+                if(x.parent === contentType__id) {
+                    result.push(<ContentTypeRow 
+                        key={x._id} 
+                        contentType={x}
+                        actionForm={openContentTypeActionModal}
+                        deleteCallback={deleteComponent}
+                        getChildren={getContentTypeChildren}/>);
+                }
+            });
+        }
+        return result;
+    }
+
     const contentTypeRows: Array<ReactElement> = [];
     if(component.content_types) {
-        for(let i = 0; i < component.content_types.length; i++) {
-            contentTypeRows.push(
-                <ContentTypeRow 
-                    key={component.content_types[i]._id} 
-                    contentType={ component.content_types[i]}
+        component.content_types.forEach((contentType) => {
+            // Add normally
+            if(contentType.parent === 'root') {
+                contentTypeRows.push(<ContentTypeRow 
+                    key={contentType._id} 
+                    contentType={contentType}
                     actionForm={openContentTypeActionModal}
-                    deleteCallback={deleteComponent}/>
-            );
-        }
+                    deleteCallback={deleteComponent}
+                    getChildren={getContentTypeChildren}/>)
+            }
+        });
     }
-    
+
+
     return (
         <DefaultPage
         title={`Edit - ${componentName}`}
@@ -400,7 +368,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             <section className="section blockCon">
                 <div className="header layout__flex layout__space-between layout__align-center">
                     <p className="bold">Content Types</p>
-                    <button className='btnStyleBlank' onClick={() => openContentTypeActionModal('create')}><CoreIcon icon={faPlus}/></button>
+                    <button className='btnStyleBlank' onClick={() => openContentTypeActionModal('create', 'root')}><CoreIcon icon={faPlus}/></button>
                 </div>
                 <div className="body layout">
                     { contentTypeRows }

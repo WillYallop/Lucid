@@ -2,14 +2,14 @@
 import CoreIcon from '../../components/Core/Icon';
 // Icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faFont, faInfinity, faKeyboard } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faFont, faInfinity, faKeyboard, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ReactElement } from 'react';
 
 interface contentTypeProps {
     contentType: mod_contentTypesConfigModel
-    actionForm: (actionType: 'update' | 'create', contentType?: mod_contentTypesConfigModel, repeater__id?: string) => void
-    repeater__id?: string
+    actionForm: (actionType: 'update' | 'create', contentType__id: mod_contentTypesConfigModel["_id"]) => void
     deleteCallback: (contentType__id: mod_contentTypesConfigModel["_id"], repeater__id?: mod_contentTypesConfigModel["_id"]) => void
+    getChildren: (contentType__id: mod_contentTypesConfigModel["_id"]) => Array<ReactElement>
 }
 export interface mod_contentTypesConfigModel {
     _id: string
@@ -20,11 +20,10 @@ export interface mod_contentTypesConfigModel {
         min?: string
         default?: string
     }
-    // Only type of repeater has this:
-    fields?: Array<mod_contentTypesConfigModel>
+    parent: 'root' | mod_contentTypesConfigModel["_id"]
 }
 
-const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, repeater__id, deleteCallback }) => {
+const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, deleteCallback, getChildren }) => {
 
     let ContentTypeIcon;
     switch(contentType.type) {
@@ -43,25 +42,16 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, r
     }
 
     // Add repeater sub content type fields
-    let repeaterBodyItems: Array<ReactElement> = []; 
-    if(contentType.type === 'repeater' && contentType.fields) {
-        for(let i = 0; i < contentType.fields.length; i++) {
-            repeaterBodyItems.push(
-                <ContentTypeRow 
-                    key={contentType.fields[i]._id} 
-                    contentType={ contentType.fields[i]} 
-                    actionForm={actionForm}
-                    repeater__id={contentType._id}
-                    deleteCallback={deleteCallback}/>
-            )
+    const getRepeaterChildren = () => {
+        if(contentType.type === 'repeater') {
+            const repeaterChildren = getChildren(contentType._id);
+            return (
+                <div className='contentTypeRowBody'>
+                    { repeaterChildren } 
+                </div>
+            );
         }
-        repeaterBodyItems.push(
-            <button 
-                key={contentType._id+'-addContentTypeBtn'} 
-                className={`btnStyle1 ${ contentType.fields.length ? 'btnStyle1--margin-top' : '' }`}
-                onClick={() => actionForm('create', undefined, contentType._id)}>
-                Add Content Type
-            </button>);
+        else return null;
     }
 
     return (
@@ -78,41 +68,25 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, r
                 </div>
                 <div className="iconCol layout__flex">
                     {
-                        contentType.type === 'repeater' || repeater__id
+                        contentType.type === 'repeater'
                         ?
-                        <button className='btnStyleBlank' onClick={() => actionForm('update', contentType, repeater__id)}>
-                            <CoreIcon icon={faEdit}/>
+                        <button className='btnStyleBlank' onClick={() => actionForm('create', contentType._id)}>
+                            <CoreIcon icon={faPlus}/>
                         </button>
                         :
-                        <button className='btnStyleBlank' onClick={() => actionForm('update', contentType)}>
-                            <CoreIcon icon={faEdit}/>
-                        </button>
+                        null
                     }
-
-                    {
-                        repeater__id
-                        ?
-                        <button className='btnStyleBlank' onClick={() => deleteCallback(contentType._id, repeater__id)}>
-                            <CoreIcon icon={faTrashAlt} style={'warning'}/>
-                        </button>
-                        :
-                        <button className='btnStyleBlank' onClick={() => deleteCallback(contentType._id)}>
-                            <CoreIcon icon={faTrashAlt} style={'warning'}/>
-                        </button>
-                    }
-
-
-                    
+                    {/* Edit this row */}
+                    <button className='btnStyleBlank' onClick={() => actionForm('update', contentType._id)}>
+                        <CoreIcon icon={faEdit}/>
+                    </button>
+                    {/* Delete this row */}
+                    <button className='btnStyleBlank' onClick={() => deleteCallback(contentType._id)}>
+                        <CoreIcon icon={faTrashAlt} style={'warning'}/>
+                    </button>
                 </div>
             </div>
-            { 
-                repeaterBodyItems.length 
-                ? 
-                    <div className='contentTypeRowBody'>
-                        { repeaterBodyItems } 
-                    </div>
-                : null 
-            }
+            { getRepeaterChildren() }
         </>
     )
 
