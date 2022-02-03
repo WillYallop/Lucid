@@ -16,13 +16,15 @@ $accent_colours: (
 );
 
 $section_colours: (
-    _01_01: #020402, // Header / Nav Bg
-    _01_02: #101010, // _01_01 contrast
+    _01_01: #1B1B1B, // Header / Nav Bg
+    _01_02: #272727, // _01_01 contrast
 
-    _02_01: #2B2B2B, // Content con bg
-    _02_02: #343434, // _02_01 contrast
+    _02_01: #1B1B1B, // Content con bg
+    _02_02: #272727, // _02_01 contrast
 
-    _03_01: #191919, // background
+    _03_01: #161616, // background
+
+    _04_01: #2B2B2B, // input
 
     // Loading
     _05_01: #1D1D1D, // Loading dark

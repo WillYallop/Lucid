@@ -99,13 +99,13 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
         return (
             <div className="con">
                 <div className="blockCon loading">
-                    <UtilityLoading mode="light"/>
+                    <UtilityLoading mode="dark"/>
                 </div>
                 <div className="blockCon loading">
-                    <UtilityLoading mode="light"/>
+                    <UtilityLoading mode="dark"/>
                 </div>
                 <div className="blockCon loading">
-                    <UtilityLoading mode="light"/>
+                    <UtilityLoading mode="dark"/>
                 </div>
             </div>
         )

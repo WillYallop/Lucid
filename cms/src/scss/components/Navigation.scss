@@ -2,12 +2,13 @@
     z-index: 10;
     .navSideBarSlider {
         position: fixed;
-        left: 0;
-        top: $header_height;
-        bottom: 0;
+        left: rem(10);
+        top: calc($header_height + rem(10));
+        border-radius: rem(5);
+        bottom: rem(10);
         width: $navigation_width;
         background-color: map-get($map: $section_colours, $key: _01_01);
-        border-right: 1px solid map-get($map: $section_colours, $key: _01_02);
+        border: 1px solid map-get($map: $section_colours, $key: _01_02);
         padding: $padding;
         overflow-y: auto;
         -ms-overflow-style: none;  /* IE and Edge */
@@ -20,7 +21,7 @@
             left: -$navigation_width;
             transition: left $transition_time $transition_type;
             &.active {
-                left: 0;
+                left: rem(10);
             }
         }
         // Nav con

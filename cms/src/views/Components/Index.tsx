@@ -114,7 +114,7 @@ const Components: React.FC = () => {
     // -------------------------------------------------------
     //  Layout Expand - TODO - make persistent
     // -------------------------------------------------------
-    const [ componentLayoutExpanded, setComponentLayoutExpanded ] = useState(true);
+    const [ componentLayoutExpanded, setComponentLayoutExpanded ] = useState(false);
 
     // -------------------------------------------------------
     // 

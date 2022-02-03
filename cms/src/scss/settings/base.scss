@@ -19,3 +19,9 @@ $breakpoints: (
 
 // Border Style
 $border_style: rem(1) solid map-get($map: $section_colours, $key: _02_02);
+
+$padding_sizes: (
+    desktop: rem(20),
+    tablet: rem(10),
+    mobile: rem(5)
+);

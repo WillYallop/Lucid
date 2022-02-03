@@ -365,14 +365,11 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             </section>
             
             {/* Content Types */}
-            <section className="section blockCon">
-                <div className="header layout__flex layout__space-between layout__align-center">
-                    <p className="bold">Content Types</p>
-                    <button className='btnStyleBlank' onClick={() => openContentTypeActionModal('create', 'root')}><CoreIcon icon={faPlus}/></button>
+            <section>
+                <div className='layout__flex layout__flex-end layout--pad-top layout--pad-bot-half'>
+                    <button className='btnStyle2' onClick={() => openContentTypeActionModal('create', 'root')}><CoreIcon icon={faPlus}/><span>add content type</span></button>
                 </div>
-                <div className="body layout">
-                    { contentTypeRows }
-                </div>
+                { contentTypeRows }
             </section>
 
         </DefaultPage>

@@ -55,38 +55,40 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, d
     }
 
     return (
-        <>
-            <div className='contentTypeRow blockCon__row-style layout__flex layout__space-between layout__align-center'>
-                <div className="main layout__flex layout__align-center">
-                    <div className="icon layout__flex layout__justify-center layout__align-center">
-                        { ContentTypeIcon }
+        <>  
+            <div className="contentTypeRowOuter blockCon__row-style">
+                <div className='contentTypeRow layout__flex layout__space-between layout__align-center'>
+                    <div className="main layout__flex layout__align-center">
+                        <div className="icon layout__flex layout__justify-center layout__align-center">
+                            { ContentTypeIcon }
+                        </div>
+                        <div className="textarea">
+                            <p className='bold capitalise'>{ contentType.name.replaceAll('_', ' ') }</p>
+                            <p>{ contentType.type }</p>
+                        </div>
                     </div>
-                    <div className="textarea">
-                        <p className='bold capitalise'>{ contentType.name.replaceAll('_', ' ') }</p>
-                        <p>{ contentType.type }</p>
-                    </div>
-                </div>
-                <div className="iconCol layout__flex">
-                    {
-                        contentType.type === 'repeater'
-                        ?
-                        <button className='btnStyleBlank' onClick={() => actionForm('create', contentType._id)}>
-                            <CoreIcon icon={faPlus}/>
+                    <div className="iconCol layout__flex">
+                        {/* Edit this row */}
+                        <button className='btnStyleBlank' onClick={() => actionForm('update', contentType._id)}>
+                            <CoreIcon icon={faEdit} style={'transparent'}/>
                         </button>
-                        :
-                        null
-                    }
-                    {/* Edit this row */}
-                    <button className='btnStyleBlank' onClick={() => actionForm('update', contentType._id)}>
-                        <CoreIcon icon={faEdit}/>
-                    </button>
-                    {/* Delete this row */}
-                    <button className='btnStyleBlank' onClick={() => deleteCallback(contentType._id)}>
-                        <CoreIcon icon={faTrashAlt} style={'warning'}/>
-                    </button>
+                        {/* Delete this row */}
+                        <button className='btnStyleBlank' onClick={() => deleteCallback(contentType._id)}>
+                            <CoreIcon icon={faTrashAlt} style={'transparent--warning'}/>
+                        </button>
+                        {
+                            contentType.type === 'repeater'
+                            ?
+                            <button className='btnStyleBlank space' onClick={() => actionForm('create', contentType._id)}>
+                                <CoreIcon icon={faPlus}/>
+                            </button>
+                            :
+                            null
+                        }
+                    </div>
                 </div>
+                { getRepeaterChildren() }
             </div>
-            { getRepeaterChildren() }
         </>
     )
 
