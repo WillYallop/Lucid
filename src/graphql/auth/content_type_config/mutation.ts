@@ -51,16 +51,18 @@ const createContentType: GraphQLFieldConfig<any, any, any> = {
                         config: {
                             type: GraphQLNonNull(ContentTypeConfigArgs), 
                             description: 'Component content type config'
+                        },
+                        parent: {
+                            type: GraphQLString,
+                            description: 'Components content type parent'
                         }
                     })
                 })
             )
-        },
-        repeaterField: { type: GraphQLNonNull(GraphQLBoolean) },
-        repeaterID: { type: GraphQLID }
+        }
     },
     resolve: (_, args) => {
-        return createSingleContentTypeConfig(args.component_id, args.content_type, args.repeaterField, args.repeaterID);
+        return createSingleContentTypeConfig(args.component_id, args.content_type);
     }
 }
 
@@ -91,16 +93,18 @@ const updateContentType: GraphQLFieldConfig<any, any, any> = {
                         config: {
                             type: ContentTypeConfigArgs, 
                             description: 'Component content type config'
+                        },
+                        parent: {
+                            type: GraphQLString,
+                            description: 'Components content type parent'
                         }
                     })
                 })
             )
-        },
-        repeaterField: { type: GraphQLNonNull(GraphQLBoolean) },
-        repeaterID: { type: GraphQLID }
+        }
     },
     resolve: (_, args) => {
-        return updateSingleContentTypeConfig(args.component_id, args.content_type, args.repeaterField, args.repeaterID);
+        return updateSingleContentTypeConfig(args.component_id, args.content_type);
     }
 }
 

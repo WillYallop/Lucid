@@ -26,7 +26,6 @@ export const getSingleContentType = async (page_component_id: mod_contentTypesDa
                     response.data = 'Error: query failed, resave data to get working again!';
                 }
                 return response;
-                break;
             }
             case 'number': {
                 try {
@@ -37,20 +36,10 @@ export const getSingleContentType = async (page_component_id: mod_contentTypesDa
                     response.data = 0;
                 }
                 return response;
-                break;
             }
             case 'repeater': {
-                let data: Array<mod_pageModelComponentContentType> = [];
-                // For now repeaters can only go one level deep - may change in the future
-                if(content_type.fields) {
-                    for await(const contentType of  content_type.fields) {
-                        let subFiledRes = await getSingleContentType(page_component_id, contentType);
-                        if(subFiledRes) data.push(subFiledRes);
-                    }
-                }
-                response.data = JSON.stringify(data);
+                response.data = undefined
                 return response;
-                break;
             }
         }
     }
@@ -67,7 +56,7 @@ export const saveSingleContentType = async (page_component_id: mod_contentTypesD
                 await db.none('INSERT INTO component_content_type_text(page_component_id, config_id, value) VALUES(${page_component_id}, ${config_id}, ${value})', {
                     page_component_id: page_component_id,
                     config_id: content_type._id,
-                    value: content_type.config.default_str
+                    value: content_type.config.default
                 });
                 break;
             }
@@ -75,22 +64,11 @@ export const saveSingleContentType = async (page_component_id: mod_contentTypesD
                 await db.none('INSERT INTO component_content_type_number(page_component_id, config_id, value) VALUES(${page_component_id}, ${config_id}, ${value})', {
                     page_component_id: page_component_id,
                     config_id: content_type._id,
-                    value: content_type.config.default_num
+                    value: parseInt(content_type.config.default || '0')
                 });
                 break;
             }
-            case 'repeater': {
-                // loop over all fields and save rows for them!
-                // For now repeaters can only go one level deep - may change in the future
-                if(content_type.fields) {
-                    for await(const contentType of  content_type.fields) {
-                        await saveSingleContentType(page_component_id, contentType);
-                    }
-                }
-                break;
-            }
         }
-
     }
     catch(err) {
         throw err;

@@ -43,8 +43,10 @@ export const addPageComponent = async (page_id: mod_pageModel["_id"], component_
         let content_types = await contentTypeController.getAll(component_id);
         if(content_types != undefined) {
             for await(const contentType of content_types) {
-                // Save a new empty table row for the correct content type
-                await saveSingleContentType(savePageComponentRes._id, contentType);
+                if(contentType.type != 'repeater') {
+                    // Save a new empty table row for the correct content type
+                    await saveSingleContentType(savePageComponentRes._id, contentType);
+                }
             }
             return {
                 _id: savePageComponentRes._id,

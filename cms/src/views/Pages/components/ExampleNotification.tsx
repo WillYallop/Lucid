@@ -8,7 +8,7 @@ const ExampleNotification = () => {
     
     useEffect(() => {
         return () => {
-            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
+            setNotifications([]);
         }
     }, []);
 

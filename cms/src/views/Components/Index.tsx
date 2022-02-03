@@ -11,7 +11,7 @@ import DefaultPage from "../../components/Layout/DefaultPage";
 import ComponentList from "./Components/ComponentList";
 import SidebarMeta from "../../components/Layout/Sidebar/SidebarMeta";
 import SidebarButton from "../../components/Layout/Sidebar/SidebarBtn";
-import RegisterComponentForm from "../../components/Modal/RegisterComponentForm";
+import RegisterComponentForm from "./Components/RegisterComponentForm";
 import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
 // Functions
 import getApiUrl from "../../functions/getApiUrl";
