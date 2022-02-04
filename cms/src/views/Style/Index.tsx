@@ -5,15 +5,15 @@ import DefaultPage from "../../components/Layout/DefaultPage";
 const Style: React.FC = () => {
 
     const siderbar = (
-        <p>I am a sidebar</p>
+        <p>i am a sidebar</p>
     )
 
     return (
         <DefaultPage
-        title="Style"
-        body="Edit the style of your site!"
+        title="style"
+        body="edit the style of your site!"
         sidebar={siderbar}>
-            <p>Lorem ipsum dolar</p>
+            <p>lorem ipsum dolar</p>
         </DefaultPage>
     );
 }

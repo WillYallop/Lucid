@@ -64,7 +64,7 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, d
                             { ContentTypeIcon }
                         </div>
                         <div className="textarea">
-                            <p className='bold capitalise'>{ contentType.name.replaceAll('_', ' ') }</p>
+                            <p className='bold'>{ contentType.name.replaceAll('_', ' ') }</p>
                             <p>{ contentType.type }</p>
                         </div>
                     </div>

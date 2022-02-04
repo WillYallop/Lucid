@@ -7,9 +7,9 @@ const Dashboard: React.FC = () => {
 
     return (
         <DefaultPage
-        title="Dashboard"
-        body="Welcome to Lucid!">
-            <p>Lorem ipsum dolar</p>
+        title="dashboard"
+        body="welcome to Lucid!">
+            <p>lorem ipsum dolar</p>
         </DefaultPage>
     );
 }

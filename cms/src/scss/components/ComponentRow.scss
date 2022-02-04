@@ -49,7 +49,6 @@
             .title {
                 font-weight: bold;
                 margin-bottom: rem(5);
-                text-transform: capitalize;
                 font-size: rem(14);
                 color: map-get($map: $text_colours, $key: _01_01);
             }
@@ -100,7 +99,6 @@
                 .title {
                     font-weight: bold;
                     margin-bottom: rem(5);
-                    text-transform: capitalize;
                     font-size: rem(14);
                     line-height: rem(16);
                     color: map-get($map: $text_colours, $key: _01_01);

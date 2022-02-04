@@ -36,7 +36,7 @@ const ExtendedFormNumber: React.FC<ExtendedFormNumberProps> = ({ config }) => {
             
             {/* Default Text Value */}
             <div className={`switchLabelRow ${ showDefaultValueInp ? 'active' : '' }`}>
-                <label htmlFor="defaultNumInp">Default number</label>
+                <label htmlFor="defaultNumInp">default number</label>
                 <SwitchInput
                     state={showDefaultValueInp}
                     setState={setShowDefaultValueInp}/>
@@ -58,7 +58,7 @@ const ExtendedFormNumber: React.FC<ExtendedFormNumberProps> = ({ config }) => {
 
             {/* Minimum Value Length */}
             <div className={`switchLabelRow ${ showMinValueInp ? 'active' : '' }`}>
-                <label htmlFor="minumumLengthInp">Minimum value</label>
+                <label htmlFor="minumumLengthInp">minimum value</label>
                 <SwitchInput
                     state={showMinValueInp}
                     setState={setShowMinValueInp}/>
@@ -78,7 +78,7 @@ const ExtendedFormNumber: React.FC<ExtendedFormNumberProps> = ({ config }) => {
 
             {/* Maximum Value Length */}
             <div className={`switchLabelRow switchLabelRow--not-border ${ showMaxValueInp ? 'active' : '' }`}>
-                <label htmlFor="maximumLengthInp">Maximum value</label>
+                <label htmlFor="maximumLengthInp">maximum value</label>
                 <SwitchInput
                     state={showMaxValueInp}
                     setState={setShowMaxValueInp}/>

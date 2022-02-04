@@ -7,15 +7,15 @@ const Pages: React.FC = () => {
 
     // Sidebar Element
     const siderbar = (
-        <p>I am a sidebar</p>
+        <p>i am a sidebar</p>
     )
 
     return (
         <DefaultPage
-        title="Pages"
-        body="Create and manage all of your page!"
+        title="pages"
+        body="create and manage all of your page!"
         sidebar={siderbar}>
-            <p>Lorem ipsum dolar</p>
+            <p>lorem ipsum dolar</p>
             
 
             <ExampleNotification/>

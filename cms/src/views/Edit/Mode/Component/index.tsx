@@ -64,12 +64,12 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     const openContentTypeActionModal = (actionType: 'update' | 'create', contentType__id: mod_contentTypesConfigModel["_id"]) => {
         let title,body;
         if(actionType === 'create') {
-            title = 'Add a content type';
-            body = 'Create a configure a new content type!';
+            title = 'add a content type';
+            body = 'create a configure a new content type!';
         }
         else if (actionType === 'update') {
-            title = 'Update content type';
-            body = 'Update your content types configuration!';
+            title = 'update content type';
+            body = 'update your content types configuration!';
         }
         setModalState({
             ...modalState,
@@ -127,7 +127,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         })
         .then((result) => {
             const componentData = result.data.data.components.get_single || {};
-            if(!Object.keys(componentData).length) addNotification('There was an error getting your component!', 'error');
+            if(!Object.keys(componentData).length) addNotification('there was an error getting your component!', 'error');
             setComponent({
                 ...component,
                 ...componentData
@@ -137,7 +137,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         })
         .catch((err) => {
             console.log(err);
-            addNotification('There was an error getting your component!', 'error');
+            addNotification('there was an error getting your component!', 'error');
             setLoadingState(false);
         })
     }
@@ -177,7 +177,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 }
             });
             // Add success message
-            addNotification('You have successfully added a new content type!', 'success');
+            addNotification('you have successfully added a new content type!', 'success');
         }
         else {
             // Add new content type to component data
@@ -192,7 +192,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 });
             }
             // Add success message
-            addNotification(`You have successfully update the "${contentType.name}" content type!`, 'success');
+            addNotification(`you have successfully update the "${contentType.name}" content type!`, 'success');
         }
         // Close modal
         setModalState({
@@ -240,7 +240,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                         }
                     });
                     // Add success message
-                    addNotification(`You have successfully deleted the content type!`, 'success');
+                    addNotification(`you have successfully deleted the content type!`, 'success');
                 }
             }
             else {
@@ -249,7 +249,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             setLoadingState(false);
         })
         .catch((err) => {
-            addNotification(`There was an error while deleting the content type with ID "${contentType__id}"!`, 'error');
+            addNotification(`there was an error while deleting the content type with ID "${contentType__id}"!`, 'error');
             setLoadingState(false);
         })
     }
@@ -293,14 +293,14 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 allowSave
                 ?
                 <SidebarFormSubmit
-                    text="Save Changes"
+                    text="save changes"
                     formID={'compDataForm'}
                     icon={faSave}/>
                 :
                 null
             }
             <SidebarButton 
-                text="Deregister"
+                text="deregister"
                 action={() => { alert('deregister') }}
                 icon={faTrashAlt}
                 style={'warning'}/>
@@ -358,14 +358,14 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
     return (
         <DefaultPage
-        title={`Edit - ${componentName}`}
-        body="Manage your components fields and content types!"
+        title={`edit - ${componentName}`}
+        body="manage your components fields and content types!"
         sidebar={sidebar}>
 
             {/* Component Data */}
             <section className="section blockCon">
                 <div className="header layout__flex layout__space-between layout__align-center">
-                    <p className="bold">Component Data</p>
+                    <p className="bold">component data</p>
                 </div>
                 <div className="body layout">
                     <ComponentDataForm
@@ -380,7 +380,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                         }}
                         successCallback={() => {
                             // Add success message
-                            addNotification('You have successfully update the components data!', 'success');
+                            addNotification('you have successfully update the components data!', 'success');
                             updateAllowSave(false);
                             setComponentName(component.name);
                         }}/>

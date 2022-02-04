@@ -63,9 +63,9 @@ const Components: React.FC = () => {
         setModalState({
             ...modalState,
             state: true,
-            title: 'Register component',
+            title: 'register a component',
             size: 'standard',
-            body: 'Configure your newly registered component.',
+            body: 'configure your newly registered component.',
             element: <RegisterComponentForm/>
         });
     }
@@ -107,13 +107,13 @@ const Components: React.FC = () => {
                 }
             });
             if(res.totals.unregistered > 0) {
-                addNotification(`You have ${res.totals.unregistered} unregistered components!`, 'warning');
+                addNotification(`you have ${res.totals.unregistered} unregistered components!`, 'warning');
             }
             setLoadingState(false);
         })
         .catch((err) => {
             console.log(err);
-            addNotification('There was an error getting your unregistered components!', 'error');
+            addNotification('there was an error getting your unregistered components!', 'error');
         })
     }
 
@@ -151,23 +151,23 @@ const Components: React.FC = () => {
                 unregisteredComponents.totals.unregistered > 0
                 ?
                 <SidebarButton 
-                text="Register Component"
+                text="register a component"
                 action={openAddComponentModal}
                 icon={faPlus}/>
                 : null
             }
 
             <SidebarLayout
-            title="Layout">
+            title="layout">
                 <button 
                 className={`btnStyle1 typography__left ${ !componentLayoutExpanded ? 'btnStyle1--not-active' : '' }`} style={{marginBottom: '5px'}}
                 onClick={() => setComponentLayoutExpanded(true)}>
-                    Expanded
+                    expanded
                 </button>
                 <button 
                 className={`btnStyle1 typography__left ${ componentLayoutExpanded ? 'btnStyle1--not-active' : '' }`}
                 onClick={() => setComponentLayoutExpanded(false)}>
-                    Compact
+                    compact
                 </button>
             </SidebarLayout>
             <SidebarMeta rows={sidebarMetaData}/>
@@ -176,8 +176,8 @@ const Components: React.FC = () => {
 
     return (
         <DefaultPage
-        title="Components"
-        body="Manage all of your components!"
+        title="components"
+        body="manage all of your components!"
         sidebar={siderbar}>
             {/* Component List */}
             <ComponentList

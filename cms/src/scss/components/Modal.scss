@@ -43,7 +43,8 @@
         
                 .textarea {
                     display: flex;
-                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
                     min-height: rem(30);
                     h2 {
                         &.no-margin {

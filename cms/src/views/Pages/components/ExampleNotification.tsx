@@ -16,7 +16,7 @@ const ExampleNotification = () => {
         setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
             ...array,
             {
-                message: 'This is an example',
+                message: 'this is an example',
                 type: 'warning'
             }
         ]);

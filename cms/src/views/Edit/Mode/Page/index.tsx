@@ -9,7 +9,7 @@ const EditPage: React.FC<editPageProps> = ({ _id }) => {
 
     return (
         <div>
-            <h1>Edit Page</h1>
+            <h1>edit page</h1>
         </div>
     );
 }

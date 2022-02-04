@@ -37,7 +37,7 @@ const ExtendedFormText: React.FC<ExtendedFormTextProps> = ({ config }) => {
             
             {/* Default Text Value */}
             <div className={`switchLabelRow ${ showDefaultValueInp ? 'active' : '' }`}>
-                <label htmlFor="defaultValueInp">Default value</label>
+                <label htmlFor="defaultValueInp">default value</label>
                 <SwitchInput
                     state={showDefaultValueInp}
                     setState={setShowDefaultValueInp}/>
@@ -50,7 +50,7 @@ const ExtendedFormText: React.FC<ExtendedFormTextProps> = ({ config }) => {
                     id={"defaultValueInp"}
                     name={"default"}
                     required={true}
-                    errorMsg={`Make sure the field is not empty, and if the min and max length are set that it meets them.`}
+                    errorMsg={`make sure the field is not empty, and if the min and max length are set that it meets them.`}
                     updateValue={setDefaultValue}
                     min={ showMinValueInp && minLength ? minLength : undefined }
                     max={ showMaxValueInp && maxLength ? maxLength : undefined }/>
@@ -59,7 +59,7 @@ const ExtendedFormText: React.FC<ExtendedFormTextProps> = ({ config }) => {
 
             {/* Minimum Value Length */}
             <div className={`switchLabelRow ${ showMinValueInp ? 'active' : '' }`}>
-                <label htmlFor="minumumLengthInp">Minimum length</label>
+                <label htmlFor="minumumLengthInp">minimum length</label>
                 <SwitchInput
                     state={showMinValueInp}
                     setState={setShowMinValueInp}/>
@@ -72,14 +72,14 @@ const ExtendedFormText: React.FC<ExtendedFormTextProps> = ({ config }) => {
                     id={"minumumLengthInp"}
                     name={"min"}
                     required={true}
-                    errorMsg={`Make sure the field is not empty!`}
+                    errorMsg={`make sure the field is not empty!`}
                     updateValue={setMinLength}/>
                 : null
             }
 
             {/* Maximum Value Length */}
             <div className={`switchLabelRow switchLabelRow--not-border ${ showMaxValueInp ? 'active' : '' }`}>
-                <label htmlFor="maximumLengthInp">Maximum length</label>
+                <label htmlFor="maximumLengthInp">maximum length</label>
                 <SwitchInput
                     state={showMaxValueInp}
                     setState={setShowMaxValueInp}/>
@@ -92,7 +92,7 @@ const ExtendedFormText: React.FC<ExtendedFormTextProps> = ({ config }) => {
                     id={"maximumLengthInp"}
                     name={"max"}
                     required={true}
-                    errorMsg={`Make sure the field is not empty!`}
+                    errorMsg={`make sure the field is not empty!`}
                     updateValue={setMaxLength}/>
                 : null
             }

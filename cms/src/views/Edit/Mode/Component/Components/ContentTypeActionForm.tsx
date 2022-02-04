@@ -325,7 +325,7 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
 
                 {/* Extended form */}
                 <div className="headerRow">
-                    <p className="bold">Configuration</p>
+                    <p className="bold">configuration</p>
                 </div>
                 { extendedForm }
 

@@ -185,8 +185,8 @@ const RegisterComponentForm: React.FC = () => {
                     required={true}
                     errorMsg={"There was an unexpected error!"}
                     updateValue={setComponentPath}
-                    label="Component File"
-                    described_by="Select the component you wish to register. If it does not appear, it may have been registered before or it could be configured incorrectly!"/>
+                    label="component file"
+                    described_by="select the component you wish to register. If it does not appear, it may have been registered before or it could be configured incorrectly!"/>
 
                 {/* Component Name */}
                 <TextInput
@@ -194,9 +194,9 @@ const RegisterComponentForm: React.FC = () => {
                     id={"componentNameInp"}
                     name={"comp_name"}
                     required={true}
-                    errorMsg={`Name can only include the following characters: [A-Za-z -!,?._'"@] and be a minimum of 2 and maximum of 60 characters long!`}
+                    errorMsg={`name can only include the following characters: [A-Za-z -!,?._'"@] and be a minimum of 2 and maximum of 60 characters long!`}
                     updateValue={setNameValue}
-                    label="Name"
+                    label="name"
                     pattern={validatorConfig.comp_name.string}/>
 
                 {/* Component Description */}
@@ -205,9 +205,9 @@ const RegisterComponentForm: React.FC = () => {
                     id={"componentDescInp"}
                     name={"comp_desc"}
                     required={true}
-                    errorMsg={`Description can only include the following characters: [A-Za-z \-\!,?._'@] and be a minimum of 0 and maximum of 400 characters long!`}
+                    errorMsg={`description can only include the following characters: [A-Za-z \-\!,?._'@] and be a minimum of 0 and maximum of 400 characters long!`}
                     updateValue={setDescriptionValue}
-                    label="Description"
+                    label="description"
                     min={0}
                     max={400}/>
 
@@ -215,9 +215,9 @@ const RegisterComponentForm: React.FC = () => {
                     
                 <div className="footer">
                     <div className="textarea">
-                        <p>After registering a component you will be taken to the component editor page. Here you will be able to configure its fields and more.</p>
+                        <p>after registering a component you will be taken to the component editor page. Here you will be able to configure its fields and more.</p>
                     </div>
-                    <input className="btnStyle1 btnStyle1--small" type="submit" value="Register" />
+                    <input className="btnStyle1 btnStyle1--small" type="submit" value="register" />
                 </div>
             </form>
 

@@ -10,10 +10,10 @@ const Posts: React.FC = () => {
 
     return (
         <DefaultPage
-        title="Posts"
-        body="Create and manage all of your blog posts!"
+        title="posts"
+        body="create and manage all of your blog posts!"
         sidebar={siderbar}>
-            <p>Lorem ipsum dolar</p>
+            <p>lorem ipsum dolar</p>
         </DefaultPage>
     );
 }
