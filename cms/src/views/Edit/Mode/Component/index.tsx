@@ -16,6 +16,7 @@ import ContentTypeRow, { mod_contentTypesConfigModel } from '../../../../compone
 import CoreIcon from '../../../../components/Core/Icon';
 import ComponentContentTypeActionForm from './Components/ContentTypeActionForm';
 import ComponentDataForm from './Components/ComponentDataForm';
+import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
 // Functions
 import getApiUrl from "../../../../functions/getApiUrl";
 import formatLucidError from '../../../../functions/formatLucidError';
@@ -74,6 +75,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             ...modalState,
             state: true,
             title: title,
+            size: 'standard',
             body: body,
             element: <ComponentContentTypeActionForm
                 component__id={_id}
@@ -200,7 +202,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     }
 
     // Delete component
-    const deleteComponent = (contentType__id: mod_contentTypesConfigModel["_id"], repeater__id?: mod_contentTypesConfigModel["_id"]) => {
+    const deleteComponent = (contentType__id: mod_contentTypesConfigModel["_id"]) => {
         setLoadingState(true);
         const query = `mutation
             {
@@ -251,6 +253,19 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             setLoadingState(false);
         })
     }
+    const openConfirmDeleteModal = (contentType__id: mod_contentTypesConfigModel["_id"]) => {
+        setModalState({
+            ...modalState,
+            state: true,
+            title: 'confirmation',
+            body: '',
+            size: 'small',
+            element: <DeleteConfirmModal 
+                        message={'are you sure you would like to delete this content type?'}
+                        action={() => deleteComponent(contentType__id)}/>
+        });
+    }
+
 
     // -------------------------------------------------------
     // First load
@@ -317,7 +332,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                         key={x._id} 
                         contentType={x}
                         actionForm={openContentTypeActionModal}
-                        deleteCallback={deleteComponent}
+                        deleteCallback={openConfirmDeleteModal}
                         getChildren={getContentTypeChildren}/>);
                 }
             });
@@ -334,7 +349,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                     key={contentType._id} 
                     contentType={contentType}
                     actionForm={openContentTypeActionModal}
-                    deleteCallback={deleteComponent}
+                    deleteCallback={openConfirmDeleteModal}
                     getChildren={getContentTypeChildren}/>)
             }
         });

@@ -302,10 +302,10 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
                     id={"contentTypeTypeSel"}
                     name={"type"}
                     required={true}
-                    errorMsg={"There was an unexpected error!"}
+                    errorMsg={"there was an unexpected error!"}
                     updateValue={updateSelectedType}
-                    label="Type"
-                    described_by="The type controls what data can be passed to the component."/>
+                    label="type"
+                    described_by="the type controls what data can be passed to the component."/>
 
                 {/* Content Type = name */}
                 <TextInput 
@@ -313,12 +313,12 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
                     id={'contentTypeNameInp'}
                     name={'name'}
                     required={true}
-                    errorMsg={'Name must only include the following characters: [A-Z_a-z ] and be a minimum of 2 characters and a maximum of 100!'}
+                    errorMsg={'name must only include the following characters: [A-Z_a-z ] and be a minimum of 2 characters and a maximum of 100!'}
                     updateValue={setName}
-                    label={'Name'}
+                    label={'name'}
                     max={100}
                     min={2}
-                    described_by={'This is the unique content type name, you can use the bellow to reference its data in your liquid templates.'}
+                    described_by={'this is the unique content type name, you can use the bellow to reference its data in your liquid templates.'}
                     pattern={validatorConfig.cont_name.frontend_string}>
                     { name ? <div className='noteRow'> { formatName(name) } </div> : null }
                 </TextInput>
@@ -336,17 +336,17 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
                         {
                             actionType === 'create'
                             ? 
-                            <p>Once created you will be take back to the edit component page!</p>
+                            <p>once created you will be take back to the edit component page!</p>
                             : 
-                            <p>Once updated you will be take back to the edit component page!</p>
+                            <p>once updated you will be take back to the edit component page!</p>
                         }
                     </div>
                     {
                         actionType === 'create'
                         ? 
-                        <input className="btnStyle1 btnStyle1--small" type="submit" value="Create"/>
+                        <input className="btnStyle1 btnStyle1--small" type="submit" value="create"/>
                         : 
-                        <input className="btnStyle1 btnStyle1--small" type="submit" value="Update"/>
+                        <input className="btnStyle1 btnStyle1--small" type="submit" value="update"/>
                     }
                 </div>
             </form>

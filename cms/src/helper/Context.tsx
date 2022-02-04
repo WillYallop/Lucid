@@ -9,6 +9,7 @@ interface ModalContextInterface {
         title?: string
         body?: string
         state: boolean
+        size: 'small' | 'standard' | string
         element: React.ReactElement
     },
     setModalState?: any
@@ -18,6 +19,7 @@ export const defaultModalState = {
         title: '',
         body: '',
         state: false,
+        size: 'standard',
         element: (
             <p>Something doesnt seem to be working quite right!</p>
         )

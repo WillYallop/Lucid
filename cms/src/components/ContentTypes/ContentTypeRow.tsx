@@ -8,7 +8,7 @@ import { ReactElement } from 'react';
 interface contentTypeProps {
     contentType: mod_contentTypesConfigModel
     actionForm: (actionType: 'update' | 'create', contentType__id: mod_contentTypesConfigModel["_id"]) => void
-    deleteCallback: (contentType__id: mod_contentTypesConfigModel["_id"], repeater__id?: mod_contentTypesConfigModel["_id"]) => void
+    deleteCallback: (contentType__id: mod_contentTypesConfigModel["_id"]) => void
     getChildren: (contentType__id: mod_contentTypesConfigModel["_id"]) => Array<ReactElement>
 }
 export interface mod_contentTypesConfigModel {
@@ -24,6 +24,7 @@ export interface mod_contentTypesConfigModel {
 }
 
 const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, deleteCallback, getChildren }) => {
+
 
     let ContentTypeIcon;
     switch(contentType.type) {

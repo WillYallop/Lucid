@@ -30,8 +30,9 @@ const NavigationPostLinks: React.FC = () => {
         setModalState({
             ...modalState,
             state: true,
-            title: 'Register a new post type',
-            body: 'A post type is a category of page that can only use one template file.',
+            title: 'register a new post type',
+            size: 'standard',
+            body: 'a post type is a category of page that can only use one template file.',
             element: <NewPostTypeForm/>
         });
     }
@@ -109,7 +110,7 @@ const NavigationPostLinks: React.FC = () => {
     return (
         <div className="pagesSubSection">
             { postLinks }
-            <button className="btnStyle1" onClick={() => openModal()}>New post type</button>
+            <button className="btnStyle1" onClick={() => openModal()}>new post type</button>
 
         </div>
     )

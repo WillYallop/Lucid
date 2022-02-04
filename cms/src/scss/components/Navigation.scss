@@ -45,7 +45,6 @@
                 a {
                     opacity: 0.3;
                     color: map-get($map: $text_colours, $key: _01_01);
-                    text-transform: capitalize;
                     &:hover {
                         opacity: 1;
                     }

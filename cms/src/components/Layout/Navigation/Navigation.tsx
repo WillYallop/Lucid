@@ -21,14 +21,14 @@ const Navigation: React.FC<NavigationProps> = ({ showNav, toggleNav }) => {
                         {/* Dashboard */}
                         <li className="navItem">
                             <NavLink to='/' className={(navData) => navData.isActive ? "active" : "" }>
-                                <CoreIcon icon={faTachometerAlt}/> Dashboard
+                                <CoreIcon icon={faTachometerAlt}/> dashboard
                             </NavLink >
                         </li>
                         <span className="seperator"></span>
                         {/* Page section */}
                         <li className="navItem">
                             <NavLink to='/pages' className={(navData) => navData.isActive ? "active" : "" }>
-                                <CoreIcon icon={faFile}/> Pages
+                                <CoreIcon icon={faFile}/> pages
                             </NavLink >
                         </li>
                         <NavigationPostLinks/>
@@ -36,24 +36,24 @@ const Navigation: React.FC<NavigationProps> = ({ showNav, toggleNav }) => {
                         {/* Media */}
                         <li className="navItem">
                             <NavLink to='/media' className={(navData) => navData.isActive ? "active" : "" }>
-                                <CoreIcon icon={faPhotoVideo}/> Media
+                                <CoreIcon icon={faPhotoVideo}/> media
                             </NavLink >
                         </li>
                         <span className="seperator"></span>
                         {/* Alt Section */}
                         <li className="navItem">
                             <NavLink to='/components' className={(navData) => navData.isActive ? "active" : "" }>
-                                <CoreIcon icon={faThLarge}/> Components
+                                <CoreIcon icon={faThLarge}/> components
                             </NavLink >
                         </li>
                         <li className="navItem">
                             <NavLink to='/style' className={(navData) => navData.isActive ? "active" : "" }>
-                                <CoreIcon icon={faPalette}/> Style
+                                <CoreIcon icon={faPalette}/> style
                             </NavLink >
                         </li>
                         <li className="navItem">
                             <NavLink to='/settings' className={(navData) => navData.isActive ? "active" : "" }>
-                                <CoreIcon icon={faCog}/> Settings
+                                <CoreIcon icon={faCog}/> settings
                             </NavLink >
                         </li>
                         <span className="seperator"></span>

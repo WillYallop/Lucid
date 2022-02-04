@@ -64,6 +64,7 @@ const Components: React.FC = () => {
             ...modalState,
             state: true,
             title: 'Register component',
+            size: 'standard',
             body: 'Configure your newly registered component.',
             element: <RegisterComponentForm/>
         });

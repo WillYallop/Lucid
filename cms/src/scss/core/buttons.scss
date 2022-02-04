@@ -9,6 +9,7 @@ button {
 }
 
 .btnStyle1 {
+    @include animate;
     background-color: map-get($map: $accent_colours, $key: _01_01);
     &:hover {
         background-color: map-get($map: $accent_colours, $key: _01_02);
@@ -20,6 +21,8 @@ button {
     border: 1px solid map-get($map: $accent_colours, $key: _01_01);
     cursor: pointer;
     color: map-get($map: $text_colours, $key: _02_01);
+    font-size: rem(14);
+    line-height: rem(16);
     &--not-active {
         background-color: transparent;
         color: map-get($map: $text_colours, $key: _01_02);
@@ -41,8 +44,20 @@ button {
             color: white;
         }
     }
+    &--delete {
+        background-color: map-get($map: $accent_colours, $key: _02_01);
+        border: 1px solid map-get($map: $accent_colours, $key: _02_01);
+        color: white;
+        &:hover {
+            background-color: darken(map-get($map: $accent_colours, $key: _02_01), 10%);
+            border: 1px solid darken(map-get($map: $accent_colours, $key: _02_01), 10%);
+        }
+    }
     &--margin-top {
         margin-top: rem(10);
+    }
+    &--margin-left {
+        margin-left: rem(10);
     }
 }
 .btnStyle2 {
