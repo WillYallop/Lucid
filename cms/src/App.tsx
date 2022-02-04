@@ -2,6 +2,7 @@ import React, { ReactElement, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes,  Route } from "react-router-dom";
 // Context
 import { 
+  LoadingContext, defaultLoadingContext,
   ModalContext, defaultModalState,
   defaultPageNotificationState, PageNotificationContext 
 } from './helper/Context';
@@ -23,39 +24,42 @@ import MainLayout from './layouts/MainLayout';
 const App: React.FC = () => {
 
   // Modal State
+  const [ loadingState, setLoadingState ] = useState(defaultLoadingContext.loadingState);
   const [modalState, setModalState] = useState(defaultModalState.modalState);
   const [ notifications, setNotifications ] = useState(defaultPageNotificationState.notifications);
 
 
 
   return (
-    <ModalContext.Provider value={{ modalState, setModalState }}>
-      <PageNotificationContext.Provider value={{ notifications, setNotifications }}>
+    <LoadingContext.Provider value={{ loadingState, setLoadingState }}>
+      <ModalContext.Provider value={{ modalState, setModalState }}>
+        <PageNotificationContext.Provider value={{ notifications, setNotifications }}>
 
-        <Router>
-          <Routes>
+          <Router>
+            <Routes>
 
-            <Route>
-              <Route path="/signin" element={<SignIn/>}></Route>
-            </Route>
-
-              <Route element={<MainLayout/>}>
-                <Route path="/" element={<Dashboard />}></Route>
-                <Route path="/pages" element={<Pages />}></Route>
-                <Route path="/posts/:name" element={<Posts />}></Route>
-                <Route path="/media" element={<Media />}></Route>
-                <Route path="/components" element={<Components />}></Route>
-                <Route path="/style" element={<Style />}></Route>
-                <Route path="/settings" element={<Settings />}></Route>
-
-                <Route path="/edit/:mode/:_id" element={<Edit />}></Route>
+              <Route>
+                <Route path="/signin" element={<SignIn/>}></Route>
               </Route>
 
-          </Routes>
-        </Router>
-        
-      </PageNotificationContext.Provider>
-    </ModalContext.Provider>
+                <Route element={<MainLayout/>}>
+                  <Route path="/" element={<Dashboard />}></Route>
+                  <Route path="/pages" element={<Pages />}></Route>
+                  <Route path="/posts/:name" element={<Posts />}></Route>
+                  <Route path="/media" element={<Media />}></Route>
+                  <Route path="/components" element={<Components />}></Route>
+                  <Route path="/style" element={<Style />}></Route>
+                  <Route path="/settings" element={<Settings />}></Route>
+
+                  <Route path="/edit/:mode/:_id" element={<Edit />}></Route>
+                </Route>
+
+            </Routes>
+          </Router>
+          
+        </PageNotificationContext.Provider>
+      </ModalContext.Provider>
+    </LoadingContext.Provider>
   );
 }
 

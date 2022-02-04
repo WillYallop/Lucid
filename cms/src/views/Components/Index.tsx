@@ -4,7 +4,8 @@ import axios from 'axios';
 // Context
 import { 
     PageNotificationContext, PageNotificationContextNoticationsObj,
-    ModalContext
+    ModalContext,
+    LoadingContext
 } from "../../helper/Context";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
@@ -38,6 +39,8 @@ const defaultUnregisteredComponents: unregisteredComponentsData = {
 
 
 const Components: React.FC = () => {
+    const { loadingState, setLoadingState } = useContext(LoadingContext);
+
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
@@ -71,6 +74,7 @@ const Components: React.FC = () => {
     // -------------------------------------------------------
     const [ unregisteredComponents, setUnregisteredComponents ] = useState<unregisteredComponentsData>(defaultUnregisteredComponents);
     const getUnregisteredComponents = () => {
+        setLoadingState(true);
         axios({
             url: getApiUrl(),
             method: 'post',
@@ -104,6 +108,7 @@ const Components: React.FC = () => {
             if(res.totals.unregistered > 0) {
                 addNotification(`You have ${res.totals.unregistered} unregistered components!`, 'warning');
             }
+            setLoadingState(false);
         })
         .catch((err) => {
             console.log(err);

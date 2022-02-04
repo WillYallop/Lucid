@@ -1,9 +1,11 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
 // Context
+// Context
 import { 
     PageNotificationContext, PageNotificationContextNoticationsObj, 
-    ModalContext 
+    ModalContext,
+    LoadingContext
 } from "../../../../helper/Context";
 // Components
 import DefaultPage from '../../../../components/Layout/DefaultPage';
@@ -38,6 +40,7 @@ interface editComponentProps {
 
 const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     const [ componentName, setComponentName ] = useState('');
+    const { loadingState, setLoadingState } = useContext(LoadingContext);
 
     // -------------------------------------------------------
     // Notification 
@@ -87,6 +90,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
     const [ component, setComponent ] = useState({} as mod_componentModel);
     const getComponentData = () => {
+        setLoadingState(true);
         axios({
             url: getApiUrl(),
             method: 'post',
@@ -127,10 +131,12 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 ...componentData
             });
             setComponentName(componentData.name);
+            setLoadingState(false);
         })
         .catch((err) => {
             console.log(err);
             addNotification('There was an error getting your component!', 'error');
+            setLoadingState(false);
         })
     }
 
@@ -195,6 +201,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
     // Delete component
     const deleteComponent = (contentType__id: mod_contentTypesConfigModel["_id"], repeater__id?: mod_contentTypesConfigModel["_id"]) => {
+        setLoadingState(true);
         const query = `mutation
             {
                 content_type_config 
@@ -237,10 +244,11 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             else {
                 addNotification(formatLucidError(result.data.errors[0].message).message, 'error');
             }
+            setLoadingState(false);
         })
         .catch((err) => {
-            console.log(err);
             addNotification(`There was an error while deleting the content type with ID "${contentType__id}"!`, 'error');
+            setLoadingState(false);
         })
     }
 

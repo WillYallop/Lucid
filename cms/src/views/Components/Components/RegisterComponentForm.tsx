@@ -3,7 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 // Context
 import { 
-    ModalContext
+    ModalContext,
+    LoadingContext
 } from "../../../helper/Context";
 // Components
 import TextInput from "../../../components/Core/Inputs/TextInput";
@@ -17,6 +18,7 @@ import validatorConfig from '../../../functions/validatorConfig';
 
 const RegisterComponentForm: React.FC = () => {
     const navigate = useNavigate();
+    const { loadingState, setLoadingState } = useContext(LoadingContext);
 
     // -------------------------------------------------------
     // Modal 
@@ -46,6 +48,7 @@ const RegisterComponentForm: React.FC = () => {
 
     // Get unregistered components
     const getUnregisteredComponents = () => {
+        setLoadingState(true);
         // Save single component
         axios({
             url: getApiUrl(),
@@ -78,13 +81,14 @@ const RegisterComponentForm: React.FC = () => {
                     message: result.data.errors[0].message
                 });
             }
-
+            setLoadingState(false);
         })
         .catch(() => {
             setFormError({
                 error: true,
                 message: 'An unexpected error occured while registering the components!'
             });
+            setLoadingState(false);
         })
     }
     
@@ -95,6 +99,7 @@ const RegisterComponentForm: React.FC = () => {
         formValidationHandler({
             e: e,
             onValidatePass: (fields) => {
+                setLoadingState(true);
                 // Save single component
                 axios({
                     url: getApiUrl(),
@@ -132,12 +137,14 @@ const RegisterComponentForm: React.FC = () => {
                             message: result.data.errors[0].message
                         });
                     }
+                    setLoadingState(false);
                 })
                 .catch((err) => {
                     setFormError({
                         error: true,
                         message: 'An unexpected error occured when registering the component!'
                     });
+                    setLoadingState(false);
                 })
             },
             customValidation: [

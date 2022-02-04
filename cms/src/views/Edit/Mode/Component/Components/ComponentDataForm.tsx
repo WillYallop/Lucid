@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 // Components
 import TextInput from '../../../../../components/Core/Inputs/TextInput';
 import TextareaInput from '../../../../../components/Core/Inputs/TextareaInput';
@@ -8,6 +8,8 @@ import axios from 'axios';
 import formValidationHandler from "../../../../../functions/formValidationHandler";
 import getApiUrl from "../../../../../functions/getApiUrl";
 import validatorConfig from '../../../../../functions/validatorConfig';
+// Context
+import { LoadingContext } from "../../../../../helper/Context";
 
 interface ComponentDataFormProps {
     component__id: string
@@ -23,6 +25,8 @@ interface ComponentDataFormProps {
 }
 
 const ComponentDataForm: React.FC<ComponentDataFormProps> = ({ component__id, name, description, successCallback }) => {
+
+    const { loadingState, setLoadingState } = useContext(LoadingContext);
 
     // -------------------------------------------------------
     // Form Error
@@ -44,6 +48,7 @@ const ComponentDataForm: React.FC<ComponentDataFormProps> = ({ component__id, na
         formValidationHandler({
             e: e,
             onValidatePass: (fields) => {
+                setLoadingState(true);
                 const query = `mutation {
                     components {
                         update_single (
@@ -68,12 +73,14 @@ const ComponentDataForm: React.FC<ComponentDataFormProps> = ({ component__id, na
                 })
                 .then(() => {
                     successCallback();
+                    setLoadingState(false);
                 })
                 .catch(() => {
                     setFormError({
                         error: true,
                         message: 'An unexpected error occured while saving the component data!'
                     });
+                    setLoadingState(false);
                 })
 
             },

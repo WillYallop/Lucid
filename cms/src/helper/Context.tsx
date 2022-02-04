@@ -42,3 +42,17 @@ export const defaultPageNotificationState = {
     notifications: []
 }
 export const PageNotificationContext = createContext<Partial<PageNotificationContextInterface>>(defaultPageNotificationState);
+
+
+
+// ---------------------------------------
+// Loading State
+// ---------------------------------------
+interface LoadingContextInterface {
+    loadingState: boolean
+    setLoadingState?: any
+}
+export const defaultLoadingContext = {
+    loadingState: false
+};
+export const LoadingContext = createContext<Partial<LoadingContextInterface>>(defaultLoadingContext);

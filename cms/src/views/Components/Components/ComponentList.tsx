@@ -1,7 +1,7 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
 // Context
-import { PageNotificationContext, PageNotificationContextNoticationsObj } from "../../../helper/Context";
+import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext } from "../../../helper/Context";
 // Components
 import ComponentRow from "./ComponentRow";
 import UtilityLoading from '../../../components/Ultility/Loading';
@@ -22,6 +22,8 @@ interface componentListProps {
 }
 
 const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
+    const { loadingState, setLoadingState } = useContext(LoadingContext);
+
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
@@ -54,6 +56,7 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     }, []);
 
     const getAllComponents = (s: number, l: number) => {
+        setLoadingState(true);
         axios({
             url: getApiUrl(),
             method: 'post',
@@ -81,10 +84,11 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
                 ...components,
                 ...allComponents
             ]);
+            setLoadingState(false);
         })
         .catch((err) => {
-            console.log(err);
             addNotification('There was an error getting your components!', 'error');
+            setLoadingState(false);
         })
     }
 
