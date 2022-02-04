@@ -3,5 +3,5 @@
 interface cont_post_postDeclaration {
     _id: string
     name: string
-    template_name: string
+    template_path: string
 }

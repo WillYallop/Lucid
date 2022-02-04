@@ -10,11 +10,11 @@ Example posts.json file:
 [
     {
         "name": "blogs",
-        "template_name": "page.liquid"
+        "template_path": "page.liquid"
     },
     {
         "name": "jobs",
-        "template_name": "page.liquid"
+        "template_path": "page.liquid"
     }
 ]
 
@@ -29,11 +29,11 @@ import { __convertStringLowerUnderscore, __generateErrorString } from './helper/
 // ------------------------------------ ------------------------------------
 // add new post type entry
 // ------------------------------------ ------------------------------------
-const addPostType = async (name: cont_post_postDeclaration["name"], template_name: cont_post_postDeclaration["template_name"]): Promise<cont_post_postDeclaration> => {
+const addPostType = async (name: cont_post_postDeclaration["name"], template_path: cont_post_postDeclaration["template_path"]): Promise<cont_post_postDeclaration> => {
     try {
         const origin = 'postsController.addPostType';
         // Make sure entry doesnt already exist with same name
-        // Verify the template_name exists in the theme/templates directory will always end in a .liquid
+        // Verify the template_path exists in the theme/templates directory will always end in a .liquid
         await validate([
             {
                 method: 'post_name',
@@ -41,23 +41,23 @@ const addPostType = async (name: cont_post_postDeclaration["name"], template_nam
             },
             {
                 method: 'temp_verifyFileExists',
-                value: template_name
+                value: template_path
             },
             {
                 method: 'file_isLiquidExtension',
-                value: template_name
+                value: template_path
             }
         ]);
         // Get theme/config/posts.json file
         let postsData: Array<cont_post_postDeclaration> = await getSingleFileContent('/config/posts.json', 'json');
         // Check to see if the post wanting to be added exists:
-        let findPost = postsData.findIndex( x => x.name === __convertStringLowerUnderscore(name) && x.template_name === template_name);
+        let findPost = postsData.findIndex( x => x.name === __convertStringLowerUnderscore(name) && x.template_path === template_path);
         if(findPost === -1) {
             // If there is no entry add one
             let postObj: cont_post_postDeclaration = {
                 _id: uuidv1(),
                 name: __convertStringLowerUnderscore(name),
-                template_name: template_name
+                template_path: template_path
             };
             postsData.push(postObj);
             await writeSingleFile('/config/posts.json', 'json', postsData);
@@ -67,7 +67,7 @@ const addPostType = async (name: cont_post_postDeclaration["name"], template_nam
             throw __generateErrorString({
                 code: 403,
                 origin: origin,
-                message: `Post with the name: "${__convertStringLowerUnderscore(name)}" and template_name: "${template_name}" already exist!`
+                message: `Post with the name: "${__convertStringLowerUnderscore(name)}" and template_path: "${template_path}" already exist!`
             });
         }
     }

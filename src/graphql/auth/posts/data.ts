@@ -35,9 +35,9 @@ export const deleteSingle = async (_id: cont_post_postDeclaration["_id"]) => {
 }
 
 // Save single post
-export const saveSingle = async (name: cont_post_postDeclaration["name"], template_name: cont_post_postDeclaration["template_name"]) => {
+export const saveSingle = async (name: cont_post_postDeclaration["name"], template_path: cont_post_postDeclaration["template_path"]) => {
     try {
-        let post_type = await postsController.addPostType(name, template_name);
+        let post_type = await postsController.addPostType(name, template_path);
         return post_type;
     }
     catch(err) {
