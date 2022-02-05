@@ -3,6 +3,9 @@ import React, { useContext, useState } from "react";
 import DefaultPage from "../../components/Layout/DefaultPage";
 import PageList from "../../components/Pages/PageList";
 import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
+import SidebarButton from "../../components/Layout/Sidebar/SidebarBtn";
+// Icons
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Pages: React.FC = () => {
 
@@ -14,7 +17,10 @@ const Pages: React.FC = () => {
     // Sidebar Element
     const siderbar = (
         <>
- 
+            <SidebarButton 
+                text="new page"
+                action={() => { console.log('add [age') }}
+                icon={faPlus}/>
         </>
     );
 

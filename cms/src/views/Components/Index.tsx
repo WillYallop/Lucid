@@ -151,9 +151,9 @@ const Components: React.FC = () => {
                 unregisteredComponents.totals.unregistered > 0
                 ?
                 <SidebarButton 
-                text="register a component"
-                action={openAddComponentModal}
-                icon={faPlus}/>
+                    text="register a component"
+                    action={openAddComponentModal}
+                    icon={faPlus}/>
                 : null
             }
 
