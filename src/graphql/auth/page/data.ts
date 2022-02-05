@@ -8,6 +8,7 @@ import { getSingleContentType } from '../content_type/data';
 import { componentController, contentTypeController } from '../../../index';
 
 
+
 // Get single page
 export const getSingle = async (_id: mod_pageModel["_id"]) => {
     try {
@@ -102,26 +103,35 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
             author: data.author,
             is_homepage: data.is_homepage,
             date_created: moment().format('YYYY-MM-DD HH:mm:ss'),
-            last_edited: moment().format('YYYY-MM-DD HH:mm:ss')
+            last_edited: moment().format('YYYY-MM-DD HH:mm:ss'),
+            post_name: undefined,
+            parent_id: undefined,
+            post_type_id: undefined
         };
 
         if(data.type === 'post' && data.post_name) newPageObj['post_name'] = data.post_name;
         if(data.has_parent && data.parent_id) newPageObj['parent_id'] = data.parent_id;
         if(data.post_type_id != undefined) newPageObj.post_type_id = data.post_type_id;
 
+        let slugExists = await checkSlugExists();
+        if(!slugExists) {
         // Save page row
-        let getPageRes = await db.one('INSERT INTO pages(template, slug, name, type, post_name, has_parent, parent_id, date_created, last_edited, author, is_homepage, post_type_id) VALUES(${template}, ${slug}, ${name}, ${type}, ${post_name}, ${has_parent}, ${parent_id}, ${date_created}, ${last_edited}, ${author}, ${is_homepage}, ${post_type_id}) RETURNING *', newPageObj);
-        // Save SEO row
-        getPageRes.seo = await saveSingleSEO({
-            page_id: getPageRes._id,
-            title: data.name,
-            description: "",
-            og_title: data.name,
-            og_description: "",
-            og_image: ""
-        })
+            let getPageRes = await db.one('INSERT INTO pages(template, slug, name, type, post_name, has_parent, parent_id, date_created, last_edited, author, is_homepage, post_type_id) VALUES(${template}, ${slug}, ${name}, ${type}, ${post_name}, ${has_parent}, ${parent_id}, ${date_created}, ${last_edited}, ${author}, ${is_homepage}, ${post_type_id}) RETURNING *', newPageObj);
+            // Save SEO row
+            getPageRes.seo = await saveSingleSEO({
+                page_id: getPageRes._id,
+                title: data.name,
+                description: "",
+                og_title: data.name,
+                og_description: "",
+                og_image: ""
+            });
+            return getPageRes;
+        }
+        else {
+            throw '';
+        }
 
-        return getPageRes;
     }
     catch(err) {
         throw err;
@@ -185,9 +195,6 @@ export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
 
 
 
-
-
-
 // Handles resetting certain data for the page
 export const pageResetHandler = async (action: 'is_homepage' | 'post_type', data: any) => {
     try {
@@ -213,17 +220,46 @@ export const pageResetHandler = async (action: 'is_homepage' | 'post_type', data
 // check if a page exists with the same slug and parent combo
 export const checkSlugExists = async () => {
     try {
-
+        return false
     }
     catch(err) {
         throw err;
     }
 }
 
-// page serach via partial name, return array and page slug
-export const pageSearch = async () => {
-    try {
 
+interface pageSearchRes {
+    name: mod_pageModel["name"]
+    slug: mod_pageModel["slug"]
+    has_parent: mod_pageModel["has_parent"]
+    parent_id: mod_pageModel["parent_id"]
+}
+// page serach via partial name, return array and page slug
+export const pageSearch = async (query: string) => {
+    try {
+        let matches: Array<pageSearchRes> = await db.manyOrNone('SELECT name, slug, has_parent, parent_id FROM pages WHERE type=${type} ORDER BY SIMILARITY(name, ${query}) DESC LIMIT 5', {
+            query: query,
+            type: 'page'
+        });
+        const pageFullSlug = async (_id: mod_pageModel["_id"], slug: mod_pageModel["slug"]) => {
+            try {
+                // Query for parent slug
+                let res = await db.one('SELECT slug, has_parent, parent_id FROM pages WHERE _id=$1', _id);
+                slug = res.slug + slug;
+                if(res.has_parent) slug = await pageFullSlug(res.parent_id, slug);
+                return slug;
+            }
+            catch(err) {
+                throw err;
+            }
+        }
+        for await (const match of matches) {
+            // For each match, if its has a parent recursivly query for the parent slug and prepend to child slug
+            if(match.has_parent) {
+                match.slug = await pageFullSlug(match.parent_id, match.slug);
+            }
+        }
+        return matches;
     }
     catch(err) {
         throw err;

@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean } from 'graphql';
 // @ts-ignore: Unreachable code error
-import { Page, MultiplePages } from './type';
-import { getSingle, getMultiple } from './data';
+import { Page, MultiplePages, PageSearchRes } from './type';
+import { getSingle, getMultiple, pageSearch } from './data';
 
 // Get single pages
 const getSinglePage: GraphQLFieldConfig<any, any, any> = {
@@ -30,12 +30,26 @@ const getMultiplePages: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
+// Search page by name
+const serachPageName: GraphQLFieldConfig<any, any, any> = {
+    type: GraphQLList(PageSearchRes),
+    description: 'Get a list of match pages',
+    args: {
+        query: { type: GraphQLNonNull(GraphQLString) }
+    },
+    resolve: (_, args) => {
+        return pageSearch(args.name);
+    }
+}
+
 
 export const PageQuery = new GraphQLObjectType({
     name: 'PageQuery',
     description: 'The page base query',
     fields: {
         get_single: getSinglePage,
-        get_multiple: getMultiplePages
+        get_multiple: getMultiplePages,
+
+        search_name: serachPageName
     }
 })

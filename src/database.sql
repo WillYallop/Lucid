@@ -1,6 +1,7 @@
 CREATE DATABASE lucid_cms;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION pg_trgm;
 
 CREATE TABLE pages (
     _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
@@ -14,8 +15,7 @@ CREATE TABLE pages (
     date_created timestamp NOT NULL,
     last_edited timestamp NOT NULL,
     author VARCHAR(255) NOT NULL, 
-    is_homepage boolean NOT NULL DEFAULT false
-
+    is_homepage boolean NOT NULL DEFAULT false,
     post_type_id uuid
 );
 

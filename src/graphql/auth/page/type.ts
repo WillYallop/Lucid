@@ -206,3 +206,19 @@ export const MultiplePages = new GraphQLObjectType({
         }
     })
 })
+
+// Page Serach type
+export const PageSearchRes = new GraphQLObjectType({
+    name: 'PageSearchResModal',
+    description: 'The page search res model',
+    fields: () => ({
+        slug: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The pages slug'
+        },
+        name: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The name of the page'
+        }
+    })
+})
