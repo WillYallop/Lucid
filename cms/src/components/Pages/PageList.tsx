@@ -1,27 +1,34 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
 // Context
-import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext } from "../../../helper/Context";
+import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext } from "../../helper/Context";
 // Components
-import ComponentRow from "./ComponentRow";
-import UtilityLoading from '../../../components/Ultility/Loading';
+import PageRow from "./PageRow";
+import UtilityLoading from '../../components/Ultility/Loading';
 // Functions
-import getApiUrl from "../../../functions/getApiUrl";
+import getApiUrl from "../../functions/getApiUrl";
 
-interface componentData {
-    date_added: string
-    description: string
-    name: string
-    preview_url: string
-    file_path: string
+export interface pageData {
     _id: string
+    template: string
+    slug: string
+    name: string
+    type: 'page' | 'post'
+    post_name: string
+    has_parent: boolean
+    parent_id: string
+    date_created: string
+    last_edited: string
+    author: string
+    is_homepage: boolean
 }
 
-interface componentListProps {
-    expanded: boolean
+interface PageListProps {
+    type: 'page' | 'post'
+    post_name?: string
 }
 
-const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
+const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
     const { loadingState, setLoadingState } = useContext(LoadingContext);
 
     // -------------------------------------------------------
@@ -42,61 +49,71 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     // Components
     // -------------------------------------------------------
     let [ skip, limit ] = [ 0 , 10 ];
-    const [ components, setComponents ] = useState<Array<componentData>>([]);
+    const [ pages, setPages ] = useState<Array<pageData>>([]);
     const [ showLoadMore, setShowLoadMore ] = useState(true);
 
     // First load
     useEffect(() => {
-        getAllComponents(skip, limit);
+        getAllPages(skip, limit);
         return () => {
-            setComponents([]);
+            setPages([]);
             setShowLoadMore(true);
             setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
         }
     }, []);
 
-    const getAllComponents = (s: number, l: number) => {
+    const getAllPages = (s: number, l: number) => {
         setLoadingState(true);
         axios({
             url: getApiUrl(),
             method: 'post',
             data: {
-              query: `
-                query {
-                    components {
-                        get_multiple ( skip: ${s}, limit: ${l} )
+              query: `query {
+                    page {
+                        get_multiple
+                        (
+                            type: "${type}"
+                            ${ post_name ? 'post_name: "'+ post_name +'"' : '' }
+                            skip: ${s}, limit: ${l}
+                        )
                         {
                             _id
+                            template
+                            slug
                             name
-                            description
-                            preview_url
-                            date_added
-                            file_path
+                            type
+                            post_name
+                            has_parent
+                            parent_id
+                            date_created
+                            last_edited
+                            author
+                            is_homepage
                         }
                     }
                 }`
             }
         })
         .then((result) => {
-            const allComponents: Array<componentData> = result.data.data.components.get_multiple || [];
-            if(allComponents.length < limit) setShowLoadMore(false);
-            setComponents((components) => [
-                ...components,
-                ...allComponents
+            const allPages: Array<pageData> = result.data.data.page.get_multiple || [];
+            if(allPages.length < limit) setShowLoadMore(false);
+            setPages((pages) => [
+                ...pages,
+                ...allPages
             ]);
             setLoadingState(false);
         })
         .catch((err) => {
-            addNotification('There was an error getting your components!', 'error');
+            addNotification('There was an error getting your pages!', 'error');
             setLoadingState(false);
         })
     }
 
     // Create results array
-    const componentRows: Array<ReactElement> = [];
-    if(components.length) {
-        components.forEach((component) => {
-            componentRows.push(<ComponentRow key={componentRows.length} component={component} expanded={expanded}/>)
+    const pageRows: Array<ReactElement> = [];
+    if(pages.length) {
+        pages.forEach((page) => {
+            pageRows.push(<PageRow key={pageRows.length} page={page}/>)
         });
     } 
     else {
@@ -117,16 +134,16 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
 
     // Load more
     const loadmore = () => {
-        skip += components.length;
-        getAllComponents(skip, limit);
+        skip += pages.length;
+        getAllPages(skip, limit);
     }
 
     return (
         <div className="con">
-            { componentRows }
+            { pageRows }
             { showLoadMore ? <button className='btnStyle1' onClick={loadmore}>load more</button> : null }
         </div>
     )
 }
 
-export default ComponentList;
+export default PageList;

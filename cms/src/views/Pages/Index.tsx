@@ -1,25 +1,30 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
-import ExampleNotification from "./Components/ExampleNotification";
+import PageList from "../../components/Pages/PageList";
+import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
 
 const Pages: React.FC = () => {
 
+    // -------------------------------------------------------
+    // Pages
+    // -------------------------------------------------------
+
+
     // Sidebar Element
     const siderbar = (
-        <p>i am a sidebar</p>
-    )
+        <>
+ 
+        </>
+    );
 
     return (
         <DefaultPage
         title="pages"
-        body="create and manage all of your page!"
+        body="create and manage all of your pages!"
         sidebar={siderbar}>
-            <p>lorem ipsum dolar</p>
-            
-
-            <ExampleNotification/>
-
+            <PageList
+                type={'page'}/>
         </DefaultPage>
     );
 }

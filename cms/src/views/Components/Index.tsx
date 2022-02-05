@@ -160,14 +160,15 @@ const Components: React.FC = () => {
             <SidebarLayout
             title="layout">
                 <button 
-                className={`btnStyle1 typography__left ${ !componentLayoutExpanded ? 'btnStyle1--not-active' : '' }`} style={{marginBottom: '5px'}}
-                onClick={() => setComponentLayoutExpanded(true)}>
-                    expanded
+                    className={`btnStyle1 typography__left ${ componentLayoutExpanded ? 'btnStyle1--not-active' : '' }`}
+                    style={{marginBottom: '5px'}}
+                    onClick={() => setComponentLayoutExpanded(false)}>
+                    compact
                 </button>
                 <button 
-                className={`btnStyle1 typography__left ${ componentLayoutExpanded ? 'btnStyle1--not-active' : '' }`}
-                onClick={() => setComponentLayoutExpanded(false)}>
-                    compact
+                    className={`btnStyle1 typography__left ${ !componentLayoutExpanded ? 'btnStyle1--not-active' : '' }`}
+                    onClick={() => setComponentLayoutExpanded(true)}>
+                    expanded
                 </button>
             </SidebarLayout>
             <SidebarMeta rows={sidebarMetaData}/>
