@@ -94,6 +94,9 @@
         margin-bottom: rem(10);
         padding-bottom: rem(10);
         border-bottom: $border_style;
+        &.--hide-seperator {
+            display: none
+        }
     }
 }
 
@@ -172,13 +175,15 @@ input[type="number"] {
 }
 
 .errorCon {
-    border-top: $border_style;
-    padding-top: 10px;
+    padding: rem(5);
+    border-radius: rem(5);
+    margin-top: rem(10);
+    background-color: map-get($map: $accent_colours, $key: _02_01);
     &__margin-top {
         margin-top: rem(10);
     }
     p {
-        color: map-get($map: $accent_colours, $key: _02_01);
+        color: map-get($map: $text_colours, $key: _01_01);
         font-size: rem(14);
         line-height: rem(16);
     }

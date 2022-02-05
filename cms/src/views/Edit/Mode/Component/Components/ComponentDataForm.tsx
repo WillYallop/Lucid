@@ -82,7 +82,6 @@ const ComponentDataForm: React.FC<ComponentDataFormProps> = ({ component__id, na
                     });
                     setLoadingState(false);
                 })
-
             },
             customValidation: [
                 {

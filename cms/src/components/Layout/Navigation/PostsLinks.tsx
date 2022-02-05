@@ -5,7 +5,7 @@ import axios from 'axios';
 // Components
 import CoreIcon from "../../Core/Icon";
 import UtilityLoading from "../../Ultility/Loading";
-import NewPostTypeForm from "../../Modal/NewPostTypeForm";
+import NewPostTypeForm from "../../../views/Edit/Mode/Page/Components/NewPostTypeForm";
 // Icons
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 // Context
@@ -17,7 +17,7 @@ import getApiUrl from "../../../functions/getApiUrl";
 interface cont_post_postDeclaration {
     _id: string
     name: string
-    template_name: string
+    template_path: string
 }
 
 const NavigationPostLinks: React.FC = () => {
@@ -33,7 +33,7 @@ const NavigationPostLinks: React.FC = () => {
             title: 'register a new post type',
             size: 'standard',
             body: 'a post type is a category of page that can only use one template file.',
-            element: <NewPostTypeForm/>
+            element: <NewPostTypeForm callback={addPostCallback}/>
         });
     }
 
@@ -64,7 +64,7 @@ const NavigationPostLinks: React.FC = () => {
                         {
                             _id
                             name
-                            template_name
+                            template_path
                         }
                     }
                 }`
@@ -80,6 +80,14 @@ const NavigationPostLinks: React.FC = () => {
         .catch((err) => {
             console.log(err);
         })
+    }
+    const addPostCallback = () => {
+        setPosts([]);
+        getAllPosts();
+        setModalState({
+            ...modalState,
+            state: false
+        });
     }
 
     let postLinks: Array<ReactElement> = [];
