@@ -51,7 +51,7 @@ const addPostType = async (name: cont_post_postDeclaration["name"], template_pat
         // Get theme/config/posts.json file
         let postsData: Array<cont_post_postDeclaration> = await getSingleFileContent('/config/posts.json', 'json');
         // Check to see if the post wanting to be added exists:
-        let findPost = postsData.findIndex( x => x.name === __convertStringLowerUnderscore(name) && x.template_path === template_path);
+        let findPost = postsData.findIndex( x => x.name === __convertStringLowerUnderscore(name));
         if(findPost === -1) {
             // If there is no entry add one
             let postObj: cont_post_postDeclaration = {
@@ -67,7 +67,7 @@ const addPostType = async (name: cont_post_postDeclaration["name"], template_pat
             throw __generateErrorString({
                 code: 403,
                 origin: origin,
-                message: `Post with the name: "${__convertStringLowerUnderscore(name)}" and template_path: "${template_path}" already exist!`
+                message: `Post with the name: "${__convertStringLowerUnderscore(name)}" already exists!`
             });
         }
     }
