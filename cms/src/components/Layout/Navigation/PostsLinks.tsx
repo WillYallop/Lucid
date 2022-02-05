@@ -97,8 +97,8 @@ const NavigationPostLinks: React.FC = () => {
             let ele = (
                 <li className="navItem" key={post._id}>
                     <NavLink to={path} className={(navData) => navData.isActive ? "active" : "" }>
-                        <CoreIcon icon={faFile}/> { post.name }
-                    </NavLink >
+                        <CoreIcon icon={faFile}/> { post.name.replace('_', ' ') }
+                    </NavLink>
                 </li>
             );
             postLinks.push(ele);

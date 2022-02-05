@@ -127,6 +127,11 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
         })
     }
 
+    // Format name value
+    const formatName = (value: string) => {
+        return value.replaceAll(' ', '_').toLowerCase();
+    }
+
     return (
         <div className="body">
             <form onSubmit={validateForm} noValidate={true}>
@@ -149,20 +154,22 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
                     id={'postNameInp'}
                     name={'name'}
                     required={true}
-                    errorMsg={'name must only include the following characters: [A-Z_a-z] and be a minimum of 2 characters and a maximum of 100!'}
+                    errorMsg={'name must only include the following characters: [A-Z_a-z ] and be a minimum of 2 characters and a maximum of 100!'}
                     updateValue={setPostName}
                     label={'name'}
                     max={100}
                     min={2}
-                    described_by={'a unique post type name. this may only contain a-z characters and underscores, no spaces!'}
+                    described_by={'a unique post type name. bellow is how the name will be formatted.'}
                     pattern={validatorConfig.post_name.string}
-                    style={'--hide-seperator'}/>
+                    style={'--hide-seperator'}>
+                    { postName ? <div className='noteRow'> { formatName(postName) } </div> : null }
+                </TextInput>
 
                 { formError.error ? errorConEle : null }
 
                 <div className="footer">
                     <div className="textarea">
-                        <p>you will be taken to the new post page once it has been made</p>
+                        <p>onces this has been created, you will not be able to edit its name!</p>
                     </div>
                     <input className="btnStyle1 btnStyle1--small" type="submit" value="add post type"/>
                 </div>
