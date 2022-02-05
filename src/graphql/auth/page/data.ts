@@ -102,16 +102,15 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
             author: data.author,
             is_homepage: data.is_homepage,
             date_created: moment().format('YYYY-MM-DD HH:mm:ss'),
-            last_edited: moment().format('YYYY-MM-DD HH:mm:ss'),
-            post_name: undefined,
-            parent_id: undefined
+            last_edited: moment().format('YYYY-MM-DD HH:mm:ss')
         };
 
         if(data.type === 'post' && data.post_name) newPageObj['post_name'] = data.post_name;
         if(data.has_parent && data.parent_id) newPageObj['parent_id'] = data.parent_id;
+        if(data.post_type_id != undefined) newPageObj.post_type_id = data.post_type_id;
 
         // Save page row
-        let getPageRes = await db.one('INSERT INTO pages(template, slug, name, type, post_name, has_parent, parent_id, date_created, last_edited, author, is_homepage) VALUES(${template}, ${slug}, ${name}, ${type}, ${post_name}, ${has_parent}, ${parent_id}, ${date_created}, ${last_edited}, ${author}, ${is_homepage}) RETURNING *', newPageObj);
+        let getPageRes = await db.one('INSERT INTO pages(template, slug, name, type, post_name, has_parent, parent_id, date_created, last_edited, author, is_homepage, post_type_id) VALUES(${template}, ${slug}, ${name}, ${type}, ${post_name}, ${has_parent}, ${parent_id}, ${date_created}, ${last_edited}, ${author}, ${is_homepage}, ${post_type_id}) RETURNING *', newPageObj);
         // Save SEO row
         getPageRes.seo = await saveSingleSEO({
             page_id: getPageRes._id,
@@ -149,6 +148,7 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
         if(data.has_parent != undefined) updatePageObj.has_parent = data.has_parent;
         if(data.parent_id != undefined) updatePageObj.parent_id = data.parent_id;
         if(data.is_homepage != undefined) updatePageObj.is_homepage = data.is_homepage;
+        if(data.post_type_id != undefined) updatePageObj.post_type_id = data.post_type_id;
 
         // Update
         await db.none(`UPDATE pages SET ${__updateSetQueryGen(updatePageObj)} WHERE _id='${_id}'`, updatePageObj);
@@ -171,6 +171,59 @@ export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
         return {
             deleted: true
         }
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// Handles resetting certain data for the page
+export const pageResetHandler = async (action: 'is_homepage' | 'post_type', data: any) => {
+    try {
+        switch(action) {
+            case 'is_homepage': {
+                // find the current page that has is_homepage = true and set to false
+
+                break;
+            }
+            case 'post_type': {
+                // unset all pages post_type_id that match data
+
+                break;
+            }
+        }
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+
+// check if a page exists with the same slug and parent combo
+export const checkSlugExists = async () => {
+    try {
+
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// page serach via partial name, return array and page slug
+export const pageSearch = async () => {
+    try {
+
     }
     catch(err) {
         throw err;
