@@ -24,6 +24,7 @@ interface mod_pageModel {
     last_edited: string
     author: string
     is_homepage: boolean
+    post_type_id: cont_post_postDeclaration["_id"]
 }
 interface mod_pageModelComponent {
     _id: mod_componentModel["_id"]

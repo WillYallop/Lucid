@@ -63,6 +63,10 @@ export const Page = new GraphQLObjectType({
         components: {
             type: GraphQLList(PageComponent),
             description: 'List of component data'
+        },
+        post_type_id: {
+            type: GraphQLID,
+            description: 'Assigned if the page has a post type'
         }
     })
 });
@@ -195,6 +199,10 @@ export const MultiplePages = new GraphQLObjectType({
         is_homepage: {
             type: GraphQLNonNull(GraphQLBoolean),
             description: 'Whether this is the homepage'
+        },
+        post_type_id: {
+            type: GraphQLID,
+            description: 'Assigned if the page has a post type'
         }
     })
 })

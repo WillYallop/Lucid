@@ -5,7 +5,7 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE pages (
     _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     template VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) NOT NULL UNIQUE,
+    slug VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
     type VARCHAR(4) NOT NULL,
     post_name VARCHAR(255),
@@ -15,6 +15,8 @@ CREATE TABLE pages (
     last_edited timestamp NOT NULL,
     author VARCHAR(255) NOT NULL, 
     is_homepage boolean NOT NULL DEFAULT false
+
+    post_type_id uuid
 );
 
 CREATE TABLE page_seo (
