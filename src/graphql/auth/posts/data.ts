@@ -1,4 +1,5 @@
 import { postsController } from '../../../index';
+import db from '../../../db';
 
 // Get single post
 export const getSingle = async (_id: cont_post_postDeclaration["_id"]) => {
@@ -35,9 +36,13 @@ export const deleteSingle = async (_id: cont_post_postDeclaration["_id"]) => {
 }
 
 // Save single post
-export const saveSingle = async (name: cont_post_postDeclaration["name"], template_path: cont_post_postDeclaration["template_path"]) => {
+export const saveSingle = async (name: cont_post_postDeclaration["name"], template_path: cont_post_postDeclaration["template_path"], page_id: mod_pageModel["_id"]) => {
     try {
         let post_type = await postsController.addPostType(name, template_path);
+        await db.none('UPDATE pages SET post_type_id=${post_type_id} WHERE _id=${page_id}', {
+            post_type_id: post_type._id,
+            page_id: page_id
+        });
         return post_type;
     }
     catch(err) {
