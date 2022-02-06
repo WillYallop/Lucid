@@ -48,7 +48,7 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
     // -------------------------------------------------------
     // Components
     // -------------------------------------------------------
-    let [ skip, limit ] = [ 0 , 10 ];
+    let [ skip, limit ] = [ 0 , 50 ];
     const [ pages, setPages ] = useState<Array<pageData>>([]);
     const [ showLoadMore, setShowLoadMore ] = useState(true);
 
@@ -109,28 +109,27 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
         })
     }
 
-    // Create results array
-    const pageRows: Array<ReactElement> = [];
-    if(pages.length) {
-        pages.forEach((page) => {
-            pageRows.push(<PageRow key={pageRows.length} page={page}/>)
-        });
-    } 
-    else {
-        return (
-            <div className="con">
-                <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
-                </div>
-                <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
-                </div>
-                <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
-                </div>
-            </div>
-        )
+
+    // -------------------------------------------------------
+    // Recursive render helper
+    // -------------------------------------------------------
+    const getPageChildren = (page_id: pageData["_id"]) => {
+        const result: Array<ReactElement> = [];
+            pages.filter((page) => {
+                if(page.parent_id === page_id) {
+                    result.push(<PageRow key={pageRows.length} page={page} getChildren={getPageChildren}/>)
+                }
+            });
+        return result;
     }
+    const pageRows: Array<ReactElement> = [];
+    pages.forEach((page) => {
+        // Add normally
+        if(!page.has_parent) {
+            pageRows.push(<PageRow key={pageRows.length} page={page} getChildren={getPageChildren}/>)
+        }
+    });
+
 
     // Load more
     const loadmore = () => {

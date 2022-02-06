@@ -2,7 +2,6 @@ import React, { useContext, useState } from "react";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
 import PageList from "../../components/Pages/PageList";
-import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
 import SidebarButton from "../../components/Layout/Sidebar/SidebarBtn";
 // Icons
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
