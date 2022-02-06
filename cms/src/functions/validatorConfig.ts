@@ -28,5 +28,8 @@ export default {
     },
     page_name: {
         string: `[A-Za-z \-\!?_@]{2,255}`
+    },
+    page_slug: {
+        string: `[a-z\-\/]{2,255}`
     }
 }

@@ -35,6 +35,8 @@ const NewPageForm: React.FC = () => {
     const [ templates, setTemplates ] = useState([]);
     // Name
     const [ pageName, setPageName ] = useState('');
+    // Slug
+    const [ pageSlug, setPageSlug ] = useState('');
     // Is homepage
     const [ isHomePage, setIsHomepage ] = useState(false);
     // parent page
@@ -198,25 +200,21 @@ const NewPageForm: React.FC = () => {
         })
     }
 
-    const generateSlugExmaple = (page: string) => {
+    const formatSlug = (value: string) => {
         if(isHomePage) {
             return '/'
-        }
-        else {
-            let pageToSlug = page.replaceAll(' ', '-').replace(/[^a-zA-Z-]/g, '');
-            let slug = `/${pageToSlug}`
-            if(hasParentPage && selectedPage.slug != undefined) {
-                slug = selectedPage.slug + slug;
-            }
-            return slug.toLowerCase();
+        } else {
+            let formatSlug = value.replaceAll(' ', '-').replace(/[^a-zA-Z-]/g, '');
+            setPageSlug('/' + formatSlug.toLowerCase());
         }
     }
+
 
     return (
         <div className="body">
             <form onSubmit={validateForm} noValidate={true}>
 
-                {/* Content Type - type */}
+                {/* template */}
                 <SelectInput 
                     value={selectedTemplate}
                     options={templates}
@@ -226,29 +224,53 @@ const NewPageForm: React.FC = () => {
                     errorMsg={"there was an unexpected error!"}
                     updateValue={setSelectedTemplate}
                     label="templates (*)"
-                    described_by="choose the template file you want this page to use"/>
+                    described_by="choose the template file you want this page to use."/>
 
-                {/* Content Type = name */}
+                {/* name */}
                 <TextInput 
                     value={pageName}
-                    id={'postNameInp'}
+                    id={'pageNameInp'}
                     name={'name'}
                     required={true}
                     errorMsg={'name must only include the following characters: [A-Za-z -!?_@] and be a minimum of 2 characters and a maximum of 255!'}
-                    updateValue={setPageName}
+                    updateValue={(value) => {
+                        setPageName(value);
+                        formatSlug(value);
+                    }}
                     label={'name (*)'}
                     max={255}
                     min={2}
-                    described_by={'the slug is generated automatically based on you page name and the parent slug.'}
-                    pattern={validatorConfig.page_name.string}>
-                    { pageName || hasParentPage ? <div className='noteRow'> { generateSlugExmaple(pageName) } </div> : null }
-                </TextInput>
+                    described_by={'enter a name to represent your new page.'}
+                    pattern={validatorConfig.page_name.string}/>
+
+                {/* slug */}
+                <TextInput 
+                    value={pageSlug}
+                    id={'pageSlugInp'}
+                    name={'slug'}
+                    required={true}
+                    errorMsg={'a slug must only contain a-z characters and dashes.'}
+                    updateValue={(value) => {
+                        formatSlug(value);
+                    }}
+                    label={'slug (*)'}
+                    max={255}
+                    min={2}
+                    described_by={'the slug is generated automatically based on you page name and the parent slug, but can be update manually as well. the bellow is the path your new page will be available at.'}
+                    pattern={validatorConfig.page_slug.string}/>
 
                 <div className={`switchLabelRow ${ isHomePage ? 'active' : '' }`}>
                     <label>is homepage?</label>
                     <SwitchInput
                         state={isHomePage}
-                        setState={setIsHomepage}/>
+                        setState={(state) => {
+                            setIsHomepage(state);
+                            if(state) formatSlug('/');
+                            else {
+                                let formatSlug = pageName.replaceAll(' ', '-').replace(/[^a-zA-Z-]/g, '');
+                                setPageSlug('/' + formatSlug.toLowerCase());
+                            }
+                        }}/>
                 </div>
 
                 {
@@ -261,7 +283,9 @@ const NewPageForm: React.FC = () => {
                                 <label htmlFor="parentPageInp">parent page</label>
                                 <SwitchInput
                                     state={hasParentPage}
-                                    setState={setHasParentPage}/>
+                                    setState={(state) => {
+                                        setHasParentPage(state);
+                                    }}/>
                             </div>
                             {
                                 hasParentPage
@@ -271,7 +295,9 @@ const NewPageForm: React.FC = () => {
                                         id={'parentPageInp'}
                                         name={'parent_page'}
                                         errorMsg={''}
-                                        updateValue={setPageSearchQuery}
+                                        updateValue={(value) => {
+                                            setPageSearchQuery(value);
+                                        }}
                                         described_by={'search for pages by their name, and select the one you wish to be the parent.'}
                                         results={pageResultElements}
                                         searchAction={searchPageName}/>
