@@ -113,8 +113,10 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
         if(data.has_parent && data.parent_id) newPageObj['parent_id'] = data.parent_id;
         if(data.post_type_id != undefined) newPageObj.post_type_id = data.post_type_id;
 
-        let slugExists = await checkSlugExists(newPageObj.slug, newPageObj.parent_id);
+        // If we are setting the new page to is_homepage, check all other pages for is_homepage true and set to false;
+        if(newPageObj.is_homepage) await pageResetHandler('is_homepage');
 
+        let slugExists = await checkSlugExists(newPageObj.slug, newPageObj.parent_id);
         if(!slugExists) {
             // Save page row
             let getPageRes = await db.one('INSERT INTO pages(template, slug, name, type, post_name, has_parent, parent_id, date_created, last_edited, author, is_homepage, post_type_id) VALUES(${template}, ${slug}, ${name}, ${type}, ${post_name}, ${has_parent}, ${parent_id}, ${date_created}, ${last_edited}, ${author}, ${is_homepage}, ${post_type_id}) RETURNING *', newPageObj);
@@ -163,6 +165,9 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
         if(data.parent_id != undefined) updatePageObj.parent_id = data.parent_id;
         if(data.is_homepage != undefined) updatePageObj.is_homepage = data.is_homepage;
         if(data.post_type_id != undefined) updatePageObj.post_type_id = data.post_type_id;
+
+        // If we are setting the new page to is_homepage, check all other pages for is_homepage true and set to false;
+        if(updatePageObj.is_homepage) await pageResetHandler('is_homepage');
 
         // Check if the page is changing its parent or slug!
         if(checkPage.slug != updatePageObj.slug || checkPage.parent_id != updatePageObj.parent_id) {
@@ -218,18 +223,18 @@ export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
 
 
 // Handles resetting certain data for the page
-export const pageResetHandler = async (action: 'is_homepage' | 'post_type', data: any) => {
+export const pageResetHandler = async (action: 'is_homepage' | 'post_type', data?: any) => {
     try {
         switch(action) {
             case 'is_homepage': {
                 // find the current page that has is_homepage = true and set to false
-
-                break;
+                db.none(`UPDATE pages SET is_homepage=false WHERE is_homepage=true`);
+                return true;
             }
             case 'post_type': {
                 // unset all pages post_type_id that match data
 
-                break;
+                return true;
             }
         }
     }
