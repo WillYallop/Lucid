@@ -185,6 +185,7 @@
     border-bottom: $border_style;
     &:last-child {
         border-bottom: none;
+        padding-bottom: rem(0);
     }
     &.active {
         margin-bottom: 0;
@@ -192,6 +193,7 @@
         align-items: flex-end;
         border-bottom: none;
     }
+
     &--not-border {
         border-bottom: none;
     }

@@ -303,6 +303,10 @@ export const pageSearch = async (query: string) => {
                 match.slug = await pageFullSlug(match.parent_id, match.slug);
             }
         }
+
+        let homePageInd = matches.findIndex( x => x.slug === '/');
+        matches.splice(homePageInd, 1);
+
         return matches;
     }
     catch(err) {

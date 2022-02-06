@@ -218,8 +218,6 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
                     label="templates (*)"
                     described_by="choose the template file you want this post type to use"/>
 
-
-
                 {/* Content Type = name */}
                 <TextInput 
                     value={postName}

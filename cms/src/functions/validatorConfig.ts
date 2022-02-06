@@ -25,5 +25,8 @@ export default {
     menu_linkText: {
         string: `[A-Za-z \-\!,?._'"@]{0,200}`,
         regex: /^[A-Za-z \-\!,?._'"@]{0,200}$/
+    },
+    page_name: {
+        string: `[A-Za-z \-\!?_@]{2,255}`
     }
 }
