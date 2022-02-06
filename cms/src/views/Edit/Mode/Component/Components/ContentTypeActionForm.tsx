@@ -304,7 +304,7 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
                     required={true}
                     errorMsg={"there was an unexpected error!"}
                     updateValue={updateSelectedType}
-                    label="type"
+                    label="type (*)"
                     described_by="the type controls what data can be passed to the component."/>
 
                 {/* Content Type = name */}
@@ -315,7 +315,7 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
                     required={true}
                     errorMsg={'name must only include the following characters: [A-Z_a-z ] and be a minimum of 2 characters and a maximum of 100!'}
                     updateValue={setName}
-                    label={'name'}
+                    label={'name (*)'}
                     max={100}
                     min={2}
                     described_by={'this is the unique content type name, you can use the bellow to reference its data in your liquid templates.'}

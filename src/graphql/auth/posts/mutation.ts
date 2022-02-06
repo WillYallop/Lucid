@@ -22,10 +22,10 @@ const saveSinglePost: GraphQLFieldConfig<any, any, any> = {
     args: {
         name: { type: GraphQLNonNull(GraphQLString) },
         template_path: { type: GraphQLNonNull(GraphQLString) },
-        page_id: { type: GraphQLNonNull(GraphQLID) }
+        page_id: { type: GraphQLID }
     },
     resolve: (_, args) => {
-        return saveSingle(args.name, args.template_path, args.parent_page_id);
+        return saveSingle(args.name, args.template_path, args.page_id);
     }
 }
 

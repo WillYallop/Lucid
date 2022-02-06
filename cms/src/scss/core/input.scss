@@ -63,6 +63,9 @@
         &.--no-margin-bottom {
             margin-bottom: 0;
         }
+        &.dropdown-open {
+            border-radius: rem(5) rem(5) 0 0;
+        }
     }
     .inputError {
         display: none;
@@ -96,6 +99,46 @@
         border-bottom: $border_style;
         &.--hide-seperator {
             display: none
+        }
+    }
+}
+
+.searchWrapper {
+    position: relative;
+    .searchDropdown {
+        position: absolute;
+        top: rem(45);
+        left: 0;
+        right: 0;
+        background-color: #414141;
+        border: rem(1) solid #535353;
+        border-radius: 0 0 rem(5) rem(5);
+        color: map-get($map: $text_colours, $key: _01_02);
+        overflow: hidden;
+        .pageSearchBtn {
+            @include animate;
+            transition-property: background-color;
+            width: 100%;
+            display: block;
+            padding: rem(10);
+            text-align: left;
+            color: map-get($map: $text_colours, $key: _01_02);
+            border-bottom: rem(1) solid #535353;
+            background-color: #414141;
+            font-size: rem(14);
+            span {
+                color: map-get($map: $text_colours, $key: _01_02);
+            }
+            &:hover {
+                background-color: darken(#414141, 5%);
+            }
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+        .noData {
+            padding: rem(10);
+            font-size: rem(14);
         }
     }
 }

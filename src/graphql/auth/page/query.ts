@@ -38,7 +38,7 @@ const serachPageName: GraphQLFieldConfig<any, any, any> = {
         query: { type: GraphQLNonNull(GraphQLString) }
     },
     resolve: (_, args) => {
-        return pageSearch(args.name);
+        return pageSearch(args.query);
     }
 }
 

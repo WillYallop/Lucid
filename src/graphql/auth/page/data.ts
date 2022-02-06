@@ -276,11 +276,12 @@ interface pageSearchRes {
     slug: mod_pageModel["slug"]
     has_parent: mod_pageModel["has_parent"]
     parent_id: mod_pageModel["parent_id"]
+    _id: mod_pageModel["_id"]
 }
 // page serach via partial name, return array and page slug
 export const pageSearch = async (query: string) => {
     try {
-        let matches: Array<pageSearchRes> = await db.manyOrNone('SELECT name, slug, has_parent, parent_id FROM pages WHERE type=${type} ORDER BY SIMILARITY(name, ${query}) DESC LIMIT 5', {
+        let matches: Array<pageSearchRes> = await db.manyOrNone("SELECT _id, name, slug, has_parent, parent_id FROM pages WHERE type=${type} AND levenshtein(${query}, name) <= 5 ORDER BY levenshtein(${query}, name) LIMIT 4", {
             query: query,
             type: 'page'
         });

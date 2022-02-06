@@ -185,7 +185,7 @@ const RegisterComponentForm: React.FC = () => {
                     required={true}
                     errorMsg={"There was an unexpected error!"}
                     updateValue={setComponentPath}
-                    label="component file"
+                    label="component file (*)"
                     described_by="select the component you wish to register. If it does not appear, it may have been registered before or it could be configured incorrectly!"/>
 
                 {/* Component Name */}
@@ -196,7 +196,7 @@ const RegisterComponentForm: React.FC = () => {
                     required={true}
                     errorMsg={`name can only include the following characters: [A-Za-z -!,?._'"@] and be a minimum of 2 and maximum of 60 characters long!`}
                     updateValue={setNameValue}
-                    label="name"
+                    label="name (*)"
                     pattern={validatorConfig.comp_name.string}/>
 
                 {/* Component Description */}
@@ -207,7 +207,7 @@ const RegisterComponentForm: React.FC = () => {
                     required={true}
                     errorMsg={`description can only include the following characters: [A-Za-z \-\!,?._'@] and be a minimum of 0 and maximum of 400 characters long!`}
                     updateValue={setDescriptionValue}
-                    label="description"
+                    label="description (*)"
                     min={0}
                     max={400}/>
 

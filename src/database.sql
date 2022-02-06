@@ -1,7 +1,7 @@
 CREATE DATABASE lucid_cms;
 
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION pg_trgm;
+CREATE EXTENSION fuzzystrmatch;
 
 CREATE TABLE pages (
     _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),

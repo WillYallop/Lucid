@@ -212,6 +212,10 @@ export const PageSearchRes = new GraphQLObjectType({
     name: 'PageSearchResModal',
     description: 'The page search res model',
     fields: () => ({
+        _id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'The unique page _id'
+        },
         slug: {
             type: GraphQLNonNull(GraphQLString),
             description: 'The pages slug'

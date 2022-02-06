@@ -4,8 +4,7 @@ import { NavLink } from "react-router-dom";
 import axios from 'axios';
 // Components
 import CoreIcon from "../../Core/Icon";
-import UtilityLoading from "../../Ultility/Loading";
-import NewPostTypeForm from "../../../views/Edit/Mode/Page/Components/NewPostTypeForm";
+import NewPostTypeForm from "../../../views/Posts/Components/NewPostTypeForm";
 // Icons
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 // Context
@@ -91,35 +90,22 @@ const NavigationPostLinks: React.FC = () => {
     }
 
     let postLinks: Array<ReactElement> = [];
-    if(posts.length) {
-        posts.forEach((post) => {
-            let path = `/posts/${post.name}`;
-            let ele = (
-                <li className="navItem" key={post._id}>
-                    <NavLink to={path} className={(navData) => navData.isActive ? "active" : "" }>
-                        <CoreIcon icon={faFile}/> { post.name.replace('_', ' ') }
-                    </NavLink>
-                </li>
-            );
-            postLinks.push(ele);
-        });
-    } 
-    else {
-        return (
-            <div className="pagesSubSection">
-                <div className="postsLoadingCon">
-                    <UtilityLoading mode="dark"/>
-                </div>
-            </div>
-        )
-    }
-
+    posts.forEach((post) => {
+        let path = `/posts/${post.name}`;
+        let ele = (
+            <li className="navItem" key={post._id}>
+                <NavLink to={path} className={(navData) => navData.isActive ? "active" : "" }>
+                    <CoreIcon icon={faFile}/> { post.name.replace('_', ' ') }
+                </NavLink>
+            </li>
+        );
+        postLinks.push(ele);
+    });
 
     return (
         <div className="pagesSubSection">
             { postLinks }
             <button className="btnStyle1" onClick={() => openModal()}>new post type</button>
-
         </div>
     )
 }
