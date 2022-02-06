@@ -114,7 +114,9 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
         if(data.post_type_id != undefined) newPageObj.post_type_id = data.post_type_id;
 
         // If we are setting the new page to is_homepage, check all other pages for is_homepage true and set to false;
-        if(newPageObj.is_homepage) await pageResetHandler('is_homepage');
+        if(newPageObj.is_homepage) await pageResetHandler('unset_is_homepage');
+        // if the post_type_id is being set, unset the same one from other pages if it exists
+        if(newPageObj.post_type_id) await pageResetHandler('unset_post_type_id', newPageObj.post_type_id);
 
         let slugExists = await checkSlugExists(newPageObj.slug, newPageObj.parent_id);
         if(!slugExists) {
@@ -167,7 +169,9 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
         if(data.post_type_id != undefined) updatePageObj.post_type_id = data.post_type_id;
 
         // If we are setting the new page to is_homepage, check all other pages for is_homepage true and set to false;
-        if(updatePageObj.is_homepage) await pageResetHandler('is_homepage');
+        if(updatePageObj.is_homepage) await pageResetHandler('unset_is_homepage');
+        // if the post_type_id is being set, unset the same one from other pages if it exists
+        if(updatePageObj.post_type_id) await pageResetHandler('unset_post_type_id', updatePageObj.post_type_id);
 
         // Check if the page is changing its parent or slug!
         if(checkPage.slug != updatePageObj.slug || checkPage.parent_id != updatePageObj.parent_id) {
@@ -223,17 +227,17 @@ export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
 
 
 // Handles resetting certain data for the page
-export const pageResetHandler = async (action: 'is_homepage' | 'post_type', data?: any) => {
+export const pageResetHandler = async (action: 'unset_is_homepage' | 'unset_post_type_id', data?: any) => {
     try {
         switch(action) {
-            case 'is_homepage': {
+            case 'unset_is_homepage': {
                 // find the current page that has is_homepage = true and set to false
                 db.none(`UPDATE pages SET is_homepage=false WHERE is_homepage=true`);
                 return true;
             }
-            case 'post_type': {
+            case 'unset_post_type_id': {
                 // unset all pages post_type_id that match data
-
+                db.none(`UPDATE pages SET post_type_id=NULL WHERE post_type_id=$1`, data);
                 return true;
             }
         }
