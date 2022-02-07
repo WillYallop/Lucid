@@ -12,7 +12,7 @@ import getApiUrl from "../../../functions/getApiUrl";
 import validatorConfig from '../../../functions/validatorConfig';
 import formatLucidError from '../../../functions/formatLucidError';
 // Context
-import { LoadingContext } from "../../../helper/Context";
+import { LoadingContext, ModalContext } from "../../../helper/Context";
 
 interface pageSerach {
     slug: string
@@ -25,6 +25,12 @@ interface postType {
 }
 
 const NewPageForm: React.FC = () => {
+    
+    // -------------------------------------------------------
+    // Modal 
+    // -------------------------------------------------------
+    const { modalState, setModalState } = useContext(ModalContext);
+    const navigate = useNavigate();
 
     // -------------------------------------------------------
     // State
@@ -195,18 +201,68 @@ const NewPageForm: React.FC = () => {
         formValidationHandler({
             e: e,
             onValidatePass: (fields) => {
+                setLoadingState(true);
+                const query = `mutation {
+                    page {
+                        save_single (
+                            template: "${selectedTemplate}"
+                            slug: "${isHomePage ? '/' : pageSlug }"
+                            name: "${pageName}"
+                            type: "page"
 
+                            has_parent: ${hasParentPage && selectedPage ? true : false}
+
+                            ${ hasParentPage && selectedPage ? 'parent_id: "'+ selectedPage._id +'"' : '' }
+
+                            author: "ADMIN"
+                            is_homepage: ${isHomePage}
+                            ${ hasPostType && selectedPostType ? 'post_type_id: "'+ selectedPostType._id +'"' : '' }
+                        )
+                        {
+                            _id
+                        }
+                    }
+                }`;
+                // Save single component data
+                axios({
+                    url: getApiUrl(),
+                    method: 'post',
+                    data: {
+                        query: query
+                    }
+                })
+                .then((res) => {
+                    const pageRes = res.data.data.page.save_single;
+                    if(pageRes) {
+                        setModalState({
+                            ...modalState,
+                            state: false
+                        });
+                        navigate(`/edit/page/${pageRes._id}`);
+                    }
+                    else {
+                        console.log(formatLucidError(res.data.errors[0].message))
+                        setFormError({
+                            error: true,
+                            message: formatLucidError(res.data.errors[0].message).message 
+                        });
+                    }
+                    setLoadingState(false);
+                })
+                .catch(() => {
+                    setFormError({
+                        error: true,
+                        message: 'An unexpected error occured while saving the page!'
+                    });
+                    setLoadingState(false);
+                })
             }
         })
     }
 
     const formatSlug = (value: string) => {
-        if(isHomePage) {
-            return '/'
-        } else {
-            let formatSlug = value.replaceAll(' ', '-').replace(/[^a-zA-Z-]/g, '');
-            setPageSlug('/' + formatSlug.toLowerCase());
-        }
+        let formatSlug = value.replaceAll(' ', '-').replace(/[^a-zA-Z-]/g, '');
+        setPageSlug(formatSlug.toLowerCase());
     }
 
 
@@ -244,20 +300,25 @@ const NewPageForm: React.FC = () => {
                     pattern={validatorConfig.page_name.string}/>
 
                 {/* slug */}
-                <TextInput 
-                    value={pageSlug}
-                    id={'pageSlugInp'}
-                    name={'slug'}
-                    required={true}
-                    errorMsg={'a slug must only contain a-z characters and dashes.'}
-                    updateValue={(value) => {
-                        formatSlug(value);
-                    }}
-                    label={'slug (*)'}
-                    max={255}
-                    min={2}
-                    described_by={'the slug is generated automatically based on you page name and the parent slug, but can be update manually as well. the bellow is the path your new page will be available at.'}
-                    pattern={validatorConfig.page_slug.string}/>
+                {
+                    !isHomePage
+                    ?
+                    <TextInput 
+                        value={pageSlug}
+                        id={'pageSlugInp'}
+                        name={'slug'}
+                        required={true}
+                        errorMsg={'a slug must only contain a-z characters and dashes.'}
+                        updateValue={(value) => {
+                            formatSlug(value);
+                        }}
+                        label={'slug (*)'}
+                        max={255}
+                        min={2}
+                        described_by={'the slug is used to determine the path to the page once the site has been generated. you cannot have a page with the same slug!'}
+                        pattern={validatorConfig.page_slug.string}/>
+                    : null
+                }
 
                 <div className={`switchLabelRow ${ isHomePage ? 'active' : '' }`}>
                     <label>is homepage?</label>
@@ -265,11 +326,10 @@ const NewPageForm: React.FC = () => {
                         state={isHomePage}
                         setState={(state) => {
                             setIsHomepage(state);
-                            if(state) formatSlug('/');
-                            else {
-                                let formatSlug = pageName.replaceAll(' ', '-').replace(/[^a-zA-Z-]/g, '');
-                                setPageSlug('/' + formatSlug.toLowerCase());
-                            }
+                            if(state) {
+                                setHasParentPage(false);
+                                setHasPostType(false);
+                            } 
                         }}/>
                 </div>
 
@@ -323,12 +383,14 @@ const NewPageForm: React.FC = () => {
                                         required={true}
                                         errorMsg={"there was an unexpected error!"}
                                         updateValue={(value) => {
-                                            setSelectedPostType({
-                                                ...selectedPostType,
-                                                ...{
-                                                    name: value
-                                                }
-                                            })
+                                            // Find 
+                                            const findMatchingPostType = postTypeResults.find( x => x.name === value );
+                                            if(findMatchingPostType) {
+                                                setSelectedPostType({
+                                                    ...selectedPostType,
+                                                    ...findMatchingPostType
+                                                })
+                                            }
                                         }}
                                         described_by="a page that has a post type set will act as that post types parent. all pages under that post type will be routed bellow this page. (note a homepage cannot have a post type)"
                                         style={'--hide-seperator'}/>
