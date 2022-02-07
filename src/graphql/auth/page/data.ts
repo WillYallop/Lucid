@@ -1,6 +1,7 @@
 import db from '../../../db';
 import moment from 'moment';
 import { __updateSetQueryGen } from '../shared/functions';
+import { generateSlug } from "random-word-slugs";
 
 // Controllers
 import { getSingleSEO, saveSingleSEO } from '../seo/data';
@@ -96,7 +97,7 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
         // Page object
         let newPageObj: const_page_saveSinglePageObj = {
             template: data.template,
-            slug: data.slug,
+            slug: data.is_homepage ? '/' : data.slug,
             name: data.name,
             type: data.type,
             has_parent: data.has_parent,
@@ -118,28 +119,18 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
         // if the post_type_id is being set, unset the same one from other pages if it exists
         if(newPageObj.post_type_id) await pageResetHandler('unset_post_type_id', newPageObj.post_type_id);
 
-        let slugExists = await checkSlugExists(newPageObj.slug, newPageObj.parent_id);
-        if(!slugExists) {
-            // Save page row
-            let getPageRes = await db.one('INSERT INTO pages(template, slug, name, type, post_name, has_parent, parent_id, date_created, last_edited, author, is_homepage, post_type_id) VALUES(${template}, ${slug}, ${name}, ${type}, ${post_name}, ${has_parent}, ${parent_id}, ${date_created}, ${last_edited}, ${author}, ${is_homepage}, ${post_type_id}) RETURNING *', newPageObj);
-            // Save SEO row
-            getPageRes.seo = await saveSingleSEO({
-                page_id: getPageRes._id,
-                title: data.name,
-                description: "",
-                og_title: data.name,
-                og_description: "",
-                og_image: ""
-            });
-            return getPageRes;
-        }
-        else {
-            throw __generateErrorString({
-                code: 409,
-                origin: 'pageController.saveSingle',
-                message: `Cannot create page with slug: "${newPageObj.slug}" and parent_id: "${newPageObj.parent_id}" beacuse it clashes with an existing page!`
-            });
-        }
+        // Save page row
+        let getPageRes = await db.one('INSERT INTO pages(template, slug, name, type, post_name, has_parent, parent_id, date_created, last_edited, author, is_homepage, post_type_id) VALUES(${template}, ${slug}, ${name}, ${type}, ${post_name}, ${has_parent}, ${parent_id}, ${date_created}, ${last_edited}, ${author}, ${is_homepage}, ${post_type_id}) RETURNING *', newPageObj);
+        // Save SEO row
+        getPageRes.seo = await saveSingleSEO({
+            page_id: getPageRes._id,
+            title: data.name,
+            description: "",
+            og_title: data.name,
+            og_description: "",
+            og_image: ""
+        });
+        return getPageRes;
     }
     catch(err) {
         throw err;
@@ -161,7 +152,10 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
             if(data.template != undefined) updatePageObj.template = data.template;
         }
         // Set other data
-        if(data.slug != undefined) updatePageObj.slug = data.slug;
+        if(data.slug != undefined) {
+            if(data.is_homepage) updatePageObj.slug = '/';
+            else updatePageObj.slug = data.slug;
+        }
         if(data.name != undefined) updatePageObj.name = data.name;
         if(data.has_parent != undefined) updatePageObj.has_parent = data.has_parent;
         if(data.parent_id != undefined) updatePageObj.parent_id = data.parent_id;
@@ -175,19 +169,8 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
 
         // Check if the page is changing its parent or slug!
         if(checkPage.slug != updatePageObj.slug || checkPage.parent_id != updatePageObj.parent_id) {
-            let slugExists = await checkSlugExists(updatePageObj.slug || checkPage.slug, updatePageObj.parent_id);
-            if(!slugExists) {
-                // Update
-                await db.none(`UPDATE pages SET ${__updateSetQueryGen(updatePageObj)} WHERE _id='${_id}'`, updatePageObj);
-            }
-            else {
-                throw __generateErrorString({
-                    code: 409,
-                    origin: 'pageController.updateSingle',
-                    message: `Cannot create page with slug: "${updatePageObj.slug || checkPage.slug}" and parent_id: "${updatePageObj.parent_id}" beacuse it clashes with an existing page!`
-                });
-            }
-
+            // Update
+            await db.none(`UPDATE pages SET ${__updateSetQueryGen(updatePageObj)} WHERE _id='${_id}'`, updatePageObj);
         }
         else {
             // Update
@@ -232,7 +215,14 @@ export const pageResetHandler = async (action: 'unset_is_homepage' | 'unset_post
         switch(action) {
             case 'unset_is_homepage': {
                 // find the current page that has is_homepage = true and set to false
-                db.none(`UPDATE pages SET is_homepage=false WHERE is_homepage=true`);
+                let page = await db.oneOrNone(`UPDATE pages SET is_homepage=false WHERE is_homepage=true RETURNING *`);
+                if(page) {
+                    // set the pages slug 
+                    await db.none('UPDATE pages SET slug=${slug} WHERE _id=${_id}', {
+                        slug: generateSlug(),
+                        _id: page._id
+                    });
+                }
                 return true;
             }
             case 'unset_post_type_id': {
@@ -246,30 +236,6 @@ export const pageResetHandler = async (action: 'unset_is_homepage' | 'unset_post
         throw err;
     }
 }
-
-
-// check if a page exists with the same slug and parent combo
-// true = exists
-export const checkSlugExists = async (slug: mod_pageModel["slug"], parent_id?: mod_pageModel["parent_id"]) => {
-    try {
-        let pageFoundRes = undefined;
-        if(parent_id === undefined) {
-            pageFoundRes = await db.oneOrNone('SELECT _id FROM pages WHERE slug=$1 AND parent_id is NULL', slug);
-        }
-        else {
-            pageFoundRes = await db.oneOrNone('SELECT _id FROM pages WHERE slug=${slug} AND parent_id=${parent_id}', {
-                slug: slug,
-                parent_id: parent_id
-            });
-        }
-        if(pageFoundRes) return true;
-        else return false;
-    }
-    catch(err) {
-        throw err;
-    }
-}
-
 
 interface pageSearchRes {
     name: mod_pageModel["name"]
@@ -289,7 +255,7 @@ export const pageSearch = async (query: string) => {
             try {
                 // Query for parent slug
                 let res = await db.one('SELECT slug, has_parent, parent_id FROM pages WHERE _id=$1', _id);
-                slug = res.slug + slug;
+                slug = '/'+res.slug + slug;
                 if(res.has_parent) slug = await pageFullSlug(res.parent_id, slug);
                 return slug;
             }
@@ -298,6 +264,7 @@ export const pageSearch = async (query: string) => {
             }
         }
         for await (const match of matches) {
+            match.slug = '/'+match.slug;
             // For each match, if its has a parent recursivly query for the parent slug and prepend to child slug
             if(match.has_parent) {
                 match.slug = await pageFullSlug(match.parent_id, match.slug);
@@ -305,8 +272,8 @@ export const pageSearch = async (query: string) => {
         }
 
         let homePageInd = matches.findIndex( x => x.slug === '/');
-        matches.splice(homePageInd, 1);
-
+        if(homePageInd != -1) matches.splice(homePageInd, 1);
+      
         return matches;
     }
     catch(err) {

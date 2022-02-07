@@ -6,7 +6,7 @@ CREATE EXTENSION fuzzystrmatch;
 CREATE TABLE pages (
     _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     template VARCHAR(255) NOT NULL,
-    slug VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) NOT NULL UNIQUE,
     name VARCHAR(255) NOT NULL,
     type VARCHAR(4) NOT NULL,
     post_name VARCHAR(255),
