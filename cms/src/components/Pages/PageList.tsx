@@ -17,7 +17,7 @@ export interface pageData {
     type: 'page' | 'post'
     post_name: string
     has_parent: boolean
-    parent_id: string
+    parent_id: string | null
     date_created: string
     last_edited: string
     author: string
@@ -143,9 +143,15 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
             const deletePage: Array<pageData> = result.data.data.page.delete_single;
             if(deletePage) {
                 let findPageInd = pages.findIndex( x => x._id === _id );
-                if(findPageInd) {
+                if(findPageInd != -1) {
                     pages.splice(findPageInd, 1);
                 }
+                pages.forEach((page) => {
+                    if(page.parent_id === _id) {
+                        page.has_parent = false;
+                        page.parent_id = null;
+                    }
+                })
             }
             else {
                 addNotification(formatLucidError(result.data.errors[0].message).message, 'error');

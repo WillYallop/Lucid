@@ -190,6 +190,12 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
 // Delete page
 export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
     try {
+        // Update all childrent with parent_id of _id to parent false and parent_id NULL
+        await db.none('UPDATE pages SET has_parent=${has_parent}, parent_id=${parent_id} WHERE parent_id=${_id}', {
+            has_parent: false,
+            parent_id: null,
+            _id: _id
+        });
         // Delete all data related to the page
         await db.none('DELETE FROM pages WHERE _id=$1', _id);
         return {
@@ -200,14 +206,6 @@ export const deleteSingle = async (_id: mod_pageModel["_id"]) => {
         throw err;
     }
 }
-
-
-
-
-
-
-
-
 
 // Handles resetting certain data for the page
 export const pageResetHandler = async (action: 'unset_is_homepage' | 'unset_post_type_id', data?: any) => {
@@ -263,6 +261,10 @@ export const pageSearch = async (query: string) => {
                 throw err;
             }
         }
+
+        let homePageInd = matches.findIndex( x => x.slug === '/');
+        if(homePageInd != -1) matches.splice(homePageInd, 1);
+
         for await (const match of matches) {
             match.slug = '/'+match.slug;
             // For each match, if its has a parent recursivly query for the parent slug and prepend to child slug
@@ -270,9 +272,6 @@ export const pageSearch = async (query: string) => {
                 match.slug = await pageFullSlug(match.parent_id, match.slug);
             }
         }
-
-        let homePageInd = matches.findIndex( x => x.slug === '/');
-        if(homePageInd != -1) matches.splice(homePageInd, 1);
       
         return matches;
     }

@@ -62,7 +62,7 @@ const SearchInput: React.FC<searchInputProps> = ({ label, value, id, name, error
                 {
                     showDropdown
                     ?
-                    <div id="testDropdown" className="searchDropdown" 
+                    <div className="searchDropdown" 
                         onMouseDown={() => setIgnoreBlur(true)} 
                         onMouseUp={() => {
                             setIgnoreBlur(false);

@@ -115,6 +115,7 @@
         border-radius: 0 0 rem(5) rem(5);
         color: map-get($map: $text_colours, $key: _01_02);
         overflow: hidden;
+        z-index: 2;
         .pageSearchBtn {
             @include animate;
             transition-property: background-color;
