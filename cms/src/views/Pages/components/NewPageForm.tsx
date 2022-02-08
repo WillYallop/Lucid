@@ -255,7 +255,16 @@ const NewPageForm: React.FC = () => {
                     });
                     setLoadingState(false);
                 })
-            }
+            },
+            customValidation: [
+                {
+                    field_name: 'parent_page',
+                    validator: (value: string) => {
+                        if(selectedPage.name) return '';
+                        else return 'Error';
+                    }
+                }
+            ]
         })
     }
 
@@ -353,13 +362,15 @@ const NewPageForm: React.FC = () => {
                                         value={pageSearchQuery}
                                         id={'parentPageInp'}
                                         name={'parent_page'}
-                                        errorMsg={''}
+                                        errorMsg={'make sure you have picked a page to be the parent!'}
                                         updateValue={(value) => {
                                             setPageSearchQuery(value);
                                         }}
                                         described_by={'search for pages by their name, and select the one you wish to be the parent.'}
                                         results={pageResultElements}
-                                        searchAction={searchPageName}/>
+                                        searchAction={searchPageName}>
+                                        { selectedPage.name ? <div className="noteRow">selected: {selectedPage.name}</div> : null }
+                                    </SearchInput>
                                 : null
                             }
 

@@ -238,14 +238,16 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
                 <SearchInput 
                     value={pageSearchQuery}
                     id={'assignedPageSearchInp'}
-                    name={'page'}
+                    name={'assigned_page'}
                     errorMsg={''}
                     updateValue={setPageSearchQuery}
                     label={'assigned page'}
                     described_by={'assign a page for this post type, if set to a page that already has one it will replace it, and it cannot be set to the homepage!'}
                     results={pageResultElements}
                     searchAction={searchPageName}
-                    style={'--hide-seperator'}/>
+                    style={'--hide-seperator'}>
+                    { selectedPage.name ? <div className="noteRow">selected: {selectedPage.name}</div> : null }
+                </SearchInput>
 
                 { formError.error ? errorConEle : null }
 

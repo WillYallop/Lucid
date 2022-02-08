@@ -142,6 +142,11 @@
             font-size: rem(14);
         }
     }
+    &.invalid {
+        .inputError {
+            display: block;
+        }
+    }
 }
 
 .switchInput {

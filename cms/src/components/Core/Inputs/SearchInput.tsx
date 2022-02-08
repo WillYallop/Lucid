@@ -82,10 +82,12 @@ const SearchInput: React.FC<searchInputProps> = ({ label, value, id, name, error
                     </div>
                     : null
                 }
+
+                <div className="inputError">
+                    <p>{ errorMsg }</p>
+                </div>
             </div>
-            <div className="inputError">
-                <p>{ errorMsg }</p>
-            </div>
+
             { 
                 children 
             ?
