@@ -7,9 +7,10 @@ import { faHome } from '@fortawesome/free-solid-svg-icons';
 interface PageRowProps {
     page: pageData
     getChildren: (page_id: pageData["_id"]) => Array<React.ReactElement>
+    deleteCallback: (page_id: pageData["_id"]) => void
 }
 
-const PageRow: React.FC<PageRowProps> = ({ page, getChildren }) => {
+const PageRow: React.FC<PageRowProps> = ({ page, getChildren, deleteCallback }) => {
 
     //Page Children
     const getRepeaterChildren = () => {
@@ -40,7 +41,7 @@ const PageRow: React.FC<PageRowProps> = ({ page, getChildren }) => {
                                 <a href="#" target={'_blank'}>visit</a>
                             </li>
                             <li>
-                                <button className="delete">delete</button>
+                                <button className="delete" onClick={() => deleteCallback(page._id)}>delete</button>
                             </li>
                         </ul>
                     </div>

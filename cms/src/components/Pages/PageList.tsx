@@ -1,12 +1,13 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
 // Context
-import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext } from "../../helper/Context";
+import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext, ModalContext } from "../../helper/Context";
 // Components
 import PageRow from "./PageRow";
-import UtilityLoading from '../../components/Ultility/Loading';
+import DeleteConfirmModal from '../Modal/DeleteConfirmModal';
 // Functions
 import getApiUrl from "../../functions/getApiUrl";
+import formatLucidError from '../../functions/formatLucidError';
 
 export interface pageData {
     _id: string
@@ -30,6 +31,11 @@ interface PageListProps {
 
 const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
     const { loadingState, setLoadingState } = useContext(LoadingContext);
+
+    // -------------------------------------------------------
+    // Modal 
+    // -------------------------------------------------------
+    const { modalState, setModalState } = useContext(ModalContext);
 
     // -------------------------------------------------------
     // Notification 
@@ -78,16 +84,10 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
                         )
                         {
                             _id
-                            template
                             slug
                             name
-                            type
-                            post_name
                             has_parent
                             parent_id
-                            date_created
-                            last_edited
-                            author
                             is_homepage
                         }
                     }
@@ -109,6 +109,54 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
         })
     }
 
+    const openConfirmDeleteModal = (_id: pageData["_id"]) => {
+        setModalState({
+            ...modalState,
+            state: true,
+            title: 'confirmation',
+            body: '',
+            size: 'small',
+            element: <DeleteConfirmModal 
+                        message={'are you sure you would like to delete this page?'}
+                        action={() => deletePage(_id)}/>
+        });
+    }
+    const deletePage = (_id: pageData["_id"]) => {
+        setLoadingState(true);
+        axios({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: `mutation {
+                    page {
+                        delete_single (
+                            _id: "${_id}"
+                        )
+                        {
+                            deleted
+                        }
+                    }
+                }`
+            }
+        })
+        .then((result) => {
+            const deletePage: Array<pageData> = result.data.data.page.delete_single;
+            if(deletePage) {
+                let findPageInd = pages.findIndex( x => x._id === _id );
+                if(findPageInd) {
+                    pages.splice(findPageInd, 1);
+                }
+            }
+            else {
+                addNotification(formatLucidError(result.data.errors[0].message).message, 'error');
+            }
+            setLoadingState(false);
+        })
+        .catch((err) => {
+            addNotification('There was an error getting your pages!', 'error');
+            setLoadingState(false);
+        })
+    }
 
     // -------------------------------------------------------
     // Recursive render helper
@@ -117,7 +165,7 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
         const result: Array<ReactElement> = [];
             pages.filter((page) => {
                 if(page.parent_id === page_id) {
-                    result.push(<PageRow key={pageRows.length} page={page} getChildren={getPageChildren}/>)
+                    result.push(<PageRow key={pageRows.length} page={page} getChildren={getPageChildren} deleteCallback={openConfirmDeleteModal}/>)
                 }
             });
         return result;
@@ -126,7 +174,7 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
     pages.forEach((page) => {
         // Add normally
         if(!page.has_parent) {
-            pageRows.push(<PageRow key={pageRows.length} page={page} getChildren={getPageChildren}/>)
+            pageRows.push(<PageRow key={pageRows.length} page={page} getChildren={getPageChildren} deleteCallback={openConfirmDeleteModal}/>)
         }
     });
 

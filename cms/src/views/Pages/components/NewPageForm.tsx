@@ -241,7 +241,6 @@ const NewPageForm: React.FC = () => {
                         navigate(`/edit/page/${pageRes._id}`);
                     }
                     else {
-                        console.log(formatLucidError(res.data.errors[0].message))
                         setFormError({
                             error: true,
                             message: formatLucidError(res.data.errors[0].message).message 
@@ -279,7 +278,7 @@ const NewPageForm: React.FC = () => {
                     required={true}
                     errorMsg={"there was an unexpected error!"}
                     updateValue={setSelectedTemplate}
-                    label="templates (*)"
+                    label="template (*)"
                     described_by="choose the template file you want this page to use."/>
 
                 {/* name */}
@@ -315,7 +314,7 @@ const NewPageForm: React.FC = () => {
                         label={'slug (*)'}
                         max={255}
                         min={2}
-                        described_by={'the slug is used to determine the path to the page once the site has been generated. you cannot have a page with the same slug!'}
+                        described_by={"the slug is used to determine the path to the page once the site has been generated. you cannot have two page's with the same slug!"}
                         pattern={validatorConfig.page_slug.string}/>
                     : null
                 }
