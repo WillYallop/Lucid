@@ -2,6 +2,7 @@ import db from '../../../db';
 import moment from 'moment';
 import { __updateSetQueryGen } from '../shared/functions';
 import { generateSlug } from "random-word-slugs";
+import validate from '../../../validator';
 
 // Controllers
 import { getSingleSEO, saveSingleSEO } from '../seo/data';
@@ -94,6 +95,23 @@ export const getMultiple = async (type: mod_pageModel["type"], post_name: mod_pa
 // Create new page
 export const saveSingle = async (data: cont_page_saveSingleInp) => {
     try {
+
+        // Validate the data
+        await validate([
+            {
+                method: 'page_name',
+                value: data.name
+            },
+            {
+                method: 'page_slug',
+                value: data.is_homepage ? '/' : data.slug
+            },
+            {
+                method: 'temp_verifyFileExists',
+                value: data.template
+            }
+        ]);
+
         // Page object
         let newPageObj: const_page_saveSinglePageObj = {
             template: data.template,
@@ -140,6 +158,28 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
 // Update page
 export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_updateSingleInp) => {
     try {
+
+        // Validate the data
+        let validationArr: Array<vali_validateFieldObj> = [];
+        if(data.name != undefined) {
+            validationArr.push({
+                method: 'page_name',
+                value: data.name
+            });
+        }
+        if(data.slug != undefined) {
+            validationArr.push({
+                method: 'page_slug',
+                value: data.slug
+            });
+        }
+        if(data.template != undefined) {
+            validationArr.push({
+                method: 'temp_verifyFileExists',
+                value: data.template
+            });
+        }
+        await validate(validationArr);
 
         // Create new object to update the page with
         let updatePageObj: const_page_updatePageObj = {
