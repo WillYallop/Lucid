@@ -197,7 +197,7 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
     }
 
 
-    if(loadingState) {
+    if(loadingState && !pages.length) {
         return (
             <div className="con">
                 <div className="blockCon loading">
@@ -227,7 +227,7 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
                 <div className='blockCon'>
                     <IllustrationMessage 
                     img={noDataIllustration}
-                    title={`no ${type} found`}
+                    title={`no ${type}s found`}
                     body={'you can add a new page through the add button on the sidebar'}/>
                 </div>
             )

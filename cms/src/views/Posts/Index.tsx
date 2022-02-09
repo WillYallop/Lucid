@@ -11,6 +11,8 @@ import DefaultPage from "../../components/Layout/DefaultPage";
 import PageList from "../../components/Pages/PageList";
 import SidebarButton from "../../components/Layout/Sidebar/SidebarBtn";
 import NewPageForm from "../Pages/Components/NewPageForm";
+import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
+import UpdatePostTypeForm from "./Components/UpdatePostTypeForm";
 // Functions
 import getApiUrl from "../../functions/getApiUrl";
 import formatLucidError from "../../functions/formatLucidError";
@@ -31,14 +33,11 @@ const Pages: React.FC = () => {
     // -------------------------------------------------------
     // State
     // -------------------------------------------------------
-    const { loadingState, setLoadingState } = useContext(LoadingContext);
+    const [ pageLoaded, setPageLoaded ] = useState(false);
     const [ postNameParam, setPostNameParam ] = useState(post_name);
     const [ post, setPost ] = useState<postType>({} as postType);
 
-    if(post_name != postNameParam) {
-        setPostNameParam(post_name)
-    }
-    
+
 
     // -------------------------------------------------------
     // Notification 
@@ -67,7 +66,7 @@ const Pages: React.FC = () => {
     // Verify the post type exists
     // Set post template file
     const verifyPostType = () => {
-        setLoadingState(true);
+        setPageLoaded(false);
         axios({
             url: getApiUrl(),
             method: 'post',
@@ -95,20 +94,25 @@ const Pages: React.FC = () => {
                 navigate(`/404`);
                 addNotification(formatLucidError(result.data.errors[0].message).message, 'error');
             }
-            setLoadingState(false);
+            setPageLoaded(true);
         })
         .catch((err) => {
             console.log(err);
-            setLoadingState(false);
+            setPageLoaded(true);
         })
     }
     useEffect(() => {
         verifyPostType();
         return () => {
             setNotifications([]);
+            setPost({} as postType)
         }
     }, []);
 
+    if(post_name != postNameParam) {
+        setPostNameParam(post_name);
+        verifyPostType()
+    }
 
     // Sidebar Element
     const siderbar = (
@@ -129,6 +133,16 @@ const Pages: React.FC = () => {
                     });
                 }}
                 icon={faPlus}/>
+            {
+                pageLoaded ?
+                <SidebarLayout>
+                    <UpdatePostTypeForm 
+                    name={post.name}
+                    template={post.template_path}
+                    assignedPage={undefined}/>
+                </SidebarLayout>
+                : null
+            }
         </>
     );
 

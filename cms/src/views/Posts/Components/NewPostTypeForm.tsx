@@ -27,9 +27,10 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
     const navigate = useNavigate();
 
     const { loadingState, setLoadingState } = useContext(LoadingContext);
-    const [ templates, setTemplates ] = useState([]);
 
+    const [ templates, setTemplates ] = useState([]);
     const [ selectedTemplate, setSelectedTemplate ] = useState('');
+
     const [ postName, setPostName ] = useState('');
 
     const [ pageSearchQuery, setPageSearchQuery ] = useState('');
@@ -197,9 +198,9 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
         })
     }
 
-    // Format name value
     const formatName = (value: string) => {
-        return value.replaceAll(' ', '_').toLowerCase();
+        let formatName = value.replace(/[^a-zA-Z_ ]/g, '');
+        setPostName(formatName.toLowerCase());
     }
 
     return (
@@ -225,14 +226,12 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
                     name={'name'}
                     required={true}
                     errorMsg={'name must only include the following characters: [A-Z_a-z ] and be a minimum of 2 characters and a maximum of 100!'}
-                    updateValue={setPostName}
+                    updateValue={(value) => formatName(value)}
                     label={'name (*)'}
                     max={100}
                     min={2}
                     described_by={'a unique post type name. bellow is how the name will be formatted.'}
-                    pattern={validatorConfig.post_name.string}>
-                    { postName ? <div className='noteRow'> { formatName(postName) } </div> : null }
-                </TextInput>
+                    pattern={validatorConfig.post_name.string}/>
 
                 {/* Assigned Page */}
                 <SearchInput 
