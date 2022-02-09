@@ -260,8 +260,10 @@ const NewPageForm: React.FC = () => {
                 {
                     field_name: 'parent_page',
                     validator: (value: string) => {
-                        if(selectedPage.name) return '';
-                        else return 'Error';
+                        if(hasParentPage) {
+                            if(selectedPage.name) return '';
+                            else return 'Error';
+                        } else return '';
                     }
                 }
             ]
