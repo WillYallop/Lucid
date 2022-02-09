@@ -92,9 +92,13 @@ const NavigationPostLinks: React.FC = () => {
     let postLinks: Array<ReactElement> = [];
     posts.forEach((post) => {
         let path = `/posts/${post.name}`;
+        const linkTarget = {
+            pathname: path,
+            key: post._id,
+        };
         let ele = (
             <li className="navItem" key={post._id}>
-                <NavLink to={path} className={(navData) => navData.isActive ? "active" : "" }>
+                <NavLink to={linkTarget} className={(navData) => navData.isActive ? "active" : "" }>
                     <CoreIcon icon={faFile}/> { post.name.replace('_', ' ') }
                 </NavLink>
             </li>

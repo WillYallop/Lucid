@@ -7,6 +7,7 @@ import ComponentRow from "./ComponentRow";
 import UtilityLoading from '../../../components/Ultility/Loading';
 // Functions
 import getApiUrl from "../../../functions/getApiUrl";
+import e from 'express';
 
 interface componentData {
     date_added: string
@@ -43,7 +44,7 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     // -------------------------------------------------------
     let [ skip, limit ] = [ 0 , 10 ];
     const [ components, setComponents ] = useState<Array<componentData>>([]);
-    const [ showLoadMore, setShowLoadMore ] = useState(true);
+    const [ showLoadMore, setShowLoadMore ] = useState(false);
 
     // First load
     useEffect(() => {
@@ -80,6 +81,7 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
         .then((result) => {
             const allComponents: Array<componentData> = result.data.data.components.get_multiple || [];
             if(allComponents.length < limit) setShowLoadMore(false);
+            else setShowLoadMore(true);
             setComponents((components) => [
                 ...components,
                 ...allComponents

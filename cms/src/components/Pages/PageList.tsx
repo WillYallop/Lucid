@@ -56,7 +56,7 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
     // -------------------------------------------------------
     let [ skip, limit ] = [ 0 , 50 ];
     const [ pages, setPages ] = useState<Array<pageData>>([]);
-    const [ showLoadMore, setShowLoadMore ] = useState(true);
+    const [ showLoadMore, setShowLoadMore ] = useState(false);
 
     // First load
     useEffect(() => {
@@ -97,6 +97,7 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
         .then((result) => {
             const allPages: Array<pageData> = result.data.data.page.get_multiple || [];
             if(allPages.length < limit) setShowLoadMore(false);
+            else setShowLoadMore(true);
             setPages((pages) => [
                 ...pages,
                 ...allPages

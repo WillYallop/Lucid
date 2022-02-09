@@ -145,6 +145,33 @@ const getSinglePostType = async (_id: cont_post_postDeclaration["_id"]): Promise
 }
 
 // ------------------------------------ ------------------------------------
+// get single post type entry by its name
+// ------------------------------------ ------------------------------------
+const getSinglePostTypeByName = async (name: cont_post_postDeclaration["name"]): Promise<cont_post_postDeclaration> => {
+    try {
+        const origin = 'postsController.getSinglePostTypeByName';
+        // Get post data
+        let postsData: Array<cont_post_postDeclaration> = await getSingleFileContent('/config/posts.json', 'json');
+        // Check if it exists and get it
+        let post = postsData.find( x => x.name === name );
+        if(post != undefined) {
+            return post
+        }
+        else {
+            throw __generateErrorString({
+                code: 404,
+                origin: origin,
+                message: `Cannot get post with name: "${name}" because it cannot be found!`
+            });
+        }
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+
+// ------------------------------------ ------------------------------------
 // get multiple post types entries
 // ------------------------------------ ------------------------------------
 const getMultiplePostTypes = async (limit?: number, skip?: number, all?: boolean): Promise<Array<cont_post_postDeclaration>> => {
@@ -180,5 +207,6 @@ export {
     addPostType,
     removePostType,
     getSinglePostType,
-    getMultiplePostTypes
+    getMultiplePostTypes,
+    getSinglePostTypeByName
 }

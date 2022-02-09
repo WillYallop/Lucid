@@ -14,6 +14,17 @@ export const getSingle = async (_id: cont_post_postDeclaration["_id"]) => {
     }
 }
 
+// Get single by name
+export const getSingleByName = async (name: cont_post_postDeclaration["name"]) => {
+    try {
+        let post_type = await postsController.getSinglePostTypeByName(name);
+        return post_type;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
 // Get multiple posts
 export const getMultiple = async (limit?: number, skip?: number, all?: boolean) => {
     try {

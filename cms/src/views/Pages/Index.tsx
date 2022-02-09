@@ -45,7 +45,8 @@ const Pages: React.FC = () => {
                         title: 'add new page',
                         size: 'standard',
                         body: 'create and configure a new page',
-                        element: <NewPageForm/>
+                        element: <NewPageForm
+                                    type={'page'}/>
                     });
                 }}
                 icon={faPlus}/>

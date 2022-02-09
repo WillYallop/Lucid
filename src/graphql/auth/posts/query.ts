@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean } from 'graphql';
 // @ts-ignore: Unreachable code error
 import { PostType } from './type';
-import { getSingle, getMultiple } from './data';
+import { getSingle, getMultiple, getSingleByName } from './data';
 
 // Get single post type
 const singlePost: GraphQLFieldConfig<any, any, any> = {
@@ -12,6 +12,18 @@ const singlePost: GraphQLFieldConfig<any, any, any> = {
     },
     resolve: (_, args) => {
         return getSingle(args._id);
+    }
+}
+
+// Get single post type by name
+const singlePostByName: GraphQLFieldConfig<any, any, any> = {
+    type: PostType,
+    description: 'Get single post by name',
+    args: {
+        name: { type: GraphQLNonNull(GraphQLString) }
+    },
+    resolve: (_, args) => {
+        return getSingleByName(args.name);
     }
 }
 
@@ -35,6 +47,7 @@ export const PostQuery = new GraphQLObjectType({
     description: 'The post base query',
     fields: {
         get_single: singlePost,
+        get_single_by_name: singlePostByName,
         get_multiple: getMultiplePost
     }
 })

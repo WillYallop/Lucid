@@ -24,7 +24,13 @@ interface postType {
     name: string
 }
 
-const NewPageForm: React.FC = () => {
+interface newPageFormProps {
+    type: 'page' | 'post'
+    post_name?: string
+    post_template?: string
+}
+
+const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_template }) => {
     
     // -------------------------------------------------------
     // Modal 
@@ -123,9 +129,16 @@ const NewPageForm: React.FC = () => {
 
     // 
     useEffect(() => {
-        getAllTemplates();
-        getAllPostTypes();
-        return () => {}
+        if(type === 'page') {
+            getAllTemplates();
+            getAllPostTypes();
+        }
+        else {
+            if(post_template) setSelectedTemplate(post_template);
+        }
+        return () => {
+            
+        }
     }, []);
 
     // Page search
@@ -208,12 +221,10 @@ const NewPageForm: React.FC = () => {
                             template: "${selectedTemplate}"
                             slug: "${isHomePage ? '/' : pageSlug }"
                             name: "${pageName}"
-                            type: "page"
-
+                            type: "${type}"
+                            ${ type == 'post' && post_name ? 'post_name: "'+ post_name +'"' : '' }
                             has_parent: ${hasParentPage && selectedPage ? true : false}
-
                             ${ hasParentPage && selectedPage ? 'parent_id: "'+ selectedPage._id +'"' : '' }
-
                             author: "ADMIN"
                             is_homepage: ${isHomePage}
                             ${ hasPostType && selectedPostType ? 'post_type_id: "'+ selectedPostType._id +'"' : '' }
@@ -275,22 +286,113 @@ const NewPageForm: React.FC = () => {
         setPageSlug(formatSlug.toLowerCase());
     }
 
+    const pageFromExtended = (
+        <>
+            <div className={`switchLabelRow ${ isHomePage ? 'active' : '' }`}>
+                <label>is homepage?</label>
+                <SwitchInput
+                    state={isHomePage}
+                    setState={(state) => {
+                        setIsHomepage(state);
+                        if(state) {
+                            setHasParentPage(false);
+                            setHasPostType(false);
+                        } 
+                    }}/>
+            </div>
+
+            {
+                !isHomePage
+                ?
+                    <>
+
+                        {/* Parent Page Row */}
+                        <div className={`switchLabelRow ${ hasParentPage ? 'active' : '' } `}>
+                            <label htmlFor="parentPageInp">parent page</label>
+                            <SwitchInput
+                                state={hasParentPage}
+                                setState={(state) => {
+                                    setHasParentPage(state);
+                                }}/>
+                        </div>
+                        {
+                            hasParentPage
+                            ? 
+                                <SearchInput 
+                                    value={pageSearchQuery}
+                                    id={'parentPageInp'}
+                                    name={'parent_page'}
+                                    errorMsg={'make sure you have picked a page to be the parent!'}
+                                    updateValue={(value) => {
+                                        setPageSearchQuery(value);
+                                    }}
+                                    described_by={'search for pages by their name, and select the one you wish to be the parent.'}
+                                    results={pageResultElements}
+                                    searchAction={searchPageName}>
+                                    { selectedPage.name ? <div className="noteRow">selected: {selectedPage.name}</div> : null }
+                                </SearchInput>
+                            : null
+                        }
+
+
+                        {/* post type */}
+                        <div className={`switchLabelRow ${ hasPostType ? 'active' : '' } switchLabelRow--not-border`}>
+                            <label htmlFor="postTypeSelect">post type</label>
+                            <SwitchInput
+                                state={hasPostType}
+                                setState={setHasPostType}/>
+                        </div>
+                        {
+                            hasPostType
+                            ? 
+                                <SelectInput 
+                                    options={postTypeSelectOptions}
+                                    value={selectedPostType.name}
+                                    id={'postTypeSelect'}
+                                    name={'post_type'}
+                                    required={true}
+                                    errorMsg={"there was an unexpected error!"}
+                                    updateValue={(value) => {
+                                        // Find 
+                                        const findMatchingPostType = postTypeResults.find( x => x.name === value );
+                                        if(findMatchingPostType) {
+                                            setSelectedPostType({
+                                                ...selectedPostType,
+                                                ...findMatchingPostType
+                                            })
+                                        }
+                                    }}
+                                    described_by="a page that has a post type set will act as that post types parent. all pages under that post type will be routed bellow this page. (note a homepage cannot have a post type)"
+                                    style={'--hide-seperator'}/>
+                            : null
+                        }
+
+
+                    </>
+                :
+                null
+            }
+        </>
+    );
+
 
     return (
         <div className="body">
             <form onSubmit={validateForm} noValidate={true}>
 
                 {/* template */}
-                <SelectInput 
-                    value={selectedTemplate}
-                    options={templates}
-                    id={"templateSelect"}
-                    name={"template"}
-                    required={true}
-                    errorMsg={"there was an unexpected error!"}
-                    updateValue={setSelectedTemplate}
-                    label="template (*)"
-                    described_by="choose the template file you want this page to use."/>
+                { type === 'page' ? 
+                    <SelectInput 
+                        value={selectedTemplate}
+                        options={templates}
+                        id={"templateSelect"}
+                        name={"template"}
+                        required={true}
+                        errorMsg={"there was an unexpected error!"}
+                        updateValue={setSelectedTemplate}
+                        label="template (*)"
+                        described_by="choose the template file you want this page to use."/>
+                : null }
 
                 {/* name */}
                 <TextInput 
@@ -326,94 +428,12 @@ const NewPageForm: React.FC = () => {
                         max={255}
                         min={2}
                         described_by={"the slug is used to determine the path to the page once the site has been generated. you cannot have two page's with the same slug!"}
-                        pattern={validatorConfig.page_slug.string}/>
+                        pattern={validatorConfig.page_slug.string}
+                        style={type === 'post' ? '--hide-seperator' : undefined}/>
                     : null
                 }
 
-                <div className={`switchLabelRow ${ isHomePage ? 'active' : '' }`}>
-                    <label>is homepage?</label>
-                    <SwitchInput
-                        state={isHomePage}
-                        setState={(state) => {
-                            setIsHomepage(state);
-                            if(state) {
-                                setHasParentPage(false);
-                                setHasPostType(false);
-                            } 
-                        }}/>
-                </div>
-
-                {
-                    !isHomePage
-                    ?
-                        <>
-
-                            {/* Parent Page Row */}
-                            <div className={`switchLabelRow ${ hasParentPage ? 'active' : '' } `}>
-                                <label htmlFor="parentPageInp">parent page</label>
-                                <SwitchInput
-                                    state={hasParentPage}
-                                    setState={(state) => {
-                                        setHasParentPage(state);
-                                    }}/>
-                            </div>
-                            {
-                                hasParentPage
-                                ? 
-                                    <SearchInput 
-                                        value={pageSearchQuery}
-                                        id={'parentPageInp'}
-                                        name={'parent_page'}
-                                        errorMsg={'make sure you have picked a page to be the parent!'}
-                                        updateValue={(value) => {
-                                            setPageSearchQuery(value);
-                                        }}
-                                        described_by={'search for pages by their name, and select the one you wish to be the parent.'}
-                                        results={pageResultElements}
-                                        searchAction={searchPageName}>
-                                        { selectedPage.name ? <div className="noteRow">selected: {selectedPage.name}</div> : null }
-                                    </SearchInput>
-                                : null
-                            }
-
-
-                            {/* post type */}
-                            <div className={`switchLabelRow ${ hasPostType ? 'active' : '' } switchLabelRow--not-border`}>
-                                <label htmlFor="postTypeSelect">post type</label>
-                                <SwitchInput
-                                    state={hasPostType}
-                                    setState={setHasPostType}/>
-                            </div>
-                            {
-                                hasPostType
-                                ? 
-                                    <SelectInput 
-                                        options={postTypeSelectOptions}
-                                        value={selectedPostType.name}
-                                        id={'postTypeSelect'}
-                                        name={'post_type'}
-                                        required={true}
-                                        errorMsg={"there was an unexpected error!"}
-                                        updateValue={(value) => {
-                                            // Find 
-                                            const findMatchingPostType = postTypeResults.find( x => x.name === value );
-                                            if(findMatchingPostType) {
-                                                setSelectedPostType({
-                                                    ...selectedPostType,
-                                                    ...findMatchingPostType
-                                                })
-                                            }
-                                        }}
-                                        described_by="a page that has a post type set will act as that post types parent. all pages under that post type will be routed bellow this page. (note a homepage cannot have a post type)"
-                                        style={'--hide-seperator'}/>
-                                : null
-                            }
-
-
-                        </>
-                    :
-                    null
-                }
+                { type === 'page' ? pageFromExtended : null }
 
                 { formError.error ? errorConEle : null }
 

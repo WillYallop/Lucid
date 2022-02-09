@@ -1,12 +1,12 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 // "Views"
 import EditComponent from "./Mode/Component";
 import EditPage from "./Mode/Page";
-import Error404 from "../404";
 
 const Edit: React.FC = () => {
     const { mode } = useParams();
     const { _id } = useParams();
+    const navigate = useNavigate();
 
 
     if(_id) {
@@ -19,11 +19,13 @@ const Edit: React.FC = () => {
             return <EditPage _id={_id}/>
         }
         else {
-            return <Error404/>
+            navigate('/404');
+            return null;
         }
     }
     else {
-        return <Error404/>
+        navigate('/404');
+        return null;
     }
 }
 
