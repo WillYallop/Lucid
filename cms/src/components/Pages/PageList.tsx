@@ -5,9 +5,13 @@ import { PageNotificationContext, PageNotificationContextNoticationsObj, Loading
 // Components
 import PageRow from "./PageRow";
 import DeleteConfirmModal from '../Modal/DeleteConfirmModal';
+import IllustrationMessage from '../Layout/IllustationMessage';
+import UtilityLoading from '../Ultility/Loading';
 // Functions
 import getApiUrl from "../../functions/getApiUrl";
 import formatLucidError from '../../functions/formatLucidError';
+// Assets
+import noDataIllustration from '../../assets/noDataIllustration.svg';
 
 export interface pageData {
     _id: string
@@ -192,12 +196,51 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
         getAllPages(skip, limit);
     }
 
-    return (
-        <div className="con">
-            { pageRows }
-            { showLoadMore ? <button className='btnStyle1' onClick={loadmore}>load more</button> : null }
-        </div>
-    )
+
+    if(loadingState) {
+        return (
+            <div className="con">
+                <div className="blockCon loading">
+                    <UtilityLoading mode="dark"/>
+                </div>
+                <div className="blockCon loading">
+                    <UtilityLoading mode="dark"/>
+                </div>
+                <div className="blockCon loading">
+                    <UtilityLoading mode="dark"/>
+                </div>
+                <div className="blockCon loading">
+                    <UtilityLoading mode="dark"/>
+                </div>
+                <div className="blockCon loading">
+                    <UtilityLoading mode="dark"/>
+                </div>
+                <div className="blockCon loading">
+                    <UtilityLoading mode="dark"/>
+                </div>
+            </div>
+        )
+    } 
+    else {
+        if(!pages.length) {
+            return (
+                <div className='blockCon'>
+                    <IllustrationMessage 
+                    img={noDataIllustration}
+                    title={`no ${type} found`}
+                    body={'you can add a new page through the add button on the sidebar'}/>
+                </div>
+            )
+        }
+        else {
+            return (
+                <div className="con">
+                    { pageRows }
+                    { showLoadMore ? <button className='btnStyle1' onClick={loadmore}>load more</button> : null }
+                </div>
+            )
+        }
+    }
 }
 
 export default PageList;
