@@ -1,4 +1,7 @@
-import React, { ReactElement, useState } from "react"
+import React, { ReactElement, useState } from "react";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+// Icons
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 
 interface searchInputProps {
     label?: string
@@ -59,6 +62,11 @@ const SearchInput: React.FC<searchInputProps> = ({ label, value, id, name, error
                         setShowDropdown(true);
                         onChange(val);
                     }}/>
+                <div 
+                    className="searchIcon" 
+                    onClick={() => {searchAction(value); setShowDropdown(true);}}>
+                    <FontAwesomeIcon icon={faSearch}/>
+                </div>
                 {
                     showDropdown
                     ?
