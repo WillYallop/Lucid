@@ -13,6 +13,7 @@ interface cont_post_updateSingleInp {
 }
 interface const_post_updateSingleGraphInp {
     name?: cont_post_postDeclaration["name"]
+    old_name?: cont_post_postDeclaration["name"]
     template_path?: cont_post_postDeclaration["template_path"]
     page_id?: mod_pageModel["_id"]
 }

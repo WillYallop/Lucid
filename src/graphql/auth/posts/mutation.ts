@@ -35,12 +35,14 @@ const updateSinglePost: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) },
         name: { type:GraphQLString },
+        old_name: { type: GraphQLString },
         template_path: { type: GraphQLString },
         page_id: { type: GraphQLID }
     },
     resolve: (_, args) => {
         return updateSingle(args._id, {
             name: args.name,
+            old_name: args.old_name,
             template_path: args.template_path,
             page_id: args.page_id
         });

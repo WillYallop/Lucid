@@ -150,6 +150,7 @@ const Pages: React.FC = () => {
                 pageLoaded ?
                 <SidebarLayout>
                     <UpdatePostTypeForm 
+                        _id={post._id}
                         name={post.name}
                         template={post.template_path}
                         post_id={post._id}

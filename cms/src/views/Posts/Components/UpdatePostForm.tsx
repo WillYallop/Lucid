@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect, ReactElement } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 // Components
 import TextInput from "../../../components/Core/Inputs/TextInput";
@@ -19,13 +20,16 @@ interface pageSerach {
 }
 
 interface updatePostTypeFormProps {
+    _id: string
     name: string
     template: string
     post_id: string
     callback: (state: boolean) => void
 }
 
-const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ name, template, post_id, callback }) => {
+const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ _id, name, template, post_id, callback }) => {
+
+    const navigate = useNavigate();
 
     const { loadingState, setLoadingState } = useContext(LoadingContext);
 
@@ -191,7 +195,48 @@ const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ name, template,
         formValidationHandler({
             e: e,
             onValidatePass: (fields) => {
-
+                setLoadingState(true);
+                const query = `mutation {
+                    post {
+                        update_single (
+                            _id: "${_id}"
+                            name: "${postName}"
+                            old_name: "${name}"
+                            template_path: "${selectedTemplate}"
+                            ${ selectedPage._id ? 'page_id: "'+ selectedPage._id +'"' : '' }
+                        )
+                        {
+                            name
+                        }
+                    }
+                }`;
+                // Save single component data
+                axios({
+                    url: getApiUrl(),
+                    method: 'post',
+                    data: {
+                        query: query
+                    }
+                })
+                .then((res) => {
+                    if(res.data.data.post.update_single) {
+                        window.location.href = `/posts/${res.data.data.post.update_single.name}`;
+                    }
+                    else {
+                        setFormError({
+                            error: true,
+                            message: formatLucidError(res.data.errors[0].message).message
+                        });
+                    }
+                    setLoadingState(false);
+                })
+                .catch(() => {
+                    setFormError({
+                        error: true,
+                        message: 'An unexpected error occured while saving the post type!'
+                    });
+                    setLoadingState(false);
+                })
             }
         })
     }
@@ -251,6 +296,8 @@ const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ name, template,
                 style={'--hide-seperator'}>
                 { selectedPage.name ? <div className="noteRow noteRow--no-margin-top">selected: {selectedPage.name}</div> : null }
             </SearchInput>
+
+            { formError.error ? errorConEle : null }
 
         </form>
     )
