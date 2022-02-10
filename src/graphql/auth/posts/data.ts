@@ -89,11 +89,18 @@ export const updateSingle = async (_id: cont_post_postDeclaration["_id"], data: 
         let post = await postsController.updateSinglePostType(_id, updateData);
 
         // Update all pages with matching post name
-        if(data.name != undefined && data.old_name != undefined) {
+        if(data.name != undefined && data.old_name != undefined && data.name != data.old_name) {
             await db.none('UPDATE pages SET post_name=${post_name} WHERE post_name=${old_post_name}', {
                 post_name: data.name,
                 old_post_name: data.old_name
             });
+        }
+
+        if(data.template_path != undefined) {
+            await db.none('UPDATE pages SET template=${template} WHERE post_name=${post_name}', {
+                template: data.template_path,
+                post_name: data.name
+            })
         }
 
         // If given a page ID and the post updates

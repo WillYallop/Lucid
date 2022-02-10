@@ -230,7 +230,7 @@ const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ _id, name, temp
                     }
                     setLoadingState(false);
                 })
-                .catch(() => {
+                .catch((err) => {
                     setFormError({
                         error: true,
                         message: 'An unexpected error occured while saving the post type!'
