@@ -12,12 +12,13 @@ import PageList from "../../components/Pages/PageList";
 import SidebarButton from "../../components/Layout/Sidebar/SidebarBtn";
 import NewPageForm from "../Pages/Components/NewPageForm";
 import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
-import UpdatePostTypeForm from "./Components/UpdatePostTypeForm";
+import UpdatePostTypeForm from "./Components/UpdatePostForm";
+import SidebarFormSubmit from "../../components/Layout/Sidebar/SidebarFormSubmit";
 // Functions
 import getApiUrl from "../../functions/getApiUrl";
 import formatLucidError from "../../functions/formatLucidError";
 // Icons
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faSave } from '@fortawesome/free-solid-svg-icons';
 
 interface postType {
     _id: string
@@ -33,6 +34,7 @@ const Pages: React.FC = () => {
     // -------------------------------------------------------
     // State
     // -------------------------------------------------------
+    const [ allowSave, setAllowSave ] = useState(false);
     const [ pageLoaded, setPageLoaded ] = useState(false);
     const [ postNameParam, setPostNameParam ] = useState(post_name);
     const [ post, setPost ] = useState<postType>({} as postType);
@@ -74,7 +76,7 @@ const Pages: React.FC = () => {
                 query: `query {
                     post {
                         get_single_by_name (
-                            name: "${postNameParam}"
+                            name: "${post_name}"
                         ) 
                         {
                             _id
@@ -110,13 +112,24 @@ const Pages: React.FC = () => {
     }, []);
 
     if(post_name != postNameParam) {
+        verifyPostType();
         setPostNameParam(post_name);
-        verifyPostType()
+        // window.location.reload();
     }
 
     // Sidebar Element
     const siderbar = (
         <>
+            {
+                allowSave
+                ?
+                <SidebarFormSubmit
+                    text="save changes"
+                    formID={'updatePostForm'}
+                    icon={faSave}/>
+                :
+                null
+            }
             <SidebarButton 
                 text="new post page"
                 action={() => { 
@@ -137,9 +150,10 @@ const Pages: React.FC = () => {
                 pageLoaded ?
                 <SidebarLayout>
                     <UpdatePostTypeForm 
-                    name={post.name}
-                    template={post.template_path}
-                    assignedPage={undefined}/>
+                        name={post.name}
+                        template={post.template_path}
+                        post_id={post._id}
+                        callback={setAllowSave}/>
                 </SidebarLayout>
                 : null
             }
