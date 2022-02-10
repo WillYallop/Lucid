@@ -1,5 +1,6 @@
 h1, h2 {
     font-size: rem(18);
+    line-height: rem(20);
     font-weight: bold;
     margin-bottom: rem(8);
     color: map-get($map: $text_colours, $key: _01_01);
@@ -7,16 +8,15 @@ h1, h2 {
 
 label {
     font-size: rem(14);
+    line-height: rem(16);
     color: map-get($map: $text_colours, $key: _01_02);
 }
 p {
     font-size: rem(16);
+    line-height: rem(18);
     color: map-get($map: $text_colours, $key: _01_02);
     &.bold {
         font-weight: bold;
-    }
-    &.capitalise {
-        text-transform: capitalize;
     }
 }
 

@@ -30,8 +30,10 @@ const formValidationHandler = (prop: formValidationHandlerProps) => {
     // Add custom validators
     if(prop.customValidation) {
         prop.customValidation.forEach((conf) => {
-            let err = conf.validator(form[conf.field_name].value);
-            form[conf.field_name].setCustomValidity(err);
+            if(form[conf.field_name]) {
+                let err = conf.validator(form[conf.field_name].value);
+                form[conf.field_name].setCustomValidity(err);
+            }
         });
     }
 

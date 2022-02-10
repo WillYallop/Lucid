@@ -1,3 +1,5 @@
+
+// Loading Skeleton
 .loadingCon {
   border-radius: rem(5);
   overflow: hidden;
@@ -48,5 +50,26 @@
 @keyframes shimmer {
   100% {
     transform: translateX(100%);
+  }
+}
+
+// Site Loading Indicator
+.loadingIndCon {
+  position: fixed;
+  bottom: rem(20);
+  right: rem(20);
+  z-index: 12;
+  animation: rotate 1s infinite;
+  img {
+    height: 50px;
+    width: 50px;
+  }
+  @keyframes rotate {
+      0% {
+        transform: rotate(0);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
   }
 }

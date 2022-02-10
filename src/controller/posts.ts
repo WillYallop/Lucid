@@ -10,11 +10,11 @@ Example posts.json file:
 [
     {
         "name": "blogs",
-        "template_name": "page.liquid"
+        "template_path": "page.liquid"
     },
     {
         "name": "jobs",
-        "template_name": "page.liquid"
+        "template_path": "page.liquid"
     }
 ]
 
@@ -24,16 +24,17 @@ import { getSingleFileContent, writeSingleFile } from './theme';
 import validate from '../validator';
 import { v1 as uuidv1 } from 'uuid';
 import { __convertStringLowerUnderscore, __generateErrorString } from './helper/shared';
+import merge from 'lodash/merge';
 
 
 // ------------------------------------ ------------------------------------
 // add new post type entry
 // ------------------------------------ ------------------------------------
-const addPostType = async (name: cont_post_postDeclaration["name"], template_name: cont_post_postDeclaration["template_name"]): Promise<cont_post_postDeclaration> => {
+const addPostType = async (name: cont_post_postDeclaration["name"], template_path: cont_post_postDeclaration["template_path"]): Promise<cont_post_postDeclaration> => {
     try {
         const origin = 'postsController.addPostType';
         // Make sure entry doesnt already exist with same name
-        // Verify the template_name exists in the theme/templates directory will always end in a .liquid
+        // Verify the template_path exists in the theme/templates directory will always end in a .liquid
         await validate([
             {
                 method: 'post_name',
@@ -41,23 +42,23 @@ const addPostType = async (name: cont_post_postDeclaration["name"], template_nam
             },
             {
                 method: 'temp_verifyFileExists',
-                value: template_name
+                value: template_path
             },
             {
                 method: 'file_isLiquidExtension',
-                value: template_name
+                value: template_path
             }
         ]);
         // Get theme/config/posts.json file
         let postsData: Array<cont_post_postDeclaration> = await getSingleFileContent('/config/posts.json', 'json');
         // Check to see if the post wanting to be added exists:
-        let findPost = postsData.findIndex( x => x.name === __convertStringLowerUnderscore(name) && x.template_name === template_name);
+        let findPost = postsData.findIndex( x => x.name === __convertStringLowerUnderscore(name));
         if(findPost === -1) {
             // If there is no entry add one
             let postObj: cont_post_postDeclaration = {
                 _id: uuidv1(),
                 name: __convertStringLowerUnderscore(name),
-                template_name: template_name
+                template_path: template_path
             };
             postsData.push(postObj);
             await writeSingleFile('/config/posts.json', 'json', postsData);
@@ -67,7 +68,7 @@ const addPostType = async (name: cont_post_postDeclaration["name"], template_nam
             throw __generateErrorString({
                 code: 403,
                 origin: origin,
-                message: `Post with the name: "${__convertStringLowerUnderscore(name)}" and template_name: "${template_name}" already exist!`
+                message: `Post with the name: "${__convertStringLowerUnderscore(name)}" already exists!`
             });
         }
     }
@@ -145,6 +146,32 @@ const getSinglePostType = async (_id: cont_post_postDeclaration["_id"]): Promise
 }
 
 // ------------------------------------ ------------------------------------
+// get single post type entry by its name
+// ------------------------------------ ------------------------------------
+const getSinglePostTypeByName = async (name: cont_post_postDeclaration["name"]): Promise<cont_post_postDeclaration> => {
+    try {
+        const origin = 'postsController.getSinglePostTypeByName';
+        // Get post data
+        let postsData: Array<cont_post_postDeclaration> = await getSingleFileContent('/config/posts.json', 'json');
+        // Check if it exists and get it
+        let post = postsData.find( x => x.name === name );
+        if(post != undefined) {
+            return post
+        }
+        else {
+            throw __generateErrorString({
+                code: 404,
+                origin: origin,
+                message: `Cannot get post with name: "${name}" because it cannot be found!`
+            });
+        }
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// ------------------------------------ ------------------------------------
 // get multiple post types entries
 // ------------------------------------ ------------------------------------
 const getMultiplePostTypes = async (limit?: number, skip?: number, all?: boolean): Promise<Array<cont_post_postDeclaration>> => {
@@ -176,9 +203,79 @@ const getMultiplePostTypes = async (limit?: number, skip?: number, all?: boolean
     }
 }
 
+// ------------------------------------ ------------------------------------
+// update single post type
+// ------------------------------------ ------------------------------------
+const updateSinglePostType = async (_id: cont_post_postDeclaration["_id"], data: cont_post_updateSingleInp) => {
+    try {
+        const origin = 'postsController.updateSinglePostType';
+        // Validate data
+        const validationArray: Array<vali_validateFieldObj> = [            
+            {
+                method: 'uuidVerify',
+                value: _id
+            }
+        ];
+        if(data.name != undefined) {
+            validationArray.push({
+                method: 'post_name',
+                value: __convertStringLowerUnderscore(data.name)
+            });
+        }
+        if(data.template_path != undefined) {
+            validationArray.push({
+                method: 'temp_verifyFileExists',
+                value: data.template_path
+            });
+            validationArray.push({
+                method: 'file_isLiquidExtension',
+                value: data.template_path
+            });
+        }
+        await validate(validationArray);
+
+        // Get theme/config/posts.json file
+        let postsData: Array<cont_post_postDeclaration> = await getSingleFileContent('/config/posts.json', 'json');
+        let findPost = postsData.findIndex( x => x._id === _id);
+        if(findPost != -1) {
+            // check to see if the name is a duplicate
+            if(data.name != undefined) {
+                if(postsData[findPost].name != data.name) {
+                    // @ts-ignore: Unreachable code error
+                    let findDuplicateName = postsData.findIndex( x => x.name === __convertStringLowerUnderscore(data.name));
+                    if(findDuplicateName != -1) {
+                        throw __generateErrorString({
+                            code: 409,
+                            origin: origin,
+                            message: `Post with the a name: "${__convertStringLowerUnderscore(data.name)}" already exists, please change it!`
+                        });
+                    }
+                }
+            }
+            // Merge old post with new
+            postsData[findPost] = merge(postsData[findPost], data);
+            await writeSingleFile('/config/posts.json', 'json', postsData);
+            return postsData[findPost];
+        }
+        else {
+            throw __generateErrorString({
+                code: 404,
+                origin: origin,
+                message: `Post with the _id: "${_id}" because it cannot be found!`
+            });
+        }
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+
 export {
     addPostType,
     removePostType,
     getSinglePostType,
-    getMultiplePostTypes
+    getMultiplePostTypes,
+    getSinglePostTypeByName,
+    updateSinglePostType
 }

@@ -64,7 +64,7 @@ const verifyFileExists = async (target: string) => {
 }
 
 // ------------------------------------ ------------------------------------
-// Read Directory
+// Read Directory - is recursive
 // ------------------------------------ ------------------------------------
 
 const listDirectoryFiles = async (target: string, files_?: Array<cont_the_listDirectoryFiles>): Promise<Array<cont_the_listDirectoryFiles>> => {

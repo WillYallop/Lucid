@@ -8,7 +8,7 @@ import { ReactElement } from 'react';
 interface contentTypeProps {
     contentType: mod_contentTypesConfigModel
     actionForm: (actionType: 'update' | 'create', contentType__id: mod_contentTypesConfigModel["_id"]) => void
-    deleteCallback: (contentType__id: mod_contentTypesConfigModel["_id"], repeater__id?: mod_contentTypesConfigModel["_id"]) => void
+    deleteCallback: (contentType__id: mod_contentTypesConfigModel["_id"]) => void
     getChildren: (contentType__id: mod_contentTypesConfigModel["_id"]) => Array<ReactElement>
 }
 export interface mod_contentTypesConfigModel {
@@ -24,6 +24,7 @@ export interface mod_contentTypesConfigModel {
 }
 
 const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, deleteCallback, getChildren }) => {
+
 
     let ContentTypeIcon;
     switch(contentType.type) {
@@ -55,38 +56,40 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, d
     }
 
     return (
-        <>
+        <>  
             <div className='contentTypeRow blockCon__row-style layout__flex layout__space-between layout__align-center'>
                 <div className="main layout__flex layout__align-center">
                     <div className="icon layout__flex layout__justify-center layout__align-center">
                         { ContentTypeIcon }
                     </div>
                     <div className="textarea">
-                        <p className='bold capitalise'>{ contentType.name.replaceAll('_', ' ') }</p>
+                        <p className='bold'>{ contentType.name.replaceAll('_', ' ') }</p>
                         <p>{ contentType.type }</p>
                     </div>
                 </div>
                 <div className="iconCol layout__flex">
+                    {/* Edit this row */}
+                    <button className='btnStyleBlank' onClick={() => actionForm('update', contentType._id)}>
+                        <CoreIcon icon={faEdit} style={'transparent'}/>
+                    </button>
+                    {/* Delete this row */}
+                    <button className='btnStyleBlank' onClick={() => deleteCallback(contentType._id)}>
+                        <CoreIcon icon={faTrashAlt} style={'transparent--warning'}/>
+                    </button>
                     {
                         contentType.type === 'repeater'
                         ?
-                        <button className='btnStyleBlank' onClick={() => actionForm('create', contentType._id)}>
+                        <button className='btnStyleBlank space' onClick={() => actionForm('create', contentType._id)}>
                             <CoreIcon icon={faPlus}/>
                         </button>
                         :
                         null
                     }
-                    {/* Edit this row */}
-                    <button className='btnStyleBlank' onClick={() => actionForm('update', contentType._id)}>
-                        <CoreIcon icon={faEdit}/>
-                    </button>
-                    {/* Delete this row */}
-                    <button className='btnStyleBlank' onClick={() => deleteCallback(contentType._id)}>
-                        <CoreIcon icon={faTrashAlt} style={'warning'}/>
-                    </button>
                 </div>
             </div>
+
             { getRepeaterChildren() }
+
         </>
     )
 

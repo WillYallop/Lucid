@@ -1,0 +1,19 @@
+.illustationCon {
+    margin: 0 auto;
+    max-width: rem(350px);
+    text-align: center;
+    padding: rem(30);
+    img {
+        max-width: rem(160);
+        width: 100%;
+        margin-bottom: rem(30);
+    }
+    .title {
+        margin-bottom: rem(5);
+        font-weight: bold;
+    }
+    p {
+        font-size: rem(16);
+        line-height: rem(18);
+    }
+}

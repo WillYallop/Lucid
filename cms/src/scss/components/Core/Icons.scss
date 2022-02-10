@@ -23,4 +23,17 @@
             background-color: darken($color: map-get($map: $accent_colours, $key: _02_01), $amount: 10%);
         }
     }
+    &.transparent,
+    &.transparent--warning {
+        background-color: transparent;
+        color: rgba($color: map-get($map: $text_colours, $key: _01_02), $alpha: 0.4);
+        &:hover {
+            color: map-get($map: $accent_colours, $key: _01_01);
+        }
+    }
+    &.transparent--warning {
+        &:hover {
+            color: map-get($map: $accent_colours, $key: _02_01);
+        }
+    }
 }

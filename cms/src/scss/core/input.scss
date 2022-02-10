@@ -14,6 +14,9 @@
         margin: rem(5) 0 rem(10);
         font-size: rem(14);
         font-family: 'Be Vietnam Pro', sans-serif;
+        background-color: map-get($map: $section_colours, $key: _04_01);
+        border: 1px solid map-get($map: $section_colours, $key: _04_01);
+        color: map-get($map: $text_colours, $key: _01_01);
         &:focus {
             outline: none;
             border-color: map-get($map: $accent_colours, $key: _01_02);
@@ -60,6 +63,9 @@
         &.--no-margin-bottom {
             margin-bottom: 0;
         }
+        &.dropdown-open {
+            border-radius: rem(5) rem(5) 0 0;
+        }
     }
     .inputError {
         display: none;
@@ -91,6 +97,73 @@
         margin-bottom: rem(10);
         padding-bottom: rem(10);
         border-bottom: $border_style;
+        &.--hide-seperator {
+            display: none
+        }
+    }
+}
+
+.searchWrapper {
+    position: relative;
+    .searchIcon {
+        @include animate;
+        position: absolute;
+        right: 0;
+        bottom: rem(10);
+        top: rem(5);
+        background-color: map-get($map: $accent_colours, $key: _01_01);
+        color: map-get($map: $accent_colours, $key: _01_03);
+        width: rem(40);
+        border-radius: 0 rem(5) rem(5) 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        &:hover {
+            background-color: map-get($map: $accent_colours, $key: _01_02);
+        }
+    }
+    .searchDropdown {
+        position: absolute;
+        top: rem(45);
+        left: 0;
+        right: 0;
+        background-color: #414141;
+        border: rem(1) solid #535353;
+        border-radius: 0 0 rem(5) rem(5);
+        color: map-get($map: $text_colours, $key: _01_02);
+        overflow: hidden;
+        z-index: 2;
+        .pageSearchBtn {
+            @include animate;
+            transition-property: background-color;
+            width: 100%;
+            display: block;
+            padding: rem(10);
+            text-align: left;
+            color: map-get($map: $text_colours, $key: _01_02);
+            border-bottom: rem(1) solid #535353;
+            background-color: #414141;
+            font-size: rem(14);
+            span {
+                color: map-get($map: $text_colours, $key: _01_02);
+            }
+            &:hover {
+                background-color: darken(#414141, 5%);
+            }
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+        .noData {
+            padding: rem(10);
+            font-size: rem(14);
+        }
+    }
+    &.invalid {
+        .inputError {
+            display: block;
+        }
     }
 }
 
@@ -98,8 +171,8 @@
     @include animate;
     width: 50px;
     height: 26px;
-    background-color: #E3E3E3;
-    border: 1px solid #D6D6D6;
+    background-color: map-get($map: $section_colours, $key: _02_01);
+    border: 1px solid map-get($map: $section_colours, $key: _02_02);
     border-radius: rem(20);
     position: relative;
     cursor: pointer;
@@ -121,6 +194,7 @@
         &::after {
             left: rem(26);
             border: 1px solid darken($color: map-get($map: $accent_colours, $key: _01_01), $amount: 10%);
+            background-color: map-get($map: $accent_colours, $key: _03_02);
         }
     }
 }
@@ -135,6 +209,7 @@
     border-bottom: $border_style;
     &:last-child {
         border-bottom: none;
+        padding-bottom: rem(0);
     }
     &.active {
         margin-bottom: 0;
@@ -142,6 +217,7 @@
         align-items: flex-end;
         border-bottom: none;
     }
+
     &--not-border {
         border-bottom: none;
     }
@@ -168,13 +244,15 @@ input[type="number"] {
 }
 
 .errorCon {
-    border-top: $border_style;
-    padding-top: 10px;
+    padding: rem(5);
+    border-radius: rem(5);
+    margin-top: rem(10);
+    background-color: map-get($map: $accent_colours, $key: _02_01);
     &__margin-top {
         margin-top: rem(10);
     }
     p {
-        color: map-get($map: $accent_colours, $key: _02_01);
+        color: map-get($map: $text_colours, $key: _01_01);
         font-size: rem(14);
         line-height: rem(16);
     }

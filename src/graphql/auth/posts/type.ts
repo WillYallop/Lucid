@@ -14,7 +14,7 @@ export const PostType = new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLString),
             description: 'The name of the post type'
         },
-        template_name: {
+        template_path: {
             type: GraphQLNonNull(GraphQLString),
             description: 'the template file name'
         }

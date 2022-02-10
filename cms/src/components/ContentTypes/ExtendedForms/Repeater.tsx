@@ -26,7 +26,7 @@ const ExtendedFormRepeater: React.FC<ExtendedFormRepeaterProps> = ({ config }) =
             
             {/* Max repeats */}
             <div className={`switchLabelRow switchLabelRow--not-border ${ showMaxRepeatsInp ? 'active' : '' }`}>
-                <label htmlFor="maxRepeatsInp">Maximum repeats</label>
+                <label htmlFor="maxRepeatsInp">maximum repeats</label>
                 <SwitchInput
                     state={showMaxRepeatsInp}
                     setState={setShowMaxRepeatsInp}/>

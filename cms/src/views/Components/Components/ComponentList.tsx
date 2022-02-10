@@ -1,12 +1,13 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
 // Context
-import { PageNotificationContext, PageNotificationContextNoticationsObj } from "../../../helper/Context";
+import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext } from "../../../helper/Context";
 // Components
 import ComponentRow from "./ComponentRow";
 import UtilityLoading from '../../../components/Ultility/Loading';
 // Functions
 import getApiUrl from "../../../functions/getApiUrl";
+import e from 'express';
 
 interface componentData {
     date_added: string
@@ -22,6 +23,8 @@ interface componentListProps {
 }
 
 const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
+    const { loadingState, setLoadingState } = useContext(LoadingContext);
+
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
@@ -41,7 +44,7 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     // -------------------------------------------------------
     let [ skip, limit ] = [ 0 , 10 ];
     const [ components, setComponents ] = useState<Array<componentData>>([]);
-    const [ showLoadMore, setShowLoadMore ] = useState(true);
+    const [ showLoadMore, setShowLoadMore ] = useState(false);
 
     // First load
     useEffect(() => {
@@ -54,6 +57,7 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     }, []);
 
     const getAllComponents = (s: number, l: number) => {
+        setLoadingState(true);
         axios({
             url: getApiUrl(),
             method: 'post',
@@ -77,14 +81,16 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
         .then((result) => {
             const allComponents: Array<componentData> = result.data.data.components.get_multiple || [];
             if(allComponents.length < limit) setShowLoadMore(false);
+            else setShowLoadMore(true);
             setComponents((components) => [
                 ...components,
                 ...allComponents
             ]);
+            setLoadingState(false);
         })
         .catch((err) => {
-            console.log(err);
             addNotification('There was an error getting your components!', 'error');
+            setLoadingState(false);
         })
     }
 
@@ -99,13 +105,13 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
         return (
             <div className="con">
                 <div className="blockCon loading">
-                    <UtilityLoading mode="light"/>
+                    <UtilityLoading mode="dark"/>
                 </div>
                 <div className="blockCon loading">
-                    <UtilityLoading mode="light"/>
+                    <UtilityLoading mode="dark"/>
                 </div>
                 <div className="blockCon loading">
-                    <UtilityLoading mode="light"/>
+                    <UtilityLoading mode="dark"/>
                 </div>
             </div>
         )
@@ -120,7 +126,7 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     return (
         <div className="con">
             { componentRows }
-            { showLoadMore ? <button className='btnStyle1' onClick={loadmore}>Load more</button> : null }
+            { showLoadMore ? <button className='btnStyle1' onClick={loadmore}>load more</button> : null }
         </div>
     )
 }

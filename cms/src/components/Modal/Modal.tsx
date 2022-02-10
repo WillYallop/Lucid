@@ -23,10 +23,12 @@ const Modal: React.FC = () => {
         <div className='modalCon'>
             <div className='inner'>
 
-                <div className='content'>
+                <div className={`content ${modalState.size}`}>
                     <div className='header'>
-                        <h2>{ modalState.title ? modalState.title : 'Modal header' }</h2>
-                        { modalState.body ? <p>{modalState.body}</p> : null }
+                        <div className="textarea">
+                            <h2 className={` ${modalState.body ? '' : 'no-margin'}`}>{ modalState.title ? modalState.title : 'Modal header' }</h2>
+                            { modalState.body ? <p>{modalState.body}</p> : null }
+                        </div>
                         <div className='closeBtn' onClick={closeModal}>
                             <CoreIcon icon={faTimes}/>
                         </div>

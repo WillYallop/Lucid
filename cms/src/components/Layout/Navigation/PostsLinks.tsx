@@ -4,8 +4,7 @@ import { NavLink } from "react-router-dom";
 import axios from 'axios';
 // Components
 import CoreIcon from "../../Core/Icon";
-import UtilityLoading from "../../Ultility/Loading";
-import NewPostTypeForm from "../../Modal/NewPostTypeForm";
+import NewPostTypeForm from "../../../views/Posts/Components/NewPostTypeForm";
 // Icons
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 // Context
@@ -17,7 +16,7 @@ import getApiUrl from "../../../functions/getApiUrl";
 interface cont_post_postDeclaration {
     _id: string
     name: string
-    template_name: string
+    template_path: string
 }
 
 const NavigationPostLinks: React.FC = () => {
@@ -30,9 +29,10 @@ const NavigationPostLinks: React.FC = () => {
         setModalState({
             ...modalState,
             state: true,
-            title: 'Register a new post type',
-            body: 'A post type is a category of page that can only use one template file.',
-            element: <NewPostTypeForm/>
+            title: 'register a new post type',
+            size: 'standard',
+            body: 'a post type is a category of page that can only use one template file.',
+            element: <NewPostTypeForm callback={addPostCallback}/>
         });
     }
 
@@ -63,7 +63,7 @@ const NavigationPostLinks: React.FC = () => {
                         {
                             _id
                             name
-                            template_name
+                            template_path
                         }
                     }
                 }`
@@ -80,37 +80,36 @@ const NavigationPostLinks: React.FC = () => {
             console.log(err);
         })
     }
-
-    let postLinks: Array<ReactElement> = [];
-    if(posts.length) {
-        posts.forEach((post) => {
-            let path = `/posts/${post.name}`;
-            let ele = (
-                <li className="navItem" key={post._id}>
-                    <NavLink to={path} className={(navData) => navData.isActive ? "active" : "" }>
-                        <CoreIcon icon={faFile}/> { post.name }
-                    </NavLink >
-                </li>
-            );
-            postLinks.push(ele);
+    const addPostCallback = () => {
+        setPosts([]);
+        getAllPosts();
+        setModalState({
+            ...modalState,
+            state: false
         });
-    } 
-    else {
-        return (
-            <div className="pagesSubSection">
-                <div className="postsLoadingCon">
-                    <UtilityLoading mode="dark"/>
-                </div>
-            </div>
-        )
     }
 
+    let postLinks: Array<ReactElement> = [];
+    posts.forEach((post) => {
+        let path = `/posts/${post.name}`;
+        const linkTarget = {
+            pathname: path,
+            key: post._id,
+        };
+        let ele = (
+            <li className="navItem" key={post._id}>
+                <NavLink to={linkTarget} className={(navData) => navData.isActive ? "active" : "" }>
+                    <CoreIcon icon={faFile}/> { post.name.replace('_', ' ') }
+                </NavLink>
+            </li>
+        );
+        postLinks.push(ele);
+    });
 
     return (
         <div className="pagesSubSection">
             { postLinks }
-            <button className="btnStyle1" onClick={() => openModal()}>New post type</button>
-
+            <button className="btnStyle1" onClick={() => openModal()}>new post type</button>
         </div>
     )
 }

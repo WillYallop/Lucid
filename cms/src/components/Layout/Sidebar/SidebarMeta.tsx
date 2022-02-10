@@ -22,7 +22,7 @@ const SidebarMeta: React.FC<SideBarMetaProps> = ({ rows }) => {
 
     return (
         <SidebarLayout 
-        title="Meta">
+        title="meta">
             { metaRows }
         </SidebarLayout>
     )

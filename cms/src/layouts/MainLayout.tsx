@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import Header from "../components/Layout/Header";
 import Navigation from "../components/Layout/Navigation/Navigation";
 import Modal from '../components/Modal/Modal';
+import LoadingIndicator from '../components/Layout/LoadingIndicator';
 // Functions
 import getApiUrl from "../functions/getApiUrl";
 
@@ -73,6 +74,7 @@ const MainLayout: React.FC = () => {
                 { showConnectionError ? connectionErrorEle : null }
                 <Outlet />
             </main>
+            <LoadingIndicator/>
         </div>
     );
 }

@@ -26,8 +26,10 @@ const saveSinglePage: GraphQLFieldConfig<any, any, any> = {
         type: { type: GraphQLNonNull(GraphQLString) },
         has_parent: { type: GraphQLNonNull(GraphQLBoolean) },
         parent_id: { type: GraphQLString },
+        post_name: { type: GraphQLString },
         author: { type: GraphQLNonNull(GraphQLString) },
-        is_homepage: { type: GraphQLNonNull(GraphQLBoolean) }
+        is_homepage: { type: GraphQLNonNull(GraphQLBoolean) },
+        post_type_id: { type: GraphQLID }
     },
     resolve: (_, args) => {
         return saveSingle(args);
@@ -44,7 +46,8 @@ const updateSinglePage: GraphQLFieldConfig<any, any, any> = {
         name: { type: GraphQLString },
         has_parent: { type: GraphQLBoolean },
         parent_id: { type: GraphQLString },
-        is_homepage: { type: GraphQLBoolean }
+        is_homepage: { type: GraphQLBoolean },
+        post_type_id: { type: GraphQLID }
     },
     resolve: (_, args) => {
         return updateSingle(args._id, {
@@ -53,7 +56,8 @@ const updateSinglePage: GraphQLFieldConfig<any, any, any> = {
             name: args.name,
             has_parent: args.has_parent,
             parent_id: args.parent_id,
-            is_homepage: args.is_homepage
+            is_homepage: args.is_homepage,
+            post_type_id: args.post_type_id
         });
     }
 }

@@ -23,6 +23,8 @@ import { ContentTypeMutation } from './content_type/mutation';
 import { PageComponentMutation } from './page_component/mutation';
 // Utility
 import { UtilityQuery } from './utility/query';
+// Templates
+import { TemplateQuery } from './template/query';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -59,6 +61,11 @@ const baseQuery = new GraphQLObjectType({
             description: ContentTypeConfigQuery.description,
             resolve: () => { return {} }
         },
+        template: {
+            type: TemplateQuery,
+            description: TemplateQuery.description,
+            resolve: () => { return {} }
+        }
     }
 });
 

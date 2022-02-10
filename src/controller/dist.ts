@@ -73,7 +73,7 @@ const savePages = async (pages: gene_pagseMap): Promise<boolean> => {
         // Save new site to a temp directory
         for (const [key, value] of pages.entries()) {
             fs.outputFileSync(`${tempGenDir}${value.slug}/index.html`, value.markup); 
-            console.log(`Page "${value.slug}" has been created!`);
+            console.log(`Page "/${value.slug}" has been created!`);
         }
         fs.rmdirSync(distDir, { recursive: true }); // Wipe app dist
         fs.copySync(tempGenDir, distDir); // Copy temp to app dist

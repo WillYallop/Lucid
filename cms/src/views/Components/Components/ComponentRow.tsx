@@ -39,9 +39,9 @@ const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded }) => {
                     </ul>
                     <div className="buttonCon">
                         <NavLink to={`/edit/component/${component._id}`}>
-                            <button className="btnStyle1 btnStyle1--small">Edit</button>
+                            <button className="btnStyle1 btnStyle1--small">edit</button>
                         </NavLink >
-                        <button className="btnStyle1 btnStyle1--small btnStyle1--danger">Deregister</button>
+                        <button className="btnStyle1 btnStyle1--small btnStyle1--danger">deregister</button>
                     </div>
                 </div>
             </div>

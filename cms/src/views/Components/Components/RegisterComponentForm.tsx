@@ -3,7 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 // Context
 import { 
-    ModalContext
+    ModalContext,
+    LoadingContext
 } from "../../../helper/Context";
 // Components
 import TextInput from "../../../components/Core/Inputs/TextInput";
@@ -17,6 +18,7 @@ import validatorConfig from '../../../functions/validatorConfig';
 
 const RegisterComponentForm: React.FC = () => {
     const navigate = useNavigate();
+    const { loadingState, setLoadingState } = useContext(LoadingContext);
 
     // -------------------------------------------------------
     // Modal 
@@ -46,6 +48,7 @@ const RegisterComponentForm: React.FC = () => {
 
     // Get unregistered components
     const getUnregisteredComponents = () => {
+        setLoadingState(true);
         // Save single component
         axios({
             url: getApiUrl(),
@@ -78,13 +81,14 @@ const RegisterComponentForm: React.FC = () => {
                     message: result.data.errors[0].message
                 });
             }
-
+            setLoadingState(false);
         })
         .catch(() => {
             setFormError({
                 error: true,
                 message: 'An unexpected error occured while registering the components!'
             });
+            setLoadingState(false);
         })
     }
     
@@ -95,6 +99,7 @@ const RegisterComponentForm: React.FC = () => {
         formValidationHandler({
             e: e,
             onValidatePass: (fields) => {
+                setLoadingState(true);
                 // Save single component
                 axios({
                     url: getApiUrl(),
@@ -132,12 +137,14 @@ const RegisterComponentForm: React.FC = () => {
                             message: result.data.errors[0].message
                         });
                     }
+                    setLoadingState(false);
                 })
                 .catch((err) => {
                     setFormError({
                         error: true,
                         message: 'An unexpected error occured when registering the component!'
                     });
+                    setLoadingState(false);
                 })
             },
             customValidation: [
@@ -178,8 +185,8 @@ const RegisterComponentForm: React.FC = () => {
                     required={true}
                     errorMsg={"There was an unexpected error!"}
                     updateValue={setComponentPath}
-                    label="Component File"
-                    described_by="Select the component you wish to register. If it does not appear, it may have been registered before or it could be configured incorrectly!"/>
+                    label="component file (*)"
+                    described_by="select the component you wish to register. If it does not appear, it may have been registered before or it could be configured incorrectly!"/>
 
                 {/* Component Name */}
                 <TextInput
@@ -187,9 +194,9 @@ const RegisterComponentForm: React.FC = () => {
                     id={"componentNameInp"}
                     name={"comp_name"}
                     required={true}
-                    errorMsg={`Name can only include the following characters: [A-Za-z -!,?._'"@] and be a minimum of 2 and maximum of 60 characters long!`}
+                    errorMsg={`name can only include the following characters: [A-Za-z -!,?._'"@] and be a minimum of 2 and maximum of 60 characters long!`}
                     updateValue={setNameValue}
-                    label="Name"
+                    label="name (*)"
                     pattern={validatorConfig.comp_name.string}/>
 
                 {/* Component Description */}
@@ -198,9 +205,9 @@ const RegisterComponentForm: React.FC = () => {
                     id={"componentDescInp"}
                     name={"comp_desc"}
                     required={true}
-                    errorMsg={`Description can only include the following characters: [A-Za-z \-\!,?._'@] and be a minimum of 0 and maximum of 400 characters long!`}
+                    errorMsg={`description can only include the following characters: [A-Za-z \-\!,?._'@] and be a minimum of 0 and maximum of 400 characters long!`}
                     updateValue={setDescriptionValue}
-                    label="Description"
+                    label="description (*)"
                     min={0}
                     max={400}/>
 
@@ -208,9 +215,9 @@ const RegisterComponentForm: React.FC = () => {
                     
                 <div className="footer">
                     <div className="textarea">
-                        <p>After registering a component you will be taken to the component editor page. Here you will be able to configure its fields and more.</p>
+                        <p>after registering a component you will be taken to the component editor page. Here you will be able to configure its fields and more.</p>
                     </div>
-                    <input className="btnStyle1 btnStyle1--small" type="submit" value="Register" />
+                    <input className="btnStyle1 btnStyle1--small" type="submit" value="register" />
                 </div>
             </form>
 

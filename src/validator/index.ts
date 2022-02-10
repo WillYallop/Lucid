@@ -136,6 +136,31 @@ const validateField = async (field: vali_validateFieldObj) => {
                     }
                     break;
                 }
+                // Page
+                case 'page_name': {
+                    let regex = new RegExp(validatorConfig.page_name);
+                    let res = regex.test(field.value);
+                    if(!res) {
+                        throw __generateErrorString({
+                            code: 403,
+                            origin: origin,
+                            message: `Page name: "${field.value}" does not meet the criteria: "${validatorConfig.page_name}".`
+                        });
+                    }
+                    break;
+                }
+                case 'page_slug': {
+                    let regex = new RegExp(validatorConfig.page_slug);
+                    let res = regex.test(field.value);
+                    if(!res) {
+                        throw __generateErrorString({
+                            code: 403,
+                            origin: origin,
+                            message: `Page slug: "${field.value}" does not meet the criteria: "${validatorConfig.page_slug}".`
+                        });
+                    }
+                    break;
+                }
             }
         } 
         else {

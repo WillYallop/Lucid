@@ -9,7 +9,7 @@ interface textareaInputProps {
     errorMsg: string
     options: Array<string>
     described_by?: string
-    style?: '--no-margin'
+    style?: '--no-margin' | '--hide-seperator'
     updateValue: (value: string) => void
 }
 
@@ -41,11 +41,11 @@ const SelectInput: React.FC<textareaInputProps> = ({ label, value, id, name, req
                 <> 
                     { described_by ?  describedBy : null }
                     { children } 
-                    <span className="speratorRow"></span>
+                    <span className={`speratorRow ${ style ? style : '' }`}></span>
                 </> 
             : 
                 <> 
-                    { described_by ? <>{describedBy}<span className="speratorRow"></span></> : null }
+                    { described_by ? <>{describedBy}<span className={`speratorRow ${ style ? style : '' }`}></span></> : null }
                 </> 
             }
         </div>

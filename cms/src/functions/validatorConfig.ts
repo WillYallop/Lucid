@@ -10,8 +10,8 @@ export default {
     },
     // Posts
     post_name: {
-        string:  `[A-Z_a-z]{2,100}`,
-        regex: /^[A-Z_a-z]{2,100}$/
+        string:  `[A-Z_a-z ]{2,100}`,
+        regex: /^[A-Z_a-z ]{2,100}$/
     },
     cont_name: {
         frontend_string: `[A-Z_a-z ]{2,100}`, // allow spaces on front end - these are converted to _ later
@@ -25,5 +25,11 @@ export default {
     menu_linkText: {
         string: `[A-Za-z \-\!,?._'"@]{0,200}`,
         regex: /^[A-Za-z \-\!,?._'"@]{0,200}$/
+    },
+    page_name: {
+        string: `[A-Za-z \-\!?_@]{2,255}`
+    },
+    page_slug: {
+        string: `[a-z\-\/]{1,255}`
     }
 }
