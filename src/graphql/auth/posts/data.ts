@@ -62,6 +62,7 @@ export const saveSingle = async (name: cont_post_postDeclaration["name"], templa
             }
             else {
                 let post_type = await postsController.addPostType(name, template_path);
+                await pageResetHandler('unset_post_type_id', post_type._id);
                 await db.none('UPDATE pages SET post_type_id=${post_type_id} WHERE _id=${page_id}', {
                     post_type_id: post_type._id,
                     page_id: page_id
@@ -76,5 +77,31 @@ export const saveSingle = async (name: cont_post_postDeclaration["name"], templa
     }
     catch(err) {
         throw err;
+    }
+}
+
+// Update single post
+export const updateSingle = async (_id: cont_post_postDeclaration["_id"], data: const_post_updateSingleGraphInp) => {
+    try {
+        let updateData: cont_post_updateSingleInp = {};
+        if(data.name != undefined) updateData.name = data.name;
+        if(data.template_path != undefined) updateData.template_path = data.template_path;
+        let post = await postsController.updateSinglePostType(_id, updateData);
+        
+        // If given a page ID and the post updates
+        // Update the page with the new post_id_type
+        if(data.page_id != undefined) {
+            await pageResetHandler('unset_post_type_id', post._id);
+            await db.none('UPDATE pages SET post_type_id=${post_type_id} WHERE _id=${page_id}', {
+                post_type_id: post._id,
+                page_id: data.page_id
+            });
+        } 
+
+        return post;
+
+    }
+    catch(err) {
+        throw(err);
     }
 }
