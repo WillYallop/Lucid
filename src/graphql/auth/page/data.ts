@@ -319,3 +319,15 @@ export const pageSearch = async (query: string) => {
         throw err;
     }
 }
+
+// Find page via post  ID
+export const getSinglePageViaPostId = async (_id: cont_post_postDeclaration["_id"]) => {
+    try {
+        // Get page
+        let page = await db.one('SELECT * FROM pages WHERE post_type_id=$1', _id);
+        return page;
+    }
+    catch(err) {
+        throw err;
+    }
+}
