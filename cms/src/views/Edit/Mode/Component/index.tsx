@@ -22,6 +22,7 @@ import getApiUrl from "../../../../functions/getApiUrl";
 import formatLucidError from '../../../../functions/formatLucidError';
 // Icons
 import { faSave, faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
+import SidebarLayout from '../../../../components/Layout/Sidebar/SidebarLayout';
 
 interface mod_componentModel {
     _id: string
@@ -300,6 +301,10 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 null
             }
             <SidebarButton 
+                text="add content type"
+                action={() => { openContentTypeActionModal('create', 'root') }}
+                icon={faPlus}/>
+            <SidebarButton 
                 text="deregister"
                 action={() => { alert('deregister') }}
                 icon={faTrashAlt}
@@ -315,6 +320,25 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                         data: new Date(component.date_modified).toLocaleDateString()
                     }
                 ]}/>
+
+            <SidebarLayout>
+                <ComponentDataForm
+                    component__id={_id}
+                    name={{
+                        value: component.name,
+                        update: updateComponentName
+                    }}
+                    description={{
+                        value: component.description,
+                        update: updateComponentDescription
+                    }}
+                    successCallback={() => {
+                        // Add success message
+                        addNotification('you have successfully update the components data!', 'success');
+                        updateAllowSave(false);
+                        setComponentName(component.name);
+                    }}/>
+            </SidebarLayout>
         </>
     )
 
@@ -361,40 +385,10 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         title={`edit - ${componentName}`}
         body="manage your components fields and content types!"
         sidebar={sidebar}>
-
-            {/* Component Data */}
-            <section className="section blockCon">
-                <div className="header layout__flex layout__space-between layout__align-center">
-                    <p className="bold">component data</p>
-                </div>
-                <div className="body layout">
-                    <ComponentDataForm
-                        component__id={_id}
-                        name={{
-                            value: component.name,
-                            update: updateComponentName
-                        }}
-                        description={{
-                            value: component.description,
-                            update: updateComponentDescription
-                        }}
-                        successCallback={() => {
-                            // Add success message
-                            addNotification('you have successfully update the components data!', 'success');
-                            updateAllowSave(false);
-                            setComponentName(component.name);
-                        }}/>
-                </div>
-            </section>
-            
             {/* Content Types */}
             <section>
-                <div className='layout__flex layout__flex-end layout--pad-top layout--pad-bot-half'>
-                    <button className='btnStyle2' onClick={() => openContentTypeActionModal('create', 'root')}><CoreIcon icon={faPlus}/><span>add content type</span></button>
-                </div>
                 { contentTypeRows }
             </section>
-
         </DefaultPage>
     )
 }
