@@ -83,6 +83,7 @@ export const saveSingle = async (name: cont_post_postDeclaration["name"], templa
 // Update single post
 export const updateSingle = async (_id: cont_post_postDeclaration["_id"], data: const_post_updateSingleGraphInp) => {
     try {
+
         let updateData: cont_post_updateSingleInp = {};
         if(data.name != undefined) updateData.name = data.name;
         if(data.template_path != undefined) updateData.template_path = data.template_path;

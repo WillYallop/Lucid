@@ -265,7 +265,7 @@ export const pageResetHandler = async (action: 'unset_is_homepage' | 'unset_post
             }
             case 'unset_post_type_id': {
                 // unset all pages post_type_id that match data
-                db.none(`UPDATE pages SET post_type_id=NULL WHERE post_type_id=$1`, data);
+                await db.none(`UPDATE pages SET post_type_id=NULL WHERE post_type_id=$1`, data);
                 return true;
             }
         }
