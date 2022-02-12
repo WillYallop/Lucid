@@ -26,57 +26,55 @@ const WidthScrollBar: React.FC<widthScrollbarProps> = ({ updateValue, iframeCont
     const leftBtnEle = document.getElementById(leftBtnID) as HTMLElement;
     const rightBtnEle = document.getElementById(rightBtnID) as HTMLElement;
     
-    // Mouse click handler
-    const barClickHandler = (e: React.MouseEvent) => {
+    // Button move handler
+    const barUpdateButtonPosHandler = (e: React.MouseEvent) => {
         const scrollbarEle = document.getElementById(scrollbarEleID) as HTMLElement;
         const rect = scrollbarEle.getBoundingClientRect();
-        const tempMousePos = (e.clientX - rect.left) - (leftBtnEle.offsetWidth / 2);
-        if(tempMousePos >= 0 && tempMousePos <= (scrollbarEle.offsetWidth / 2) - ((leftBtnEle.offsetWidth / 2) + 50)) updateBtnPos(tempMousePos);
+
+        // Mouse move handler
+        const updateBtnPos = (pos: number) => {
+            const scrollbarWidth = scrollbarEle.offsetWidth;
+            let buttonPosPercent = (100 * pos) / scrollbarWidth;
+            leftBtnEle.style.left = `${buttonPosPercent}%`;
+            rightBtnEle.style.right = `${buttonPosPercent}%`;
+            
+            // Return page percentage with callback
+            const maxRangeSlide = (scrollbarEle.offsetWidth / 2) - rightBtnEle.offsetWidth;
+            let percent = (100 * pos) / maxRangeSlide;
+            percent = 100 - percent;
+            if(percent >= 100) {
+                percent = 100;
+            }
+            updateValue(percent);
+            let pageWidth = Math.ceil(scrollbarEle.offsetWidth * (percent / 100));
+            setPageWidth(pageWidth);
+        }
+
+        let mousePos: number;
+        if((e.clientX - rect.left) > (scrollbarEle.offsetWidth / 2)) {
+            // Right side 
+            mousePos = Math.abs((e.clientX - rect.right)) - (rightBtnEle.offsetWidth / 2);
+            if(mousePos >= 0 && mousePos <= (scrollbarEle.offsetWidth / 2) - ((rightBtnEle.offsetWidth / 2) + 50)) updateBtnPos(mousePos);
+        }
+        else {
+            // Left side
+            mousePos = (e.clientX - rect.left) - (leftBtnEle.offsetWidth / 2);
+            if(mousePos >= 0 && mousePos <= (scrollbarEle.offsetWidth / 2) - ((leftBtnEle.offsetWidth / 2) + 50)) updateBtnPos(mousePos);
+        }
     }
-    // Mouse down handler
+
+    // Button events
     const mouseDownHandler = (e: React.MouseEvent, side: 'left' | 'right') => {
         setMouseDown(true);
         setActiveSide(side);
     }
-    // Mouse up handler
     const mouseUpHandler = (e: React.MouseEvent) => {
         setMouseDown(false);
     }
-    // Mouse move handler
-    const updateBtnPos = (pos: number) => {
-        const maxRangeSlide = scrollbarEle.offsetWidth;
-        let percent = (100 * pos) / maxRangeSlide;
-        leftBtnEle.style.left = `${percent}%`;
-        rightBtnEle.style.right = `${percent}%`;
-        workoutPageWidth(pos);
-    }
     const mouseMoveHandler = (e: React.MouseEvent) => {
-        if(mouseDown) {
-            const rect = scrollbarEle.getBoundingClientRect();
-            let mousePos: number;
-            if(activeSide == 'left') {
-                mousePos = (e.clientX - rect.left) - (leftBtnEle.offsetWidth / 2);
-                if(mousePos >= 0 && mousePos <= (scrollbarEle.offsetWidth / 2) - ((leftBtnEle.offsetWidth / 2) + 50)) updateBtnPos(mousePos);
-            }
-            else {
-                mousePos = Math.abs((e.clientX - rect.right)) - (rightBtnEle.offsetWidth / 2);
-                if(mousePos >= 0 && mousePos <= (scrollbarEle.offsetWidth / 2) - ((rightBtnEle.offsetWidth / 2) + 50)) updateBtnPos(mousePos);
-            }
-        }
+        if(mouseDown) barUpdateButtonPosHandler(e);
     }
-    // Return page percentage with callback
-    const workoutPageWidth = (pos: number) => {
-        const maxRangeSlide = (scrollbarEle.offsetWidth / 2) - rightBtnEle.offsetWidth;
-        let percent = (100 * pos) / maxRangeSlide;
-        percent = 100 - percent;
-        if(percent >= 100) {
-            percent = 100;
-        }
-        updateValue(percent);
 
-        let pageWidth = Math.ceil(scrollbarEle.offsetWidth * (percent / 100));
-        setPageWidth(pageWidth);
-    }
 
     const windowResize = function () {
         if(iframeContainerID) {
@@ -100,7 +98,7 @@ const WidthScrollBar: React.FC<widthScrollbarProps> = ({ updateValue, iframeCont
             id={scrollbarEleID} 
             className="widthScrollbar" 
             onMouseMove={(e) => mouseMoveHandler(e)} 
-            onClick={(e) => barClickHandler(e)}>
+            onClick={(e) => barUpdateButtonPosHandler(e)}>
             <button id={leftBtnID}
                 className="left" 
                 onMouseDown={(e) => mouseDownHandler(e, 'left')}

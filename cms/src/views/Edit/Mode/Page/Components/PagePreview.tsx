@@ -70,7 +70,7 @@ const PagePreview: React.FC = () => {
         return () => {
             iframeLinkEventHandler('destroy');
         }
-    }, []);
+    });
 
 
 

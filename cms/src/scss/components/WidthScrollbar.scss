@@ -1,10 +1,8 @@
 .widthScrollbar {
     height: rem(25);
-    margin: 0 0 rem(10);
-    background-color: map-get($map: $section_colours, $key: _02_01);
+    background-color: map-get($map: $accent_colours, $key: _03_01);
     left: 0;
     position: relative;
-    border-radius: rem(5);
     .pageSize {
         position: absolute;
         left: 50%;
@@ -36,11 +34,11 @@
         color: map-get($map: $accent_colours, $key: _03_02);
         &.left {
             left: 0;
-            border-radius: rem(5) 0 0 rem(5);
+            // border-radius: rem(5) 0 0 rem(5);
         }
         &.right {
             right: 0;
-            border-radius: 0 rem(5) rem(5) 0;
+            // border-radius: 0 rem(5) rem(5) 0;
         }
         svg {
             pointer-events: none;
@@ -60,7 +58,7 @@
             display: block;
             width: rem(1);
             height: rem(15);
-            background-color: #2A2A2A;
+            background-color: rgb(102, 110, 101);
         }
     }
 }

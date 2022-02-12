@@ -1,4 +1,4 @@
-import react, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 // Components
 import PagePreview from './Components/PagePreview';
 
@@ -21,7 +21,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         
     }, []);
 
-    if(slug != activeSlug) {
+    if(slug !== activeSlug) {
         
         setActiveSlug(slug);
     }
