@@ -5,18 +5,18 @@ import EditPage from "./Mode/Page";
 
 const Edit: React.FC = () => {
     const { mode } = useParams();
-    const { _id } = useParams();
+    const { param } = useParams();
     const navigate = useNavigate();
 
 
-    if(_id) {
+    if(param) {
         if(mode === 'component') {
             return (
-                <EditComponent _id={_id}/>
+                <EditComponent _id={param}/>
             )
         }
         else if(mode === 'page') {
-            return <EditPage _id={_id}/>
+            return <EditPage slug={param}/>
         }
         else {
             navigate('/404');

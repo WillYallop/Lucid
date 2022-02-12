@@ -11,7 +11,6 @@ import { componentController, contentTypeController } from '../../../index';
 import { __generateErrorString } from '../../../controller/helper/shared';
 
 
-
 // Get single page
 export const getSingle = async (_id: mod_pageModel["_id"]) => {
     try {
@@ -107,6 +106,10 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
                 value: data.is_homepage ? '/' : data.slug
             },
             {
+                method: 'page_slug_blacklist',
+                value: data.is_homepage ? '/' : data.slug
+            },
+            {
                 method: 'temp_verifyFileExists',
                 value: data.template
             }
@@ -172,6 +175,10 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
                 method: 'page_slug',
                 value: data.slug
             });
+            validationArr.push({
+                method: 'page_slug_blacklist',
+                value: data.slug
+            })
         }
         if(data.template != undefined) {
             validationArr.push({

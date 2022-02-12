@@ -9,14 +9,11 @@ import LoadingIndicator from '../components/Layout/LoadingIndicator';
 // Functions
 import getApiUrl from "../functions/getApiUrl";
 
-
-
 const MainLayout: React.FC = () => {
     // Navigation State
     const [navigationState, toggleNavigation] = useState(false);
     // Pint state
     const [showConnectionError, setConnectionErrorState] = useState(false);
-
 
     // Check server status
     useEffect(() => {
@@ -26,6 +23,7 @@ const MainLayout: React.FC = () => {
         }
     }, []);
 
+    // To do - move this and update query 
     const checkAPIConnection = () => {
         axios({
             url: getApiUrl(),
@@ -65,8 +63,8 @@ const MainLayout: React.FC = () => {
             <Header toggleNav={() => toggleNavigation(!navigationState)}></Header>
             {/* Navigation */}
             <Navigation 
-            showNav={navigationState} 
-            toggleNav={() => toggleNavigation(!navigationState)}></Navigation>
+                showNav={navigationState} 
+                toggleNav={() => toggleNavigation(!navigationState)}></Navigation>
             {/* Modal */}
             <Modal/>
             {/* Main */}

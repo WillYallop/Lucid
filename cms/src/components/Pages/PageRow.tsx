@@ -32,7 +32,7 @@ const PageRow: React.FC<PageRowProps> = ({ page, getChildren, deleteCallback }) 
                     <div className="pageRow__action-row">
                         <ul>
                             <li>
-                                <NavLink to={`/edit/page/${page._id}`} className={(navData) => navData.isActive ? "active" : "" }>edit</NavLink>
+                                <NavLink to={ page.slug == '/' ? `/edit/page/homepage` : `/edit/page/${page.slug}`} className={(navData) => navData.isActive ? "active" : "" }>edit</NavLink>
                             </li>
                             <li>
                                 <a href="#" target={'_blank'}>visit</a>

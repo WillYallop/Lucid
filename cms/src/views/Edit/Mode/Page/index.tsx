@@ -1,9 +1,10 @@
 
 interface editPageProps {
-    _id: string
+    slug: string
 }
 
-const EditPage: React.FC<editPageProps> = ({ _id }) => {
+const EditPage: React.FC<editPageProps> = ({ slug }) => {
+
 
     // 
 

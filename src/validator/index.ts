@@ -161,6 +161,20 @@ const validateField = async (field: vali_validateFieldObj) => {
                     }
                     break;
                 }
+                case 'page_slug_blacklist': {
+                    const blacklistPageSlug = [
+                        'homepage'
+                    ];
+                    let checkMatch = blacklistPageSlug.findIndex( x => x === field.value );
+                    if(checkMatch != -1) {
+                        throw __generateErrorString({
+                            code: 409,
+                            origin: origin,
+                            message: `Page slug "${field.value}" is blacklisted and cannot be used.`
+                        })
+                    }
+                    break;
+                }
             }
         } 
         else {

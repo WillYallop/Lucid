@@ -7,7 +7,7 @@ import logo from '../../assets/logo.svg';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 interface HeaderProps {
-    toggleNav: () => void
+    toggleNav?: () => void
 }
 
 const Header: React.FC<HeaderProps> = ({ toggleNav }) => {
