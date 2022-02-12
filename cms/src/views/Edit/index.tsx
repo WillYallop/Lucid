@@ -3,11 +3,13 @@ import { useParams, useNavigate } from "react-router-dom";
 import EditComponent from "./Mode/Component";
 import EditPage from "./Mode/Page";
 
-const Edit: React.FC = () => {
-    const { mode } = useParams();
+interface editProps {
+    mode: 'page' | 'component'
+} 
+
+const Edit: React.FC<editProps> = ({ mode }) => {
     const { param } = useParams();
     const navigate = useNavigate();
-
 
     if(param) {
         if(mode === 'component') {
@@ -16,7 +18,7 @@ const Edit: React.FC = () => {
             )
         }
         else if(mode === 'page') {
-            return <EditPage slug={param}/>
+            return <EditPage slug={param}/>;
         }
         else {
             navigate('/404');

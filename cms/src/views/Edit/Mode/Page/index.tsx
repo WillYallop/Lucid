@@ -1,3 +1,4 @@
+import react, { useEffect } from 'react'
 
 interface editPageProps {
     slug: string
@@ -5,12 +6,13 @@ interface editPageProps {
 
 const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
+    
 
-    // 
 
     return (
         <div>
             <h1>edit page</h1>
+
         </div>
     );
 }

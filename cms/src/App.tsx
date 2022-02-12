@@ -41,16 +41,16 @@ const App: React.FC = () => {
           <Router>
             <Routes>
 
-                <Route>
+                <Route element={<BasicLayout/>}>
                   <Route path="/signin" element={<SignIn/>}></Route>
                 </Route>
 
-                <Route>
+                <Route element={<BasicLayout/>}>
                   <Route path="/404" element={<Error404/>}></Route>
                 </Route>
 
                 <Route element={<BasicLayout/>}>
-                  <Route path="/edit/:mode/:param" element={<Edit />}></Route>
+                  <Route path="/edit/page/:param" element={<Edit mode={'page'} />}></Route>
                 </Route>
 
                 <Route element={<MainLayout/>}>
@@ -61,6 +61,7 @@ const App: React.FC = () => {
                   <Route path="/components" element={<Components />}></Route>
                   <Route path="/style" element={<Style />}></Route>
                   <Route path="/settings" element={<Settings />}></Route>
+                  <Route path="/edit/component/:param" element={<Edit mode={'component'} />}></Route>
                 </Route>
 
             </Routes>
