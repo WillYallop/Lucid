@@ -120,17 +120,16 @@ const Pages: React.FC = () => {
     // Sidebar Element
     const siderbar = (
         <>
-            {/* {
+            {
                 allowSave
                 ?
-       
-                :
-                null
-            } */}
-                     <SidebarFormSubmit
+                <SidebarFormSubmit
                     text="save changes"
                     formID={'updatePostForm'}
                     icon={faSave}/>
+                :
+                null
+            }
             <SidebarButton 
                 text="new post page"
                 action={() => { 

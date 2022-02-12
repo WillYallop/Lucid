@@ -1,4 +1,6 @@
-import react, { useEffect } from 'react'
+import react, { useEffect } from 'react';
+// Components
+import PagePreview from './Components/PagePreview';
 
 interface editPageProps {
     slug: string
@@ -8,11 +10,17 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
     
 
-
     return (
-        <div>
-            <h1>edit page</h1>
-
+        <div className='pageEditCon'>
+            <div className="sidebar">
+                exit
+            </div>
+            <div className="pagePreviewCon">
+                <PagePreview/>
+            </div>
+            <div className="sidebar">
+                save
+            </div>
         </div>
     );
 }
