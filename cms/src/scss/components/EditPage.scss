@@ -1,25 +1,52 @@
 .pageEditCon {
     position: fixed;
-    top: $header_height;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     z-index: 2;
     background-color: #2B2B2B;
     display: flex;
+    flex-wrap: wrap;
+    .editPageHeader {
+        width: 100%;
+        height: $header_height;
+        background-color: map-get($map: $section_colours, $key: _02_01);
+        border-bottom: $border_style;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 rem(10px);
+        z-index: 5;
+        .headerSearchWrapper {
+            width: 100%;
+            max-width: rem(450);
+            padding: 0 rem(20);
+            input {
+                margin: 0;
+                height: rem(30);
+            }
+            .searchIcon {
+                top: 0;
+                bottom: 0;
+            }
+            .searchDropdown {
+                top: rem(30);
+            }
+        }
+        .btnStyle3 {
+            width: auto;
+            padding: 0 rem(10) 0 0;
+        }
+    }
     .sidebar {
         width: rem(300);
         background-color: map-get($map: $section_colours, $key: _02_01);
         height: 100%;
-        &:first-child {
-            border-right: $border_style;
-        }
-        &:last-child {
-            border-left: $border_style;
-        }
+        border-right: $border_style;
     }
     .pagePreviewCon {
-        width: calc(100% - rem(600));
+        width: calc(100% - rem(300));
         height: 100%;
         .iframeContainer {
             width: 100%;

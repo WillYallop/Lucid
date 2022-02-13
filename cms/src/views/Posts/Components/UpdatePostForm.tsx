@@ -137,6 +137,9 @@ const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ _id, name, temp
             page {
                 search_name (
                     query: "${value}"
+                    full_slug: true
+                    allow_home: false
+                    type: "page"
                 )
                 {
                     slug

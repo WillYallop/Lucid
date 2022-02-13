@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import WidthScrollBar from "./WidthScrollbar";
 import { useNavigate } from "react-router-dom";
 
-const PagePreview: React.FC = () => {
+interface pagePreviewPops {
+    pageMarkup: string
+}
+
+const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
 
     const navigate = useNavigate();
 
@@ -26,12 +30,12 @@ const PagePreview: React.FC = () => {
     // - Iframe Custom Actions ---------------------------------------------/
     // ---------------------------------------------------------------------/
     const iframeLinkClickHandler = (e: Event) => {
+        e.preventDefault();
         // Check to see if the link is local or external
         // --
         // If its a local path, we grab the slug from it, and attach an event listenr to navigate to that pages edit route in the CMS
         // --
         // Else we attach an event that will fire a popup in the CMS telling the user that they cannot navigate to an external URL while editing the page
-        e.preventDefault();
         let target = e.currentTarget as HTMLAnchorElement;
         if(target.host !== window.location.host) {
             alert('This is an external link, you cannot navigate to this while editing this page.');
@@ -51,27 +55,22 @@ const PagePreview: React.FC = () => {
         if(myIFrame && myIFrame.contentWindow) {
             const links = myIFrame.contentWindow.document.getElementsByTagName("a");
             for (let i = 0; i < links.length; i++) {
-                if(action === 'create') links[i].addEventListener('click', iframeLinkClickHandler);
-                else links[i].removeEventListener('click', iframeLinkClickHandler);
+                if(action === 'create') links[i].addEventListener('click', iframeLinkClickHandler, false);
+                else links[i].removeEventListener('click', iframeLinkClickHandler, false);
             }
         }
     }
 
 
-
     // Create
     useEffect(() => {
         // Temp
-        setSrcDoc(`<div>
-            <h1>Page</h1>
-            <a href="/about">About</a>           
-            <a href="https://williamyallop.com">William Yallop Portfolio</a> 
-        </div>`);
+        setSrcDoc(pageMarkup);
+
         return () => {
             iframeLinkEventHandler('destroy');
         }
-    });
-
+    }, [pageMarkup]);
 
 
     return (

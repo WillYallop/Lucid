@@ -49,7 +49,7 @@ const App: React.FC = () => {
                   <Route path="/404" element={<Error404/>}></Route>
                 </Route>
 
-                <Route element={<BasicLayout/>}>
+                <Route>
                   <Route path="/edit/page/:param" element={<Edit mode={'page'} />}></Route>
                 </Route>
 

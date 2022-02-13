@@ -1,4 +1,4 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState, useRef } from "react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // Icons
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -11,21 +11,39 @@ interface searchInputProps {
     errorMsg: string
     described_by?: string
     results: Array<ReactElement>
-    style?: '--no-margin' | '--hide-seperator'
+    style?: string
     updateValue: (value: string) => void
     searchAction: (value: string) => void
 }
 
 const SearchInput: React.FC<searchInputProps> = ({ label, value, id, name, errorMsg, updateValue, described_by, style, children, results, searchAction }) => {
 
+    const mounted = useRef(false);
+
     const [ showDropdown, setShowDropdown ] = useState(false);
     const [ ignoreBlur, setIgnoreBlur ] = useState(false);
+    const [ searchTimeout, setSearchTimout ] = useState<ReturnType<typeof setTimeout>>()
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
+    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         updateValue(newValue);
-        searchAction(newValue);
+        if(searchTimeout != undefined) clearInterval(searchTimeout);
+        setSearchTimout(setTimeout(() => {
+            if(!mounted.current) return null;
+            searchAction(newValue);
+        }, 500));
     }
+
+    useEffect(() => {
+        mounted.current = true;
+
+        return () => {
+            mounted.current = false;
+            setShowDropdown(false);
+            setIgnoreBlur(false);
+            setSearchTimout(undefined);
+        }
+    },[])
 
     const describedBy = (
         <div className={`describedBy`}>

@@ -8,10 +8,11 @@ const getSinglePage: GraphQLFieldConfig<any, any, any> = {
     type: Page,
     description: 'Get single page',
     args: {
-        _id: { type: GraphQLNonNull(GraphQLString) }
+        _id: { type: GraphQLString },
+        slug: { type: GraphQLString }
     },
     resolve: (_, args) => {
-        return getSingle(args._id);
+        return getSingle(args._id, args.slug);
     }
 }
 
@@ -35,10 +36,13 @@ const serachPageName: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLList(PageSearchRes),
     description: 'Get a list of match pages',
     args: {
-        query: { type: GraphQLNonNull(GraphQLString) }
+        query: { type: GraphQLNonNull(GraphQLString) },
+        full_slug: { type: GraphQLNonNull(GraphQLBoolean) },
+        allow_home: { type: GraphQLNonNull(GraphQLBoolean) },
+        type: { type: GraphQLNonNull(GraphQLString) }
     },
     resolve: (_, args) => {
-        return pageSearch(args.query);
+        return pageSearch(args.query, args.full_slug, args.allow_home, args.type);
     }
 }
 // Search page by post id

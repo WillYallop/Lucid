@@ -12,18 +12,35 @@ import { __generateErrorString } from '../../../controller/helper/shared';
 
 
 // Get single page
-export const getSingle = async (_id: mod_pageModel["_id"]) => {
+export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel["slug"]) => {
     try {
 
-        // Get page
-        let page = await db.one('SELECT * FROM pages WHERE _id=$1', _id);
+        let pageID;
+        let page;
+
+        if(_id != undefined) {
+            pageID = _id;
+            page = await db.one('SELECT * FROM pages WHERE _id=$1', pageID);
+        }
+        else if(slug != undefined) {
+            page = await db.one('SELECT * FROM pages WHERE slug=$1', slug);
+            pageID = page._id;
+        }
+        else {
+            throw __generateErrorString({
+                code: 500,
+                origin: 'pageController.getSingle',
+                message: `You must call the function with either the "_id" or the "slug" paramater!`
+            });
+        }
+
         // Get SEO Object
-        page.seo = await getSingleSEO(_id);
+        page.seo = await getSingleSEO(pageID);
 
         // For each component
         // For each content type row for pages - no matter the type
         // Loop over them and find the matching content type config form the theme and merge them into one obj
-        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', _id);
+        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', pageID);
         let componentsArray: Array<mod_pageModelComponent> = [];
         for await(const pageComponent of pageComponents) { 
             let component = await componentController.getSingleByID(pageComponent.component_id);
@@ -290,12 +307,21 @@ interface pageSearchRes {
     _id: mod_pageModel["_id"]
 }
 // page serach via partial name, return array and page slug
-export const pageSearch = async (query: string) => {
+export const pageSearch = async (query: string, fullSlug: boolean, allowHome: boolean, type: 'page' | 'post' | 'all') => {
     try {
-        let matches: Array<pageSearchRes> = await db.manyOrNone("SELECT _id, name, slug, has_parent, parent_id FROM pages WHERE type=${type} AND levenshtein(${query}, name) <= 5 ORDER BY levenshtein(${query}, name) LIMIT 4", {
-            query: query,
-            type: 'page'
-        });
+        let matches: Array<pageSearchRes>;
+        if(type === 'all') {
+            matches = await db.manyOrNone("SELECT _id, name, slug, has_parent, parent_id FROM pages WHERE levenshtein(${query}, name) <= 5 ORDER BY levenshtein(${query}, name) LIMIT 4", {
+                query: query
+            });
+        }
+        else {
+            matches = await db.manyOrNone("SELECT _id, name, slug, has_parent, parent_id FROM pages WHERE type=${type} AND levenshtein(${query}, name) <= 5 ORDER BY levenshtein(${query}, name) LIMIT 4", {
+                query: query,
+                type: type
+            });
+        }
+
         const pageFullSlug = async (_id: mod_pageModel["_id"], slug: mod_pageModel["slug"]) => {
             try {
                 // Query for parent slug
@@ -309,14 +335,18 @@ export const pageSearch = async (query: string) => {
             }
         }
 
-        let homePageInd = matches.findIndex( x => x.slug === '/');
-        if(homePageInd != -1) matches.splice(homePageInd, 1);
+        if(!allowHome) {
+            let homePageInd = matches.findIndex( x => x.slug === '/');
+            if(homePageInd != -1) matches.splice(homePageInd, 1);
+        }
 
-        for await (const match of matches) {
-            match.slug = '/'+match.slug;
-            // For each match, if its has a parent recursivly query for the parent slug and prepend to child slug
-            if(match.has_parent) {
-                match.slug = await pageFullSlug(match.parent_id, match.slug);
+        if(fullSlug) {
+            for await (const match of matches) {
+                match.slug = '/'+match.slug;
+                // For each match, if its has a parent recursivly query for the parent slug and prepend to child slug
+                if(match.has_parent) {
+                    match.slug = await pageFullSlug(match.parent_id, match.slug);
+                }
             }
         }
       
