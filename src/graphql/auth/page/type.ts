@@ -143,6 +143,10 @@ export const ComponentContentType = new GraphQLObjectType({
         data: {
             type: GraphQLNonNull(GraphQLString),
             description: 'Component content type data'
+        },
+        group_id: {
+            type: GraphQLID,
+            description: 'The content types group ID'
         }
     })
 })

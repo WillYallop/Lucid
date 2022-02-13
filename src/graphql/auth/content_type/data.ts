@@ -13,7 +13,8 @@ export const getSingleContentType = async (page_component_id: mod_contentTypesDa
             name: content_type.name,
             type: content_type.type,
             config: content_type.config,
-            data: undefined
+            data: undefined,
+            group_id: undefined
         }
 
         switch(content_type.type) {
@@ -21,9 +22,11 @@ export const getSingleContentType = async (page_component_id: mod_contentTypesDa
                 try {
                     const result = await db.one(`SELECT * FROM component_content_type_text WHERE page_component_id='${page_component_id}' AND config_id='${content_type._id}'`);
                     response.data = result.value;
+                    response.group_id = result.group_id;
                 }
                 catch(err) {
                     response.data = 'Error: query failed, resave data to get working again!';
+                    response.group_id = undefined;
                 }
                 return response;
             }
@@ -31,9 +34,11 @@ export const getSingleContentType = async (page_component_id: mod_contentTypesDa
                 try {
                     const result = await db.one(`SELECT * FROM component_content_type_number WHERE page_component_id='${page_component_id}' AND config_id='${content_type._id}'`);
                     response.data = result.value;
+                    response.group_id = result.group_id;
                 }
                 catch(err) {
                     response.data = 0;
+                    response.group_id = undefined;
                 }
                 return response;
             }

@@ -44,4 +44,5 @@ interface mod_pageModelComponentContentType {
     type: mod_contentTypesConfigModel["type"]
     config: mod_contentTypesConfigModel["config"]
     data: any
+    group_id?: string
 }

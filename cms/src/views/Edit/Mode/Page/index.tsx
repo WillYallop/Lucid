@@ -1,26 +1,38 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import axios from 'axios';
+import { v1 as uuidv1 } from 'uuid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // Components
 import PagePreview from './Components/PagePreview';
 import EditPageHeader from './Components/EditPageHeader';
 import SelectInput from '../../../../components/Core/Inputs/SelectInput';
 import ComponentListModal from './Components/ComponentListModal';
+import CoreIcon from '../../../../components/Core/Icon';
+import EditPageComponentForm from './Components/EditPageComponentForm';
 // Context
 import { ModalContext } from "../../../../helper/Context";
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import getApiUrl from '../../../../functions/getApiUrl';
 // Icons
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faTh, faEdit, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
+import { faSearchengin } from '@fortawesome/free-brands-svg-icons';
 
 
 interface editPageProps {
     slug: string
 }
 
-const defaultUpdateDataObj = {
+
+interface updateDataObjInterface {
+    template: boolean
+    addComponents: Array<string>
+    modifiedComponents: Array<string>
+}
+const defaultUpdateDataObj: updateDataObjInterface = {
     template: false,
-    components: []
+    addComponents: [],
+    modifiedComponents: []
 };
 
 
@@ -77,9 +89,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         is_homepage
                         post_type_id
                         components {
-                            name
                             _id
                             page_components_id
+                            name
                             preview_url
                             file_path
                             file_name
@@ -145,8 +157,18 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         })
     }
 
-    const addComponent = (component: mod_componentModel) => {
-        console.log(component);
+    const addComponent = (component: mod_pageModelComponent) => {
+        // Add component to page state, with new unique page_components_id
+        let tempPageComponentsID = uuidv1();
+        component.page_components_id = tempPageComponentsID;
+        let newPageData = page;
+        newPageData.components.push(component);
+        setPage(newPageData);
+        // Add a reference to that page_components_id to the updatedData addComponents
+        let newUpdateDataObj = updatedData;
+        newUpdateDataObj.addComponents.push(tempPageComponentsID);
+        setUpdateData(newUpdateDataObj);
+        // Close modal
         setModalState({
             ...modalState,
             state: false
@@ -157,6 +179,56 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const savePageData = () => {
         alert('save me')
     }
+
+
+
+    // ---------------------------------------------------------------------/
+    // - RENDER ------------------------------------------------------------/
+    // ---------------------------------------------------------------------/
+    const pageComponents: Array<React.ReactElement> = [];
+    if(page.components) {
+        for(let i = 0; i < page.components.length; i++) {
+            pageComponents.push(
+                <div 
+                    className='editContentRow' 
+                    key={page.components[i].page_components_id}>
+                    <div className="imgCon">
+                        {
+                            page.components[i].preview_url ?
+                            <img src={page.components[i].preview_url}/>
+                            : 
+                            <FontAwesomeIcon icon={faTh}/>
+                        }
+                    </div>
+                    <div className='mainCol'>
+                        <p>{ page.components[i].name }</p>
+                        <div>
+                            {/* Edit this row */}
+                            <button className='btnStyleBlank' 
+                                onClick={() => {
+                                    setModalState({
+                                        ...modalState,
+                                        state: true,
+                                        title: 'add component',
+                                        size: 'standard',
+                                        body: 'select a component bellow to add to your page',
+                                        element: <EditPageComponentForm component={page.components[i]}/>
+                                    });
+                                }}>
+                                <CoreIcon icon={faEdit} style={'transparent'}/>
+                            </button>
+                            {/* Delete this row */}
+                            <button className='btnStyleBlank' onClick={() => {  }}>
+                                <CoreIcon icon={faTrashAlt} style={'transparent--warning'}/>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+    }
+
+
 
 
     // ---------------------------------------------------------------------/
@@ -250,7 +322,31 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 {/* Edit Page Data */}
                 <div className="row">
                     {/* Page content */}
-                    <p style={{marginBottom: '10px'}}>add edit page content button</p>
+                    <div className='editContentRow'>
+                        <div className="imgCon"><FontAwesomeIcon icon={faAlignJustify}/></div>
+                        <div className='mainCol'>
+                            <p>Content</p>
+                            <div>
+                                {/* Edit this row */}
+                                <button className='btnStyleBlank' onClick={() => {  }}>
+                                    <CoreIcon icon={faEdit} style={'transparent'}/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {/* SEO */}
+                    <div className='editContentRow'>
+                        <div className="imgCon"><FontAwesomeIcon icon={faSearchengin}/></div>
+                        <div className='mainCol'>
+                            <p>SEO</p>
+                            <div>
+                                {/* Edit this row */}
+                                <button className='btnStyleBlank' onClick={() => {  }}>
+                                    <CoreIcon icon={faEdit} style={'transparent'}/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                     {/* template */}
                     { page.type === 'page' ? 
                         <SelectInput 
@@ -275,7 +371,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 </div>
                 {/* Page Components */}
                 <div className='row'>
-                    
                     {/* Add component */}
                     <button 
                         className="btnStyle1"
@@ -291,9 +386,14 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         }}>
                         add component
                     </button>
-
-                    {/* Components */}
-
+                    {
+                        pageComponents.length ?
+                            <div className="componentsCon">
+                                {/* Components */}
+                                { pageComponents }
+                            </div>
+                        : null
+                    }
                 </div>
             </div>
             <div className="pagePreviewCon">

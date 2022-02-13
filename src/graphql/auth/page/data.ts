@@ -71,7 +71,7 @@ export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel
                 date_modified: component.date_modified,
                 content_types: contentTypesArray
             }
-            componentsArray.push(obj)
+            componentsArray.push(obj);
         }
 
         // Build into object and store in page.components

@@ -55,6 +55,44 @@
             h1 {
                 margin-bottom: 0;
             }
+            .componentsCon {
+                margin-top: rem(10);
+            }
+            .editContentRow {
+                display: flex;
+                align-items: center;
+                margin-bottom: rem(10);
+                &:last-child {
+                    margin-bottom: 0;
+                }
+                .imgCon {
+                    height: rem(30);
+                    width: rem(30);
+                    min-width: rem(30);
+                    border-radius: rem(5);
+                    background-color: map-get($map: $accent_colours, $key: _03_01);
+                    color: map-get($map: $accent_colours, $key: _03_03);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    overflow: hidden;
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                }
+                .mainCol {
+                    padding-left: rem(10);
+                    width: 100%;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    p {
+                        font-size: rem(14);
+                    }
+                }
+            }
         }
     }
     .pagePreviewCon {
