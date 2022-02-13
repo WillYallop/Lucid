@@ -1,5 +1,15 @@
 .componentRow {
+    @include animate;
+    transition-property: background-color;
     padding: 5px;
+    cursor: pointer;
+    background-color: map-get($map: $section_colours, $key: _02_01);
+    &:last-child {
+        margin-bottom: 0;
+    }
+    &:hover {
+        background-color: lighten(map-get($map: $section_colours, $key: _02_01), 2%);
+    }
     .componentImg {
         width: 100%;
         height: 100%;
@@ -18,7 +28,6 @@
             }
         }
     }
-
     &__extended {
         display: flex;
         flex-wrap: wrap;

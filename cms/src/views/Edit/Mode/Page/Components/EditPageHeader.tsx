@@ -15,11 +15,13 @@ interface pageSerach {
     _id: string
 }
 
-interface editPageHeader {
+interface editPageHeaderProps {
     pageName: string
+    canSave: boolean
+    saveCallback: () => void
 }
 
-const EditPageHeader: React.FC<editPageHeader> = ({ pageName }) => {
+const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, saveCallback }) => {
     const mounted = useRef(false);
     const navigate = useNavigate();
 
@@ -125,7 +127,8 @@ const EditPageHeader: React.FC<editPageHeader> = ({ pageName }) => {
             {/* Save Button */}
             <button
                 className={`btnStyle3`} 
-                onClick={() => {}}>
+                onClick={() => saveCallback()}
+                disabled={!canSave}>
                 <CoreIcon 
                     icon={faSave}
                     style={'flip-horizontal'}/>

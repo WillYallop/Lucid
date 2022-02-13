@@ -29,6 +29,7 @@
             .searchIcon {
                 top: 0;
                 bottom: 0;
+                width: rem(30);
             }
             .searchDropdown {
                 top: rem(30);
@@ -42,8 +43,19 @@
     .sidebar {
         width: rem(300);
         background-color: map-get($map: $section_colours, $key: _02_01);
-        height: 100%;
+        height: calc(100% - $header_height);
         border-right: $border_style;
+        overflow-y: auto;
+        padding: rem(10);
+        .row {
+            width: 100%;
+            padding: 0 0 rem(10);
+            margin-bottom: rem(10);
+            border-bottom: $border_style;
+            h1 {
+                margin-bottom: 0;
+            }
+        }
     }
     .pagePreviewCon {
         width: calc(100% - rem(300));
@@ -53,7 +65,7 @@
             min-width: rem(320);
             margin: 0 auto;
             background-color: rgb(58, 58, 58);
-            height: calc(100% - rem(25));
+            height: calc(100% - rem(25) - $header_height);
             iframe {
                 width: 100%;
                 height: 100%;
