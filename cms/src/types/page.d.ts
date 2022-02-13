@@ -1,6 +1,3 @@
-// Key: mod_
-
-
 // Page Model 
 interface mod_pageModel {
     _id: string
@@ -37,11 +34,4 @@ interface mod_pageModelComponent {
     date_added: mod_componentModel["date_added"]
     date_modified: mod_componentModel["date_modified"]
     content_types: Array<mod_pageModelComponentContentType>
-}
-interface mod_pageModelComponentContentType {
-    config_id: mod_contentTypesConfigModel["_id"]
-    name: mod_contentTypesConfigModel["name"]
-    type: mod_contentTypesConfigModel["type"]
-    config: mod_contentTypesConfigModel["config"]
-    data: any
 }

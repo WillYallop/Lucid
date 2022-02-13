@@ -88,19 +88,30 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         author
                         is_homepage
                         post_type_id
-                        components {
-                            _id
-                            page_components_id
-                            name
-                            preview_url
-                            file_path
-                            file_name
-                            date_added
+                        seo {
+                            page_id
+                            title
+                            og_title
                             description
-                            date_modified
+                            og_description
+                            og_image
+                        }
+                        page_components {
+                            _id
+                            component_id
+                            position
+                            component {
+                                preview_url
+                                file_path
+                                file_name
+                                date_added
+                                description
+                                date_modified
+                            }
                             content_types {
+                                _id
                                 data
-                                config_id
+                                group_id
                                 name
                                 type
                                 config {
@@ -117,6 +128,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         })
         .then((result) => {
             const page: mod_pageModel = result.data.data.page.get_single || {};
+            console.log(page);
             if(page) {
                 if(!mounted.current) return null;
                 setPage(page);
@@ -158,21 +170,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     }
 
     const addComponent = (component: mod_pageModelComponent) => {
-        // Add component to page state, with new unique page_components_id
-        let tempPageComponentsID = uuidv1();
-        component.page_components_id = tempPageComponentsID;
-        let newPageData = page;
-        newPageData.components.push(component);
-        setPage(newPageData);
-        // Add a reference to that page_components_id to the updatedData addComponents
-        let newUpdateDataObj = updatedData;
-        newUpdateDataObj.addComponents.push(tempPageComponentsID);
-        setUpdateData(newUpdateDataObj);
-        // Close modal
-        setModalState({
-            ...modalState,
-            state: false
-        });
+        console.log('hello');
     }
 
     // Save data
