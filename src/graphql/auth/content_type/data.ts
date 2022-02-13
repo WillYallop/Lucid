@@ -50,60 +50,52 @@ export const getSingleContentType = async (page_component_id: mod_contentTypesDa
 }
 
 // Save new content type row in the correct table
-export const saveSingleContentType = async (page_component_id: mod_contentTypesDatabaseModel["page_component_id"], content_type: mod_contentTypesConfigModel) => { // page_component_id referes to the page_components tables _id - not the theme/config components ID
+export const saveSingleContentType = async (data: cont_cont_updateSingleContentTypeInp) => { // page_component_id referes to the page_components tables _id - not the theme/config components ID
     try {
-        switch(content_type.type) {
-            case 'text': {
-                await db.none('INSERT INTO component_content_type_text(page_component_id, config_id, value) VALUES(${page_component_id}, ${config_id}, ${value})', {
-                    page_component_id: page_component_id,
-                    config_id: content_type._id,
-                    value: content_type.config.default
-                });
-                break;
-            }
-            case 'number': {
-                await db.none('INSERT INTO component_content_type_number(page_component_id, config_id, value) VALUES(${page_component_id}, ${config_id}, ${value})', {
-                    page_component_id: page_component_id,
-                    config_id: content_type._id,
-                    value: parseInt(content_type.config.default || '0')
-                });
-                break;
-            }
-        }
-    }
-    catch(err) {
-        throw err;
-    }
-}
-
-// Update component_content_type_ rows
-export const updateSingleContentType = async (data: cont_cont_updateSingleContentTypeInp) => {
-    try {
-        let response;
-        // Make the data paramater an array if the user passed in a single  
         switch(data.type) {
             case 'text': {
-                let dataObj: cont_cont_updateSingleContentTypeObj = {};
-                if(data.value != undefined) dataObj.value = data.value;
-                response = await db.one(`UPDATE component_content_type_text SET ${__updateSetQueryGen(dataObj)} WHERE page_component_id='${data.page_component_id}' AND config_id='${data.config_id}' RETURNING *`, dataObj);
+                if(data.update) {
+                    let dataObj: cont_cont_updateSingleContentTypeObj = {};
+                    if(data.value != undefined) dataObj.value = data.value;
+                    if(data.group_id != undefined) dataObj.group_id = data.group_id;
+                    await db.none(`UPDATE component_content_type_text SET ${__updateSetQueryGen(dataObj)} WHERE page_component_id='${data.page_component_id}' AND config_id='${data.config_id}'`, dataObj);
+                }
+                else {
+                    await db.none('INSERT INTO component_content_type_text(page_component_id, config_id, value, group_id) VALUES(${page_component_id}, ${config_id}, ${value}, ${group_id})', {
+                        page_component_id: data.page_component_id,
+                        config_id: data.config_id,
+                        value: data.value,
+                        group_id: data.group_id
+                    });
+                }
                 break;
             }
             case 'number': {
-                let dataObj: cont_cont_updateSingleContentTypeObj = {};
-                if(data.value != undefined) dataObj.value = parseInt(data.value);
-                response = await db.one(`UPDATE component_content_type_number SET ${__updateSetQueryGen(dataObj)} WHERE page_component_id='${data.page_component_id}' AND config_id='${data.config_id}' RETURNING *`, dataObj);
+                if(data.update) {
+                    let dataObj: cont_cont_updateSingleContentTypeObj = {};
+                    if(data.value != undefined) dataObj.value = parseInt(data.value);
+                    if(data.group_id != undefined) dataObj.group_id = data.group_id;
+                    await db.none(`UPDATE component_content_type_number SET ${__updateSetQueryGen(dataObj)} WHERE page_component_id='${data.page_component_id}' AND config_id='${data.config_id}'`, dataObj);
+                }
+                else {
+                    await db.none('INSERT INTO component_content_type_number(page_component_id, config_id, value, group_id) VALUES(${page_component_id}, ${config_id}, ${value}, ${group_id})', {
+                        page_component_id: data.page_component_id,
+                        config_id: data.config_id,
+                        value: parseInt(data.value),
+                        group_id: data.group_id
+                    });
+                }
                 break;
             }
             case 'repeater': {
-                throw 'Component content type repeater is never stored in the database! Update its children fields independently!';
-                break;
+                throw 'Component content type repeater is never stored in the database! Update or add its children fields independently!';
             }
         }
+
         // Get page id from page_components table
         let { page_id } = await db.one('SELECT page_id FROM page_components WHERE _id=$1', data.page_component_id);
         // Update pages last edited field
         await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${page_id}'`);
-        return response;
     }
     catch(err) {
         throw err;
@@ -143,7 +135,6 @@ export const deleteSingleContentType = async (data: cont_cont_deleteSingleConten
         throw err;
     }
 }
-
 
 // DELETE ALL INSTANCES OF CONTENT TYPE FOR PAGE COMPONENT
 export const deleteAllPageComponentContentTypes = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {

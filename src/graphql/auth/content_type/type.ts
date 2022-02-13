@@ -16,6 +16,10 @@ export const ContentTypeDatabaseModel = new GraphQLObjectType({
         value: {
             type: GraphQLNonNull(GraphQLString),
             description: 'Content type value'
+        },
+        group_id: {
+            type: GraphQLID,
+            description: 'Content type group ID'
         }
     })
 });

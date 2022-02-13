@@ -1,23 +1,27 @@
-import { GraphQLFieldConfig, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLObjectType } from 'graphql';
+import { GraphQLFieldConfig, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLObjectType, GraphQLBoolean } from 'graphql';
 import { DeleteResType } from '../shared/type';
 import { ContentTypeDatabaseModel } from './type';
-import { updateSingleContentType, deleteSingleContentType } from './data';
+import { deleteSingleContentType, saveSingleContentType } from './data';
 
 // updatePageComponentField
-const updateContentType: GraphQLFieldConfig<any, any, any> = {
+const addUpdateContentType: GraphQLFieldConfig<any, any, any> = {
     type: ContentTypeDatabaseModel,
     description: 'A list of page component content types',
     args: {
+        update: { type: GraphQLNonNull(GraphQLBoolean) },
         page_component_id: { type: GraphQLNonNull(GraphQLID) },
         config_id: { type: GraphQLNonNull(GraphQLID) },
         type: { type: GraphQLNonNull(GraphQLString) },
-        value: { type: GraphQLString }
+        value: { type: GraphQLNonNull(GraphQLString) },
+        group_id: { type: GraphQLID }
     },
     resolve: (_, args) => {
-        return updateSingleContentType({
+        return saveSingleContentType({
+            update: args.update,
             page_component_id: args.page_component_id,
             config_id: args.config_id,
             value: args.value,
+            group_id: args.group_id,
             type: args.type
         })
     }
@@ -44,7 +48,7 @@ export const ContentTypeMutation = new GraphQLObjectType({
     name: 'ContentTypeMutation',
     description: 'The content type base mutation',
     fields: {
-        update_content_type: updateContentType,
-        delete_content_type: deleteContentType
+        add_update: addUpdateContentType,
+        delete: deleteContentType
     }
 })

@@ -27,5 +27,6 @@ interface mod_pageComponentsModel {
 interface mod_contentTypesDatabaseModel {
     page_component_id: mod_pageComponentsModel["_id"] // component_id referes to the page_components tables _id - not the theme/config components ID
     config_id: mod_contentTypesConfigModel["_id"]
+    group_id?: string
     value: any
 }

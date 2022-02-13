@@ -12,13 +12,16 @@ interface cont_cont_updateSingleInp {
 
 // updateSingleContentType()
 interface cont_cont_updateSingleContentTypeInp {
+    update: boolean
     page_component_id: mod_pageComponentsModel["_id"]
     config_id: mod_contentTypesConfigModel["_id"]
     type: mod_contentTypesConfigModel["type"]
-    value?: any
+    value: mod_contentTypesDatabaseModel["value"]
+    group_id?: mod_contentTypesDatabaseModel["group_id"]
 }
 interface cont_cont_updateSingleContentTypeObj {
     value?: mod_contentTypesDatabaseModel["value"]
+    group_id?: mod_contentTypesDatabaseModel["group_id"]
     // more may be added
 }
 

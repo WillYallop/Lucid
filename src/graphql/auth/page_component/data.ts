@@ -23,7 +23,7 @@ import { saveSingleContentType, getSingleContentType } from '../content_type/dat
 
 
 // Handle adding and updating a page component and its content types
-export const addAndUpdatePageComponent = async (pageComp: cont_page_addUpdatePageComponentInp,) => {
+export const addAndUpdatePageComponent = async (pageComp: cont_page_addUpdatePageComponentInp) => {
     try {
 
         let savePageComponentRes: mod_pageComponentsModel;
@@ -46,9 +46,7 @@ export const addAndUpdatePageComponent = async (pageComp: cont_page_addUpdatePag
         // Update pages last edited stat
         await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${savePageComponentRes.page_id}'`);
 
-        // Handle creating/updating content type data objs
-
-
+        return savePageComponentRes
     }
     catch(err) {
         throw err;
