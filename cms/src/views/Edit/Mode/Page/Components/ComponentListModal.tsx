@@ -7,7 +7,7 @@ import getApiUrl from '../../../../../functions/getApiUrl';
 
 
 interface componentListModalProps {
-    addComponentCallback: (component: mod_pageModelComponent) => void
+    addComponentCallback: (component: mod_componentModel) => void
 }
 
 const ComponentListModal: React.FC<componentListModalProps> = ({ addComponentCallback }) => {
@@ -16,7 +16,7 @@ const ComponentListModal: React.FC<componentListModalProps> = ({ addComponentCal
     // Components
     // -------------------------------------------------------
     let [ skip, limit ] = [ 0 , 50 ];
-    const [ components, setComponents ] = useState<Array<mod_pageModelComponent>>([]);
+    const [ components, setComponents ] = useState<Array<mod_componentModel>>([]);
     const [ showLoadMore, setShowLoadMore ] = useState(false);
 
     const getAllComponents = (s: number, l: number) => {
@@ -54,7 +54,7 @@ const ComponentListModal: React.FC<componentListModalProps> = ({ addComponentCal
             }
         })
         .then((result) => {
-            const allComponents: Array<mod_pageModelComponent> = result.data.data.components.get_multiple || [];
+            const allComponents: Array<mod_componentModel> = result.data.data.components.get_multiple || [];
             if(allComponents.length < limit) setShowLoadMore(false);
             else setShowLoadMore(true);
             setComponents((components) => [

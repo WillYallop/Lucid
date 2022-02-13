@@ -6,22 +6,6 @@ import { componentController, contentTypeController } from '../../../index';
 import { saveSingleContentType, getSingleContentType } from '../content_type/data';
 
 
-// let content_types = await contentTypeController.getAll(component_id);
-// if(content_types != undefined) {
-//     for await(const contentType of content_types) {
-//         if(contentType.type != 'repeater') {
-//             // Save a new empty table row for the correct content type
-//             await saveSingleContentType(savePageComponentRes._id, contentType);
-//         }
-//     }
-//     return {
-//         _id: savePageComponentRes._id,
-//         component_id: savePageComponentRes.component_id,
-//         position: savePageComponentRes.position
-//     }
-// }
-
-
 // Handle adding and updating a page component and its content types
 export const addAndUpdatePageComponent = async (pageComp: cont_page_addUpdatePageComponentInp) => {
     try {

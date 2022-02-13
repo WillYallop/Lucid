@@ -1,6 +1,6 @@
 
 interface editPageComponentFormProps {
-    component: mod_pageModelComponent
+    component: mod_componentModel
 }
 
 const EditPageComponentForm: React.FC<editPageComponentFormProps> = ({ component }) => {

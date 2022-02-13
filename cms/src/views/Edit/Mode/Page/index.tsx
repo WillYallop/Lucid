@@ -128,7 +128,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         })
         .then((result) => {
             const page: mod_pageModel = result.data.data.page.get_single || {};
-            console.log(page);
             if(page) {
                 if(!mounted.current) return null;
                 setPage(page);
@@ -169,8 +168,47 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         })
     }
 
-    const addComponent = (component: mod_pageModelComponent) => {
-        console.log('hello');
+    const addComponent = (component: mod_componentModel) => {
+        
+        // Set missing fields
+        let newContentType = component.content_types?.map((contentType) => {
+            if(contentType.type != 'repeater') {
+                if(contentType.config.default) contentType.data = contentType.config.default;
+                contentType.group_id = undefined;
+            }
+            return contentType;
+        })
+
+        let newPageComponent: mod_page_componentModel = {
+            _id: uuidv1(),
+            page_id: page._id,
+            component_id: component._id,
+            position: page.page_components.length + 1,
+            component: {
+                _id: component._id,
+                file_name: component.file_name,
+                file_path: component.file_path,
+                name: component.name,
+                description: component.description,
+                preview_url: component.preview_url,
+                date_added: component.date_added,
+                date_modified: component.date_modified
+            },
+            content_types: newContentType || []
+        }
+
+        // Update page pageComponents
+        page.page_components.push(newPageComponent);
+        setPage(page);
+
+        // Update updatedData state
+        updatedData.addComponents.push(newPageComponent._id);
+        setUpdateData(updatedData);
+
+        setModalState({
+            ...modalState,
+            state: false
+        });
     }
 
     // Save data
@@ -184,22 +222,22 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // - RENDER ------------------------------------------------------------/
     // ---------------------------------------------------------------------/
     const pageComponents: Array<React.ReactElement> = [];
-    if(page.components) {
-        for(let i = 0; i < page.components.length; i++) {
+    if(page.page_components) {
+        for(let i = 0; i < page.page_components.length; i++) {
             pageComponents.push(
                 <div 
                     className='editContentRow' 
-                    key={page.components[i].page_components_id}>
+                    key={page.page_components[i]._id}>
                     <div className="imgCon">
                         {
-                            page.components[i].preview_url ?
-                            <img src={page.components[i].preview_url}/>
+                            page.page_components[i].component.preview_url ?
+                            <img src={page.page_components[i].component.preview_url}/>
                             : 
                             <FontAwesomeIcon icon={faTh}/>
                         }
                     </div>
                     <div className='mainCol'>
-                        <p>{ page.components[i].name }</p>
+                        <p>{ page.page_components[i].component.name }</p>
                         <div>
                             {/* Edit this row */}
                             <button className='btnStyleBlank' 
@@ -210,7 +248,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                         title: 'add component',
                                         size: 'standard',
                                         body: 'select a component bellow to add to your page',
-                                        element: <EditPageComponentForm component={page.components[i]}/>
+                                        element: <EditPageComponentForm component={page.page_components[i].component}/>
                                     });
                                 }}>
                                 <CoreIcon icon={faEdit} style={'transparent'}/>
@@ -361,7 +399,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                     template: true
                                 });
                                 setCanSave(true);
-                                console.log(canSave)
                             }}
                             label="template"
                             style={'--hide-seperator --no-margin-bottom'}/>
