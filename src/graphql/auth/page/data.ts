@@ -6,25 +6,22 @@ import validate from '../../../validator';
 
 // Controllers
 import { getSingleSEO, saveSingleSEO } from '../seo/data';
-import { getSingleContentType } from '../content_type/data';
-import { componentController, contentTypeController } from '../../../index';
+import { getAllPageComponents } from '../page_component/data';
 import { __generateErrorString } from '../../../controller/helper/shared';
 
 
 // Get single page
 export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel["slug"]) => {
     try {
-
-        let pageID;
+        let page_id;
         let page;
-
         if(_id != undefined) {
-            pageID = _id;
-            page = await db.one('SELECT * FROM pages WHERE _id=$1', pageID);
+            page_id = _id;
+            page = await db.one('SELECT * FROM pages WHERE _id=$1', page_id);
         }
         else if(slug != undefined) {
             page = await db.one('SELECT * FROM pages WHERE slug=$1', slug);
-            pageID = page._id;
+            page_id = page._id;
         }
         else {
             throw __generateErrorString({
@@ -33,51 +30,10 @@ export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel
                 message: `You must call the function with either the "_id" or the "slug" paramater!`
             });
         }
-
         // Get SEO Object
-        page.seo = await getSingleSEO(pageID);
-
-        // For each component
-        // For each content type row for pages - no matter the type
-        // Loop over them and find the matching content type config form the theme and merge them into one obj
-        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', pageID);
-        let componentsArray: Array<mod_pageModelComponent> = [];
-        for await(const pageComponent of pageComponents) { 
-            let component = await componentController.getSingleByID(pageComponent.component_id);
-            let content_types = await contentTypeController.getAll(pageComponent.component_id);
-            // Throw if not found
-            if(component === undefined) throw 'Component undefined.';
-            if(content_types === undefined) throw 'Content Types undefined.';
-            // Find all content type data for this component
-            let contentTypesArray: Array<mod_pageModelComponentContentType> = [];
-            for await(const contentType of content_types) {
-                // Find component_content_type_ table data based on configs id and component_id
-                // components config shoudl be the source of truth for what page component data to query
-                let componentsContentTypeData = await getSingleContentType(pageComponent._id, contentType);
-                // Set data based on the content type
-                if(componentsContentTypeData) contentTypesArray.push(componentsContentTypeData);
-            }
-
-            // Create page component object
-            let obj: mod_pageModelComponent = {
-                _id: component._id,
-                page_components_id: pageComponent._id,
-                file_name: component.file_name,
-                file_path: component.file_path,
-                name: component.name,
-                description: component.description,
-                preview_url: component.preview_url,
-                date_added: component.date_added,
-                date_modified: component.date_modified,
-                content_types: contentTypesArray
-            }
-            componentsArray.push(obj);
-        }
-
-        // Build into object and store in page.components
-        page.components = componentsArray;
+        page.seo = await getSingleSEO(page_id);
+        page.page_components = await getAllPageComponents(page_id);
         return page;
-
     }
     catch(err) {
         throw err;

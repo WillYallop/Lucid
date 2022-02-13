@@ -4,15 +4,10 @@ import { __updateSetQueryGen } from '../shared/functions';
 
 // Get single content type data for pages component 
 // Based on page_component_id and config_id
-export const getSingleContentType = async (page_component_id: mod_contentTypesDatabaseModel["page_component_id"], content_type: mod_contentTypesConfigModel) => { // page_component_id referes to the page_components tables _id - not the theme/config components ID
+export const getSingleContentType = async (page_component_id: mod_contentTypesDatabaseModel["page_component_id"], content_type: mod_contentTypesConfigModel): Promise<mod_pageModelComponentContentType> => { 
     try {
-        // Query to search all content type tables
-        // TODO - needs more content_types adding
+
         let response: mod_pageModelComponentContentType = {
-            config_id: content_type._id,
-            name: content_type.name,
-            type: content_type.type,
-            config: content_type.config,
             data: undefined,
             group_id: undefined
         }
@@ -28,7 +23,6 @@ export const getSingleContentType = async (page_component_id: mod_contentTypesDa
                     response.data = 'Error: query failed, resave data to get working again!';
                     response.group_id = undefined;
                 }
-                return response;
             }
             case 'number': {
                 try {
@@ -40,13 +34,15 @@ export const getSingleContentType = async (page_component_id: mod_contentTypesDa
                     response.data = 0;
                     response.group_id = undefined;
                 }
-                return response;
             }
             case 'repeater': {
-                response.data = undefined
-                return response;
+                response.data = undefined;
+                response.group_id = undefined;
             }
         }
+
+        return response;
+
     }
     catch(err) {
         throw err;

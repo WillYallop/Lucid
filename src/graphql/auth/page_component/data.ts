@@ -3,7 +3,7 @@ import moment from 'moment';
 import { __updateSetQueryGen } from '../shared/functions';
 // Controller
 import { componentController, contentTypeController } from '../../../index';
-import { saveSingleContentType } from '../content_type/data';
+import { saveSingleContentType, getSingleContentType } from '../content_type/data';
 
 // Used to update page_components table row data
 export const updatePageComponent = async (_id: mod_pageComponentsModel["_id"], data: const_page_updatePageComponentInp) => {
@@ -57,6 +57,78 @@ export const addPageComponent = async (page_id: mod_pageModel["_id"], component_
         else {
             throw 'Cannot verify components content_type config!'
         }
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+
+
+
+
+
+
+
+// Reworked
+
+
+// Get All page components
+export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
+    try {
+        /*
+            {
+                page_components: [
+                    {
+                        _id: 
+                        page_id: 
+                        component_id:
+                        position: 
+                        component: {
+                            _id: 
+                            name: 
+                        }
+                        content_types: [
+                            {
+                                _id: 
+                                name: 
+                                type: 
+                                data: 
+                                group_id
+                                config: {
+
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        */
+        // Get all page components
+        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', page_id);
+        if(pageComponents.length) {
+            const componentDataMap = new Map();
+            for await(let pageComp of pageComponents) {
+                // Ensure we only query for a component and its content types once.
+                if(componentDataMap.get(pageComp.component_id) === undefined) {
+                    let component = await componentController.getSingleByID(pageComp.component_id);
+                    let content_types = await contentTypeController.getAll(pageComp.component_id);
+                    componentDataMap.set(pageComp.component_id, {
+                        component: component,
+                        content_types: content_types
+                    })
+                }
+                // Assign component and get content type data
+                let componentDatas = componentDataMap.get(pageComp.component_id);
+                pageComp.component = componentDatas.component;
+                for await(let contentType of componentDatas.content_type) {
+                    let { data, group_id } = await getSingleContentType(pageComp._id, contentType);
+                    contentType.data = data;
+                    contentType.group_id = group_id;
+                }
+            }
+        }
+        return pageComponents;
     }
     catch(err) {
         throw err;
