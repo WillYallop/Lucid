@@ -9,8 +9,9 @@ import SelectInput from '../../../../components/Core/Inputs/SelectInput';
 import ComponentListModal from './Components/ComponentListModal';
 import CoreIcon from '../../../../components/Core/Icon';
 import EditPageComponentForm from './Components/EditPageComponentForm';
+import NotificationPopup from '../../../../components/Core/Notifications/NotificationPopup';
 // Context
-import { ModalContext } from "../../../../helper/Context";
+import { ModalContext, PageNotificationContext, PageNotificationContextNoticationsObj, } from "../../../../helper/Context";
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import getApiUrl from '../../../../functions/getApiUrl';
@@ -45,6 +46,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // - STATE -------------------------------------------------------------/
     // ---------------------------------------------------------------------/
     const { modalState, setModalState } = useContext(ModalContext);
+    const { notifications, setNotifications } = useContext(PageNotificationContext);
+    const [ notificationTimeout, setNotificationTimeout ] = useState<ReturnType<typeof setTimeout>>()
     const [ loading, setLoading ] = useState(true);
     const [ activeSlug, setActiveSlug ] = useState(slug);
     // Can save
@@ -60,8 +63,19 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // New data
     // Used to track and store data changes
     const [ updatedData, setUpdateData ] = useState(defaultUpdateDataObj);
-    
 
+
+    const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
+        setNotifications([{
+            message: 'successfully saved the page!',
+            type: 'success'
+        }]);
+        if(notificationTimeout != undefined) clearTimeout(notificationTimeout);
+        setNotificationTimeout(setTimeout(() => {
+            notifications?.pop();
+            setNotifications(notifications);
+        }, 5000));
+    }
 
     // ---------------------------------------------------------------------/
     // - DATA --------------------------------------------------------------/
@@ -134,16 +148,13 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 setSelectedTemplate(page.template);
             }
             else {
-                // setFormError({
-                //     error: true,
-                //     message: formatLucidError(result.data.errors[0].message).message
-                // });
+                addNotification(formatLucidError(result.data.errors[0].message).message,'error');
             }
             setLoading(false);
         })
         .catch((err) => {
             setLoading(false);
-            console.log(err);
+            addNotification('there was an unexpected error while getting the page data.','error');
         })
     }
     const getAllTemplates = () => {
@@ -165,7 +176,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         })
         .catch((err) => {
             console.log(err);
-        })
+            addNotification('there was an unexpected error while getting the template data.','error');
+        });
     }
 
     const addComponent = (component: mod_componentModel) => {
@@ -213,9 +225,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
     // Save data
     const savePageData = () => {
-        alert('save me')
+        addNotification('successfully saved the page!','success');
     }
-
 
 
     // ---------------------------------------------------------------------/
@@ -346,6 +357,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
     return (
         <div className='pageEditCon' key={activeSlug}>
+            <NotificationPopup/>
             <EditPageHeader 
                 pageName={page.name}
                 canSave={canSave}

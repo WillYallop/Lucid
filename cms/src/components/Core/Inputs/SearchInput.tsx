@@ -22,7 +22,7 @@ const SearchInput: React.FC<searchInputProps> = ({ label, value, id, name, error
 
     const [ showDropdown, setShowDropdown ] = useState(false);
     const [ ignoreBlur, setIgnoreBlur ] = useState(false);
-    const [ searchTimeout, setSearchTimout ] = useState<ReturnType<typeof setTimeout>>()
+    const [ searchTimeout, setSearchTimout ] = useState<ReturnType<typeof setTimeout>>();
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;

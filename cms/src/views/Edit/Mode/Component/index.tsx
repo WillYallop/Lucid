@@ -381,9 +381,9 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
     return (
         <DefaultPage
-        title={`edit - ${componentName}`}
-        body="manage your components fields and content types!"
-        sidebar={sidebar}>
+            title={`edit - ${componentName}`}
+            body="manage your components fields and content types!"
+            sidebar={sidebar}>
             {/* Content Types */}
             <section>
                 { contentTypeRows }
