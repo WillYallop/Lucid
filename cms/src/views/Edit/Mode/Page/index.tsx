@@ -67,8 +67,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
         setNotifications([{
-            message: 'successfully saved the page!',
-            type: 'success'
+            message: message,
+            type: type
         }]);
         if(notificationTimeout != undefined) clearTimeout(notificationTimeout);
         setNotificationTimeout(setTimeout(() => {
@@ -341,18 +341,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             setSelectedTemplate('');
             setTemplates([]);
         }
-    }, []); 
+    }, [slug]); 
 
-    // Reset data and get data needed
-    if(slug !== activeSlug) {
-        // reset
-        setSelectedTemplate('');
-        setCanSave(false);
-        setUpdateData(defaultUpdateDataObj);
-        setActiveSlug(slug);
-        // get data
-        getPageData();
-    }
     
 
     return (
