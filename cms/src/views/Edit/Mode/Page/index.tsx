@@ -11,7 +11,7 @@ import CoreIcon from '../../../../components/Core/Icon';
 import NotificationPopup from '../../../../components/Core/Notifications/NotificationPopup';
 import EditPageComponent from './Components/EditPageComponent';
 // Context
-import { ModalContext, PageNotificationContext, PageNotificationContextNoticationsObj, } from "../../../../helper/Context";
+import { ModalContext, PageNotificationContext } from "../../../../helper/Context";
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import getApiUrl from '../../../../functions/getApiUrl';
@@ -47,7 +47,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // ---------------------------------------------------------------------/
     const { modalState, setModalState } = useContext(ModalContext);
     const { notifications, setNotifications } = useContext(PageNotificationContext);
-    const [ notificationTimeout, setNotificationTimeout ] = useState<ReturnType<typeof setTimeout>>()
+    const [ notificationTimeout, setNotificationTimeout ] = useState<ReturnType<typeof setTimeout>>();
     const [ loading, setLoading ] = useState(true);
     const [ activeSlug, setActiveSlug ] = useState(slug);
     // Can save
@@ -264,7 +264,10 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         <p>{ page.page_components[i].component.name }</p>
                         <div>
                             {/* Delete this row */}
-                            <button className='btnStyleBlank' onClick={() => {  }}>
+                            <button className='btnStyleBlank' onClick={(e) => { 
+                                e.stopPropagation();
+                                
+                             }}>
                                 <CoreIcon icon={faTrashAlt} style={'transparent--warning'}/>
                             </button>
                         </div>

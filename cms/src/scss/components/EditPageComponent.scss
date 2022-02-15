@@ -1,0 +1,8 @@
+.editPageCompCon {
+    width: calc(100% - rem(300));
+    height: 100%;
+    padding: rem(20);
+    .headerRow {
+        margin-top: 0;
+    }
+}
