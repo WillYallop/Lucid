@@ -74,7 +74,7 @@ const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
 
 
     return (
-        <>
+        <div className="pagePreviewCon">
             <WidthScrollBar 
                 updateValue={(value) => {
                     let iframeConEle = document.getElementById(iframeConID) as HTMLElement;
@@ -84,7 +84,7 @@ const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
             <div id={iframeConID} className="iframeContainer">
                 <iframe id={iframeID} srcDoc={srcDoc} onLoad={() => { iframeLinkEventHandler('create') }}></iframe>
             </div>
-        </>
+        </div>
     )
 }
 

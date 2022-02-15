@@ -8,8 +8,8 @@ import EditPageHeader from './Components/EditPageHeader';
 import SelectInput from '../../../../components/Core/Inputs/SelectInput';
 import ComponentListModal from './Components/ComponentListModal';
 import CoreIcon from '../../../../components/Core/Icon';
-import EditPageComponentForm from './Components/EditPageComponentForm';
 import NotificationPopup from '../../../../components/Core/Notifications/NotificationPopup';
+import EditPageComponent from './Components/EditPageComponent';
 // Context
 import { ModalContext, PageNotificationContext, PageNotificationContextNoticationsObj, } from "../../../../helper/Context";
 // Functions
@@ -59,6 +59,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // Template
     const [ selectedTemplate, setSelectedTemplate ] = useState('');
     const [ templates, setTemplates ] = useState([]);
+    // Selected component
+    const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component'>('preview')
+    const [ selectedComponent, setSelectedComponent ] = useState({} as mod_page_componentModel);
 
     // New data
     // Used to track and store data changes
@@ -180,6 +183,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         });
     }
 
+    // Add component
     const addComponent = (component: mod_componentModel) => {
         
         // Set missing fields
@@ -229,6 +233,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     }
 
 
+
     // ---------------------------------------------------------------------/
     // - RENDER ------------------------------------------------------------/
     // ---------------------------------------------------------------------/
@@ -238,7 +243,15 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             pageComponents.push(
                 <div 
                     className='editContentRow' 
-                    key={page.page_components[i]._id}>
+                    key={page.page_components[i]._id}
+                    onClick={(e) => {
+                        const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                        allEditRows.forEach((ele) => ele.classList.remove('active'));
+                        const target = e.target as HTMLTextAreaElement;
+                        if(target) target.classList.add('active');
+                        setSelectedComponent(page.page_components[i]);
+                        setPageMode('edit_component');
+                    }}>
                     <div className="imgCon">
                         {
                             page.page_components[i].component.preview_url ?
@@ -250,20 +263,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     <div className='mainCol'>
                         <p>{ page.page_components[i].component.name }</p>
                         <div>
-                            {/* Edit this row */}
-                            <button className='btnStyleBlank' 
-                                onClick={() => {
-                                    setModalState({
-                                        ...modalState,
-                                        state: true,
-                                        title: 'add component',
-                                        size: 'standard',
-                                        body: 'select a component bellow to add to your page',
-                                        element: <EditPageComponentForm component={page.page_components[i].component}/>
-                                    });
-                                }}>
-                                <CoreIcon icon={faEdit} style={'transparent'}/>
-                            </button>
                             {/* Delete this row */}
                             <button className='btnStyleBlank' onClick={() => {  }}>
                                 <CoreIcon icon={faTrashAlt} style={'transparent--warning'}/>
@@ -274,7 +273,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             )
         }
     }
-
 
 
 
@@ -433,10 +431,21 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     }
                 </div>
             </div>
-            <div className="pagePreviewCon">
+            {
+                pageMode === 'preview' 
+                ?
                 <PagePreview
                     pageMarkup={pageMarkup}/>
-            </div>
+                :           
+                <EditPageComponent
+                    page_component={selectedComponent}
+                    exit={() => {
+                        const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                        allEditRows.forEach((ele) => ele.classList.remove('active'));
+                        setPageMode('preview');
+                        console.log('set cooldown to update page preview');
+                    }}/> 
+            }
         </div>
     );
 }
