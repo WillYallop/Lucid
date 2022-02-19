@@ -5,4 +5,13 @@
     .headerRow {
         margin-top: 0;
     }
+    .contentTypeFieldCon {
+        .inputStyle  {
+            margin-top: rem(5);
+        }
+        .inputError  {
+            margin-top: rem(10);
+            margin-bottom: 0;
+        }
+    }
 }

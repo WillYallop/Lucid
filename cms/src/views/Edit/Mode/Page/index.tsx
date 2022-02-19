@@ -61,7 +61,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const [ templates, setTemplates ] = useState([]);
     // Selected component
     const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component'>('preview')
-    const [ selectedComponent, setSelectedComponent ] = useState({} as mod_page_componentModel);
+    const [ selectedPageComponent, setSelectedPageComponent ] = useState({} as mod_page_componentModel);
 
     // New data
     // Used to track and store data changes
@@ -190,6 +190,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         let newContentType = component.content_types?.map((contentType) => {
             if(contentType.type != 'repeater') {
                 if(contentType.config.default) contentType.data = contentType.config.default;
+                else contentType.data = '';
                 contentType.group_id = undefined;
             }
             return contentType;
@@ -221,10 +222,37 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         updatedData.addComponents.push(newPageComponent._id);
         setUpdateData(updatedData);
 
+        // set allow save
+        setCanSave(true);
+
         setModalState({
             ...modalState,
             state: false
         });
+    }
+    // Update content type for selected page comp
+    const updateContentTypeData = (_id: mod_contentTypesConfigModel["_id"], data: mod_contentTypesConfigModel["data"]) => {
+        const contentTypeIndex = selectedPageComponent.content_types.findIndex( x => x._id === _id );
+        if(contentTypeIndex != -1) {
+            selectedPageComponent.content_types[contentTypeIndex].data = data;
+            setSelectedPageComponent(() => {
+                return {
+                    ...selectedPageComponent
+                }
+            });
+            // update updateData status
+            // if not a new component, add to modified components object
+            let findNewComp = updatedData.addComponents.findIndex( x => x === selectedPageComponent._id);
+            let findAlreadyModified = updatedData.modifiedComponents.findIndex( x => x === selectedPageComponent._id );
+            if(findNewComp === -1 && findAlreadyModified === -1) {
+                updatedData.modifiedComponents.push(selectedPageComponent._id);
+                setUpdateData({
+                    ...updatedData
+                });
+            }
+            // set allow save
+            setCanSave(true);
+        }
     }
 
     // Save data
@@ -249,7 +277,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         allEditRows.forEach((ele) => ele.classList.remove('active'));
                         const target = e.target as HTMLTextAreaElement;
                         if(target) target.classList.add('active');
-                        setSelectedComponent(page.page_components[i]);
+                        setSelectedPageComponent(page.page_components[i]);
                         setPageMode('edit_component');
                     }}>
                     <div className="imgCon">
@@ -435,19 +463,32 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 </div>
             </div>
             {
-                pageMode === 'preview' 
+                pageMode === 'preview'
                 ?
                 <PagePreview
                     pageMarkup={pageMarkup}/>
-                :           
+                :
                 <EditPageComponent
-                    page_component={selectedComponent}
+                    page_component={selectedPageComponent}
                     exit={() => {
-                        const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
-                        allEditRows.forEach((ele) => ele.classList.remove('active'));
-                        setPageMode('preview');
-                        console.log('set cooldown to update page preview');
-                    }}/> 
+                        // Verify all fields meet their min and max configs
+                        let editPageCompEle = document.querySelector('.editPageCompCon');
+                        if(editPageCompEle) {
+                            let invalidForms = editPageCompEle.querySelectorAll('.invalid');
+                            console.log(invalidForms);
+                            if(invalidForms.length) {
+                                addNotification('Make sure all the component fields are valid!', 'error');
+                            }
+                            else {
+                                // Success
+                                const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                                allEditRows.forEach((ele) => ele.classList.remove('active'));
+                                setPageMode('preview');
+                                console.log('set cooldown to update page preview');
+                            }
+                        }
+                    }}
+                    update_data={updateContentTypeData}/> 
             }
         </div>
     );
