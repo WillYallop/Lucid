@@ -69,5 +69,13 @@ CREATE TABLE component_content_type_number (
     value INT NOT NULL
 );
 
+-- Content Type Repeater
+CREATE TABLE component_content_type_repeater (
+    page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
+    group_id uuid,
+    config_id uuid NOT NUll
+);
+
+
 
 -- MORE TO COME

@@ -12,6 +12,9 @@ export const getPageComponentContentTypeData = async(page_component_id: mod_cont
         // Number 
         const numberResults = await db.manyOrNone(`SELECT * FROM component_content_type_number WHERE page_component_id='${page_component_id}'`);
         data = data.concat(numberResults);
+        // Number 
+        const repeaterResults = await db.manyOrNone(`SELECT * FROM component_content_type_repeater WHERE page_component_id='${page_component_id}'`);
+        data = data.concat(repeaterResults);
 
         return data;
     }
@@ -59,7 +62,18 @@ export const saveSingleContentType = async (data: cont_cont_updateSingleContentT
                 break;
             }
             case 'repeater': {
-                throw 'Component content type repeater is never stored in the database! Update or add its children fields independently!';
+                if(data.update) {
+                    let dataObj: cont_cont_updateSingleContentTypeObj = {};
+                    if(data.group_id != undefined) dataObj.group_id = data.group_id;
+                    await db.none(`UPDATE component_content_type_repeater SET ${__updateSetQueryGen(dataObj)} WHERE page_component_id='${data.page_component_id}' AND config_id='${data.config_id}'`, dataObj);
+                }
+                else {
+                    await db.none('INSERT INTO component_content_type_repeater(page_component_id, config_id, group_id) VALUES(${page_component_id}, ${config_id}, ${group_id})', {
+                        page_component_id: data.page_component_id,
+                        config_id: data.config_id,
+                        group_id: data.group_id
+                    });
+                }
             }
         }
 
@@ -94,7 +108,10 @@ export const deleteSingleContentType = async (data: cont_cont_deleteSingleConten
                 break;
             }
             case 'repeater': {
-                throw 'Component content type repeater is never stored in the database! Delete its children fields independently!';
+                await db.none('DELETE FROM component_content_type_repeater WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
+                    page_component_id: data.page_component_id,
+                    config_id: data.config_id
+                });
                 break;
             }
         }
@@ -117,6 +134,10 @@ export const deleteAllPageComponentContentTypes = async (componentID: mod_compon
                 config_id: contentTypeID
             });
             db.none('DELETE FROM component_content_type_number WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
+                page_component_id: pageComp._id,
+                config_id: contentTypeID
+            });
+            db.none('DELETE FROM component_content_type_repeater WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
                 page_component_id: pageComp._id,
                 config_id: contentTypeID
             });
