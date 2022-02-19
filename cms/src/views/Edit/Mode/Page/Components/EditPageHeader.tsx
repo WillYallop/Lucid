@@ -138,16 +138,7 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
             <button
                 className={`btnStyle3`} 
                 onClick={() => {
-                    // Verify all fields meet their min and max configs
-                    let editPageCompEle = document.querySelector('.editPageCompCon');
-                    if(editPageCompEle) {
-                        let invalidForms = editPageCompEle.querySelectorAll('.invalid');
-                        if(invalidForms.length) {
-                            addNotification('Make sure all the component fields are valid!', 'error');
-                        }
-                        else saveCallback();
-                    }
-                    else saveCallback();
+                    saveCallback();
                 }}
                 disabled={!canSave}>
                 <CoreIcon 

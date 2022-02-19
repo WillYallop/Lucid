@@ -195,12 +195,34 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         // Build component data
         let componentData: Array<mod_contentTypesDatabaseModel> = [];
         component.content_types?.forEach((contentType) => {
-            componentData.push({
-                page_component_id: newPageComponentID,
-                config_id: contentType._id,
-                value: contentType.config.default || '',
-                group_id: undefined
-            })
+            // Only add default data for top level, non repeater fields!
+            if(contentType.type !== 'repeater' && contentType.parent === 'root') {
+                componentData.push({
+                    page_component_id: newPageComponentID,
+                    config_id: contentType._id,
+                    value: contentType.config.default || '',
+                    group_id: undefined
+                });
+            }
+            else if(contentType.type === 'repeater') {
+                componentData.push({
+                    page_component_id: newPageComponentID,
+                    config_id: contentType._id,
+                    value: contentType.config.default || '',
+                    group_id: undefined
+                });
+                const groupID = uuidv1();
+                component.content_types?.filter((subContentType) => {
+                    if(subContentType.parent === contentType._id) {
+                        componentData.push({
+                            page_component_id: newPageComponentID,
+                            config_id: subContentType._id,
+                            value: subContentType.config.default || '',
+                            group_id: groupID
+                        });
+                    }
+                })
+            }
         });
 
         let newPageComponent: mod_page_componentModel = {
@@ -272,7 +294,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
     // Save data
     const savePageData = () => {
-        addNotification('successfully saved the page!','success');
+        checkEditComponentForErrors(() => {
+            addNotification('successfully saved the page!','success');
+        });
     }
 
 
@@ -288,12 +312,14 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     className='editContentRow' 
                     key={page.page_components[i]._id}
                     onClick={(e) => {
-                        const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
-                        allEditRows.forEach((ele) => ele.classList.remove('active'));
-                        const target = e.target as HTMLTextAreaElement;
-                        if(target) target.classList.add('active');
-                        setSelectedPageComponent(page.page_components[i]);
-                        setPageMode('edit_component');
+                        checkEditComponentForErrors(() => {
+                            const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                            allEditRows.forEach((ele) => ele.classList.remove('active'));
+                            const target = e.target as HTMLTextAreaElement;
+                            if(target) target.classList.add('active');
+                            setSelectedPageComponent(page.page_components[i]);
+                            setPageMode('edit_component');
+                        });
                     }}>
                     <div className="imgCon">
                         {
@@ -320,6 +346,20 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         }
     }
 
+    // ---------------------------------------------------------------------/
+    // - ALT ---------------------------------------------------------------/
+    // ---------------------------------------------------------------------/
+    const checkEditComponentForErrors = (callback: () => void) => {
+        // Verify all fields meet their min and max configs
+        let editPageCompEle = document.querySelector('.editPageCompCon');
+        if(editPageCompEle) {
+            let invalidForms = editPageCompEle.querySelectorAll('.invalid');
+            if(invalidForms.length) {
+                addNotification(`you cannot navigate away or save this page yet, as some of your component's fields do not meet their criteria!`, 'error');
+            }
+            else callback();
+        } else callback();
+    }
 
 
     // ---------------------------------------------------------------------/
@@ -486,21 +526,13 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 <EditPageComponent
                     page_component={selectedPageComponent}
                     exit={() => {
-                        // Verify all fields meet their min and max configs
-                        let editPageCompEle = document.querySelector('.editPageCompCon');
-                        if(editPageCompEle) {
-                            let invalidForms = editPageCompEle.querySelectorAll('.invalid');
-                            if(invalidForms.length) {
-                                addNotification('Make sure all the component fields are valid!', 'error');
-                            }
-                            else {
-                                // Success
-                                const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
-                                allEditRows.forEach((ele) => ele.classList.remove('active'));
-                                setPageMode('preview');
-                                console.log('set cooldown to update page preview');
-                            }
-                        }
+                        checkEditComponentForErrors(() => {
+                            // Success
+                            const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                            allEditRows.forEach((ele) => ele.classList.remove('active'));
+                            setPageMode('preview');
+                            console.log('set cooldown to update page preview');
+                        });
                     }}
                     update_data={updateContentTypeData}/> 
             }
