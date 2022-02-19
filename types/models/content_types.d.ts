@@ -21,6 +21,7 @@ interface mod_pageComponentsModel {
     component_id: mod_componentModel["_id"]
     position: number
     component?: mod_componentModel
+    data: Array<mod_contentTypesDatabaseModel>
 }
 
 // This is the model for the data base, this is what links the pageComponentModel component to its data

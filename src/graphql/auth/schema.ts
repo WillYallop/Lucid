@@ -17,8 +17,8 @@ import { MenuMutation } from './menu/mutation';
 // Content Type Config
 import { ContentTypeConfigMutation } from './content_type_config/mutation';
 import { ContentTypeConfigQuery } from './content_type_config/query';
-// Content Type
-import { ContentTypeMutation } from './content_type/mutation';
+// Content Type Fields
+import { ContentTypeFieldsMutation } from './content_type_fields/mutation';
 // Page Component
 import { PageComponentMutation } from './page_component/mutation';
 // Utility
@@ -98,9 +98,9 @@ const baseMutation = new GraphQLObjectType({
             description: ContentTypeConfigMutation.description,
             resolve: () => { return {} }
         },
-        content_type: {
-            type: ContentTypeMutation,
-            description: ContentTypeMutation.description,
+        content_type_field: {
+            type: ContentTypeFieldsMutation,
+            description: ContentTypeFieldsMutation.description,
             resolve: () => { return {} }
         },
         page_components: {

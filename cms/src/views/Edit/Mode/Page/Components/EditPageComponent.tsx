@@ -21,9 +21,11 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, e
         return () => {}
     }, [page_component]);
 
+
     // BUild content type field elements
     const contentTypeFields: Array<React.ReactElement> = [];
     for(let i = 0; i < page_component.content_types.length; i++) {
+        console.log(page_component.content_types[i])
         switch(page_component.content_types[i].type) {
             case 'text': {
                 contentTypeFields.push(<ContentTypeFieldText key={page_component.content_types[i]._id} content_type={page_component.content_types[i]} update_data={update_data}/>)

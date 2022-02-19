@@ -44,9 +44,9 @@ const deleteContentType: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
-export const ContentTypeMutation = new GraphQLObjectType({
-    name: 'ContentTypeMutation',
-    description: 'The content type base mutation',
+export const ContentTypeFieldsMutation = new GraphQLObjectType({
+    name: 'ContentTypeFieldsMutation',
+    description: 'The content type fields base mutation',
     fields: {
         add_update: addUpdateContentType,
         delete: deleteContentType

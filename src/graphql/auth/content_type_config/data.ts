@@ -1,5 +1,5 @@
 import { contentTypeController } from '../../../index';
-import { deleteAllPageComponentContentTypes } from '../content_type/data';
+import { deleteAllPageComponentContentTypes } from '../content_type_fields/data';
 
 // ------------------------------------ ------------------------------------
 // Content Types

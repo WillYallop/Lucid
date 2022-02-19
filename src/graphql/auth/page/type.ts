@@ -101,6 +101,10 @@ export const PageComponent = new GraphQLObjectType({
         content_types: {
             type: GraphQLList(ComponentContentType),
             description: ComponentContentType.description
+        },
+        data: {
+            type: GraphQLList(ComponentFieldsData), 
+            description: ComponentFieldsData.description
         }
     })
 })
@@ -164,18 +168,33 @@ export const ComponentContentType = new GraphQLObjectType({
         config: {
             type: GraphQLNonNull(ContentTypeConfig),
             description: 'Component content type config'
-        },
-        data: {
-            type: GraphQLString,
-            description: 'Component content type data'
-        },
-        group_id: {
-            type: GraphQLID,
-            description: 'The content types group ID'
         }
     })
 })
 
+// Page component field data
+export const ComponentFieldsData = new GraphQLObjectType({
+    name: 'ComponentFieldsDataModal',
+    description: 'The pages component field data',
+    fields: () => ({
+        page_component_id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'The unique page component _id'
+        },
+        config_id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'Corresponding component content type config ID'
+        },
+        value: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'The fields data'
+        },
+        group_id: {
+            type: GraphQLString,
+            description: 'A group identifier'
+        }
+    })
+});
 
 
 

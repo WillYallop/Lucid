@@ -475,7 +475,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         let editPageCompEle = document.querySelector('.editPageCompCon');
                         if(editPageCompEle) {
                             let invalidForms = editPageCompEle.querySelectorAll('.invalid');
-                            console.log(invalidForms);
                             if(invalidForms.length) {
                                 addNotification('Make sure all the component fields are valid!', 'error');
                             }

@@ -3,7 +3,7 @@ import moment from 'moment';
 import { __updateSetQueryGen } from '../shared/functions';
 // Controller
 import { componentController, contentTypeController } from '../../../index';
-import { saveSingleContentType, getSingleContentType } from '../content_type/data';
+import { getPageComponentContentTypeData } from '../content_type_fields/data';
 
 
 // Handle adding and updating a page component and its content types
@@ -57,11 +57,17 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
                                 _id: 
                                 name: 
                                 type: 
-                                data: 
-                                group_id
                                 config: {
 
                                 }
+                            }
+                        ],
+                        data: [
+                            {
+                                page_component_id: 
+                                config_id:
+                                value: 
+                                group_id:
                             }
                         ]
                     }
@@ -82,14 +88,11 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
                         content_types: content_types
                     })
                 }
-                // Assign component and get content type data
+                // Assign component and get data
                 let componentDatas = componentDataMap.get(pageComp.component_id);
                 pageComp.component = componentDatas.component;
-                for await(let contentType of componentDatas.content_type) {
-                    let { data, group_id } = await getSingleContentType(pageComp._id, contentType);
-                    contentType.data = data;
-                    contentType.group_id = group_id;
-                }
+                let data = await getPageComponentContentTypeData(pageComp._id);
+                pageComp.data = data;
             }
         }
         return pageComponents;
