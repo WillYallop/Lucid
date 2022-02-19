@@ -127,8 +127,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             }
                             content_types {
                                 _id
-                                data
-                                group_id
                                 name
                                 type
                                 config {
@@ -136,6 +134,12 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                     max
                                     default
                                 }
+                            }
+                            data {
+                                page_component_id
+                                config_id
+                                value
+                                group_id
                             }
                         }
                     }
@@ -185,19 +189,22 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
     // Add component
     const addComponent = (component: mod_componentModel) => {
-        
-        // Set missing fields
-        let newContentType = component.content_types?.map((contentType) => {
-            if(contentType.type != 'repeater') {
-                if(contentType.config.default) contentType.data = contentType.config.default;
-                else contentType.data = '';
-                contentType.group_id = undefined;
-            }
-            return contentType;
-        })
+
+        const newPageComponentID = uuidv1();
+
+        // Build component data
+        let componentData: Array<mod_contentTypesDatabaseModel> = [];
+        component.content_types?.forEach((contentType) => {
+            componentData.push({
+                page_component_id: newPageComponentID,
+                config_id: contentType._id,
+                value: contentType.config.default || '',
+                group_id: undefined
+            })
+        });
 
         let newPageComponent: mod_page_componentModel = {
-            _id: uuidv1(),
+            _id: newPageComponentID,
             page_id: page._id,
             component_id: component._id,
             position: page.page_components.length + 1,
@@ -211,7 +218,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 date_added: component.date_added,
                 date_modified: component.date_modified
             },
-            content_types: newContentType || []
+            content_types: component.content_types || [],
+            data: componentData
         }
 
         // Update page pageComponents
@@ -231,27 +239,34 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         });
     }
     // Update content type for selected page comp
-    const updateContentTypeData = (_id: mod_contentTypesConfigModel["_id"], data: mod_contentTypesConfigModel["data"]) => {
-        const contentTypeIndex = selectedPageComponent.content_types.findIndex( x => x._id === _id );
-        if(contentTypeIndex != -1) {
-            selectedPageComponent.content_types[contentTypeIndex].data = data;
-            setSelectedPageComponent(() => {
-                return {
-                    ...selectedPageComponent
-                }
-            });
-            // update updateData status
-            // if not a new component, add to modified components object
-            let findNewComp = updatedData.addComponents.findIndex( x => x === selectedPageComponent._id);
-            let findAlreadyModified = updatedData.modifiedComponents.findIndex( x => x === selectedPageComponent._id );
-            if(findNewComp === -1 && findAlreadyModified === -1) {
-                updatedData.modifiedComponents.push(selectedPageComponent._id);
-                setUpdateData({
-                    ...updatedData
+    const updateContentTypeData = (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => {
+        // Find the corresponding page component in the page object
+        const pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
+        if(pageComponent != undefined) {
+            // find corresponding content type data fields
+            const dataObj = pageComponent.data.find( x => x.config_id === _id && x.group_id === group_id);
+            if(dataObj != undefined) {
+                dataObj.value = data;
+                // update states
+                setPage({
+                    ...page
                 });
+                setSelectedPageComponent({
+                    ...pageComponent
+                })
+                // update updateData status
+                // if not a new component, add to modified components object
+                let findNewComp = updatedData.addComponents.findIndex( x => x === selectedPageComponent._id);
+                let findAlreadyModified = updatedData.modifiedComponents.findIndex( x => x === selectedPageComponent._id );
+                if(findNewComp === -1 && findAlreadyModified === -1) {
+                    updatedData.modifiedComponents.push(selectedPageComponent._id);
+                    setUpdateData({
+                        ...updatedData
+                    });
+                }
+                // set allow save
+                setCanSave(true);
             }
-            // set allow save
-            setCanSave(true);
         }
     }
 

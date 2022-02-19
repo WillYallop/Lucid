@@ -31,4 +31,5 @@ interface mod_page_componentModel {
     position: number
     component: mod_componentModel
     content_types: Array<mod_contentTypesConfigModel>
+    data: Array<mod_contentTypesDatabaseModel>
 }

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 // Components
 import CoreIcon from '../../../../../components/Core/Icon';
 import LargeComponentRow from './LargeComponentRow';
-import ContentTypeFieldText from './ContentTypeFields/Test';
+import ContentTypeFieldText from './ContentTypeFields/Text';
 import ContentTypeFieldNumber from './ContentTypeFields/Number';
 import ContentTypeFieldRepeater from './ContentTypeFields/Repeater';
 // Icons
@@ -12,7 +12,7 @@ import React from 'react';
 interface editPageComponentProps {
     page_component: mod_page_componentModel
     exit: () => void
-    update_data: (id: mod_contentTypesConfigModel["_id"], data: mod_contentTypesConfigModel["data"]) => void
+    update_data: (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => void
 }
 
 const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, exit, update_data }) => {
@@ -25,18 +25,22 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, e
     // BUild content type field elements
     const contentTypeFields: Array<React.ReactElement> = [];
     for(let i = 0; i < page_component.content_types.length; i++) {
-        console.log(page_component.content_types[i])
-        switch(page_component.content_types[i].type) {
+        const contentType = page_component.content_types[i];
+        // Find corresponding data
+        const correspondingData = page_component.data.find( x => x.config_id ===  contentType._id);
+        switch(contentType.type) {
             case 'text': {
-                contentTypeFields.push(<ContentTypeFieldText key={page_component.content_types[i]._id} content_type={page_component.content_types[i]} update_data={update_data}/>)
+                if(correspondingData)
+                contentTypeFields.push(<ContentTypeFieldText key={contentType._id} content_type={contentType} update_data={update_data} data={correspondingData}/>)
                 break;
             }
             case 'number': {
-                contentTypeFields.push(<ContentTypeFieldNumber key={page_component.content_types[i]._id} content_type={page_component.content_types[i]} update_data={update_data}/>);
+                if(correspondingData)
+                contentTypeFields.push(<ContentTypeFieldNumber key={contentType._id} content_type={contentType} update_data={update_data}  data={correspondingData}/>);
                 break;
             }
             case 'repeater': {
-                contentTypeFields.push(<ContentTypeFieldRepeater key={page_component.content_types[i]._id} content_type={page_component.content_types[i]} update_data={update_data}/>);
+                contentTypeFields.push(<ContentTypeFieldRepeater key={contentType._id} content_type={contentType}/>);
             }
         }
     }

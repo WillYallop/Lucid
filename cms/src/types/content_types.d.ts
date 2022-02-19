@@ -13,9 +13,6 @@ interface mod_contentTypesConfigModel {
         default?: string
     }
     parent: 'root' | mod_contentTypesConfigModel["_id"]
-
-    data?: string
-    group_id?: string
 }
 
 interface mod_pageComponentsModel {

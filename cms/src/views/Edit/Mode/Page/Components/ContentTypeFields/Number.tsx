@@ -1,7 +1,8 @@
 
 interface contentTypeFieldNumberProps {
     content_type: mod_contentTypesConfigModel
-    update_data: (id: mod_contentTypesConfigModel["_id"], data: mod_contentTypesConfigModel["data"]) => void
+    update_data: (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => void
+    data: mod_contentTypesDatabaseModel
 }
 
 const ContentTypeFieldNumber: React.FC<contentTypeFieldNumberProps> = ({ content_type }) => {
