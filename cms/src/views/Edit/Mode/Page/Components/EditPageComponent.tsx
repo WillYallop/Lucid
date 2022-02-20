@@ -12,10 +12,11 @@ import React from 'react';
 interface editPageComponentProps {
     page_component: mod_page_componentModel
     exit: () => void
-    update_data: (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => void
+    updateData: (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => void
+    addRepeaterGroup: (content_type: mod_contentTypesConfigModel) => void
 }
 
-const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, exit, update_data }) => {
+const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, exit, updateData, addRepeaterGroup }) => {
 
     useEffect(() => {
         return () => {}
@@ -30,13 +31,15 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, e
 
         // Get all children content types that are not repeaters
         const results: { [key: string]: Array<ReactElement> } = {};
-        let childrenData: Array<mod_contentTypesDatabaseModel > = [];
+        let childrenData: Array<mod_contentTypesDatabaseModel> = [];
         
         page_component.content_types.filter((obj) => {
             if(obj.parent === repeater_id) {
                 childrenData = childrenData.concat(page_component.data.filter( x => x.config_id  === obj._id));
             }
         });
+
+        console.log(childrenData);
 
         // Group unique datas together by group_id
         const uniqueGroups: {
@@ -59,15 +62,15 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, e
                     // push element to arr
                     switch(contentType.type) {
                         case 'text': {
-                            arr.push(<ContentTypeFieldText key={contentType._id} content_type={contentType} update_data={update_data} data={contentTypeData}/>)
+                            arr.push(<ContentTypeFieldText key={contentType._id} content_type={contentType} updateData={updateData} data={contentTypeData}/>)
                             break;
                         }
                         case 'number': {
-                            arr.push(<ContentTypeFieldNumber key={contentType._id} content_type={contentType} update_data={update_data}  data={contentTypeData}/>);
+                            arr.push(<ContentTypeFieldNumber key={contentType._id} content_type={contentType} updateData={updateData}  data={contentTypeData}/>);
                             break;
                         }
                         case 'repeater': {
-                            arr.push(<ContentTypeFieldRepeater key={contentType._id} content_type={contentType} get_groups={getRepeaterGroups}/>);
+                            arr.push(<ContentTypeFieldRepeater key={contentType._id} content_type={contentType} getGroups={getRepeaterGroups} addRepeaterGroup={addRepeaterGroup}/>);
                             break;
                         }
                     }
@@ -91,16 +94,16 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, e
             switch(contentType.type) {
                 case 'text': {
                     if(correspondingData)
-                    contentTypeFields.push(<ContentTypeFieldText key={contentType._id} content_type={contentType} update_data={update_data} data={correspondingData}/>)
+                    contentTypeFields.push(<ContentTypeFieldText key={contentType._id} content_type={contentType} updateData={updateData} data={correspondingData}/>)
                     break;
                 }
                 case 'number': {
                     if(correspondingData)
-                    contentTypeFields.push(<ContentTypeFieldNumber key={contentType._id} content_type={contentType} update_data={update_data}  data={correspondingData}/>);
+                    contentTypeFields.push(<ContentTypeFieldNumber key={contentType._id} content_type={contentType} updateData={updateData}  data={correspondingData}/>);
                     break;
                 }
                 case 'repeater': {
-                    contentTypeFields.push(<ContentTypeFieldRepeater key={contentType._id} content_type={contentType} get_groups={getRepeaterGroups}/>);
+                    contentTypeFields.push(<ContentTypeFieldRepeater key={contentType._id} content_type={contentType} getGroups={getRepeaterGroups} addRepeaterGroup={addRepeaterGroup}/>);
                 }
             }
         }

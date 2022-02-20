@@ -4,11 +4,11 @@ import TextInput from '../../../../../../components/Core/Inputs/TextInput';
 
 interface contentTypeFieldTextProps {
     content_type: mod_contentTypesConfigModel
-    update_data: (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => void
+    updateData: (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => void
     data: mod_contentTypesDatabaseModel
 }
 
-const ContentTypeFieldText: React.FC<contentTypeFieldTextProps> = ({ content_type, data, update_data }) => {
+const ContentTypeFieldText: React.FC<contentTypeFieldTextProps> = ({ content_type, data, updateData }) => {
 
 
     return (
@@ -48,7 +48,7 @@ const ContentTypeFieldText: React.FC<contentTypeFieldTextProps> = ({ content_typ
                             else wrapper?.classList.add('invalid');
                         }
                     }
-                    update_data(content_type._id, data.group_id, value);
+                    updateData(content_type._id, data.group_id, value);
                 }}/>
         </div>
     )

@@ -83,6 +83,13 @@
             }
         }
     }
+    &__button {
+        display: flex;
+        align-items: center;
+        p {
+            padding-left: rem(10);
+        }
+    }
 }
 
 // Note

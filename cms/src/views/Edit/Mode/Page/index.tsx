@@ -193,10 +193,36 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         const newPageComponentID = uuidv1();
 
         // Build component data
-        let componentData: Array<mod_contentTypesDatabaseModel> = [];
+        const componentData: Array<mod_contentTypesDatabaseModel> = [];
+
+        // Create data for content types with parents, recursivly
+        const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"]) => {
+            const groupID = uuidv1();
+            // add data for repeaters children
+            component.content_types?.forEach((contentType) => {
+                if(contentType.parent === _id && contentType.type !== 'repeater') {
+                    componentData.push({
+                        page_component_id: newPageComponentID,
+                        config_id: contentType._id,
+                        value: contentType.config.default || '',
+                        group_id: groupID
+                    });
+                } 
+                else if(contentType.parent === _id && contentType.type === 'repeater') {
+                    componentData.push({
+                        page_component_id: newPageComponentID,
+                        config_id: contentType._id,
+                        value: undefined,
+                        group_id: groupID
+                    });
+                    addRepeaterChildrenGroups(contentType._id);
+                }
+            });
+        }
+
+        // Create data for root level content types
         component.content_types?.forEach((contentType) => {
-            // Only add default data for top level, non repeater fields!
-            if(contentType.type !== 'repeater' && contentType.parent === 'root') {
+            if(contentType.parent === 'root' && contentType.type !== 'repeater') {
                 componentData.push({
                     page_component_id: newPageComponentID,
                     config_id: contentType._id,
@@ -204,24 +230,14 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     group_id: undefined
                 });
             }
-            else if(contentType.type === 'repeater') {
+            else if(contentType.parent === 'root' && contentType.type === 'repeater') {
                 componentData.push({
                     page_component_id: newPageComponentID,
                     config_id: contentType._id,
-                    value: contentType.config.default || '',
+                    value: undefined,
                     group_id: undefined
                 });
-                const groupID = uuidv1();
-                component.content_types?.filter((subContentType) => {
-                    if(subContentType.parent === contentType._id) {
-                        componentData.push({
-                            page_component_id: newPageComponentID,
-                            config_id: subContentType._id,
-                            value: subContentType.config.default || '',
-                            group_id: groupID
-                        });
-                    }
-                })
+                addRepeaterChildrenGroups(contentType._id);
             }
         });
 
@@ -269,13 +285,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             const dataObj = pageComponent.data.find( x => x.config_id === _id && x.group_id === group_id);
             if(dataObj != undefined) {
                 dataObj.value = data;
-                // update states
-                setPage({
-                    ...page
-                });
                 setSelectedPageComponent({
                     ...pageComponent
-                })
+                });
                 // update updateData status
                 // if not a new component, add to modified components object
                 let findNewComp = updatedData.addComponents.findIndex( x => x === selectedPageComponent._id);
@@ -291,8 +303,76 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             }
         }
     }
+    // add new group for given repeater
+    const addRepeaterDataGroup = (content_type: mod_contentTypesConfigModel) => {
 
-    // Save data
+        if(content_type.type === 'repeater' ) {
+            
+            const createGroup = () => {
+                // Make recurisve to handle repeater children in the block
+                // get all of the repeaters children, and create a new set of data for it!
+                const componentData: Array<mod_contentTypesDatabaseModel> = [];
+
+                const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"]) => {
+                    const groupID = uuidv1();
+                    // add data for repeaters children
+                    selectedPageComponent.content_types?.forEach((contentType) => {
+                        if(contentType.parent === _id && contentType.type !== 'repeater') {
+                            componentData.push({
+                                page_component_id: selectedPageComponent._id,
+                                config_id: contentType._id,
+                                value: contentType.config.default || '',
+                                group_id: groupID
+                            });
+                        } 
+                        else if(contentType.parent === _id && contentType.type === 'repeater') {
+                            componentData.push({
+                                page_component_id: selectedPageComponent._id,
+                                config_id: contentType._id,
+                                value: undefined,
+                                group_id: groupID
+                            });
+                            addRepeaterChildrenGroups(contentType._id);
+                        }
+                    });
+                }
+                addRepeaterChildrenGroups(content_type._id)
+
+                // add new data to the selectedComponent and the page state
+                let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
+                if(pageComponent != undefined) {
+                    pageComponent.data = pageComponent.data.concat(componentData);
+                    setSelectedPageComponent({
+                        ...pageComponent
+                    });
+                }
+            }
+
+            // If the config max is defined, check the current amount of groups!
+            if(content_type.config.max != undefined) {
+                // Filter all data that belongs to this content type
+                const contentTypeData = selectedPageComponent.data.filter( x => x.config_id  === content_type._id);
+                // Group unique datas together by group_id
+                const uniqueGroups: Array<string> = [];
+                contentTypeData.forEach((childData) => {
+                    if(childData.group_id != undefined) {
+                        const isDuplicate = uniqueGroups.find( x => x === childData.group_id );
+                        if(isDuplicate === undefined) uniqueGroups.push(childData.group_id);
+                    }
+                });
+                if(uniqueGroups.length < parseInt(content_type.config.max)) createGroup();
+                else addNotification(`you have reached the maxium number of repeats (${content_type.config.max}) for this field!`, 'warning');
+            }
+            else createGroup();
+        }
+    }
+
+
+
+
+    // ---------------------------------------------------------------------/
+    // - Save --------------------------------------------------------------/
+    // ---------------------------------------------------------------------/
     const savePageData = () => {
         checkEditComponentForErrors(() => {
             addNotification('successfully saved the page!','success');
@@ -447,7 +527,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     <div className='editContentRow'>
                         <div className="imgCon"><FontAwesomeIcon icon={faAlignJustify}/></div>
                         <div className='mainCol'>
-                            <p>Content</p>
+                            <p>content</p>
                             <div>
                                 {/* Edit this row */}
                                 <button className='btnStyleBlank' onClick={() => {  }}>
@@ -460,7 +540,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     <div className='editContentRow'>
                         <div className="imgCon"><FontAwesomeIcon icon={faSearchengin}/></div>
                         <div className='mainCol'>
-                            <p>SEO</p>
+                            <p>seo</p>
                             <div>
                                 {/* Edit this row */}
                                 <button className='btnStyleBlank' onClick={() => {  }}>
@@ -534,7 +614,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             console.log('set cooldown to update page preview');
                         });
                     }}
-                    update_data={updateContentTypeData}/> 
+                    updateData={updateContentTypeData}
+                    addRepeaterGroup={addRepeaterDataGroup}/> 
             }
         </div>
     );
