@@ -31,8 +31,6 @@ interface mod_contentTypesDatabaseModel {
     config_id: mod_contentTypesConfigModel["_id"]
     group_id?: mod_contentTypeFieldGroupModel["_id"]
     value: any
-    parent_config_id?: mod_contentTypesConfigModel["_id"]
-    parent_group_id?: string
 }
 
 interface mod_contentTypeFieldGroupModel {

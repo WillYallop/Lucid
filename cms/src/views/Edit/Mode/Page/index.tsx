@@ -135,12 +135,18 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                     default
                                 }
                             }
+                            groups {
+                                _id
+                                page_component_id
+                                parent_group
+                                parent_config_id
+                                position
+                            }
                             data {
                                 page_component_id
                                 config_id
                                 value
                                 group_id
-                                parent_config_id
                             }
                         }
                     }
@@ -194,11 +200,20 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         const newPageComponentID = uuidv1();
 
         // Build component data
+        const componentDataGroups: Array<mod_contentTypeFieldGroupModel> = [];
         const componentData: Array<mod_contentTypesDatabaseModel> = [];
 
         // Create data for content types with parents, recursivly
         const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], parent_group_id?: string) => {
-            const groupID = uuidv1();
+            // Create a new group obj
+            const groupObj: mod_contentTypeFieldGroupModel = {
+                _id: uuidv1(),
+                page_component_id: newPageComponentID,
+                parent_group: parent_group_id,
+                parent_config_id: _id,
+                position: 1
+            }
+            componentDataGroups.push(groupObj);
             // add data for repeaters children
             component.content_types?.forEach((contentType) => {
                 if(contentType.parent === _id && contentType.type !== 'repeater') {
@@ -206,9 +221,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         page_component_id: newPageComponentID,
                         config_id: contentType._id,
                         value: contentType.config.default || '',
-                        group_id: groupID,
-                        parent_config_id: _id,
-                        parent_group_id: parent_group_id
+                        group_id: groupObj._id
                     });
                 } 
                 else if(contentType.parent === _id && contentType.type === 'repeater') {
@@ -216,11 +229,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         page_component_id: newPageComponentID,
                         config_id: contentType._id,
                         value: undefined,
-                        group_id: groupID,
-                        parent_config_id: _id,
-                        parent_group_id: parent_group_id
+                        group_id: groupObj._id
                     });
-                    addRepeaterChildrenGroups(contentType._id, groupID);
+                    addRepeaterChildrenGroups(contentType._id, groupObj._id);
                 }
             });
         }
@@ -262,7 +273,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 date_modified: component.date_modified
             },
             content_types: component.content_types || [],
-            data: componentData
+            data: componentData,
+            groups: componentDataGroups
         }
 
         // Update page pageComponents
@@ -309,15 +321,25 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         }
     }
     // add new group for given repeater
-    const addRepeaterDataGroup = (content_type: mod_contentTypesConfigModel, repeaterGroupID: mod_contentTypesDatabaseModel["parent_group_id"]) => {
+    const addRepeaterDataGroup = (content_type: mod_contentTypesConfigModel, repeaterGroupID: mod_contentTypesDatabaseModel["group_id"]) => {
         if(content_type.type === 'repeater' ) {
             const createGroup = () => {
                 // Make recurisve to handle repeater children in the block
                 // get all of the repeaters children, and create a new set of data for it!
                 const componentData: Array<mod_contentTypesDatabaseModel> = [];
+                const componentDataGroups: Array<mod_contentTypeFieldGroupModel> = [];
 
-                const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], parent_group_id?: mod_contentTypesDatabaseModel["parent_group_id"]) => {
-                    const groupID = uuidv1();
+                const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], group_id?: mod_contentTypesDatabaseModel["group_id"]) => {
+                    // Create a new group obj
+                    const groupObj: mod_contentTypeFieldGroupModel = {
+                        _id: uuidv1(),
+                        page_component_id: selectedPageComponent._id,
+                        parent_group: group_id,
+                        parent_config_id: _id,
+                        position: 1
+                    }
+                    componentDataGroups.push(groupObj);
+
                     // add data for repeaters children
                     selectedPageComponent.content_types?.forEach((contentType) => {
                         if(contentType.parent === _id && contentType.type !== 'repeater') {
@@ -325,9 +347,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 page_component_id: selectedPageComponent._id,
                                 config_id: contentType._id,
                                 value: contentType.config.default || '',
-                                group_id: groupID,
-                                parent_config_id: _id,
-                                parent_group_id: parent_group_id
+                                group_id: groupObj._id
                             });
                         } 
                         else if(contentType.parent === _id && contentType.type === 'repeater') {
@@ -335,11 +355,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 page_component_id: selectedPageComponent._id,
                                 config_id: contentType._id,
                                 value: undefined,
-                                group_id: groupID,
-                                parent_config_id: _id,
-                                parent_group_id: parent_group_id
+                                group_id: groupObj._id
                             });
-                            addRepeaterChildrenGroups(contentType._id, groupID);
+                            addRepeaterChildrenGroups(contentType._id, groupObj._id);
                         }
                     });
                 }
@@ -348,7 +366,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 // add new data to the selectedComponent and the page state
                 let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
                 if(pageComponent != undefined) {
+                    pageComponent.groups = pageComponent.groups.concat(componentDataGroups);
                     pageComponent.data = pageComponent.data.concat(componentData);
+
                     setSelectedPageComponent({
                         ...pageComponent
                     });
@@ -357,16 +377,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             // If the config max is defined, check the current amount of groups!
             if(content_type.config.max != undefined) {
                 // Filter all data that belongs to this content type
-                const contentTypeData = selectedPageComponent.data.filter( x => x.parent_group_id === repeaterGroupID);
-                // Group unique datas together by group_id
-                const uniqueGroups: Array<string> = [];
-                contentTypeData.forEach((childData) => {
-                    if(childData.group_id != undefined) {
-                        const isDuplicate = uniqueGroups.find( x => x === childData.group_id );
-                        if(isDuplicate === undefined) uniqueGroups.push(childData.group_id);
-                    }
-                });
-                if(uniqueGroups.length < parseInt(content_type.config.max)) createGroup();
+                const contentTypeDataGroups = selectedPageComponent.groups.filter( x => x.parent_group === repeaterGroupID);
+                if(contentTypeDataGroups.length < parseInt(content_type.config.max)) createGroup();
                 else addNotification(`you have reached the maxium number of repeats (${content_type.config.max}) for this field!`, 'warning');
             }
             else createGroup();

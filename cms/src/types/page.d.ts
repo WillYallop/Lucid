@@ -32,4 +32,5 @@ interface mod_page_componentModel {
     component: mod_componentModel
     content_types: Array<mod_contentTypesConfigModel>
     data: Array<mod_contentTypesDatabaseModel>
+    groups: Array<mod_contentTypeFieldGroupModel>
 }
