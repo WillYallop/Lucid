@@ -140,6 +140,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 config_id
                                 value
                                 group_id
+                                parent_config_id
                             }
                         }
                     }
@@ -196,7 +197,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         const componentData: Array<mod_contentTypesDatabaseModel> = [];
 
         // Create data for content types with parents, recursivly
-        const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"]) => {
+        const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], parent_group_id?: string) => {
             const groupID = uuidv1();
             // add data for repeaters children
             component.content_types?.forEach((contentType) => {
@@ -205,7 +206,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         page_component_id: newPageComponentID,
                         config_id: contentType._id,
                         value: contentType.config.default || '',
-                        group_id: groupID
+                        group_id: groupID,
+                        parent_config_id: _id,
+                        parent_group_id: parent_group_id
                     });
                 } 
                 else if(contentType.parent === _id && contentType.type === 'repeater') {
@@ -213,9 +216,11 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         page_component_id: newPageComponentID,
                         config_id: contentType._id,
                         value: undefined,
-                        group_id: groupID
+                        group_id: groupID,
+                        parent_config_id: _id,
+                        parent_group_id: parent_group_id
                     });
-                    addRepeaterChildrenGroups(contentType._id);
+                    addRepeaterChildrenGroups(contentType._id, groupID);
                 }
             });
         }
@@ -237,7 +242,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     value: undefined,
                     group_id: undefined
                 });
-                addRepeaterChildrenGroups(contentType._id);
+                addRepeaterChildrenGroups(contentType._id, undefined);
             }
         });
 
@@ -304,16 +309,14 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         }
     }
     // add new group for given repeater
-    const addRepeaterDataGroup = (content_type: mod_contentTypesConfigModel) => {
-
+    const addRepeaterDataGroup = (content_type: mod_contentTypesConfigModel, repeaterGroupID: mod_contentTypesDatabaseModel["parent_group_id"]) => {
         if(content_type.type === 'repeater' ) {
-            
             const createGroup = () => {
                 // Make recurisve to handle repeater children in the block
                 // get all of the repeaters children, and create a new set of data for it!
                 const componentData: Array<mod_contentTypesDatabaseModel> = [];
 
-                const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"]) => {
+                const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], parent_group_id?: mod_contentTypesDatabaseModel["parent_group_id"]) => {
                     const groupID = uuidv1();
                     // add data for repeaters children
                     selectedPageComponent.content_types?.forEach((contentType) => {
@@ -322,7 +325,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 page_component_id: selectedPageComponent._id,
                                 config_id: contentType._id,
                                 value: contentType.config.default || '',
-                                group_id: groupID
+                                group_id: groupID,
+                                parent_config_id: _id,
+                                parent_group_id: parent_group_id
                             });
                         } 
                         else if(contentType.parent === _id && contentType.type === 'repeater') {
@@ -330,13 +335,15 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 page_component_id: selectedPageComponent._id,
                                 config_id: contentType._id,
                                 value: undefined,
-                                group_id: groupID
+                                group_id: groupID,
+                                parent_config_id: _id,
+                                parent_group_id: parent_group_id
                             });
-                            addRepeaterChildrenGroups(contentType._id);
+                            addRepeaterChildrenGroups(contentType._id, groupID);
                         }
                     });
                 }
-                addRepeaterChildrenGroups(content_type._id)
+                addRepeaterChildrenGroups(content_type._id, repeaterGroupID)
 
                 // add new data to the selectedComponent and the page state
                 let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
@@ -347,11 +354,10 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     });
                 }
             }
-
             // If the config max is defined, check the current amount of groups!
             if(content_type.config.max != undefined) {
                 // Filter all data that belongs to this content type
-                const contentTypeData = selectedPageComponent.data.filter( x => x.config_id  === content_type._id);
+                const contentTypeData = selectedPageComponent.data.filter( x => x.parent_group_id === repeaterGroupID);
                 // Group unique datas together by group_id
                 const uniqueGroups: Array<string> = [];
                 contentTypeData.forEach((childData) => {
@@ -366,7 +372,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             else createGroup();
         }
     }
-
 
 
 
