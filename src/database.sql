@@ -53,33 +53,36 @@ CREATE TABLE page_components (
 );
 
 
+-- content type group
+CREATE TABLE content_type_field_group (
+    _id uuid,
+    page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
+    parent_group uuid REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
+    parent_config_id uuid REFERENCES component_content_type_repeater (config_id) ON DELETE CASCADE,
+    position INT NOT NULL
+);
+
 -- Content Type Text
 CREATE TABLE component_content_type_text (
     page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
-    group_id uuid,
+    group_id REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
     config_id uuid NOT NUll,
-    value VARCHAR NOT NULL,
-    parent_config_id: uuid,
-    parent_group_id uuid
+    value VARCHAR NOT NULL
 );
 
 -- Content Type Number
 CREATE TABLE component_content_type_number (
     page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
-    group_id uuid,
+    group_id REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
     config_id uuid NOT NUll,
-    value INT NOT NULL,
-    parent_config_id: uuid,
-    parent_group_id uuid
+    value INT NOT NULL
 );
 
 -- Content Type Repeater
 CREATE TABLE component_content_type_repeater (
     page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
-    group_id uuid,
-    config_id uuid NOT NUll,
-    parent_config_id: uuid,
-    parent_group_id uuid
+    group_id REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
+    config_id uuid NOT NUll
 );
 
 

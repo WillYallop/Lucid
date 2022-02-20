@@ -3,7 +3,7 @@ import moment from 'moment';
 import { __updateSetQueryGen } from '../shared/functions';
 // Controller
 import { componentController, contentTypeController } from '../../../index';
-import { getPageComponentContentTypeData } from '../content_type_fields/data';
+import { getPageComponentContentTypeData, getPageComponentsGroups } from '../content_type_fields/data';
 
 
 // Handle adding and updating a page component and its content types
@@ -62,14 +62,21 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
                                 }
                             }
                         ],
+                        groups: [
+                            {
+                                _id: 
+                                page_component_id: 
+                                parent_group: 
+                                parent_config_id: 
+                                position: 
+                            }
+                        ],
                         data: [
                             {
                                 page_component_id: 
                                 config_id:
                                 value: 
                                 group_id:
-                                parent_config_id:
-                                parent_group_id: 
                             }
                         ]
                     }
@@ -95,6 +102,8 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
                 pageComp.component = componentDatas.component;
                 let data = await getPageComponentContentTypeData(pageComp._id);
                 pageComp.data = data;
+                let groups = await getPageComponentsGroups(pageComp._id);
+                pageComp.groups = groups;
             }
         }
         return pageComponents;

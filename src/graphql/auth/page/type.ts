@@ -1,6 +1,7 @@
 
 import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql';
 import { ContentTypeConfig } from '../content_type_config/type';
+import { ContentTypeFieldGroupModel, ContentTypeDatabaseModel } from '../content_type_fields/type';
 import { Component } from '../component/type';
 import { SEOObjectType } from '../seo/type';
 
@@ -103,8 +104,12 @@ export const PageComponent = new GraphQLObjectType({
             description: ComponentContentType.description
         },
         data: {
-            type: GraphQLList(ComponentFieldsData), 
-            description: ComponentFieldsData.description
+            type: GraphQLList(ContentTypeDatabaseModel), 
+            description: ContentTypeDatabaseModel.description
+        },
+        groups: {
+            type: GraphQLList(ContentTypeFieldGroupModel),
+            description: ContentTypeFieldGroupModel.description
         }
     })
 })
@@ -171,39 +176,6 @@ export const ComponentContentType = new GraphQLObjectType({
         }
     })
 })
-
-// Page component field data
-export const ComponentFieldsData = new GraphQLObjectType({
-    name: 'ComponentFieldsDataModal',
-    description: 'The pages component field data',
-    fields: () => ({
-        page_component_id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: 'The unique page component _id'
-        },
-        config_id: {
-            type: GraphQLNonNull(GraphQLID),
-            description: 'Corresponding component content type config ID'
-        },
-        value: {
-            type: GraphQLNonNull(GraphQLString),
-            description: 'The fields data'
-        },
-        group_id: {
-            type: GraphQLString,
-            description: 'A group identifier'
-        },
-        parent_config_id: {
-            type: GraphQLID,
-            description: 'The content type data parent config id'
-        },
-        parent_group_id: {
-            type: GraphQLID,
-            description: 'The parents group id'
-        }
-    })
-});
-
 
 
 // Multiple Pages

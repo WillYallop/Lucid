@@ -21,14 +21,24 @@ interface mod_pageComponentsModel {
     component_id: mod_componentModel["_id"]
     position: number
     component?: mod_componentModel
+    data: Array<mod_contentTypesDatabaseModel>
+    groups: Array<mod_contentTypeFieldGroupModel>
 }
 
 // This is the model for the data base, this is what links the pageComponentModel component to its data
 interface mod_contentTypesDatabaseModel {
     page_component_id: mod_pageComponentsModel["_id"] // component_id referes to the page_components tables _id - not the theme/config components ID
     config_id: mod_contentTypesConfigModel["_id"]
-    group_id?: string
+    group_id?: mod_contentTypeFieldGroupModel["_id"]
     value: any
-    parent_config_id?: mod_contentTypesConfigModel["_id"],
+    parent_config_id?: mod_contentTypesConfigModel["_id"]
     parent_group_id?: string
+}
+
+interface mod_contentTypeFieldGroupModel {
+    _id: string
+    page_component_id: mod_pageComponentsModel["_id"]
+    parent_group?: mod_contentTypeFieldGroupModel["_id"]
+    parent_config_id: mod_contentTypesConfigModel["_id"]
+    position: number
 }
