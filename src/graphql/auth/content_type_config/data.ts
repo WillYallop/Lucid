@@ -1,5 +1,5 @@
 import { contentTypeController } from '../../../index';
-import { deleteAllPageComponentContentTypes } from '../content_type_fields/data';
+import { deleteAllPageComponentContentTypesField } from '../content_type_fields/data';
 
 // ------------------------------------ ------------------------------------
 // Content Types
@@ -9,7 +9,7 @@ import { deleteAllPageComponentContentTypes } from '../content_type_fields/data'
 export const deleteSingleContentTypeConfig = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
     try {
         // Remove all instances of this content type from page components in the database
-        deleteAllPageComponentContentTypes(componentID, contentTypeID);
+        deleteAllPageComponentContentTypesField(componentID, contentTypeID);
         await contentTypeController.deleteSingle(componentID, contentTypeID);
         return {
             deleted: true
@@ -37,7 +37,7 @@ export const updateSingleContentTypeConfig = async (componentID: mod_componentMo
     try {
         // Remove all instances of this content type from page components in the database
         // If the user edits anything about a component content type we lose data for it on pages that have this component to avoid potional issues
-        deleteAllPageComponentContentTypes(componentID, contentType._id);
+        deleteAllPageComponentContentTypesField(componentID, contentType._id);
         let content_type = await contentTypeController.updateSingle(componentID, contentType);
         return content_type;
     }

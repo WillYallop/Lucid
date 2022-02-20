@@ -192,6 +192,14 @@ export const ComponentFieldsData = new GraphQLObjectType({
         group_id: {
             type: GraphQLString,
             description: 'A group identifier'
+        },
+        parent_config_id: {
+            type: GraphQLID,
+            description: 'The content type data parent config id'
+        },
+        parent_group_id: {
+            type: GraphQLID,
+            description: 'The parents group id'
         }
     })
 });

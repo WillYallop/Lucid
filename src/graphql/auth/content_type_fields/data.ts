@@ -24,7 +24,7 @@ export const getPageComponentContentTypeData = async(page_component_id: mod_cont
 }
 
 // Save new content type row in the correct table
-export const saveSingleContentType = async (data: cont_cont_updateSingleContentTypeInp) => { // page_component_id referes to the page_components tables _id - not the theme/config components ID
+export const saveSingleContentTypeField = async (data: cont_cont_updateSingleContentTypeInp) => { // page_component_id referes to the page_components tables _id - not the theme/config components ID
     try {
         switch(data.type) {
             case 'text': {
@@ -32,14 +32,18 @@ export const saveSingleContentType = async (data: cont_cont_updateSingleContentT
                     let dataObj: cont_cont_updateSingleContentTypeObj = {};
                     if(data.value != undefined) dataObj.value = data.value;
                     if(data.group_id != undefined) dataObj.group_id = data.group_id;
+                    if(data.parent_config_id != undefined) dataObj.parent_config_id = data.parent_config_id;
+                    if(data.parent_group_id != undefined) dataObj.parent_group_id = data.parent_group_id;
                     await db.none(`UPDATE component_content_type_text SET ${__updateSetQueryGen(dataObj)} WHERE page_component_id='${data.page_component_id}' AND config_id='${data.config_id}'`, dataObj);
                 }
                 else {
-                    await db.none('INSERT INTO component_content_type_text(page_component_id, config_id, value, group_id) VALUES(${page_component_id}, ${config_id}, ${value}, ${group_id})', {
+                    await db.none('INSERT INTO component_content_type_text(page_component_id, config_id, value, group_id, parent_config_id, parent_group_id) VALUES(${page_component_id}, ${config_id}, ${value}, ${group_id}, ${parent_config_id}, ${parent_group_id})', {
                         page_component_id: data.page_component_id,
                         config_id: data.config_id,
                         value: data.value,
-                        group_id: data.group_id
+                        group_id: data.group_id,
+                        parent_config_id: data.parent_config_id,
+                        parent_group_id: data.parent_group_id
                     });
                 }
                 break;
@@ -49,14 +53,18 @@ export const saveSingleContentType = async (data: cont_cont_updateSingleContentT
                     let dataObj: cont_cont_updateSingleContentTypeObj = {};
                     if(data.value != undefined) dataObj.value = parseInt(data.value);
                     if(data.group_id != undefined) dataObj.group_id = data.group_id;
+                    if(data.parent_config_id != undefined) dataObj.parent_config_id = data.parent_config_id;
+                    if(data.parent_group_id != undefined) dataObj.parent_group_id = data.parent_group_id;
                     await db.none(`UPDATE component_content_type_number SET ${__updateSetQueryGen(dataObj)} WHERE page_component_id='${data.page_component_id}' AND config_id='${data.config_id}'`, dataObj);
                 }
                 else {
-                    await db.none('INSERT INTO component_content_type_number(page_component_id, config_id, value, group_id) VALUES(${page_component_id}, ${config_id}, ${value}, ${group_id})', {
+                    await db.none('INSERT INTO component_content_type_number(page_component_id, config_id, value, group_id, parent_config_id, parent_group_id) VALUES(${page_component_id}, ${config_id}, ${value}, ${group_id}, ${parent_config_id}, ${parent_group_id})', {
                         page_component_id: data.page_component_id,
                         config_id: data.config_id,
                         value: parseInt(data.value),
-                        group_id: data.group_id
+                        group_id: data.group_id,
+                        parent_config_id: data.parent_config_id,
+                        parent_group_id: data.parent_group_id
                     });
                 }
                 break;
@@ -65,13 +73,17 @@ export const saveSingleContentType = async (data: cont_cont_updateSingleContentT
                 if(data.update) {
                     let dataObj: cont_cont_updateSingleContentTypeObj = {};
                     if(data.group_id != undefined) dataObj.group_id = data.group_id;
+                    if(data.parent_config_id != undefined) dataObj.parent_config_id = data.parent_config_id;
+                    if(data.parent_group_id != undefined) dataObj.parent_group_id = data.parent_group_id;
                     await db.none(`UPDATE component_content_type_repeater SET ${__updateSetQueryGen(dataObj)} WHERE page_component_id='${data.page_component_id}' AND config_id='${data.config_id}'`, dataObj);
                 }
                 else {
-                    await db.none('INSERT INTO component_content_type_repeater(page_component_id, config_id, group_id) VALUES(${page_component_id}, ${config_id}, ${group_id})', {
+                    await db.none('INSERT INTO component_content_type_repeater(page_component_id, config_id, group_id, parent_config_id, parent_group_id) VALUES(${page_component_id}, ${config_id}, ${group_id}, ${parent_config_id}, ${parent_group_id})', {
                         page_component_id: data.page_component_id,
                         config_id: data.config_id,
-                        group_id: data.group_id
+                        group_id: data.group_id,
+                        parent_config_id: data.parent_config_id,
+                        parent_group_id: data.parent_group_id
                     });
                 }
             }
@@ -88,7 +100,7 @@ export const saveSingleContentType = async (data: cont_cont_updateSingleContentT
 }
 
 // Delete component_content_type row
-export const deleteSingleContentType = async (data: cont_cont_deleteSingleContentTypeInp) => {
+export const deleteSingleContentTypeField = async (data: cont_cont_deleteSingleContentTypeInp) => {
     try {
         switch(data.type) {
             case 'text': {
@@ -125,7 +137,7 @@ export const deleteSingleContentType = async (data: cont_cont_deleteSingleConten
 }
 
 // DELETE ALL INSTANCES OF CONTENT TYPE FOR PAGE COMPONENT
-export const deleteAllPageComponentContentTypes = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
+export const deleteAllPageComponentContentTypesField = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
     try {
         let pageComponents = await db.manyOrNone('SELECT _id FROM page_components WHERE component_id=$1', componentID);
         for await(const pageComp of pageComponents) {

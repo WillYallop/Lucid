@@ -68,6 +68,8 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
                                 config_id:
                                 value: 
                                 group_id:
+                                parent_config_id:
+                                parent_group_id: 
                             }
                         ]
                     }

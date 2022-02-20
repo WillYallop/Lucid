@@ -58,7 +58,9 @@ CREATE TABLE component_content_type_text (
     page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
     group_id uuid,
     config_id uuid NOT NUll,
-    value VARCHAR NOT NULL
+    value VARCHAR NOT NULL,
+    parent_config_id: uuid,
+    parent_group_id uuid
 );
 
 -- Content Type Number
@@ -66,14 +68,18 @@ CREATE TABLE component_content_type_number (
     page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
     group_id uuid,
     config_id uuid NOT NUll,
-    value INT NOT NULL
+    value INT NOT NULL,
+    parent_config_id: uuid,
+    parent_group_id uuid
 );
 
 -- Content Type Repeater
 CREATE TABLE component_content_type_repeater (
     page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
     group_id uuid,
-    config_id uuid NOT NUll
+    config_id uuid NOT NUll,
+    parent_config_id: uuid,
+    parent_group_id uuid
 );
 
 
