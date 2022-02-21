@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 // Components
 import CoreIcon from '../../../../../../components/Core/Icon';
 // Icons
-import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrashAlt, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
 
 interface contentTypeFieldRepeaterProps {
     content_type: mod_contentTypesConfigModel
@@ -22,13 +22,30 @@ const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ con
             groupElements.push((
                 <div className='groupContainer' key={groupID}>
                     <div className="groupIcon">
-                        { count++ }
+                        { count }
+                    </div>
+                    <div className="topLevelActionBar">
+                        <button className="btnStyleBlank">
+                            <CoreIcon icon={faTrashAlt} style={'warning'}/>
+                        </button>
+                        <button className="btnStyleBlank">
+                            <CoreIcon icon={faChevronUp}/>
+                        </button>
+                        <button className="btnStyleBlank">
+                            <CoreIcon icon={faChevronDown}/>
+                        </button>
                     </div>
                     <div className="groupContent">
-                        { groups[groupID]} 
+                        { groups[groupID] } 
+                    </div>
+                    <div className="subActionBar">
+                        <button className="btnStyleBlank delete">delete</button>
+                        <button className="btnStyleBlank move-up">up</button>
+                        <button className="btnStyleBlank move-down">down</button>
                     </div>
                 </div>
-            ))
+            ));
+            count++;
         }
         return groupElements;
     }
