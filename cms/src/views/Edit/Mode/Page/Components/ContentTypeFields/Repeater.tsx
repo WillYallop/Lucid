@@ -9,9 +9,10 @@ interface contentTypeFieldRepeaterProps {
     getGroups: (repeater_id: mod_contentTypesConfigModel["_id"], group_id?: string) => { [key: string]: Array<ReactElement> }
     addRepeaterGroup: (content_type: mod_contentTypesConfigModel, parent_group_id: mod_contentTypesDatabaseModel["group_id"]) => void
     data: mod_contentTypesDatabaseModel
+    deleteGroup: (group_id?: mod_contentTypeFieldGroupModel["_id"]) => void
 }
 
-const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ content_type, getGroups, addRepeaterGroup, data }) => {
+const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ content_type, getGroups, addRepeaterGroup, data, deleteGroup }) => {
 
     //Page Children
     const getReapterGroups = () => {
@@ -25,7 +26,7 @@ const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ con
                         { count }
                     </div>
                     <div className="topLevelActionBar">
-                        <button className="btnStyleBlank">
+                        <button className="btnStyleBlank" onClick={() => deleteGroup(groupID)}>
                             <CoreIcon icon={faTrashAlt} style={'warning'}/>
                         </button>
                         <button className="btnStyleBlank">
@@ -39,7 +40,7 @@ const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ con
                         { groups[groupID] } 
                     </div>
                     <div className="subActionBar">
-                        <button className="btnStyleBlank delete">delete</button>
+                        <button className="btnStyleBlank delete" onClick={() => deleteGroup(groupID)}>delete</button>
                         <button className="btnStyleBlank move-up">up</button>
                         <button className="btnStyleBlank move-down">down</button>
                     </div>
@@ -54,8 +55,8 @@ const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ con
         <>
             <div className="contentTypeFieldCon repeaterType blockCon">
                 <div>
-                    <p>repeater</p>
-                    <p className="subTitle">max children: { content_type.config.max }</p>
+                    <p>{content_type.name} - repeater</p>
+                    <p className="subTitle">max groups: { content_type.config.max }</p>
                 </div>
                 <div>
                     <button 

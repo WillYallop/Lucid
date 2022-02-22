@@ -24,7 +24,6 @@ interface editPageProps {
     slug: string
 }
 
-
 interface updateDataObjInterface {
     template: boolean
     addComponents: Array<string>
@@ -35,7 +34,6 @@ const defaultUpdateDataObj: updateDataObjInterface = {
     addComponents: [],
     modifiedComponents: []
 };
-
 
 
 const EditPage: React.FC<editPageProps> = ({ slug }) => {
@@ -368,7 +366,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 if(pageComponent != undefined) {
                     pageComponent.groups = pageComponent.groups.concat(componentDataGroups);
                     pageComponent.data = pageComponent.data.concat(componentData);
-
                     setSelectedPageComponent({
                         ...pageComponent
                     });
@@ -379,12 +376,37 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 // Filter all data that belongs to this content type
                 const contentTypeDataGroups = selectedPageComponent.groups.filter( x => x.parent_group === repeaterGroupID);
                 if(contentTypeDataGroups.length < parseInt(content_type.config.max)) createGroup();
-                else addNotification(`you have reached the maxium number of repeats (${content_type.config.max}) for this field!`, 'warning');
+                else addNotification(`you have reached the maxium number of groups (${content_type.config.max}) for this field!`, 'warning');
             }
             else createGroup();
         }
     }
-
+    const deleteRepeaterGroup = (group_id?: mod_contentTypeFieldGroupModel["_id"]) => {
+        if(group_id != undefined) {
+            // Delete the group ID
+            // Delete all page data with that group ID
+            // Delte any groups that have the group ID as its parent_group - and so on
+            let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
+            if(pageComponent != undefined) {
+                const removeDataGroupIDs: Array<string> = [];
+                pageComponent.groups = pageComponent.groups.filter((group) => {
+                    if(group._id === group_id) removeDataGroupIDs.push(group_id);
+                    else if(group.parent_group === group_id) removeDataGroupIDs.push(group._id);
+                    else return group;
+                });
+                pageComponent.data = pageComponent.data.filter((data) => {
+                    if(data.group_id != undefined) {
+                        const findGroupID = removeDataGroupIDs.find( x => x === data.group_id ); 
+                        if(!findGroupID) return data;
+                    }
+                    else return data;
+                });
+                setSelectedPageComponent({
+                    ...pageComponent
+                });
+            }
+        }
+    }
 
 
     // ---------------------------------------------------------------------/
@@ -632,7 +654,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         });
                     }}
                     updateData={updateContentTypeData}
-                    addRepeaterGroup={addRepeaterDataGroup}/> 
+                    addRepeaterGroup={addRepeaterDataGroup}
+                    deleteGroup={deleteRepeaterGroup}/> 
             }
         </div>
     );
