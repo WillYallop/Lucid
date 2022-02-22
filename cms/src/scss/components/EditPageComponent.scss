@@ -34,6 +34,12 @@
         }
     }
 
+    .groupsOuterContainer {
+        margin-bottom: rem(10);
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
     .groupContainer {
         margin-left: rem(40);
         position: relative;
@@ -73,9 +79,9 @@
         }
         .groupIcon {
             position: absolute;
-            width: rem(20);
-            height: rem(20);
-            left: rem(-25);
+            width: rem(30);
+            height: rem(30);
+            left: rem(-40);
             top: 0;
             background-color: map-get($map: $accent_colours, $key: _03_01);
             color: map-get($map: $text_colours, $key: _02_01);
@@ -85,13 +91,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            display: none;
         }
         // Top level action bar
         .topLevelActionBar {
             position: absolute;
             left: rem(-40);
-            top: rem(0);
+            top: rem(35);
             display: flex;
             flex-direction: column;
             .btnStyleBlank {
@@ -141,7 +146,11 @@
                 top: 0;
                 left: rem(-15);
             }
-            .groupIcon { display: flex; }
+            .groupIcon { 
+                width: rem(20);
+                height: rem(20);
+                left: rem(-25);
+            }
             .topLevelActionBar { display: none; }
             .subActionBar {
                 display: block;

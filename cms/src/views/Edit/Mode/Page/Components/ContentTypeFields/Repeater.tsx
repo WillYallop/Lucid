@@ -1,8 +1,10 @@
-import { ReactElement } from "react";
+import { ReactElement, useContext } from "react";
+import { ModalContext } from "../../../../../../helper/Context";
 // Components
 import CoreIcon from '../../../../../../components/Core/Icon';
+import DeleteConfirmModal from "../../../../../../components/Modal/DeleteConfirmModal";
 // Icons
-import { faPlus, faTrashAlt, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrashAlt, faGripLines } from '@fortawesome/free-solid-svg-icons';
 
 interface contentTypeFieldRepeaterProps {
     content_type: mod_contentTypesConfigModel
@@ -14,7 +16,22 @@ interface contentTypeFieldRepeaterProps {
 
 const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ content_type, getGroups, addRepeaterGroup, data, deleteGroup }) => {
 
-    //Page Children
+    const { modalState, setModalState } = useContext(ModalContext);
+
+    const openConfirmDeleteModal = (groupID: mod_contentTypeFieldGroupModel["_id"]) => {
+        setModalState({
+            ...modalState,
+            state: true,
+            title: 'confirmation',
+            body: '',
+            size: 'small',
+            element: <DeleteConfirmModal 
+                        message={'are you sure you want to delete this repeater group?'}
+                        action={() => deleteGroup(groupID)}/>
+        });
+    }
+
+    // Render Repeater Groups
     const getReapterGroups = () => {
         const groups = getGroups(content_type._id, data.group_id);
         let groupElements: Array<ReactElement> = [];
@@ -26,23 +43,15 @@ const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ con
                         { count }
                     </div>
                     <div className="topLevelActionBar">
-                        <button className="btnStyleBlank" onClick={() => deleteGroup(groupID)}>
+                        <button className="btnStyleBlank" onClick={() => openConfirmDeleteModal(groupID)}>
                             <CoreIcon icon={faTrashAlt} style={'warning'}/>
-                        </button>
-                        <button className="btnStyleBlank">
-                            <CoreIcon icon={faChevronUp}/>
-                        </button>
-                        <button className="btnStyleBlank">
-                            <CoreIcon icon={faChevronDown}/>
                         </button>
                     </div>
                     <div className="groupContent">
                         { groups[groupID] } 
                     </div>
                     <div className="subActionBar">
-                        <button className="btnStyleBlank delete" onClick={() => deleteGroup(groupID)}>delete</button>
-                        <button className="btnStyleBlank move-up">up</button>
-                        <button className="btnStyleBlank move-down">down</button>
+                        <button className="btnStyleBlank delete" onClick={() => openConfirmDeleteModal(groupID)}>delete</button>
                     </div>
                 </div>
             ));
@@ -59,7 +68,7 @@ const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ con
                     <p className="subTitle">max groups: { content_type.config.max }</p>
                 </div>
                 <div>
-                    <button 
+                    <button
                         className='btnStyleBlank'
                         onClick={() => {
                             addRepeaterGroup(content_type, data.group_id)
@@ -68,7 +77,9 @@ const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ con
                     </button>
                 </div>
             </div>
-            { getReapterGroups() }
+            <div className="groupsOuterContainer">
+                { getReapterGroups() }
+            </div>
         </>
     )
 }
