@@ -10,6 +10,7 @@ import ComponentListModal from './Components/ComponentListModal';
 import CoreIcon from '../../../../components/Core/Icon';
 import NotificationPopup from '../../../../components/Core/Notifications/NotificationPopup';
 import EditPageComponent from './Components/EditPageComponent';
+import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
 // Context
 import { ModalContext, PageNotificationContext } from "../../../../helper/Context";
 // Functions
@@ -28,11 +29,13 @@ interface updateDataObjInterface {
     template: boolean
     addComponents: Array<string>
     modifiedComponents: Array<string>
+    deleteComponents: Array<string>
 }
 const defaultUpdateDataObj: updateDataObjInterface = {
     template: false,
     addComponents: [],
-    modifiedComponents: []
+    modifiedComponents: [],
+    deleteComponents: []
 };
 
 
@@ -407,7 +410,25 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             }
         }
     }
-
+    const deleteComponent = (page_component_id: mod_page_componentModel["_id"]) => {
+        if(selectedPageComponent._id === page_component_id) {
+            setSelectedPageComponent({} as mod_page_componentModel);
+            setPageMode('preview');
+        }
+        page.page_components = page.page_components.filter((component) => {
+            if(component._id != page_component_id) return component;
+        });
+        setPage({
+            ...page
+        });
+        const findNewComponent = updatedData.addComponents.find( x => x === page_component_id);
+        if(findNewComponent === undefined) {
+            updatedData.deleteComponents.push(page_component_id);
+            setUpdateData({
+                ...updatedData
+            });
+        }
+    }
 
     // ---------------------------------------------------------------------/
     // - Save --------------------------------------------------------------/
@@ -454,7 +475,16 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             {/* Delete this row */}
                             <button className='btnStyleBlank' onClick={(e) => { 
                                 e.stopPropagation();
-                                
+                                setModalState({
+                                    ...modalState,
+                                    state: true,
+                                    title: 'confirmation',
+                                    body: '',
+                                    size: 'small',
+                                    element: <DeleteConfirmModal 
+                                                message={'are you sure you want to delete this page component?'}
+                                                action={() => deleteComponent(page.page_components[i]._id)}/>
+                                });
                              }}>
                                 <CoreIcon icon={faTrashAlt} style={'transparent--warning'}/>
                             </button>
