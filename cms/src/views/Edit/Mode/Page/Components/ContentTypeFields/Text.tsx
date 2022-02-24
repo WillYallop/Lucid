@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 // Components
 import TextInput from '../../../../../../components/Core/Inputs/TextInput';
 
