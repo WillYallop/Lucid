@@ -15,7 +15,11 @@
     &:hover {
         background-color: map-get($map: $accent_colours, $key: _01_02);
     }
-
+    &.flip-horizontal {
+        svg {
+            transform: scale(-1);
+        }
+    }
     &.warning {
         background-color: map-get($map: $accent_colours, $key: _02_01);
         color: white;

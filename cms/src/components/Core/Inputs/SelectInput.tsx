@@ -9,7 +9,7 @@ interface textareaInputProps {
     errorMsg: string
     options: Array<string>
     described_by?: string
-    style?: '--no-margin' | '--hide-seperator'
+    style?: string
     updateValue: (value: string) => void
 }
 

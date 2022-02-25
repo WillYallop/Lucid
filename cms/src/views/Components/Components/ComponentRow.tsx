@@ -1,5 +1,5 @@
 import { ReactElement } from "react"
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 // Components
 import CoreIcon from "../../../components/Core/Icon";
 // Icons
@@ -16,9 +16,12 @@ interface ComponentRowProps {
         file_path: string
     },
     expanded: boolean
+    clickCallback?: () => void
 }
 
-const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded }) => {
+const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded, clickCallback }) => {
+
+    const navigate = useNavigate();
 
     let componentImg: ReactElement;
     if(component.preview_url) componentImg = <img className="componentImg" src={component.preview_url}/>
@@ -26,7 +29,11 @@ const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded }) => {
 
     if(expanded) {
         return (
-            <div className="blockCon componentRow componentRow__extended">
+            <div className="blockCon componentRow componentRow__extended"
+                onClick={() => {
+                    if(clickCallback !== undefined) clickCallback();
+                    else navigate(`/edit/component/${component._id}`);
+                }}>
                 <div className="componentRow__extended__image">
                     { componentImg }
                 </div>
@@ -37,19 +44,27 @@ const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded }) => {
                         <li>added: <span>{ new Date(component.date_added).toLocaleDateString() }</span></li>
                         <li>path: <span>{ component.file_path }</span></li>
                     </ul>
-                    <div className="buttonCon">
-                        <NavLink to={`/edit/component/${component._id}`}>
-                            <button className="btnStyle1 btnStyle1--small">edit</button>
-                        </NavLink >
-                        <button className="btnStyle1 btnStyle1--small btnStyle1--danger">deregister</button>
-                    </div>
+                    {
+                        clickCallback === undefined ?
+                        <div className="buttonCon">
+                            <NavLink to={`/edit/component/${component._id}`}>
+                                <button className="btnStyle1 btnStyle1--small">edit</button>
+                            </NavLink >
+                            <button className="btnStyle1 btnStyle1--small btnStyle1--danger">deregister</button>
+                        </div>
+                        : null
+                    }
                 </div>
             </div>
         )
     }
     else {
         return (
-            <div className="blockCon componentRow componentRow__standard">
+            <div className="blockCon componentRow componentRow__standard"
+                onClick={() => {
+                    if(clickCallback !== undefined) clickCallback();
+                    else navigate(`/edit/component/${component._id}`);
+                }}>
                 <div className="componentRow__standard__image">
                     { componentImg }
                 </div>
@@ -60,12 +75,16 @@ const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded }) => {
                             <li>created: <span>{ new Date(component.date_added).toLocaleDateString() }</span></li>
                         </ul>
                     </div>
-                    <div className="componentRow__standard__body__col layout__flex">
-                        <NavLink to={`/edit/component/${component._id}`}>
-                            <CoreIcon icon={faEdit}/>
-                        </NavLink >
-                        <CoreIcon icon={faTrashAlt} style={'warning'}/>
+                    {
+                        clickCallback === undefined ?
+                        <div className="componentRow__standard__body__col layout__flex">
+                            <NavLink to={`/edit/component/${component._id}`}>
+                                <CoreIcon icon={faEdit}/>
+                            </NavLink >
+                            <CoreIcon icon={faTrashAlt} style={'warning'}/>
                     </div>
+                        : null
+                    }
                 </div>
             </div>
         )

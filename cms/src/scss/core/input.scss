@@ -128,8 +128,8 @@
         top: rem(45);
         left: 0;
         right: 0;
-        background-color: #414141;
-        border: rem(1) solid #535353;
+        background-color: #eeeeee;
+        border: rem(1) solid #dddddd;
         border-radius: 0 0 rem(5) rem(5);
         color: map-get($map: $text_colours, $key: _01_02);
         overflow: hidden;
@@ -139,17 +139,17 @@
             transition-property: background-color;
             width: 100%;
             display: block;
-            padding: rem(10);
+            padding: rem(5);
             text-align: left;
-            color: map-get($map: $text_colours, $key: _01_02);
-            border-bottom: rem(1) solid #535353;
-            background-color: #414141;
+            color: map-get($map: $text_colours, $key: _02_01);
+            border-bottom: rem(1) solid #dddddd;
+            background-color: #eeeeee;
             font-size: rem(14);
             span {
-                color: map-get($map: $text_colours, $key: _01_02);
+                color: map-get($map: $text_colours, $key: _02_02);
             }
             &:hover {
-                background-color: darken(#414141, 5%);
+                background-color: darken(#e0e0e0, 5%);
             }
             &:last-child {
                 border-bottom: none;
@@ -158,6 +158,7 @@
         .noData {
             padding: rem(10);
             font-size: rem(14);
+            color: map-get($map: $text_colours, $key: _02_01);
         }
     }
     &.invalid {

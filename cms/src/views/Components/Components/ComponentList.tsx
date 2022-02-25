@@ -98,24 +98,9 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     const componentRows: Array<ReactElement> = [];
     if(components.length) {
         components.forEach((component) => {
-            componentRows.push(<ComponentRow key={componentRows.length} component={component} expanded={expanded}/>)
+            componentRows.push(<ComponentRow key={component._id} component={component} expanded={expanded}/>)
         });
     } 
-    else {
-        return (
-            <div className="con">
-                <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
-                </div>
-                <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
-                </div>
-                <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
-                </div>
-            </div>
-        )
-    }
 
     // Load more
     const loadmore = () => {

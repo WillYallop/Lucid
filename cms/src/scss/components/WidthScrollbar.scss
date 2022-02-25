@@ -1,0 +1,64 @@
+.widthScrollbar {
+    height: rem(25);
+    background-color: map-get($map: $accent_colours, $key: _03_01);
+    left: 0;
+    position: relative;
+    .pageSize {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: white;
+        top: rem(3);
+        bottom: rem(3);
+        width: rem(70);
+        border-radius: rem(5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2;
+        p {
+            font-size: rem(12);
+            font-weight: bold;
+            color: rgb(24, 24, 24);
+        }
+    }
+    button {
+        transition: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        padding: 0;
+        width: rem(20);
+        background-color: map-get($map: $accent_colours, $key: _01_01);
+        z-index: 3;
+        color: map-get($map: $accent_colours, $key: _03_02);
+        &.left {
+            left: 0;
+            // border-radius: rem(5) 0 0 rem(5);
+        }
+        &.right {
+            right: 0;
+            // border-radius: 0 rem(5) rem(5) 0;
+        }
+        svg {
+            pointer-events: none;
+        }
+    }
+    .markers {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        z-index: 1;
+        span {
+            display: block;
+            width: rem(1);
+            height: rem(15);
+            background-color: rgb(102, 110, 101);
+        }
+    }
+}

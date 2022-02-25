@@ -39,9 +39,6 @@ interface mod_pageModelComponent {
     content_types: Array<mod_pageModelComponentContentType>
 }
 interface mod_pageModelComponentContentType {
-    config_id: mod_contentTypesConfigModel["_id"]
-    name: mod_contentTypesConfigModel["name"]
-    type: mod_contentTypesConfigModel["type"]
-    config: mod_contentTypesConfigModel["config"]
     data: any
+    group_id?: string
 }

@@ -6,62 +6,34 @@ import validate from '../../../validator';
 
 // Controllers
 import { getSingleSEO, saveSingleSEO } from '../seo/data';
-import { getSingleContentType } from '../content_type/data';
-import { componentController, contentTypeController } from '../../../index';
+import { getAllPageComponents } from '../page_component/data';
 import { __generateErrorString } from '../../../controller/helper/shared';
 
 
-
 // Get single page
-export const getSingle = async (_id: mod_pageModel["_id"]) => {
+export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel["slug"]) => {
     try {
-
-        // Get page
-        let page = await db.one('SELECT * FROM pages WHERE _id=$1', _id);
-        // Get SEO Object
-        page.seo = await getSingleSEO(_id);
-
-        // For each component
-        // For each content type row for pages - no matter the type
-        // Loop over them and find the matching content type config form the theme and merge them into one obj
-        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', _id);
-        let componentsArray: Array<mod_pageModelComponent> = [];
-        for await(const pageComponent of pageComponents) { 
-            let component = await componentController.getSingleByID(pageComponent.component_id);
-            let content_types = await contentTypeController.getAll(pageComponent.component_id);
-            // Throw if not found
-            if(component === undefined) throw 'Component undefined.';
-            if(content_types === undefined) throw 'Content Types undefined.';
-            // Find all content type data for this component
-            let contentTypesArray: Array<mod_pageModelComponentContentType> = [];
-            for await(const contentType of content_types) {
-                // Find component_content_type_ table data based on configs id and component_id
-                // components config shoudl be the source of truth for what page component data to query
-                let componentsContentTypeData = await getSingleContentType(pageComponent._id, contentType);
-                // Set data based on the content type
-                if(componentsContentTypeData) contentTypesArray.push(componentsContentTypeData);
-            }
-
-            // Create page component object
-            let obj: mod_pageModelComponent = {
-                _id: component._id,
-                page_components_id: pageComponent._id,
-                file_name: component.file_name,
-                file_path: component.file_path,
-                name: component.name,
-                description: component.description,
-                preview_url: component.preview_url,
-                date_added: component.date_added,
-                date_modified: component.date_modified,
-                content_types: contentTypesArray
-            }
-            componentsArray.push(obj)
+        let page_id;
+        let page;
+        if(_id != undefined) {
+            page_id = _id;
+            page = await db.one('SELECT * FROM pages WHERE _id=$1', page_id);
         }
-
-        // Build into object and store in page.components
-        page.components = componentsArray;
+        else if(slug != undefined) {
+            page = await db.one('SELECT * FROM pages WHERE slug=$1', slug);
+            page_id = page._id;
+        }
+        else {
+            throw __generateErrorString({
+                code: 500,
+                origin: 'pageController.getSingle',
+                message: `You must call the function with either the "_id" or the "slug" paramater!`
+            });
+        }
+        // Get SEO Object
+        page.seo = await getSingleSEO(page_id);
+        page.page_components = await getAllPageComponents(page_id);
         return page;
-
     }
     catch(err) {
         throw err;
@@ -104,6 +76,10 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
             },
             {
                 method: 'page_slug',
+                value: data.is_homepage ? '/' : data.slug
+            },
+            {
+                method: 'page_slug_blacklist',
                 value: data.is_homepage ? '/' : data.slug
             },
             {
@@ -172,6 +148,10 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
                 method: 'page_slug',
                 value: data.slug
             });
+            validationArr.push({
+                method: 'page_slug_blacklist',
+                value: data.slug
+            })
         }
         if(data.template != undefined) {
             validationArr.push({
@@ -265,7 +245,7 @@ export const pageResetHandler = async (action: 'unset_is_homepage' | 'unset_post
             }
             case 'unset_post_type_id': {
                 // unset all pages post_type_id that match data
-                db.none(`UPDATE pages SET post_type_id=NULL WHERE post_type_id=$1`, data);
+                await db.none(`UPDATE pages SET post_type_id=NULL WHERE post_type_id=$1`, data);
                 return true;
             }
         }
@@ -283,12 +263,21 @@ interface pageSearchRes {
     _id: mod_pageModel["_id"]
 }
 // page serach via partial name, return array and page slug
-export const pageSearch = async (query: string) => {
+export const pageSearch = async (query: string, fullSlug: boolean, allowHome: boolean, type: 'page' | 'post' | 'all') => {
     try {
-        let matches: Array<pageSearchRes> = await db.manyOrNone("SELECT _id, name, slug, has_parent, parent_id FROM pages WHERE type=${type} AND levenshtein(${query}, name) <= 5 ORDER BY levenshtein(${query}, name) LIMIT 4", {
-            query: query,
-            type: 'page'
-        });
+        let matches: Array<pageSearchRes>;
+        if(type === 'all') {
+            matches = await db.manyOrNone("SELECT _id, name, slug, has_parent, parent_id FROM pages WHERE levenshtein(${query}, name) <= 5 ORDER BY levenshtein(${query}, name) LIMIT 4", {
+                query: query
+            });
+        }
+        else {
+            matches = await db.manyOrNone("SELECT _id, name, slug, has_parent, parent_id FROM pages WHERE type=${type} AND levenshtein(${query}, name) <= 5 ORDER BY levenshtein(${query}, name) LIMIT 4", {
+                query: query,
+                type: type
+            });
+        }
+
         const pageFullSlug = async (_id: mod_pageModel["_id"], slug: mod_pageModel["slug"]) => {
             try {
                 // Query for parent slug
@@ -302,14 +291,18 @@ export const pageSearch = async (query: string) => {
             }
         }
 
-        let homePageInd = matches.findIndex( x => x.slug === '/');
-        if(homePageInd != -1) matches.splice(homePageInd, 1);
+        if(!allowHome) {
+            let homePageInd = matches.findIndex( x => x.slug === '/');
+            if(homePageInd != -1) matches.splice(homePageInd, 1);
+        }
 
-        for await (const match of matches) {
-            match.slug = '/'+match.slug;
-            // For each match, if its has a parent recursivly query for the parent slug and prepend to child slug
-            if(match.has_parent) {
-                match.slug = await pageFullSlug(match.parent_id, match.slug);
+        if(fullSlug) {
+            for await (const match of matches) {
+                match.slug = '/'+match.slug;
+                // For each match, if its has a parent recursivly query for the parent slug and prepend to child slug
+                if(match.has_parent) {
+                    match.slug = await pageFullSlug(match.parent_id, match.slug);
+                }
             }
         }
       

@@ -1,6 +1,8 @@
 
-import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLUnionType } from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt } from 'graphql';
 import { ContentTypeConfig } from '../content_type_config/type';
+import { ContentTypeFieldGroupModel, ContentTypeDatabaseModel } from '../content_type_fields/type';
+import { Component } from '../component/type';
 import { SEOObjectType } from '../seo/type';
 
 // Page
@@ -60,13 +62,14 @@ export const Page = new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLBoolean),
             description: 'Whether this is the homepage'
         },
-        components: {
-            type: GraphQLList(PageComponent),
-            description: 'List of component data'
-        },
         post_type_id: {
             type: GraphQLID,
             description: 'Assigned if the page has a post type'
+        },
+
+        page_components: {
+            type: GraphQLList(PageComponent),
+            description: PageComponent.description
         }
     })
 });
@@ -78,11 +81,46 @@ export const PageComponent = new GraphQLObjectType({
     fields: () => ({
         _id: {
             type: GraphQLNonNull(GraphQLID),
-            description: 'The unique component _id - refers to the theme/components ID'
+            description: 'The page_components schema ID'
         },
-        page_components_id: {
+        page_id: {
             type: GraphQLNonNull(GraphQLID),
-            description: 'The unique page_components_id - refers to the page components table _id'
+            description: 'The page schema ID'
+        },
+        component_id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'The component schema ID'
+        },
+        position: {
+            type: GraphQLNonNull(GraphQLInt),
+            description: 'The page_component postion'
+        },
+        component: {
+            type: GraphQLNonNull(PageComponentType),
+            description: PageComponentType.description
+        },
+        content_types: {
+            type: GraphQLList(ComponentContentType),
+            description: ComponentContentType.description
+        },
+        data: {
+            type: GraphQLList(ContentTypeDatabaseModel), 
+            description: ContentTypeDatabaseModel.description
+        },
+        groups: {
+            type: GraphQLList(ContentTypeFieldGroupModel),
+            description: ContentTypeFieldGroupModel.description
+        }
+    })
+})
+
+export const PageComponentType = new GraphQLObjectType({
+    name: 'PageComponentType',
+    description: 'The component model for page',
+    fields: () => ({
+        _id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'The unique component _id'
         },
         name: {
             type: GraphQLNonNull(GraphQLString),
@@ -111,20 +149,16 @@ export const PageComponent = new GraphQLObjectType({
         date_modified: {
             type: GraphQLNonNull(GraphQLString),
             description: 'The component date_modified'
-        },
-        content_types: {
-            type: GraphQLList(ComponentContentType),
-            description: 'A list of content types config and their corresponding page data'
         }
     })
-})
+});
 
 // Page component content_type
 export const ComponentContentType = new GraphQLObjectType({
     name: 'PageComponentContentTypeModel',
     description: 'The pages component content type model',
     fields: () => ({
-        config_id: {
+        _id: {
             type: GraphQLNonNull(GraphQLID),
             description: 'Component content type config ID'
         },
@@ -139,13 +173,10 @@ export const ComponentContentType = new GraphQLObjectType({
         config: {
             type: GraphQLNonNull(ContentTypeConfig),
             description: 'Component content type config'
-        },
-        data: {
-            type: GraphQLNonNull(GraphQLString),
-            description: 'Component content type data'
         }
     })
 })
+
 
 // Multiple Pages
 export const MultiplePages = new GraphQLObjectType({

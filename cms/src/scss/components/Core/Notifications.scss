@@ -25,3 +25,39 @@
         line-height: rem(18);
     }
 }
+
+.notificationPopup {
+    position: absolute;
+    top: rem(40);
+    left: 0;
+    right: 0;
+    z-index: 10;
+    flex-direction: column;
+    display: flex;
+    padding: 0 rem(20);
+    .notificationPopupRow {
+        background-color: map-get($map: $accent_colours, $key: _02_01);
+        border-radius: rem(5);
+        padding: rem(10) rem(20);
+        text-align: center;
+        color: white;
+        margin: 0 auto;
+        max-width: rem(500);
+        animation: fadeIn;
+        animation-duration: 0.3s;
+        p {
+            color: white;
+            font-size: rem(14);
+        }
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-100%);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    }
+}

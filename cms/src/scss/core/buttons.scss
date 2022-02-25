@@ -71,6 +71,7 @@ button {
         padding: rem(5) rem(10);
     }
     .coreIcon {
+        min-width: rem(30);
         background-color: darken(map-get($map: $accent_colours, $key: _01_01), 5%);
     }
     &:hover {
@@ -78,6 +79,35 @@ button {
         .coreIcon {
             background-color: darken(map-get($map: $accent_colours, $key: _01_01), 20%);
         }
+    }
+    &--full-width {
+        width: 100%;
+    }
+}
+.btnStyle3 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0;
+    background-color: transparent;
+    &:hover {
+        .coreIcon {
+            background-color: map-get($map: $accent_colours, $key: _01_02);
+        }
+    }
+    &.warning {
+        &:hover {
+            .coreIcon {
+                background-color: darken($color: map-get($map: $accent_colours, $key: _02_01), $amount: 10%);
+            }
+        }
+    }
+    p {
+        margin-left: rem(10);
+        user-select: none;
+    }
+    &:disabled {
+        opacity: 0.4;
     }
 }
 

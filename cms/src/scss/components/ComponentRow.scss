@@ -1,5 +1,15 @@
 .componentRow {
+    @include animate;
+    transition-property: background-color;
     padding: 5px;
+    cursor: pointer;
+    background-color: map-get($map: $section_colours, $key: _02_01);
+    &:last-child {
+        margin-bottom: 0;
+    }
+    &:hover {
+        background-color: lighten(map-get($map: $section_colours, $key: _02_01), 2%);
+    }
     .componentImg {
         width: 100%;
         height: 100%;
@@ -18,7 +28,6 @@
             }
         }
     }
-
     &__extended {
         display: flex;
         flex-wrap: wrap;
@@ -126,6 +135,42 @@
                     }
                 }
             }
+        }
+    }
+}
+
+.largeComponentRow {
+    padding-top: rem(10);
+    display: flex;
+    align-items: center;
+    margin-bottom: rem(20);
+    .imgCon {
+        z-index: 2;
+        height: rem(80);
+        width: rem(80);
+        min-width: rem(80);
+        border-radius: rem(5);
+        background-color: map-get($map: $accent_colours, $key: _03_01);
+        color: map-get($map: $accent_colours, $key: _03_03);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        font-size: rem(24);
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+    .textarea {
+        padding-left: rem(10);
+        max-width: rem(800);
+        h2 {
+            font-size: rem(16);
+        }
+        p {
+            font-size: rem(14);
         }
     }
 }

@@ -1,36 +1,28 @@
-import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInt } from 'graphql';
+import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInt, GraphQLInputObjectType, GraphQLBoolean, GraphQLString, GraphQLList } from 'graphql';
 import { DeleteResType } from '../shared/type';
 import { PageComponentModel } from './type';
-import { addPageComponent, deletePageComponent, updatePageComponent } from './data';
+import { deletePageComponent, addAndUpdatePageComponent } from './data';
 
-const addSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
+const addUpdateSingle: GraphQLFieldConfig<any, any, any> = {
     type: PageComponentModel,
-    description: 'Add single page component',
+    description: 'Add or update a page component and its content types',
     args: {
+        _id: { type: GraphQLID },
         page_id: { type: GraphQLNonNull(GraphQLID) },
         component_id: { type: GraphQLNonNull(GraphQLID) },
         position: { type: GraphQLNonNull(GraphQLInt) }
     },
     resolve: (_, args) => {
-        return addPageComponent(args.page_id, args.component_id, args.position);
-    }
-}
-
-const updateSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
-    type: PageComponentModel,
-    description: 'Update single page component data',
-    args: {
-        _id: { type: GraphQLNonNull(GraphQLID) },
-        position: { type: GraphQLInt }
-    },
-    resolve: (_, args) => {
-        return updatePageComponent(args._id, {
+        return addAndUpdatePageComponent({
+            _id: args._id,
+            page_id: args.page_id,
+            component_id: args.component_id,
             position: args.position
-        })
+        });
     }
 }
 
-const deleteSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
+const deleteSingle: GraphQLFieldConfig<any, any, any> = {
     type: DeleteResType,
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) }
@@ -44,8 +36,7 @@ export const PageComponentMutation = new GraphQLObjectType({
     name: 'PageComponentMutation',
     description: 'The page component base mutation',
     fields: {
-        add_page_component: addSinglePageComponent,
-        delete_page_component: deleteSinglePageComponent,
-        update_page_component: updateSinglePageComponent
+        add_update: addUpdateSingle,
+        delete: deleteSingle
     }
 })

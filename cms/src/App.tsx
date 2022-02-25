@@ -21,6 +21,7 @@ import SignIn from './views/SignIn/Index';
 import Error404 from './views/404/Index';
 // Components
 import MainLayout from './layouts/MainLayout';
+import BasicLayout from './layouts/BasicLayout';
 
 
 const App: React.FC = () => {
@@ -40,12 +41,16 @@ const App: React.FC = () => {
           <Router>
             <Routes>
 
-                <Route>
+                <Route element={<BasicLayout/>}>
                   <Route path="/signin" element={<SignIn/>}></Route>
                 </Route>
 
-                <Route>
+                <Route element={<BasicLayout/>}>
                   <Route path="/404" element={<Error404/>}></Route>
+                </Route>
+
+                <Route>
+                  <Route path="/edit/page/:param" element={<Edit mode={'page'} />}></Route>
                 </Route>
 
                 <Route element={<MainLayout/>}>
@@ -56,8 +61,7 @@ const App: React.FC = () => {
                   <Route path="/components" element={<Components />}></Route>
                   <Route path="/style" element={<Style />}></Route>
                   <Route path="/settings" element={<Settings />}></Route>
-
-                  <Route path="/edit/:mode/:_id" element={<Edit />}></Route>
+                  <Route path="/edit/component/:param" element={<Edit mode={'component'} />}></Route>
                 </Route>
 
             </Routes>

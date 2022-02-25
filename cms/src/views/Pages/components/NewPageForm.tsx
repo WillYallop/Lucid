@@ -149,6 +149,9 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
             page {
                 search_name (
                     query: "${value}"
+                    full_slug: true
+                    allow_home: false
+                    type: "page"
                 )
                 {
                     slug

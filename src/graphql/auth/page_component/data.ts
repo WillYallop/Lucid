@@ -3,60 +3,110 @@ import moment from 'moment';
 import { __updateSetQueryGen } from '../shared/functions';
 // Controller
 import { componentController, contentTypeController } from '../../../index';
-import { saveSingleContentType } from '../content_type/data';
+import { getPageComponentContentTypeData, getPageComponentsGroups } from '../content_type_fields/data';
 
-// Used to update page_components table row data
-export const updatePageComponent = async (_id: mod_pageComponentsModel["_id"], data: const_page_updatePageComponentInp) => {
+
+// Handle adding and updating a page component and its content types
+export const addAndUpdatePageComponent = async (pageComp: cont_page_addUpdatePageComponentInp) => {
     try {
-        // We can only update the position atm
-        // More may come TODO
-        let updatePageComponentObj: const_page_updatePageComponentUpdateObj = {};
-        if(data.position != undefined) updatePageComponentObj.position = data.position;
-        // Update
-        let pageComponentsRes = await db.one(`UPDATE page_components SET ${__updateSetQueryGen(updatePageComponentObj)} WHERE _id='${_id}' RETURNING *`, updatePageComponentObj);
-        // Update pages last edited field
-        await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${pageComponentsRes.page_id}'`);
-        return pageComponentsRes;
+
+        let savePageComponentRes: mod_pageComponentsModel;
+        // UPDATE
+        if(pageComp._id != undefined) {
+            // We can only update the position atm
+            let updatePageComponentObj: const_page_updatePageComponentUpdateObj = {};
+            if(pageComp.position != undefined) updatePageComponentObj.position = pageComp.position;
+            savePageComponentRes = await db.one(`UPDATE page_components SET ${__updateSetQueryGen(updatePageComponentObj)} WHERE _id='${pageComp._id}' RETURNING *`, updatePageComponentObj);
+        }   
+        // CREATE
+        else {
+            savePageComponentRes = await db.one('INSERT INTO page_components(page_id, component_id, position) VALUES(${page_id}, ${component_id}, ${position}) RETURNING *', {
+                page_id: pageComp.page_id, // reference will verify if this exists
+                component_id: pageComp.component_id,
+                position: pageComp.position
+            });
+        }
+
+        // Update pages last edited stat
+        await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${savePageComponentRes.page_id}'`);
+
+        return savePageComponentRes
     }
     catch(err) {
         throw err;
     }
 }
 
-// Add page_components table row 
-// This doesnt add allow any data to be added to them - it simply creates the empty tables needed.
-// Only fire when adding a new component to a page.
-// For updating a component use the updatePageComponent() function
-// If a new config field has been added, but this was fired before - the table for that type wont exist yet, but that will handle that case
-export const addPageComponent = async (page_id: mod_pageModel["_id"], component_id: mod_componentModel["_id"], position: mod_pageComponentsModel["position"]) => {
+// Get All page components
+export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
     try {
-        // Verify component_id
-        await componentController.getSingleByID(component_id);
-        // Create a new page_components row
-        let savePageComponentRes: mod_pageComponentsModel = await db.one('INSERT INTO page_components(page_id, component_id, position) VALUES(${page_id}, ${component_id}, ${position}) RETURNING *', {
-            page_id: page_id, // reference will verify if this exists
-            component_id: component_id,
-            position: position
-        });
-        // Grab component theme/config/content_types file to get a list of all config_ids
-        // Update page last edited field
-        let content_types = await contentTypeController.getAll(component_id);
-        if(content_types != undefined) {
-            for await(const contentType of content_types) {
-                if(contentType.type != 'repeater') {
-                    // Save a new empty table row for the correct content type
-                    await saveSingleContentType(savePageComponentRes._id, contentType);
+        /*
+            {
+                page_components: [
+                    {
+                        _id: 
+                        page_id: 
+                        component_id:
+                        position: 
+                        component: {
+                            _id: 
+                            name: 
+                        }
+                        content_types: [
+                            {
+                                _id: 
+                                name: 
+                                type: 
+                                config: {
+
+                                }
+                            }
+                        ],
+                        groups: [
+                            {
+                                _id: 
+                                page_component_id: 
+                                parent_group: 
+                                parent_config_id: 
+                                position: 
+                            }
+                        ],
+                        data: [
+                            {
+                                page_component_id: 
+                                config_id:
+                                value: 
+                                group_id:
+                            }
+                        ]
+                    }
+                ]
+            }
+        */
+        // Get all page components
+        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', page_id);
+        if(pageComponents.length) {
+            const componentDataMap = new Map();
+            for await(let pageComp of pageComponents) {
+                // Ensure we only query for a component and its content types once.
+                if(componentDataMap.get(pageComp.component_id) === undefined) {
+                    let component = await componentController.getSingleByID(pageComp.component_id);
+                    let content_types = await contentTypeController.getAll(pageComp.component_id);
+                    componentDataMap.set(pageComp.component_id, {
+                        component: component,
+                        content_types: content_types
+                    })
                 }
-            }
-            return {
-                _id: savePageComponentRes._id,
-                component_id: savePageComponentRes.component_id,
-                position: savePageComponentRes.position
+                // Assign component and get data
+                let componentDatas = componentDataMap.get(pageComp.component_id);
+                pageComp.component = componentDatas.component;
+                let data = await getPageComponentContentTypeData(pageComp._id);
+                pageComp.data = data;
+                let groups = await getPageComponentsGroups(pageComp._id);
+                pageComp.groups = groups;
             }
         }
-        else {
-            throw 'Cannot verify components content_type config!'
-        }
+        return pageComponents;
     }
     catch(err) {
         throw err;

@@ -80,6 +80,9 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
             page {
                 search_name (
                     query: "${value}"
+                    full_slug: true
+                    allow_home: false
+                    type: "page"
                 )
                 {
                     slug

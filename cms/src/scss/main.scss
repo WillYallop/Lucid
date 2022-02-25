@@ -20,6 +20,7 @@
 
 // Layouts
 @import './layouts/mainLayout.scss';
+@import './layouts/basicLayout.scss';
 
 // Components
 @import './components/Core/Icons.scss';
@@ -33,3 +34,6 @@
 @import './components/ComponentContentTypeRow.scss';
 @import './components/PageRow.scss';
 @import './components/IllustrationMEssage.scss';
+@import './components/EditPage.scss';
+@import './components/WidthScrollbar.scss';
+@import './components/EditPageComponent.scss';

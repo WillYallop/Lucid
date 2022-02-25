@@ -65,7 +65,12 @@ api.use('/auth', expressGraphQL({
 }));
 
 mainapp.use('/', express.static(path.resolve(config.directories.dist), { extensions: ['html'] }));
-cms.use('/', express.static(path.resolve(__dirname, '../cms/build')));
+
+cms.use(express.static(path.join(__dirname, "..",  "cms", "build")));
+cms.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "..", "cms", "build", "index.html"));
+})
+
 assets.use('/', express.static(path.resolve(config.directories.assets_dist)));
 
 
