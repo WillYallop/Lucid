@@ -27,8 +27,8 @@ const ContentTypeFieldText: React.FC<contentTypeFieldTextProps> = ({ content_typ
                     const wrapper = document.getElementById(`${content_type._id + (data.group_id ? data.group_id : '')}`)?.parentElement;
                     const min = content_type.config.min ? parseInt(content_type.config.min) : undefined;
                     const max = content_type.config.max ? parseInt(content_type.config.max) : undefined;
-                    if(min != undefined) {
-                        if(max != undefined) {
+                    if(min !== undefined) {
+                        if(max !== undefined) {
                             if(value.length >= min && value.length <= max) wrapper?.classList.remove('invalid');
                             else wrapper?.classList.add('invalid');
                         }
@@ -37,8 +37,8 @@ const ContentTypeFieldText: React.FC<contentTypeFieldTextProps> = ({ content_typ
                             else wrapper?.classList.add('invalid');
                         }
                     }
-                    if(max != undefined) {
-                        if(min != undefined) {
+                    if(max !== undefined) {
+                        if(min !== undefined) {
                             if(value.length >= min && value.length <= max) wrapper?.classList.remove('invalid');
                             else wrapper?.classList.add('invalid');
                         }

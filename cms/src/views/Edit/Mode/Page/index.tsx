@@ -51,35 +51,22 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const [ notificationTimeout, setNotificationTimeout ] = useState<ReturnType<typeof setTimeout>>();
     const [ loading, setLoading ] = useState(true);
     const [ activeSlug, setActiveSlug ] = useState(slug);
-    // Can save
-    const [ canSave, setCanSave ] = useState(false);
-    // page
-    const [ page, setPage ] = useState({} as mod_pageModel);
-    // Page preview markup
-    const [ pageMarkup, setPageMarkup ] = useState('');
+    const [ canSave, setCanSave ] = useState(false); // Can save
+    const [ page, setPage ] = useState({} as mod_pageModel); // page
+    const [ pageMarkup, setPageMarkup ] = useState(''); // Page preview markup
     // Template
     const [ selectedTemplate, setSelectedTemplate ] = useState('');
     const [ templates, setTemplates ] = useState([]);
     // Selected component
     const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component'>('preview')
     const [ selectedPageComponent, setSelectedPageComponent ] = useState({} as mod_page_componentModel);
-
+    const [ mouseYPos, setMouseYPos ] = useState(0);
+    const [ dragTarget, setDragTarget ] = useState<HTMLElement>();
     // New data
     // Used to track and store data changes
     const [ updatedData, setUpdateData ] = useState(defaultUpdateDataObj);
 
 
-    const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications([{
-            message: message,
-            type: type
-        }]);
-        if(notificationTimeout != undefined) clearTimeout(notificationTimeout);
-        setNotificationTimeout(setTimeout(() => {
-            notifications?.pop();
-            setNotifications(notifications);
-        }, 5000));
-    }
 
     // ---------------------------------------------------------------------/
     // - DATA --------------------------------------------------------------/
@@ -195,6 +182,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         });
     }
 
+    // -----------------------------------
+    // Components
     // Add component
     const addComponent = (component: mod_componentModel) => {
 
@@ -298,10 +287,10 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const updateContentTypeData = (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => {
         // Find the corresponding page component in the page object
         const pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
-        if(pageComponent != undefined) {
+        if(pageComponent !== undefined) {
             // find corresponding content type data fields
             const dataObj = pageComponent.data.find( x => x.config_id === _id && x.group_id === group_id);
-            if(dataObj != undefined) {
+            if(dataObj !== undefined) {
                 dataObj.value = data;
                 setSelectedPageComponent({
                     ...pageComponent
@@ -366,7 +355,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
                 // add new data to the selectedComponent and the page state
                 let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
-                if(pageComponent != undefined) {
+                if(pageComponent !== undefined) {
                     pageComponent.groups = pageComponent.groups.concat(componentDataGroups);
                     pageComponent.data = pageComponent.data.concat(componentData);
                     setSelectedPageComponent({
@@ -375,7 +364,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 }
             }
             // If the config max is defined, check the current amount of groups!
-            if(content_type.config.max != undefined) {
+            if(content_type.config.max !== undefined) {
                 // Filter all data that belongs to this content type
                 const contentTypeDataGroups = selectedPageComponent.groups.filter( x => x.parent_group === repeaterGroupID);
                 if(contentTypeDataGroups.length < parseInt(content_type.config.max)) createGroup();
@@ -385,12 +374,12 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         }
     }
     const deleteRepeaterGroup = (group_id?: mod_contentTypeFieldGroupModel["_id"]) => {
-        if(group_id != undefined) {
+        if(group_id !== undefined) {
             // Delete the group ID
             // Delete all page data with that group ID
             // Delte any groups that have the group ID as its parent_group - and so on
             let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
-            if(pageComponent != undefined) {
+            if(pageComponent !== undefined) {
                 const removeDataGroupIDs: Array<string> = [];
                 pageComponent.groups = pageComponent.groups.filter((group) => {
                     if(group._id === group_id) removeDataGroupIDs.push(group_id);
@@ -398,7 +387,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     else return group;
                 });
                 pageComponent.data = pageComponent.data.filter((data) => {
-                    if(data.group_id != undefined) {
+                    if(data.group_id !== undefined) {
                         const findGroupID = removeDataGroupIDs.find( x => x === data.group_id ); 
                         if(!findGroupID) return data;
                     }
@@ -416,7 +405,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             setPageMode('preview');
         }
         page.page_components = page.page_components.filter((component) => {
-            if(component._id != page_component_id) return component;
+            if(component._id !== page_component_id) return component;
         });
         setPage({
             ...page
@@ -429,6 +418,56 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             });
         }
     }
+    // drag pos
+    const componentDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
+    const componentDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+        const target = e.target as HTMLElement;
+        setMouseYPos(e.clientY);
+        setDragTarget(target);
+    }
+    const componentDrop = (e: React.DragEvent<HTMLDivElement>) => {
+        if(dragTarget) {
+            const dropTarget = e.target as HTMLElement;
+            const dropTargetCompID = dropTarget.getAttribute('data-pagecomponentid');
+            const targetCompID = dragTarget.getAttribute('data-pagecomponentid');
+            const dropContainer = document.querySelector('.componentsCon') as HTMLElement;
+            // update dom
+            if(dropTargetCompID && targetCompID) {
+                if(e.clientY < mouseYPos) dropContainer.insertBefore(dragTarget, dropTarget);
+                else {
+                    if(dropTarget.nextSibling) dropContainer.insertBefore(dragTarget, dropTarget.nextSibling);
+                    else dropContainer.appendChild(dragTarget);
+                }
+            }
+            for(let i = 0; i < dropContainer.children.length; i++) {
+                const child = dropContainer.children[i] as HTMLElement;
+                const compID = child.getAttribute('data-pagecomponentid');
+                if(compID) {
+                    page.page_components.find( x => {
+                        if( x._id === compID) x.position = i;
+                    });
+                }
+            }
+            setPage({
+                ...page
+            });
+        }
+    }
+    // -----------------------------------
+    // Notifications
+    const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
+        setNotifications([{
+            message: message,
+            type: type
+        }]);
+        if(notificationTimeout !== undefined) clearTimeout(notificationTimeout);
+        setNotificationTimeout(setTimeout(() => {
+            notifications?.pop();
+            setNotifications(notifications);
+        }, 5000));
+    }
+
+
 
     // ---------------------------------------------------------------------/
     // - Save --------------------------------------------------------------/
@@ -451,6 +490,11 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 <div 
                     className='editContentRow' 
                     key={page.page_components[i]._id}
+                    data-pagecomponentid={page.page_components[i]._id}
+                    onDragStart={componentDragStart}
+                    onDragOver={componentDragOver}
+                    onDrop={componentDrop}
+                    draggable
                     onClick={(e) => {
                         checkEditComponentForErrors(() => {
                             const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
@@ -495,6 +539,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         }
     }
 
+
+
     // ---------------------------------------------------------------------/
     // - ALT ---------------------------------------------------------------/
     // ---------------------------------------------------------------------/
@@ -509,6 +555,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             else callback();
         } else callback();
     }
+
 
 
     // ---------------------------------------------------------------------/
