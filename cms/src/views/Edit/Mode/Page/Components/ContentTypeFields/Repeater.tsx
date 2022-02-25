@@ -65,7 +65,7 @@ const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ con
             <div className="contentTypeFieldCon repeaterType blockCon">
                 <div>
                     <p>{content_type.name} - repeater</p>
-                    <p className="subTitle">max groups: { content_type.config.max }</p>
+                    <p className="subTitle">max groups: { content_type.config.max ? content_type.config.max : 'unlimited' }</p>
                 </div>
                 <div>
                     <button

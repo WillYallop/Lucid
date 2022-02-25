@@ -364,7 +364,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 }
             }
             // If the config max is defined, check the current amount of groups!
-            if(content_type.config.max !== undefined) {
+            if(content_type.config.max != null) {
                 // Filter all data that belongs to this content type
                 const contentTypeDataGroups = selectedPageComponent.groups.filter( x => x.parent_group === repeaterGroupID);
                 if(contentTypeDataGroups.length < parseInt(content_type.config.max)) createGroup();
