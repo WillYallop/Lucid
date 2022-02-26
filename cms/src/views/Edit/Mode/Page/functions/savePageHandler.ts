@@ -8,11 +8,27 @@ interface queryGenRes {
 // Handles generating the query to update the page
 const gen_pageQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<queryGenRes> => {
     try {
+        // only field we can update the page atm is the template
         let response = {
             save: false,
-            query: ''
+            query: `mutation {
+                page {
+                    update_single
+                    (
+                        _id: "${page._id}"
+                        ${ updateConfig.template ? 'template: "'+page.template+'"' : '' }
+                    )
+                    {
+                        _id
+                        template
+                    }
+                }
+            }`
         };
-
+        
+        // Set response.save
+        if(updateConfig.template) response.save = true;
+        
         return response
     }
     catch(err) {
