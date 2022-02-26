@@ -31,11 +31,25 @@ interface sapa_gen_pageComponentsQueryObj {
                         component_id?: string
                         position?: number
                     }>
-                },
+                }
                 _id: boolean
                 page_id: boolean
                 component_id: boolean
                 position: boolean
+            }
+        }
+    }
+}
+
+// Save content type field groups 
+interface sapa_gen_groupQueryObj {
+    mutation: {
+        content_type_field: {
+            update_multiple_groups: {
+                __args: {
+                    data: Array<mod_contentTypeFieldGroupModel>
+                }
+                _id: boolean
             }
         }
     }

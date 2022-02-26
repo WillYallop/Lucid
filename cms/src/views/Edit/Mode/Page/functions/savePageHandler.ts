@@ -95,12 +95,44 @@ const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: update
 // Handles generating the query for the content_type_field_group table
 const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
-        let response = {
-            save: false,
-            query: ''
-        };
+        let save = false;
+        let queryObject: sapa_gen_groupQueryObj = {
+            mutation: {
+                content_type_field : {
+                    update_multiple_groups: {
+                        __args: {
+                            data: []
+                        },
+                        _id: true
+                    }
+                }
+            }
+        };  
 
-        return response
+        // loop over group data and push to query object
+        const handleGroupData = (groupData: Array<mod_contentTypeFieldGroupModel>) => {
+            save = true;
+            groupData.forEach((group) => {
+                queryObject.mutation.content_type_field.update_multiple_groups.__args.data.push(group);
+            });
+        }
+
+        // add group data for modified components.
+        updateConfig.modifiedComponents.forEach((compID) => {
+            // Find the coressponding page component and
+            const pageComp = page.page_components.find( x => x._id === compID );
+            if(pageComp != undefined) handleGroupData(pageComp.groups);
+        });
+        // add group data for new components.
+        updateConfig.addComponents.forEach((compID) => {
+            const pageComp = page.page_components.find( x => x._id === compID );
+            if(pageComp != undefined) handleGroupData(pageComp.groups);
+        });
+
+        return {
+            save: save,
+            query: save ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+        }
     }
     catch(err) {
         throw(err);
