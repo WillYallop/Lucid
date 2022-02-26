@@ -25,7 +25,8 @@ interface sapa_gen_pageComponentsQueryObj {
         page_components: {
             update_multiple: {
                 __args: {
-                    data: Array<{
+                    page_id: string
+                    page_components: Array<{
                         _id: string
                         page_id?: string
                         component_id?: string
@@ -36,6 +37,21 @@ interface sapa_gen_pageComponentsQueryObj {
                 page_id: boolean
                 component_id: boolean
                 position: boolean
+            }
+            add_multiple: {
+                __args: {
+                    page_id: string
+                    page_components: Array<{
+                        _id: string
+                        page_id?: string
+                        component_id?: string
+                        position?: number
+                    }>
+                }
+                _id: boolean
+                page_id: boolean
+                component_id: boolean
+                position: boolean  
             }
         }
     }

@@ -45,7 +45,18 @@ const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: update
                 page_components: {
                     update_multiple: {
                         __args: {
-                            data: []
+                            page_id: page._id,
+                            page_components: []
+                        },
+                        _id: true,
+                        page_id: true,
+                        component_id: true,
+                        position: true
+                    },
+                    add_multiple: {
+                        __args: {
+                            page_id: page._id,
+                            page_components: []
                         },
                         _id: true,
                         page_id: true,
@@ -63,7 +74,7 @@ const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: update
             // component position is the only thing that can be updated!
             if(updateConfig.componentPositions && newComponent === -1) {
                 send = true;
-                queryObject.mutation.page_components.update_multiple.__args.data.push({
+                queryObject.mutation.page_components.update_multiple.__args.page_components.push({
                     _id: pageComp._id,
                     position: pageComp.position
                 });
@@ -72,7 +83,7 @@ const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: update
                 // If it a new component
                 if(newComponent !== -1) {
                     send = true;
-                    queryObject.mutation.page_components.update_multiple.__args.data.push({
+                    queryObject.mutation.page_components.add_multiple.__args.page_components.push({
                         _id: pageComp._id,
                         position: pageComp.position,
                         component_id: pageComp.component_id,

@@ -6,37 +6,55 @@ import { componentController, contentTypeController } from '../../../index';
 import { getPageComponentContentTypeData, getPageComponentsGroups } from '../content_type_fields/data';
 
 
-// Handle adding and updating a page component and its content types
-export const addAndUpdatePageComponent = async (pageComp: cont_page_addUpdatePageComponentInp) => {
+
+// Add multiple page components
+export const addMultiplePageComponents = async (pageComps: Array<cont_page_addPageComponentInp>, pageId: mod_pageModel["_id"]) => {
     try {
-
-        let savePageComponentRes: mod_pageComponentsModel;
-        // UPDATE
-        if(pageComp._id != undefined) {
-            // We can only update the position atm
-            let updatePageComponentObj: const_page_updatePageComponentUpdateObj = {};
-            if(pageComp.position != undefined) updatePageComponentObj.position = pageComp.position;
-            savePageComponentRes = await db.one(`UPDATE page_components SET ${__updateSetQueryGen(updatePageComponentObj)} WHERE _id='${pageComp._id}' RETURNING *`, updatePageComponentObj);
-        }   
-        // CREATE
-        else {
-            savePageComponentRes = await db.one('INSERT INTO page_components(_id, page_id, component_id, position) VALUES(${_id}, ${page_id}, ${component_id}, ${position}) RETURNING *', {
-                _id: pageComp._id,
-                page_id: pageComp.page_id,
-                component_id: pageComp.component_id,
-                position: pageComp.position
-            });
+        const savedPages = [];
+        if(pageComps.length > 0) {
+            for await (const pageComp of pageComps) {
+                const savePageRes = await db.one('INSERT INTO page_components(_id, page_id, component_id, position) VALUES(${_id}, ${page_id}, ${component_id}, ${position}) RETURNING *', {
+                    _id: pageComp._id,
+                    page_id: pageId,
+                    component_id: pageComp.component_id,
+                    position: pageComp.position
+                });
+                savedPages.push(savePageRes);
+            }   
+            // Update pages last edited stat
+            await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${pageId}'`);
         }
-
-        // Update pages last edited stat
-        await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${savePageComponentRes.page_id}'`);
-
-        return savePageComponentRes
+        return savedPages;
     }
     catch(err) {
         throw err;
     }
 }
+
+// Update multiple page components
+export const updateMultiplePageComponents = async (pageComps: Array<cont_page_updatePageComponentInp>, pageId: mod_pageModel["_id"]) => {
+    try {
+        const updatedPages = [];
+        if(pageComps.length > 0) {
+            for await (const pageComp of pageComps) {
+                // We can only update the position atm
+                let updatePageComponentObj: const_page_updatePageComponentUpdateObj = {};
+                if(pageComp.position != undefined) updatePageComponentObj.position = pageComp.position;
+                const updatePageRes = await db.one(`UPDATE page_components SET ${__updateSetQueryGen(updatePageComponentObj)} WHERE _id='${pageComp._id}' RETURNING *`, updatePageComponentObj);
+                updatedPages.push(updatePageRes);
+            }   
+            // Update pages last edited stat
+            await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${pageId}'`);
+        }
+        return updatedPages;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+
+
 
 // Get All page components
 export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
