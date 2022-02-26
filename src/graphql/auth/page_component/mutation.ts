@@ -1,4 +1,4 @@
-import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInputObjectType, GraphQLString, GraphQLList } from 'graphql';
+import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLInt } from 'graphql';
 import { DeleteResType } from '../shared/type';
 import { PageComponentModel } from './type';
 import { deletePageComponent, updateMultiplePageComponents, addMultiplePageComponents } from './data';
@@ -23,7 +23,7 @@ const addMultiple: GraphQLFieldConfig<any, any, any> = {
                             description: 'Page component assigned component ID'
                         },
                         position: {
-                            type: GraphQLNonNull(GraphQLString),
+                            type: GraphQLNonNull(GraphQLInt),
                             description: 'Page component position'
                         }
                     })
@@ -51,7 +51,7 @@ const updateMultiple: GraphQLFieldConfig<any, any, any> = {
                             description: 'Page component ID'
                         },
                         position: {
-                            type: GraphQLString,
+                            type: GraphQLInt,
                             description: 'Page component position'
                         },
                     })
