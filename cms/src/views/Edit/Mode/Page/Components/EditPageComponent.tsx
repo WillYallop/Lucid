@@ -20,7 +20,7 @@ interface editPageComponentProps {
 const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, exit, updateData, addRepeaterGroup, deleteGroup }) => {
 
     useEffect(() => {
-        console.log(page_component.data)
+        // console.log(page_component.data)
         return () => {}
     }, [page_component]);
 

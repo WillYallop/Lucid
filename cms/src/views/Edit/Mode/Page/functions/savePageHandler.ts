@@ -120,12 +120,12 @@ const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjIn
         // add group data for modified components.
         updateConfig.modifiedComponents.forEach((compID) => {
             // Find the coressponding page component and
-            const pageComp = page.page_components.find( x => x._id === compID );
+            const pageComp = page.page_components.find( x => x._id === compID);
             if(pageComp != undefined) handleGroupData(pageComp.groups);
         });
         // add group data for new components.
         updateConfig.addComponents.forEach((compID) => {
-            const pageComp = page.page_components.find( x => x._id === compID );
+            const pageComp = page.page_components.find( x => x._id === compID);
             if(pageComp != undefined) handleGroupData(pageComp.groups);
         });
 
@@ -140,14 +140,56 @@ const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjIn
 }
 
 // Handles generating the query for the content type, component field data
-const gen_fieldData = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
+const gen_fieldDataQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
-        let response = {
-            save: false,
-            query: ''
-        };
-        
-        return response
+        let save = false;
+        let queryObject: sapa_gen_fieldDataQueryObj = {
+            mutation: {
+                content_type_field : {
+                    update_multiple_fields: {
+                        __args: {
+                            data: []
+                        },
+                        _id: true
+                    }
+                }
+            }
+        };  
+
+        // loop over data and push to query object
+        const handleFieldData = (data: Array<mod_contentTypesDatabaseModel>, contentTypes: Array<mod_contentTypesConfigModel>) => {
+            save = true;
+            data.forEach((fieldData) => {
+                // get contentType type
+                const contentType = contentTypes.find( x => x._id === fieldData.config_id );
+                if(contentType != undefined) {
+                    queryObject.mutation.content_type_field.update_multiple_fields.__args.data.push({
+                        page_component_id: fieldData.page_component_id,
+                        config_id: fieldData.config_id,
+                        type: contentType.type,
+                        value: fieldData.value,
+                        group_id: fieldData.group_id
+                    });
+                }
+            });
+        }
+
+        // add group data for modified components.
+        updateConfig.modifiedComponents.forEach((compID) => {
+            // Find the coressponding page component and
+            const pageComp = page.page_components.find( x => x._id === compID);
+            if(pageComp != undefined) handleFieldData(pageComp.data, pageComp.content_types);
+        });
+        // add group data for new components.
+        updateConfig.addComponents.forEach((compID) => {
+            const pageComp = page.page_components.find( x => x._id === compID);
+            if(pageComp != undefined) handleFieldData(pageComp.data, pageComp.content_types);
+        });
+
+        return {
+            save: save,
+            query: save ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+        }
     }
     catch(err) {
         throw(err);
@@ -161,5 +203,5 @@ export {
     gen_pageQuery,
     gen_pageComponentsQuery,
     gen_groupQuery,
-    gen_fieldData
+    gen_fieldDataQuery
 }

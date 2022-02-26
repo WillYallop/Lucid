@@ -16,7 +16,7 @@ import { ModalContext, PageNotificationContext } from "../../../../helper/Contex
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import getApiUrl from '../../../../functions/getApiUrl';
-import { gen_pageQuery, gen_pageComponentsQuery, gen_groupQuery, gen_fieldData } from './functions/savePageHandler';
+import { gen_pageQuery, gen_pageComponentsQuery, gen_groupQuery, gen_fieldDataQuery } from './functions/savePageHandler';
 // Icons
 import { faTh, faEdit, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
 import { faSearchengin } from '@fortawesome/free-brands-svg-icons';
@@ -479,16 +479,21 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // ---------------------------------------------------------------------/
     const savePageData = async () => {
         try {
-            // Generate all of the queryies we need
-            const pageQuery = await gen_pageQuery(page, updatedData);
-            const pageComponentsQuery = await gen_pageComponentsQuery(page, updatedData);
-            const groupQuery = await gen_groupQuery(page, updatedData);
-            const fieldDataQuery = await gen_fieldData(page, updatedData);
+            checkEditComponentForErrors(async () => {
+                // Generate all of the queryies we need
+                const pageQuery = await gen_pageQuery(page, updatedData);
+                const pageComponentsQuery = await gen_pageComponentsQuery(page, updatedData);
+                const groupQuery = await gen_groupQuery(page, updatedData);
+                const fieldDataQuery = await gen_fieldDataQuery(page, updatedData);
 
-            // console.log(pageQuery.query);
-            // console.log(pageComponentsQuery.query);
-            console.log(groupQuery.query);
+                // console.log(pageQuery.query);
+                // console.log(pageComponentsQuery.query);
+                // console.log(groupQuery.query);
+                console.log(fieldDataQuery.query);
 
+
+
+            });
         }
         catch(err) {
             console.log(err);

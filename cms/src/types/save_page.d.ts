@@ -54,3 +54,23 @@ interface sapa_gen_groupQueryObj {
         }
     }
 }
+
+// Save content type field data
+interface sapa_gen_fieldDataQueryObj {
+    mutation: {
+        content_type_field: {
+            update_multiple_fields: {
+                __args: {
+                    data: Array<{
+                        page_component_id: mod_contentTypesDatabaseModel["page_component_id"]
+                        config_id: mod_contentTypesDatabaseModel["config_id"]
+                        type: mod_contentTypesConfigModel["type"]
+                        value: mod_contentTypesDatabaseModel["value"]
+                        group_id?: mod_contentTypesDatabaseModel["group_id"]
+                    }>
+                }
+                _id: boolean
+            }
+        }
+    }
+}
