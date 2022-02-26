@@ -485,6 +485,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             const groupQuery = await gen_groupQuery(page, updatedData);
             const fieldDataQuery = await gen_fieldData(page, updatedData);
 
+            console.log(pageQuery.query);
+            console.log(pageComponentsQuery.query);
 
         }
         catch(err) {
