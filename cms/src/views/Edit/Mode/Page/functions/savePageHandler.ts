@@ -5,8 +5,7 @@ import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 // Handles generating the query to update the page
 const gen_pageQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
-        // only field we can update the page atm is the template
-        let save = false;
+        let send = false;
         let queryObject: sapa_gen_pageQueryObj = {
             mutation: {
                 page: {
@@ -23,13 +22,13 @@ const gen_pageQuery = async (page: mod_pageModel, updateConfig: updateDataObjInt
 
         // template
         if(updateConfig.template) {
-            save = true;
+            send = true;
             queryObject.mutation.page.update_single.__args.template = page.template;
         }
 
         return {
-            save: save,
-            query: save ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+            send: send,
+            query: send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
         }
     }
     catch(err) {
@@ -40,7 +39,7 @@ const gen_pageQuery = async (page: mod_pageModel, updateConfig: updateDataObjInt
 // Handles generating the query for all of the page components
 const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
-        let save = false;
+        let send = false;
         let queryObject: sapa_gen_pageComponentsQueryObj = {
             mutation: {
                 page_components: {
@@ -63,7 +62,7 @@ const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: update
             const newComponent = updateConfig.addComponents.findIndex( x => x === pageComp._id );
             // component position is the only thing that can be updated!
             if(updateConfig.componentPositions && newComponent === -1) {
-                save = true;
+                send = true;
                 queryObject.mutation.page_components.update_multiple.__args.data.push({
                     _id: pageComp._id,
                     position: pageComp.position
@@ -72,7 +71,7 @@ const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: update
             else {
                 // If it a new component
                 if(newComponent !== -1) {
-                    save = true;
+                    send = true;
                     queryObject.mutation.page_components.update_multiple.__args.data.push({
                         _id: pageComp._id,
                         position: pageComp.position,
@@ -83,8 +82,39 @@ const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: update
             }
         });
         return {
-            save: save,
-            query: save ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+            send: send,
+            query: send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+        }
+    }
+    catch(err) {
+        throw(err);
+    }
+}
+
+// Handle generating the query responsible for deleting page components
+const gen_deletePageComponentQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
+    try {
+        let send = false;
+        let queryObject: sapa_gen_deletePageComponentQueryObj = {
+            mutation: {
+                page_components: {
+                    delete_multiple: {
+                        __args: {
+                            data: []
+                        },
+                        deleted: true
+                    }
+                }
+            }
+        };
+
+        updateConfig.deleteComponents.forEach((_id) => {
+            queryObject.mutation.page_components.delete_multiple.__args.data.push(_id);
+        });
+
+        return {
+            send: send,
+            query: send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
         }
     }
     catch(err) {
@@ -95,7 +125,7 @@ const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: update
 // Handles generating the query for the content_type_field_group table
 const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
-        let save = false;
+        let send = false;
         let queryObject: sapa_gen_groupQueryObj = {
             mutation: {
                 content_type_field : {
@@ -111,7 +141,7 @@ const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjIn
 
         // loop over group data and push to query object
         const handleGroupData = (groupData: Array<mod_contentTypeFieldGroupModel>) => {
-            save = true;
+            send = true;
             groupData.forEach((group) => {
                 queryObject.mutation.content_type_field.update_multiple_groups.__args.data.push(group);
             });
@@ -130,8 +160,8 @@ const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjIn
         });
 
         return {
-            save: save,
-            query: save ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+            send: send,
+            query: send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
         }
     }
     catch(err) {
@@ -142,7 +172,7 @@ const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjIn
 // Handles generating the query for the content type, component field data
 const gen_fieldDataQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
-        let save = false;
+        let send = false;
         let queryObject: sapa_gen_fieldDataQueryObj = {
             mutation: {
                 content_type_field : {
@@ -158,7 +188,7 @@ const gen_fieldDataQuery = async (page: mod_pageModel, updateConfig: updateDataO
 
         // loop over data and push to query object
         const handleFieldData = (data: Array<mod_contentTypesDatabaseModel>, contentTypes: Array<mod_contentTypesConfigModel>) => {
-            save = true;
+            send = true;
             data.forEach((fieldData) => {
                 // get contentType type
                 const contentType = contentTypes.find( x => x._id === fieldData.config_id );
@@ -187,8 +217,8 @@ const gen_fieldDataQuery = async (page: mod_pageModel, updateConfig: updateDataO
         });
 
         return {
-            save: save,
-            query: save ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+            send: send,
+            query: send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
         }
     }
     catch(err) {
@@ -198,10 +228,10 @@ const gen_fieldDataQuery = async (page: mod_pageModel, updateConfig: updateDataO
 
 
 
-
 export {
     gen_pageQuery,
     gen_pageComponentsQuery,
+    gen_deletePageComponentQuery,
     gen_groupQuery,
     gen_fieldDataQuery
 }

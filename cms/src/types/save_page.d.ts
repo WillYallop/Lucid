@@ -1,5 +1,5 @@
 interface sapa_queryGenRes {
-    save: boolean
+    send: boolean
     query: string
 }
 
@@ -36,6 +36,20 @@ interface sapa_gen_pageComponentsQueryObj {
                 page_id: boolean
                 component_id: boolean
                 position: boolean
+            }
+        }
+    }
+}
+
+// Delete multiple page components
+interface sapa_gen_deletePageComponentQueryObj {
+    mutation: {
+        page_components: {
+            delete_multiple: {
+                __args: {
+                    data: Array<string>
+                }
+                deleted: boolean
             }
         }
     }
