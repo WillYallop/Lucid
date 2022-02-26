@@ -16,6 +16,7 @@ import { ModalContext, PageNotificationContext } from "../../../../helper/Contex
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import getApiUrl from '../../../../functions/getApiUrl';
+import { gen_pageQuery, gen_pageComponentsQuery, gen_groupQuery, gen_fieldData } from './functions/savePageHandler';
 // Icons
 import { faTh, faEdit, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
 import { faSearchengin } from '@fortawesome/free-brands-svg-icons';
@@ -25,14 +26,16 @@ interface editPageProps {
     slug: string
 }
 
-interface updateDataObjInterface {
+export interface updateDataObjInterface {
     template: boolean
+    componentPositions: boolean
     addComponents: Array<string>
     modifiedComponents: Array<string>
     deleteComponents: Array<string>
 }
 const defaultUpdateDataObj: updateDataObjInterface = {
     template: false,
+    componentPositions: false,
     addComponents: [],
     modifiedComponents: [],
     deleteComponents: []
@@ -451,6 +454,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             setPage({
                 ...page
             });
+            updatedData.componentPositions = true;
+            setUpdateData(updatedData);
         }
     }
     // -----------------------------------
@@ -472,10 +477,19 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // ---------------------------------------------------------------------/
     // - Save --------------------------------------------------------------/
     // ---------------------------------------------------------------------/
-    const savePageData = () => {
-        checkEditComponentForErrors(() => {
-            addNotification('successfully saved the page!','success');
-        });
+    const savePageData = async () => {
+        try {
+            // Generate all of the queryies we need
+            const pageQuery = await gen_pageQuery(page, updatedData);
+            const pageComponentsQuery = await gen_pageComponentsQuery(page, updatedData);
+            const groupQuery = await gen_groupQuery(page, updatedData);
+            const fieldDataQuery = await gen_fieldData(page, updatedData);
+
+
+        }
+        catch(err) {
+            console.log(err);
+        }
     }
 
 
