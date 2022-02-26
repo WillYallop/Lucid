@@ -18,3 +18,25 @@ interface sapa_gen_pageQueryObj {
         }
     }
 }
+
+// Save page components query object
+interface sapa_gen_pageComponentsQueryObj {
+    mutation: {
+        page_components: {
+            update_multiple: {
+                __args: {
+                    data: Array<{
+                        _id: string
+                        page_id?: string
+                        component_id?: string
+                        position?: number
+                    }>
+                },
+                _id: boolean
+                page_id: boolean
+                component_id: boolean
+                position: boolean
+            }
+        }
+    }
+}

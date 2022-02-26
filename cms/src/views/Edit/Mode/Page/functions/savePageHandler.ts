@@ -41,28 +41,50 @@ const gen_pageQuery = async (page: mod_pageModel, updateConfig: updateDataObjInt
 const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
         let save = false;
-
-
-        let queryObject = {
+        let queryObject: sapa_gen_pageComponentsQueryObj = {
             mutation: {
                 page_components: {
-                    __args: {
-                        _id: 'id'
-                    },
-                    id: true,
-                    template: true,
+                    update_multiple: {
+                        __args: {
+                            data: []
+                        },
+                        _id: true,
+                        page_id: true,
+                        component_id: true,
+                        position: true
+                    }
                 }
             }
         };
         // If updateConfig.componentPositions is true
         // For components that have not being added in this session create 
-        // page.page_components.forEach((componet) => {
-
-        // });
-
+        page.page_components.forEach((pageComp) => {
+            // Check if its a new component
+            const newComponent = updateConfig.addComponents.findIndex( x => x === pageComp._id );
+            // component position is the only thing that can be updated!
+            if(updateConfig.componentPositions && newComponent === -1) {
+                save = true;
+                queryObject.mutation.page_components.update_multiple.__args.data.push({
+                    _id: pageComp._id,
+                    position: pageComp.position
+                });
+            }
+            else {
+                // If it a new component
+                if(newComponent !== -1) {
+                    save = true;
+                    queryObject.mutation.page_components.update_multiple.__args.data.push({
+                        _id: pageComp._id,
+                        position: pageComp.position,
+                        component_id: pageComp.component_id,
+                        page_id: pageComp.page_id
+                    });
+                }
+            }
+        });
         return {
             save: save,
-            query: jsonToGraphQLQuery(queryObject, { pretty: true })
+            query: save ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
         }
     }
     catch(err) {
