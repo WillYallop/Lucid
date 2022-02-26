@@ -7,7 +7,7 @@ const addUpdateSingle: GraphQLFieldConfig<any, any, any> = {
     type: PageComponentModel,
     description: 'Add or update a page component and its content types',
     args: {
-        _id: { type: GraphQLID },
+        _id: { type: GraphQLNonNull(GraphQLID) },
         page_id: { type: GraphQLNonNull(GraphQLID) },
         component_id: { type: GraphQLNonNull(GraphQLID) },
         position: { type: GraphQLNonNull(GraphQLInt) }

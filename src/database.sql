@@ -46,7 +46,7 @@ CREATE TABLE menu_links (
 -- A page can have many of these
 -- And these can have many component_content_type_ tables
 CREATE TABLE page_components (
-    _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    _id uuid PRIMARY KEY,
     page_id uuid REFERENCES pages (_id) ON DELETE CASCADE,
     component_id uuid NOT NUll, -- referes to themes config component ID
     position INT NOT NULL

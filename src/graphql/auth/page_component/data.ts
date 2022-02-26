@@ -20,8 +20,9 @@ export const addAndUpdatePageComponent = async (pageComp: cont_page_addUpdatePag
         }   
         // CREATE
         else {
-            savePageComponentRes = await db.one('INSERT INTO page_components(page_id, component_id, position) VALUES(${page_id}, ${component_id}, ${position}) RETURNING *', {
-                page_id: pageComp.page_id, // reference will verify if this exists
+            savePageComponentRes = await db.one('INSERT INTO page_components(_id, page_id, component_id, position) VALUES(${_id}, ${page_id}, ${component_id}, ${position}) RETURNING *', {
+                _id: pageComp._id,
+                page_id: pageComp.page_id,
                 component_id: pageComp.component_id,
                 position: pageComp.position
             });
