@@ -53,9 +53,6 @@ export const updateMultiplePageComponents = async (pageComps: Array<cont_page_up
     }
 }
 
-
-
-
 // Get All page components
 export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
     try {
@@ -126,6 +123,21 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
             }
         }
         return pageComponents;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Delete multiple corresponding page_component table rows
+export const deleteMultiplePageComponenets = async (ids: Array<mod_pageComponentsModel>) => {
+    try {
+        let response = [];
+        for await (const id of ids) {
+            await db.none('DELETE FROM page_components WHERE _id=$1', id);
+            response.push({ deleted: true });
+        }
+        return response;
     }
     catch(err) {
         throw err;

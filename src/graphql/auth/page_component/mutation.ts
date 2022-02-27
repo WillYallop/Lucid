@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLInt } from 'graphql';
 import { DeleteResType } from '../shared/type';
 import { PageComponentModel } from './type';
-import { deletePageComponent, updateMultiplePageComponents, addMultiplePageComponents } from './data';
+import { deletePageComponent, updateMultiplePageComponents, addMultiplePageComponents, deleteMultiplePageComponenets } from './data';
 
 const addMultiple: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLList(PageComponentModel),
@@ -35,6 +35,7 @@ const addMultiple: GraphQLFieldConfig<any, any, any> = {
         return addMultiplePageComponents(args.page_components, args.page_id);
     }
 };
+
 const updateMultiple: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLList(PageComponentModel),
     description: 'Update multiple page components',
@@ -64,6 +65,17 @@ const updateMultiple: GraphQLFieldConfig<any, any, any> = {
     }
 };
 
+const deleteMultiple: GraphQLFieldConfig<any, any, any> = {
+    type: GraphQLList(DeleteResType),
+    description: 'Delete multiple page components',
+    args: {
+        _ids: { type: GraphQLList(GraphQLID) }
+    },
+    resolve: (_, args) => {
+        return deleteMultiplePageComponenets(args._ids);
+    }
+} 
+
 const deleteSingle: GraphQLFieldConfig<any, any, any> = {
     type: DeleteResType,
     args: {
@@ -80,6 +92,7 @@ export const PageComponentMutation = new GraphQLObjectType({
     fields: {
         add_multiple: addMultiple,
         update_multiple: updateMultiple,
+        delete_multiple: deleteMultiple,
         delete: deleteSingle
     }
 })
