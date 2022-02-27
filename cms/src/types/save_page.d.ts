@@ -75,9 +75,9 @@ interface sapa_gen_deletePageComponentQueryObj {
 interface sapa_gen_groupQueryObj {
     mutation: {
         content_type_field: {
-            update_multiple_groups: {
+            save_multiple_groups: {
                 __args: {
-                    data: Array<mod_contentTypeFieldGroupModel>
+                    groups: Array<mod_contentTypeFieldGroupModel>
                 }
                 _id: boolean
             }
@@ -91,7 +91,8 @@ interface sapa_gen_fieldDataQueryObj {
         content_type_field: {
             update_multiple_fields: {
                 __args: {
-                    data: Array<{
+                    page_id: string
+                    fields_data: Array<{
                         page_component_id: mod_contentTypesDatabaseModel["page_component_id"]
                         config_id: mod_contentTypesDatabaseModel["config_id"]
                         type: mod_contentTypesConfigModel["type"]

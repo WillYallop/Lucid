@@ -42,7 +42,7 @@ export const ContentTypeFieldGroupModel = new GraphQLObjectType({
             description: 'The parent group id, if it has one'
         },
         parent_config_id: {
-            type: GraphQLNonNull(GraphQLID),
+            type: GraphQLID,
             description: 'The groups parent content type config id'
         },
         position: {

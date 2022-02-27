@@ -140,9 +140,9 @@ const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjIn
         let queryObject: sapa_gen_groupQueryObj = {
             mutation: {
                 content_type_field : {
-                    update_multiple_groups: {
+                    save_multiple_groups: {
                         __args: {
-                            data: []
+                            groups: []
                         },
                         _id: true
                     }
@@ -154,7 +154,7 @@ const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjIn
         const handleGroupData = (groupData: Array<mod_contentTypeFieldGroupModel>) => {
             send = true;
             groupData.forEach((group) => {
-                queryObject.mutation.content_type_field.update_multiple_groups.__args.data.push(group);
+                queryObject.mutation.content_type_field.save_multiple_groups.__args.groups.push(group);
             });
         }
 
@@ -189,7 +189,8 @@ const gen_fieldDataQuery = async (page: mod_pageModel, updateConfig: updateDataO
                 content_type_field : {
                     update_multiple_fields: {
                         __args: {
-                            data: []
+                            page_id: page._id,
+                            fields_data: []
                         },
                         _id: true
                     }
@@ -204,7 +205,7 @@ const gen_fieldDataQuery = async (page: mod_pageModel, updateConfig: updateDataO
                 // get contentType type
                 const contentType = contentTypes.find( x => x._id === fieldData.config_id );
                 if(contentType != undefined) {
-                    queryObject.mutation.content_type_field.update_multiple_fields.__args.data.push({
+                    queryObject.mutation.content_type_field.update_multiple_fields.__args.fields_data.push({
                         page_component_id: fieldData.page_component_id,
                         config_id: fieldData.config_id,
                         type: contentType.type,
