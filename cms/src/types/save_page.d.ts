@@ -1,6 +1,7 @@
 interface sapa_queryGenRes {
     send: boolean
     query: string
+    data?: any
 }
 
 // Save Page query object

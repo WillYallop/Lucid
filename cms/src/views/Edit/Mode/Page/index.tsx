@@ -16,7 +16,7 @@ import { ModalContext, PageNotificationContext } from "../../../../helper/Contex
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import getApiUrl from '../../../../functions/getApiUrl';
-import { gen_pageQuery, gen_pageComponentsQuery, gen_deletePageComponentQuery, gen_groupQuery, gen_fieldDataQuery } from './functions/savePageHandler';
+import { savePageHandler, savePageComponentsHandler, deletePageComponentsHandler, saveGroupsHandler, saveFieldDataHandler } from './functions/savePageHandler';
 // Icons
 import { faTh, faEdit, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
 import { faSearchengin } from '@fortawesome/free-brands-svg-icons';
@@ -58,7 +58,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const [ page, setPage ] = useState({} as mod_pageModel); // page
     const [ pageMarkup, setPageMarkup ] = useState(''); // Page preview markup
     // Template
-    const [ selectedTemplate, setSelectedTemplate ] = useState('');
     const [ templates, setTemplates ] = useState([]);
     // Selected component
     const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component'>('preview')
@@ -150,7 +149,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             if(page) {
                 if(!mounted.current) return null;
                 setPage(page);
-                setSelectedTemplate(page.template);
             }
             else {
                 addNotification(formatLucidError(result.data.errors[0].message).message,'error');
@@ -480,20 +478,22 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const savePageData = async () => {
         try {
             checkEditComponentForErrors(async () => {
+
                 // Generate all of the queryies we need
-                const pageQuery = await gen_pageQuery(page, updatedData);
-                const pageComponentsQuery = await gen_pageComponentsQuery(page, updatedData);
-                const deletePageComponentQuery = await gen_deletePageComponentQuery(page, updatedData);
-                const groupQuery = await gen_groupQuery(page, updatedData);
-                const fieldDataQuery = await gen_fieldDataQuery(page, updatedData);
+                const pageQuery = await savePageHandler(page, updatedData);
+                // const pageComponentsQuery = await savePageComponentsHandler(page, updatedData);
+                // const deletePageComponentQuery = await deletePageComponentsHandler(page, updatedData);
+                // const groupQuery = await saveGroupsHandler(page, updatedData);
+                // const fieldDataQuery = await saveFieldDataHandler(page, updatedData);
 
-                // console.log(pageQuery.query);
-                // console.log(pageComponentsQuery.query);
-                // console.log(deletePageComponentQuery.query);
-                // console.log(groupQuery.query);
-                console.log(fieldDataQuery.query);
+                console.log(pageQuery);
+                // console.log(pageComponentsQuery);
+                // console.log(deletePageComponentQuery);
+                // console.log(groupQuery);
+                // console.log(fieldDataQuery);
 
-
+                setCanSave(false);
+                setUpdateData(defaultUpdateDataObj);
 
             });
         }
@@ -642,7 +642,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             setPage({} as mod_pageModel);
             setLoading(true);
             setActiveSlug(slug);
-            setSelectedTemplate('');
             setTemplates([]);
         }
     }, [slug]); 
@@ -692,14 +691,17 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     {/* template */}
                     { page.type === 'page' ? 
                         <SelectInput 
-                            value={selectedTemplate}
+                            value={page.template}
                             options={templates}
                             id={"templateSelect"}
                             name={"template"}
                             required={true}
                             errorMsg={"there was an unexpected error!"}
                             updateValue={(value) => {
-                                setSelectedTemplate(value);
+                                page.template = value;
+                                setPage({
+                                    ...page
+                                })
                                 setUpdateData({
                                     ...updatedData,
                                     template: true

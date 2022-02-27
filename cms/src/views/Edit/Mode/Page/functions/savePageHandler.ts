@@ -1,9 +1,12 @@
 import { updateDataObjInterface } from '../index';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
+import axios from 'axios';
+import getApiUrl from '../../../../../functions/getApiUrl';
+import e from 'express';
 
 
 // Handles generating the query to update the page
-const gen_pageQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
+export const savePageHandler = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
         let send = false;
         let queryObject: sapa_gen_pageQueryObj = {
@@ -11,7 +14,7 @@ const gen_pageQuery = async (page: mod_pageModel, updateConfig: updateDataObjInt
                 page: {
                     update_single: {
                         __args: {
-                            _id: 'id'
+                            _id: page._id
                         },
                         _id: true,
                         template: true
@@ -19,16 +22,27 @@ const gen_pageQuery = async (page: mod_pageModel, updateConfig: updateDataObjInt
                 }
             }
         };
-
         // template
         if(updateConfig.template) {
             send = true;
             queryObject.mutation.page.update_single.__args.template = page.template;
         }
-
-        return {
-            send: send,
-            query: send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+        // Generate query string
+        const query = send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : '';
+        // 
+        if(send) {
+            const data = await __sendQuery(query, 'an unexpeted error occured while updating the page');
+            return {
+                send: send, 
+                query: query,
+                data: data
+            }
+        } 
+        else {
+            return {
+                send: send,
+                query: query
+            }
         }
     }
     catch(err) {
@@ -37,7 +51,7 @@ const gen_pageQuery = async (page: mod_pageModel, updateConfig: updateDataObjInt
 }
 
 // Handles generating the query for all of the page components
-const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
+export const savePageComponentsHandler = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
         let send = false;
         let queryObject: sapa_gen_pageComponentsQueryObj = {
@@ -92,9 +106,23 @@ const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: update
                 }
             }
         });
-        return {
-            send: send,
-            query: send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+
+        // Generate query string
+        const query = send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : '';
+
+        if(send) {
+            const data = await __sendQuery(query, 'an unexpeted error occured while updating the saving the page components');
+            return {
+                send: send, 
+                query: query,
+                data: data
+            }
+        }
+        else {
+            return {
+                send: send,
+                query: query
+            }
         }
     }
     catch(err) {
@@ -103,7 +131,7 @@ const gen_pageComponentsQuery = async (page: mod_pageModel, updateConfig: update
 }
 
 // Handle generating the query responsible for deleting page components
-const gen_deletePageComponentQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
+export const deletePageComponentsHandler = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
         let send = false;
         let queryObject: sapa_gen_deletePageComponentQueryObj = {
@@ -123,9 +151,22 @@ const gen_deletePageComponentQuery = async (page: mod_pageModel, updateConfig: u
             queryObject.mutation.page_components.delete_multiple.__args.data.push(_id);
         });
 
-        return {
-            send: send,
-            query: send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+        // Generate query string
+        const query = send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : '';
+
+        if(send) {
+            const data = await __sendQuery(query, 'an unexpeted error occured while deleting the page component');
+            return {
+                send: send, 
+                query: query,
+                data: data
+            }
+        }
+        else {
+            return {
+                send: send,
+                query: query
+            }
         }
     }
     catch(err) {
@@ -134,7 +175,7 @@ const gen_deletePageComponentQuery = async (page: mod_pageModel, updateConfig: u
 }
 
 // Handles generating the query for the content_type_field_group table
-const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
+export const saveGroupsHandler = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
         let send = false;
         let queryObject: sapa_gen_groupQueryObj = {
@@ -170,9 +211,23 @@ const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjIn
             if(pageComp != undefined) handleGroupData(pageComp.groups);
         });
 
-        return {
-            send: send,
-            query: send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+
+        // Generate query string
+        const query = send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : '';
+
+        if(send) {
+            const data = await __sendQuery(query, 'an unexpeted error occured while saving the groups data');
+            return {
+                send: send, 
+                query: query,
+                data: data
+            }
+        }
+        else {
+            return {
+                send: send,
+                query: query
+            }
         }
     }
     catch(err) {
@@ -181,7 +236,7 @@ const gen_groupQuery = async (page: mod_pageModel, updateConfig: updateDataObjIn
 }
 
 // Handles generating the query for the content type, component field data
-const gen_fieldDataQuery = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
+export const saveFieldDataHandler = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {
         let send = false;
         let queryObject: sapa_gen_fieldDataQueryObj = {
@@ -228,9 +283,22 @@ const gen_fieldDataQuery = async (page: mod_pageModel, updateConfig: updateDataO
             if(pageComp != undefined) handleFieldData(pageComp.data, pageComp.content_types);
         });
 
-        return {
-            send: send,
-            query: send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : ''
+        // Generate query string
+        const query = send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : '';
+
+        if(send) {
+            const data = await __sendQuery(query, 'an unexpeted error occured while saving the fields data');
+            return {
+                send: send, 
+                query: query,
+                data: data
+            }
+        }
+        else {
+            return {
+                send: send,
+                query: query
+            }
         }
     }
     catch(err) {
@@ -240,10 +308,22 @@ const gen_fieldDataQuery = async (page: mod_pageModel, updateConfig: updateDataO
 
 
 
-export {
-    gen_pageQuery,
-    gen_pageComponentsQuery,
-    gen_deletePageComponentQuery,
-    gen_groupQuery,
-    gen_fieldDataQuery
+// handle sending off the query
+const __sendQuery = async (query: string, error: string) => {
+    return new Promise((resolve, reject) => {
+        axios({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+              query: query
+            }
+        })
+        .then((result) => {
+            resolve(result.data.data);
+        })
+        .catch((err) => {
+            console.log(err);
+            reject(error);
+        }) 
+    });
 }
