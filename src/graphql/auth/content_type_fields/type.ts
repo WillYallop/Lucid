@@ -1,4 +1,4 @@
-import { GraphQLID, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLInt, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 
 //  Component content_type
 export const ContentTypeDatabaseModel = new GraphQLObjectType({
@@ -13,8 +13,12 @@ export const ContentTypeDatabaseModel = new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLID),
             description: 'Content type config id'
         },
+        root: {
+            type: GraphQLNonNull(GraphQLBoolean),
+            description: 'Content type is root'
+        },
         value: {
-            type: GraphQLNonNull(GraphQLString),
+            type: GraphQLString,
             description: 'Content type value'
         },
         group_id: {

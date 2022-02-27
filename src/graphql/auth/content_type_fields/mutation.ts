@@ -1,4 +1,4 @@
-import { GraphQLFieldConfig, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLObjectType, GraphQLInt, GraphQLList, GraphQLInputObjectType } from 'graphql';
+import { GraphQLFieldConfig, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLObjectType, GraphQLInt, GraphQLList, GraphQLInputObjectType, GraphQLBoolean } from 'graphql';
 import { DeleteResType } from '../shared/type';
 import { ContentTypeDatabaseModel, ContentTypeFieldGroupModel } from './type';
 import { saveMultipleGroups, deleteMultipleGroups, saveMultipleFields } from './data';
@@ -80,12 +80,16 @@ const saveMultipleFieldData: GraphQLFieldConfig<any, any, any> = {
                             description: 'Content type field data type'
                         },             
                         value: {
-                            type: GraphQLNonNull(GraphQLString),
+                            type: GraphQLString,
                             description: 'Content type field value'
                         },             
                         group_id: {
                             type: GraphQLID,
                             description: 'Content type field corresponding group ID'
+                        },
+                        root: {
+                            type: GraphQLNonNull(GraphQLBoolean),
+                            description: 'Content type is root'
                         }
                     })
                 })

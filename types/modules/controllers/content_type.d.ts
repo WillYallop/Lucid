@@ -15,7 +15,8 @@ interface cont_cont_updateSingleInp {
 interface cont_cont_saveMultipleFieldsInp {
     page_component_id: mod_contentTypesDatabaseModel["page_component_id"]
     config_id: mod_contentTypesDatabaseModel["config_id"]
-    type: mod_contentTypesConfigModel["type"]
+    type?: mod_contentTypesConfigModel["type"]
     value: mod_contentTypesDatabaseModel["value"]
     group_id?: mod_contentTypesDatabaseModel["group_id"]
+    root: boolean
 }

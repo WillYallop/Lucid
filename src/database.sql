@@ -55,36 +55,46 @@ CREATE TABLE page_components (
 
 -- content type group
 CREATE TABLE content_type_field_group (
-    _id uuid,
+    _id uuid PRIMARY KEY,
     page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
     parent_group uuid REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
-    parent_config_id uuid REFERENCES component_content_type_repeater (config_id) ON DELETE CASCADE,
+    parent_config_id uuid,
     position INT NOT NULL
 );
 
 -- Content Type Text
 CREATE TABLE component_content_type_text (
     page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
-    group_id REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
+    group_id uuid REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
     config_id uuid NOT NUll,
-    value VARCHAR NOT NULL
+    value VARCHAR NOT NULL,
+    root BOOLEAN NOT NULL
 );
 
 -- Content Type Number
 CREATE TABLE component_content_type_number (
     page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
-    group_id REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
+    group_id uuid REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
     config_id uuid NOT NUll,
-    value INT NOT NULL
+    value INT NOT NULL,
+    root BOOLEAN NOT NULL
 );
 
 -- Content Type Repeater
 CREATE TABLE component_content_type_repeater (
     page_component_id uuid REFERENCES page_components (_id) ON DELETE CASCADE,
-    group_id REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
-    config_id uuid NOT NUll
+    group_id uuid REFERENCES content_type_field_group (_id) ON DELETE CASCADE,
+    config_id uuid NOT NUll,
+    root BOOLEAN NOT NULL
 );
 
 
 
 -- MORE TO COME
+
+
+DELETE FROM page_components;
+DELETE FROM content_type_field_group;
+DELETE FROM component_content_type_text;
+DELETE FROM component_content_type_repeater;
+DELETE FROM component_content_type_number;

@@ -66,7 +66,6 @@ export const Page = new GraphQLObjectType({
             type: GraphQLID,
             description: 'Assigned if the page has a post type'
         },
-
         page_components: {
             type: GraphQLList(PageComponent),
             description: PageComponent.description
@@ -173,6 +172,10 @@ export const ComponentContentType = new GraphQLObjectType({
         config: {
             type: GraphQLNonNull(ContentTypeConfig),
             description: 'Component content type config'
+        },
+        parent: {
+            type: GraphQLNonNull(GraphQLString),
+            description: 'Component content type parent'
         }
     })
 })

@@ -22,6 +22,10 @@ const addMultiple: GraphQLFieldConfig<any, any, any> = {
                             type: GraphQLNonNull(GraphQLID),
                             description: 'Page component assigned component ID'
                         },
+                        page_id: {
+                            type: GraphQLID,
+                            description: 'Page components assigned page ID'
+                        },
                         position: {
                             type: GraphQLNonNull(GraphQLInt),
                             description: 'Page component position'

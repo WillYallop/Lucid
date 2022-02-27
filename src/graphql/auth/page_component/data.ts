@@ -116,6 +116,7 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
                 // Assign component and get data
                 let componentDatas = componentDataMap.get(pageComp.component_id);
                 pageComp.component = componentDatas.component;
+                pageComp.content_types = componentDatas.content_types;
                 let data = await getPageComponentContentTypeData(pageComp._id);
                 pageComp.data = data;
                 let groups = await getPageComponentsGroups(pageComp._id);

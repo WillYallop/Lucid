@@ -12,14 +12,23 @@ export const saveMultipleGroups = async (groups: Array<mod_contentTypeFieldGroup
     try {
         const savedGroups: Array<mod_contentTypeFieldGroupModel> = [];
         for await (const group of groups) {
-            const groupObj: mod_contentTypeFieldGroupModel = await db.one('INSERT INTO content_type_field_group(_id, page_component_id, parent_group, parent_config_id, position) VALUES(${_id}, ${page_component_id}, ${parent_group}, ${parent_config_id}, ${position}) ON CONFLICT (_id) DO UPDATE RETURNING *', {
-                _id: group._id,
-                page_component_id: group.page_component_id,
-                parent_group: group.parent_group,
-                parent_config_id: group.parent_config_id,
-                position: group.position
-            });
-            savedGroups.push(groupObj);
+            const checkExists = await db.oneOrNone('SELECT _id FROM content_type_field_group WHERE _id=$1', group._id);
+            if(checkExists === null) {
+                // create 
+                const groupObj: mod_contentTypeFieldGroupModel = await db.one('INSERT INTO content_type_field_group(_id, page_component_id, parent_group, parent_config_id, position) VALUES(${_id}, ${page_component_id}, ${parent_group}, ${parent_config_id}, ${position}) ON CONFLICT (_id) DO NOTHING RETURNING *', {
+                    _id: group._id,
+                    page_component_id: group.page_component_id,
+                    parent_group: group.parent_group,
+                    parent_config_id: group.parent_config_id,
+                    position: group.position
+                });
+                savedGroups.push(groupObj);
+            }
+            else {
+                // Update
+                const groupObj: mod_contentTypeFieldGroupModel = await db.one('UPDATE content_type_field_group SET '+__updateSetQueryGen(group)+' WHERE _id=${_id} RETURNING *', group);
+                savedGroups.push(groupObj);
+            }
         }
         return savedGroups;
     }
@@ -48,34 +57,83 @@ export const saveMultipleFields = async (page_id: mod_pageModel["_id"], fields_d
     try {
         const saveFieldData: Array<mod_contentTypesDatabaseModel> = [];
         for await (const data of fields_data) {
+            const queryGenObj = {...data};
+            delete queryGenObj.type;
             switch(data.type) {
                 case 'text': {
-                    const fieldResponse: mod_contentTypesDatabaseModel = await db.one('INSERT INTO component_content_type_text(page_component_id, config_id, value, group_id) VALUES(${page_component_id}, ${config_id}, ${value}, ${group_id}) ON CONFLICT (page_component_id, config_id, group_id) DO UPDATE RETURNING *', {
-                        page_component_id: data.page_component_id,
-                        config_id: data.config_id,
-                        value: data.value,
-                        group_id: data.group_id
-                    });
-                    saveFieldData.push(fieldResponse);
+                    const checkExists = await db.oneOrNone('SELECT * FROM component_content_type_text WHERE page_component_id=${page_component_id} AND config_id=${config_id} '+( data.root ? '' : 'AND group_id=${group_id}' )+' AND root=${root}', data);
+                    if(checkExists === null) {
+                        // Create
+                        const fieldResponse: mod_contentTypesDatabaseModel = await db.one('INSERT INTO component_content_type_text(page_component_id, config_id, value, group_id, root) VALUES(${page_component_id}, ${config_id}, ${value}, ${group_id}, ${root}) RETURNING *', {
+                            page_component_id: data.page_component_id,
+                            config_id: data.config_id,
+                            value: data.value,
+                            group_id: data.group_id,
+                            root: data.root
+                        });
+                        saveFieldData.push(fieldResponse);
+                    }
+                    else {
+                        // Update
+                        const fieldResponse: mod_contentTypesDatabaseModel = await db.one('UPDATE component_content_type_text SET '+__updateSetQueryGen(queryGenObj)+' WHERE page_component_id=${page_component_id} AND config_id=${config_id} '+( data.root ? '' : 'AND group_id=${group_id}' )+' AND root=${root} RETURNING *', {
+                            page_component_id: data.page_component_id,
+                            config_id: data.config_id,
+                            value: data.value,
+                            group_id: data.group_id,
+                            root: data.root
+                        });
+                        saveFieldData.push(fieldResponse);  
+                    }
                     break;
                 }
                 case 'number': {
-                    const fieldResponse: mod_contentTypesDatabaseModel = await db.one('INSERT INTO component_content_type_number(page_component_id, config_id, value, group_id) VALUES(${page_component_id}, ${config_id}, ${value}, ${group_id}) ON CONFLICT (page_component_id, config_id, group_id) DO UPDATE RETURNING *', {
-                        page_component_id: data.page_component_id,
-                        config_id: data.config_id,
-                        value: parseInt(data.value),
-                        group_id: data.group_id
-                    });
-                    saveFieldData.push(fieldResponse);
+                    const checkExists = await db.oneOrNone('SELECT * FROM component_content_type_number WHERE page_component_id=${page_component_id} AND config_id=${config_id} '+( data.root ? '' : 'AND group_id=${group_id}' )+' AND root=${root}', data);
+                    if(checkExists === null) {
+                        // Create
+                        const fieldResponse: mod_contentTypesDatabaseModel = await db.one('INSERT INTO component_content_type_number(page_component_id, config_id, value, group_id, root) VALUES(${page_component_id}, ${config_id}, ${value}, ${group_id}, ${root}) RETURNING *', {
+                            page_component_id: data.page_component_id,
+                            config_id: data.config_id,
+                            value: parseInt(data.value),
+                            group_id: data.group_id,
+                            root: data.root
+                        });
+                        saveFieldData.push(fieldResponse);
+                    }
+                    else {
+                        // Update
+                        const fieldResponse: mod_contentTypesDatabaseModel = await db.one('UPDATE component_content_type_number SET '+__updateSetQueryGen(queryGenObj)+' WHERE page_component_id=${page_component_id} AND config_id=${config_id} '+( data.root ? '' : 'AND group_id=${group_id}' )+' AND root=${root} RETURNING *', {
+                            page_component_id: data.page_component_id,
+                            config_id: data.config_id,
+                            value: parseInt(data.value),
+                            group_id: data.group_id,
+                            root: data.root
+                        });
+                        saveFieldData.push(fieldResponse);
+                    }
                     break;
                 }
                 case 'repeater': {
-                    const fieldResponse: mod_contentTypesDatabaseModel = await db.one('INSERT INTO component_content_type_repeater(page_component_id, config_id, group_id) VALUES(${page_component_id}, ${config_id}, ${group_id}) ON CONFLICT (page_component_id, config_id, group_id) DO UPDATE RETURNING *', {
-                        page_component_id: data.page_component_id,
-                        config_id: data.config_id,
-                        group_id: data.group_id
-                    });
-                    saveFieldData.push(fieldResponse);
+                    const checkExists = await db.oneOrNone('SELECT * FROM component_content_type_repeater WHERE page_component_id=${page_component_id} AND config_id=${config_id} '+( data.root ? '' : 'AND group_id=${group_id}' )+' AND root=${root}', data);
+                    if(checkExists === null) {
+                        // Create
+                        const fieldResponse: mod_contentTypesDatabaseModel = await db.one('INSERT INTO component_content_type_repeater(page_component_id, config_id, group_id, root) VALUES(${page_component_id}, ${config_id}, ${group_id}, ${root}) RETURNING *', {
+                            page_component_id: data.page_component_id,
+                            config_id: data.config_id,
+                            group_id: data.group_id,
+                            root: data.root
+                        });
+                        saveFieldData.push(fieldResponse);
+                    }
+                    else {
+                        // Update
+                        const fieldResponse: mod_contentTypesDatabaseModel = await db.one('UPDATE component_content_type_repeater SET '+__updateSetQueryGen(queryGenObj)+' WHERE page_component_id=${page_component_id} AND config_id=${config_id} '+( data.root ? '' : 'AND group_id=${group_id}' )+' AND root=${root} RETURNING *', {
+                            page_component_id: data.page_component_id,
+                            config_id: data.config_id,
+                            group_id: data.group_id,
+                            root: data.root
+                        });
+                        saveFieldData.push(fieldResponse);
+                    }
                     break;
                 }
             }
