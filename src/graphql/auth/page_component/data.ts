@@ -100,7 +100,7 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
             }
         */
         // Get all page components
-        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', page_id);
+        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1 ORDER BY position ASC', page_id);
         if(pageComponents.length) {
             const componentDataMap = new Map();
             for await(let pageComp of pageComponents) {

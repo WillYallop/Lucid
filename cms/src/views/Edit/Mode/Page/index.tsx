@@ -370,6 +370,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 if(pageComponent !== undefined) {
                     pageComponent.groups = pageComponent.groups.concat(componentDataGroups);
                     pageComponent.data = pageComponent.data.concat(componentData);
+                    setCanSave(true);
                     setSelectedPageComponent({
                         ...pageComponent
                     });
@@ -475,6 +476,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             });
             updatedData.componentPositions = true;
             setUpdateData(updatedData);
+            setCanSave(true);
         }
     }
     // -----------------------------------
