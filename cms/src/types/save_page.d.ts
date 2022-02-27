@@ -90,19 +90,25 @@ interface sapa_gen_groupQueryObj {
 interface sapa_gen_fieldDataQueryObj {
     mutation: {
         content_type_field: {
-            update_multiple_fields: {
+            save_multiple_fields: {
                 __args: {
                     page_id: string
-                    fields_data: Array<{
-                        page_component_id: mod_contentTypesDatabaseModel["page_component_id"]
-                        config_id: mod_contentTypesDatabaseModel["config_id"]
-                        type: mod_contentTypesConfigModel["type"]
-                        value: mod_contentTypesDatabaseModel["value"]
-                        group_id?: mod_contentTypesDatabaseModel["group_id"]
-                    }>
+                    fields_data: Array<sapa_gen_fieldDataQueryFieldDataObj>
                 }
-                _id: boolean
+                page_component_id: boolean
+                config_id: boolean
+                value: boolean
+                group_id: boolean
             }
         }
     }
+}
+
+interface sapa_gen_fieldDataQueryFieldDataObj {
+    page_component_id: mod_contentTypesDatabaseModel["page_component_id"]
+    config_id: mod_contentTypesDatabaseModel["config_id"]
+    type: mod_contentTypesConfigModel["type"]
+    value: mod_contentTypesDatabaseModel["value"]
+    group_id?: mod_contentTypesDatabaseModel["group_id"]
+    root: mod_contentTypesDatabaseModel["root"]
 }

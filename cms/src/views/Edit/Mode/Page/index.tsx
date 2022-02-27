@@ -109,6 +109,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             position
                             component {
                                 preview_url
+                                name
                                 file_path
                                 file_name
                                 date_added
@@ -119,6 +120,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 _id
                                 name
                                 type
+                                parent
                                 config {
                                     min
                                     max
@@ -137,6 +139,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 config_id
                                 value
                                 group_id
+                                root
                             }
                         }
                     }
@@ -212,7 +215,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         page_component_id: newPageComponentID,
                         config_id: contentType._id,
                         value: contentType.config.default || '',
-                        group_id: groupObj._id
+                        group_id: groupObj._id,
+                        root: false
                     });
                 } 
                 else if(contentType.parent === _id && contentType.type === 'repeater') {
@@ -220,7 +224,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         page_component_id: newPageComponentID,
                         config_id: contentType._id,
                         value: undefined,
-                        group_id: groupObj._id
+                        group_id: groupObj._id,
+                        root: false
                     });
                     addRepeaterChildrenGroups(contentType._id, groupObj._id);
                 }
@@ -234,7 +239,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     page_component_id: newPageComponentID,
                     config_id: contentType._id,
                     value: contentType.config.default || '',
-                    group_id: undefined
+                    group_id: undefined,
+                    root: true
                 });
             }
             else if(contentType.parent === 'root' && contentType.type === 'repeater') {
@@ -242,7 +248,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     page_component_id: newPageComponentID,
                     config_id: contentType._id,
                     value: undefined,
-                    group_id: undefined
+                    group_id: undefined,
+                    root: true
                 });
                 addRepeaterChildrenGroups(contentType._id, undefined);
             }
@@ -338,7 +345,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 page_component_id: selectedPageComponent._id,
                                 config_id: contentType._id,
                                 value: contentType.config.default || '',
-                                group_id: groupObj._id
+                                group_id: groupObj._id,
+                                root: false
                             });
                         } 
                         else if(contentType.parent === _id && contentType.type === 'repeater') {
@@ -346,7 +354,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 page_component_id: selectedPageComponent._id,
                                 config_id: contentType._id,
                                 value: undefined,
-                                group_id: groupObj._id
+                                group_id: groupObj._id,
+                                root: false
                             });
                             addRepeaterChildrenGroups(contentType._id, groupObj._id);
                         }
@@ -481,16 +490,16 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
                 // Generate all of the queryies we need
                 const pageQuery = await savePageHandler(page, updatedData);
-                // const pageComponentsQuery = await savePageComponentsHandler(page, updatedData);
-                // const deletePageComponentQuery = await deletePageComponentsHandler(page, updatedData);
-                // const groupQuery = await saveGroupsHandler(page, updatedData);
-                // const fieldDataQuery = await saveFieldDataHandler(page, updatedData);
+                const pageComponentsQuery = await savePageComponentsHandler(page, updatedData);
+                const deletePageComponentQuery = await deletePageComponentsHandler(page, updatedData);
+                const groupQuery = await saveGroupsHandler(page, updatedData);
+                const fieldDataQuery = await saveFieldDataHandler(page, updatedData);
 
                 console.log(pageQuery);
-                // console.log(pageComponentsQuery);
-                // console.log(deletePageComponentQuery);
-                // console.log(groupQuery);
-                // console.log(fieldDataQuery);
+                console.log(pageComponentsQuery);
+                console.log(deletePageComponentQuery);
+                console.log(groupQuery);
+                console.log(fieldDataQuery);
 
                 setCanSave(false);
                 setUpdateData(defaultUpdateDataObj);

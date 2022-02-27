@@ -31,12 +31,13 @@ interface mod_contentTypesDatabaseModel {
     config_id: mod_contentTypesConfigModel["_id"]
     group_id?: mod_contentTypeFieldGroupModel["_id"]
     value: any
+    root: boolean
 }
 
 interface mod_contentTypeFieldGroupModel {
     _id: string
     page_component_id: mod_pageComponentsModel["_id"]
     parent_group?: mod_contentTypeFieldGroupModel["_id"]
-    parent_config_id: mod_contentTypesConfigModel["_id"]
+    parent_config_id?: mod_contentTypesConfigModel["_id"]
     position: number
 }

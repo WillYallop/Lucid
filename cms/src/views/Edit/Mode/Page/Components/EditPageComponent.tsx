@@ -20,7 +20,7 @@ interface editPageComponentProps {
 const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, exit, updateData, addRepeaterGroup, deleteGroup }) => {
 
     useEffect(() => {
-        // console.log(page_component.data)
+        console.log(page_component.data)
         return () => {}
     }, [page_component]);
 
@@ -83,26 +83,29 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component, e
         if(contentType.parent === 'root') {
             switch(contentType.type) {
                 case 'text': {
-                    if(correspondingData)
-                    contentTypeFields.push(<ContentTypeFieldText key={contentType._id} content_type={contentType} updateData={updateData} data={correspondingData}/>)
+                    if(correspondingData != undefined) {
+                        contentTypeFields.push(<ContentTypeFieldText key={contentType._id} content_type={contentType} updateData={updateData} data={correspondingData}/>)
+                    }
                     break;
                 }
                 case 'number': {
-                    if(correspondingData)
-                    contentTypeFields.push(<ContentTypeFieldNumber key={contentType._id} content_type={contentType} updateData={updateData}  data={correspondingData}/>);
+                    if(correspondingData != undefined) {
+                        contentTypeFields.push(<ContentTypeFieldNumber key={contentType._id} content_type={contentType} updateData={updateData}  data={correspondingData}/>);
+                    }
                     break;
                 }
                 case 'repeater': {
-                    if(correspondingData)
-                    contentTypeFields.push(
-                        <ContentTypeFieldRepeater 
-                            key={contentType._id} 
-                            content_type={contentType} 
-                            getGroups={getRepeaterGroups} 
-                            deleteGroup={deleteGroup}
-                            addRepeaterGroup={addRepeaterGroup} 
-                            data={correspondingData}/>
-                    );
+                    if(correspondingData != undefined) {
+                        contentTypeFields.push(
+                            <ContentTypeFieldRepeater 
+                                key={contentType._id} 
+                                content_type={contentType} 
+                                getGroups={getRepeaterGroups} 
+                                deleteGroup={deleteGroup}
+                                addRepeaterGroup={addRepeaterGroup} 
+                                data={correspondingData}/>
+                        );
+                    }
                     break;
                 }
             }

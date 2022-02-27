@@ -2,7 +2,6 @@ import { updateDataObjInterface } from '../index';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import axios from 'axios';
 import getApiUrl from '../../../../../functions/getApiUrl';
-import e from 'express';
 
 
 // Handles generating the query to update the page
@@ -46,7 +45,7 @@ export const savePageHandler = async (page: mod_pageModel, updateConfig: updateD
         }
     }
     catch(err) {
-        throw(err);
+        throw err;
     }
 }
 
@@ -111,7 +110,7 @@ export const savePageComponentsHandler = async (page: mod_pageModel, updateConfi
         const query = send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : '';
 
         if(send) {
-            const data = await __sendQuery(query, 'an unexpeted error occured while updating the saving the page components');
+            const data = await __sendQuery(query, 'an unexpeted error occured while updating the saving the page components')
             return {
                 send: send, 
                 query: query,
@@ -126,7 +125,7 @@ export const savePageComponentsHandler = async (page: mod_pageModel, updateConfi
         }
     }
     catch(err) {
-        throw(err);
+        throw err;
     }
 }
 
@@ -170,7 +169,7 @@ export const deletePageComponentsHandler = async (page: mod_pageModel, updateCon
         }
     }
     catch(err) {
-        throw(err);
+        throw err;
     }
 }
 
@@ -195,7 +194,14 @@ export const saveGroupsHandler = async (page: mod_pageModel, updateConfig: updat
         const handleGroupData = (groupData: Array<mod_contentTypeFieldGroupModel>) => {
             send = true;
             groupData.forEach((group) => {
-                queryObject.mutation.content_type_field.save_multiple_groups.__args.groups.push(group);
+                let obj: mod_contentTypeFieldGroupModel = {
+                    _id: group._id,
+                    page_component_id: group.page_component_id ,
+                    position: group.position
+                };
+                if(group.parent_group != undefined) obj.parent_group = group.parent_group;
+                if(group.parent_config_id != undefined) obj.parent_config_id = group.parent_config_id;
+                queryObject.mutation.content_type_field.save_multiple_groups.__args.groups.push(obj);
             });
         }
 
@@ -231,7 +237,7 @@ export const saveGroupsHandler = async (page: mod_pageModel, updateConfig: updat
         }
     }
     catch(err) {
-        throw(err);
+        throw err;
     }
 }
 
@@ -242,12 +248,15 @@ export const saveFieldDataHandler = async (page: mod_pageModel, updateConfig: up
         let queryObject: sapa_gen_fieldDataQueryObj = {
             mutation: {
                 content_type_field : {
-                    update_multiple_fields: {
+                    save_multiple_fields: {
                         __args: {
                             page_id: page._id,
                             fields_data: []
                         },
-                        _id: true
+                        page_component_id: true,
+                        config_id: true,
+                        value: true,
+                        group_id: true
                     }
                 }
             }
@@ -260,13 +269,17 @@ export const saveFieldDataHandler = async (page: mod_pageModel, updateConfig: up
                 // get contentType type
                 const contentType = contentTypes.find( x => x._id === fieldData.config_id );
                 if(contentType != undefined) {
-                    queryObject.mutation.content_type_field.update_multiple_fields.__args.fields_data.push({
+                    let obj: sapa_gen_fieldDataQueryFieldDataObj = {
                         page_component_id: fieldData.page_component_id,
                         config_id: fieldData.config_id,
                         type: contentType.type,
                         value: fieldData.value,
-                        group_id: fieldData.group_id
-                    });
+                        root: fieldData.root
+                    }
+                    if(typeof fieldData.value === 'number') obj.value = obj.value.toString();
+                    if(obj.type === 'repeater') delete obj.value;
+                    if(fieldData.group_id != undefined) obj.group_id = fieldData.group_id;
+                    queryObject.mutation.content_type_field.save_multiple_fields.__args.fields_data.push(obj);
                 }
             });
         }
@@ -302,7 +315,7 @@ export const saveFieldDataHandler = async (page: mod_pageModel, updateConfig: up
         }
     }
     catch(err) {
-        throw(err);
+        throw err;
     }
 }
 
@@ -310,20 +323,18 @@ export const saveFieldDataHandler = async (page: mod_pageModel, updateConfig: up
 
 // handle sending off the query
 const __sendQuery = async (query: string, error: string) => {
-    return new Promise((resolve, reject) => {
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: query
-            }
-        })
-        .then((result) => {
-            resolve(result.data.data);
-        })
-        .catch((err) => {
-            console.log(err);
-            reject(error);
-        }) 
-    });
+    axios({
+        url: getApiUrl(),
+        method: 'post',
+        data: {
+          query: query
+        }
+    })
+    .then((result) => {
+        return result.data.data;
+    })
+    .catch((err) => {
+        console.log(err);
+        throw error;
+    })
 }
