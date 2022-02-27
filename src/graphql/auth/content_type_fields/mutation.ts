@@ -48,11 +48,10 @@ const deleteMultipeGroupFields: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLList(DeleteResType),
     description: 'Delete multiple group fields',
     args: {
-        page_component_id: { type: GraphQLNonNull(GraphQLID) },
         groups_ids: { type: GraphQLList(GraphQLID) }
     },
     resolve: (_, args) => {
-        return deleteMultipleGroups(args.page_component_id, args.groups_ids);
+        return deleteMultipleGroups(args.groups_ids);
     }
 }
 

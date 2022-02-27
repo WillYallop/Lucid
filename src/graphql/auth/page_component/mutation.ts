@@ -73,10 +73,10 @@ const deleteMultiple: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLList(DeleteResType),
     description: 'Delete multiple page components',
     args: {
-        _ids: { type: GraphQLList(GraphQLID) }
+        page_component_ids: { type: GraphQLList(GraphQLID) }
     },
     resolve: (_, args) => {
-        return deleteMultiplePageComponenets(args._ids);
+        return deleteMultiplePageComponenets(args.page_component_ids);
     }
 } 
 

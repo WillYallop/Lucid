@@ -64,7 +64,7 @@ interface sapa_gen_deletePageComponentQueryObj {
         page_components: {
             delete_multiple: {
                 __args: {
-                    data: Array<string>
+                    page_component_ids: Array<string>
                 }
                 deleted: boolean
             }
@@ -81,6 +81,20 @@ interface sapa_gen_groupQueryObj {
                     groups: Array<mod_contentTypeFieldGroupModel>
                 }
                 _id: boolean
+            }
+        }
+    }
+}
+
+// Delete content type field groups
+interface sapa_gen_deleteGroupQueryObj {
+    mutation: {
+        content_type_field: {
+            delete_multiple_groups: {
+                __args: {
+                    groups_ids: Array<string>
+                }
+                deleted: boolean
             }
         }
     }

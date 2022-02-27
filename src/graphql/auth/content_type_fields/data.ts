@@ -38,11 +38,11 @@ export const saveMultipleGroups = async (groups: Array<mod_contentTypeFieldGroup
 }
 
 // Delete multiple groups
-export const deleteMultipleGroups = async (page_component_id: mod_contentTypesDatabaseModel["page_component_id"], group_ids: Array<mod_contentTypeFieldGroupModel["_id"]>) => {
+export const deleteMultipleGroups = async (group_ids: Array<mod_contentTypeFieldGroupModel["_id"]>) => {
     try {
         const response = [];
         for await (const _id of group_ids) {
-            await db.none('DELETE FROM content_type_field_group WHERE _id=$1 AND page_component_id=$2', _id, page_component_id);
+            await db.none('DELETE FROM content_type_field_group WHERE _id=$1', _id);
             response.push({ deleted: true });
         }
         return response;

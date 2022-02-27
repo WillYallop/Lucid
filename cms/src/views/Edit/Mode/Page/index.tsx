@@ -16,7 +16,7 @@ import { ModalContext, PageNotificationContext } from "../../../../helper/Contex
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import getApiUrl from '../../../../functions/getApiUrl';
-import { savePageHandler, savePageComponentsHandler, deletePageComponentsHandler, saveGroupsHandler, saveFieldDataHandler } from './functions/savePageHandler';
+import { savePageHandler, savePageComponentsHandler, deletePageComponentsHandler, saveGroupsHandler, saveFieldDataHandler, deleteGroupsHandler } from './functions/savePageHandler';
 // Icons
 import { faTh, faEdit, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
 import { faSearchengin } from '@fortawesome/free-brands-svg-icons';
@@ -32,13 +32,15 @@ export interface updateDataObjInterface {
     addComponents: Array<string>
     modifiedComponents: Array<string>
     deleteComponents: Array<string>
+    deleteGroups: Array<string>
 }
 const defaultUpdateDataObj: updateDataObjInterface = {
     template: false,
     componentPositions: false,
     addComponents: [],
     modifiedComponents: [],
-    deleteComponents: []
+    deleteComponents: [],
+    deleteGroups: []
 };
 
 
@@ -390,6 +392,14 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             // Delte any groups that have the group ID as its parent_group - and so on
             let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
             if(pageComponent !== undefined) {
+                // If page component is not a in updatedData.addComponents,
+                // add this group id to the updatedData.deleteGroups array (only the top level has to be added as the reference will delete its children)
+                const isNewComponent = updatedData.addComponents.find( x => x === pageComponent?._id ); 
+                if(isNewComponent === undefined) {
+                    updatedData.deleteGroups.push(group_id);
+                    setUpdateData({ ...updatedData });
+                }
+
                 const removeDataGroupIDs: Array<string> = [];
                 pageComponent.groups = pageComponent.groups.filter((group) => {
                     if(group._id === group_id) removeDataGroupIDs.push(group_id);
@@ -406,6 +416,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 setSelectedPageComponent({
                     ...pageComponent
                 });
+                setCanSave(true);
             }
         }
     }
@@ -423,6 +434,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         const findNewComponent = updatedData.addComponents.find( x => x === page_component_id);
         if(findNewComponent === undefined) {
             updatedData.deleteComponents.push(page_component_id);
+            setCanSave(true);
             setUpdateData({
                 ...updatedData
             });
@@ -493,12 +505,14 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 const pageComponentsQuery = await savePageComponentsHandler(page, updatedData);
                 const deletePageComponentQuery = await deletePageComponentsHandler(page, updatedData);
                 const groupQuery = await saveGroupsHandler(page, updatedData);
+                const deleteGroupQuery = await deleteGroupsHandler(page, updatedData);
                 const fieldDataQuery = await saveFieldDataHandler(page, updatedData);
 
                 console.log(pageQuery);
                 console.log(pageComponentsQuery);
                 console.log(deletePageComponentQuery);
                 console.log(groupQuery);
+                console.log(deleteGroupQuery);
                 console.log(fieldDataQuery);
 
                 setCanSave(false);

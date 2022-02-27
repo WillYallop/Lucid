@@ -138,7 +138,7 @@ export const deletePageComponentsHandler = async (page: mod_pageModel, updateCon
                 page_components: {
                     delete_multiple: {
                         __args: {
-                            data: []
+                            page_component_ids: []
                         },
                         deleted: true
                     }
@@ -147,7 +147,8 @@ export const deletePageComponentsHandler = async (page: mod_pageModel, updateCon
         };
 
         updateConfig.deleteComponents.forEach((_id) => {
-            queryObject.mutation.page_components.delete_multiple.__args.data.push(_id);
+            send = true;
+            queryObject.mutation.page_components.delete_multiple.__args.page_component_ids.push(_id);
         });
 
         // Generate query string
@@ -223,6 +224,51 @@ export const saveGroupsHandler = async (page: mod_pageModel, updateConfig: updat
 
         if(send) {
             const data = await __sendQuery(query, 'an unexpeted error occured while saving the groups data');
+            return {
+                send: send, 
+                query: query,
+                data: data
+            }
+        }
+        else {
+            return {
+                send: send,
+                query: query
+            }
+        }
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Handles generating the query responsible for delteing the groups
+export const deleteGroupsHandler = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
+    try {
+        let send = false;
+        let queryObject: sapa_gen_deleteGroupQueryObj = {
+            mutation: {
+                content_type_field: {
+                    delete_multiple_groups: {
+                        __args: {
+                            groups_ids: []
+                        },
+                        deleted: true
+                    }
+                }
+            }
+        };
+
+        updateConfig.deleteGroups.forEach((_id) => {
+            send = true;
+            queryObject.mutation.content_type_field.delete_multiple_groups.__args.groups_ids.push(_id);
+        });
+
+        // Generate query string
+        const query = send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : '';
+
+        if(send) {
+            const data = await __sendQuery(query, 'an unexpeted error occured while deleting groups');
             return {
                 send: send, 
                 query: query,
