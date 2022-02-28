@@ -435,11 +435,11 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         const findNewComponent = updatedData.addComponents.find( x => x === page_component_id);
         if(findNewComponent === undefined) {
             updatedData.deleteComponents.push(page_component_id);
-            setCanSave(true);
             setUpdateData({
                 ...updatedData
             });
         }
+        updatePageComponentPositions();
     }
     // drag pos
     const componentDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
@@ -462,22 +462,26 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     else dropContainer.appendChild(dragTarget);
                 }
             }
-            for(let i = 0; i < dropContainer.children.length; i++) {
-                const child = dropContainer.children[i] as HTMLElement;
-                const compID = child.getAttribute('data-pagecomponentid');
-                if(compID) {
-                    page.page_components.find( x => {
-                        if( x._id === compID) x.position = i;
-                    });
-                }
-            }
-            setPage({
-                ...page
-            });
-            updatedData.componentPositions = true;
-            setUpdateData(updatedData);
-            setCanSave(true);
+            updatePageComponentPositions();
         }
+    }
+    const updatePageComponentPositions = () => {
+        const dropContainer = document.querySelector('.componentsCon') as HTMLElement;
+        for(let i = 0; i < dropContainer.children.length; i++) {
+            const child = dropContainer.children[i] as HTMLElement;
+            const compID = child.getAttribute('data-pagecomponentid');
+            if(compID) {
+                page.page_components.find( x => {
+                    if( x._id === compID) x.position = i;
+                });
+            }
+        }
+        setPage({
+            ...page
+        });
+        updatedData.componentPositions = true;
+        setUpdateData(updatedData);
+        setCanSave(true);
     }
     // -----------------------------------
     // Notifications
