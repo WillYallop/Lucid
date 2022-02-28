@@ -501,7 +501,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const savePageData = async () => {
         try {
             checkEditComponentForErrors(async () => {
-
                 // Generate all of the queryies we need
                 const pageQuery = await savePageHandler(page, updatedData);
                 const pageComponentsQuery = await savePageComponentsHandler(page, updatedData);
@@ -509,21 +508,15 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 const groupQuery = await saveGroupsHandler(page, updatedData);
                 const deleteGroupQuery = await deleteGroupsHandler(page, updatedData);
                 const fieldDataQuery = await saveFieldDataHandler(page, updatedData);
-
-                console.log(pageQuery);
-                console.log(pageComponentsQuery);
-                console.log(deletePageComponentQuery);
-                console.log(groupQuery);
-                console.log(deleteGroupQuery);
-                console.log(fieldDataQuery);
-
                 setCanSave(false);
                 setUpdateData(defaultUpdateDataObj);
-
+                // Notification
+                addNotification(`you're page has been saved successfully!`, 'success');
             });
         }
         catch(err) {
             console.log(err);
+            addNotification(`an unexpected error occured while saving the page!`, 'error');
         }
     }
 
