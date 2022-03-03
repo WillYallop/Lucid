@@ -1,10 +1,10 @@
 import { GraphQLFieldConfig, GraphQLObjectType, GraphQLNonNull, GraphQLID, GraphQLInputObjectType, GraphQLString, GraphQLList, GraphQLInt } from 'graphql';
 import { DeleteResType } from '../shared/type';
-import { PageComponentModel } from './type';
+import { PageComponentBaseModel } from './type';
 import { deletePageComponent, updateMultiplePageComponents, addMultiplePageComponents, deleteMultiplePageComponenets } from './data';
 
 const addMultiple: GraphQLFieldConfig<any, any, any> = {
-    type: GraphQLList(PageComponentModel),
+    type: GraphQLList(PageComponentBaseModel),
     description: 'Add multiple page components',
     args: {
         page_id: { type: GraphQLNonNull(GraphQLID) },
@@ -41,7 +41,7 @@ const addMultiple: GraphQLFieldConfig<any, any, any> = {
 };
 
 const updateMultiple: GraphQLFieldConfig<any, any, any> = {
-    type: GraphQLList(PageComponentModel),
+    type: GraphQLList(PageComponentBaseModel),
     description: 'Update multiple page components',
     args: {
         page_id: { type: GraphQLNonNull(GraphQLID) },

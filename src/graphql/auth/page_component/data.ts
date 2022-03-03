@@ -130,6 +130,27 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
     }
 }
 
+// Get single page component
+export const getSingle = async (_id: mod_pageComponentsModel["_id"]) => {
+    try {
+        const pageComponent: mod_pageComponentsModel = await db.oneOrNone('SELECT * FROM page_components WHERE _id=$1', _id);
+        let component = await componentController.getSingleByID(pageComponent.component_id);
+        let content_types = await contentTypeController.getAll(pageComponent.component_id);
+        // Assign component and get data
+        pageComponent.component = component;
+        pageComponent.content_types = content_types;
+        let data = await getPageComponentContentTypeData(pageComponent._id);
+        pageComponent.data = data;
+        let groups = await getPageComponentsGroups(pageComponent._id);
+        pageComponent.groups = groups;
+
+        return pageComponent;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
 // Delete multiple corresponding page_component table rows
 export const deleteMultiplePageComponenets = async (ids: Array<mod_pageComponentsModel>) => {
     try {
