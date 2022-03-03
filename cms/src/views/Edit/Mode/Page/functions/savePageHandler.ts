@@ -109,7 +109,8 @@ export const savePageComponentsHandler = async (page: mod_pageModel, updateConfi
         const query = send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : '';
 
         if(send) {
-            const data = await __sendQuery(query, 'an unexpeted error occured while updating the saving the page components')
+            const data = await __sendQuery(query, 'an unexpeted error occured while updating the saving the page components');
+            console.log(data);
             return {
                 send: send, 
                 query: query,
@@ -368,18 +369,18 @@ export const saveFieldDataHandler = async (page: mod_pageModel, updateConfig: up
 
 // handle sending off the query
 const __sendQuery = async (query: string, error: string) => {
-    axios({
-        url: getApiUrl(),
-        method: 'post',
-        data: {
-          query: query
-        }
-    })
-    .then((result) => {
-        return result.data.data;
-    })
-    .catch((err) => {
-        console.log(err);
-        throw error;
-    })
+    try {
+        let res = await axios({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        });
+        let data = res.data;
+        return data;
+    }
+    catch(err) {
+        throw err;
+    }
 }
