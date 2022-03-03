@@ -1,4 +1,3 @@
-import { updateDataObjInterface } from '../index';
 import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import axios from 'axios';
 import getApiUrl from '../../../../../functions/getApiUrl';

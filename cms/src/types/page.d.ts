@@ -34,3 +34,15 @@ interface mod_page_componentModel {
     data: Array<mod_contentTypesDatabaseModel>
     groups: Array<mod_contentTypeFieldGroupModel>
 }
+
+
+
+interface updateDataObjInterface {
+    template: boolean
+    componentPositions: boolean
+    addComponents: Array<string>
+    modifiedComponents: Array<string>
+    deleteComponents: Array<string>
+    deleteGroups: Array<string>
+    pageComponentDownloaded: Array<string>
+}

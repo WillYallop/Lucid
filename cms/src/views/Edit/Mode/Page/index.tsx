@@ -13,6 +13,7 @@ import EditPageComponent from './Components/EditPageComponent';
 import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
 // Context
 import { ModalContext, PageNotificationContext } from "../../../../helper/Context";
+import { PageContext, UpdatedDataContext, defaultUpdateDataObj } from './functions/PageContext';
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import getApiUrl from '../../../../functions/getApiUrl';
@@ -21,28 +22,9 @@ import { savePageHandler, savePageComponentsHandler, deletePageComponentsHandler
 import { faTh, faEdit, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
 import { faSearchengin } from '@fortawesome/free-brands-svg-icons';
 
-
 interface editPageProps {
     slug: string
 }
-
-export interface updateDataObjInterface {
-    template: boolean
-    componentPositions: boolean
-    addComponents: Array<string>
-    modifiedComponents: Array<string>
-    deleteComponents: Array<string>
-    deleteGroups: Array<string>
-}
-const defaultUpdateDataObj: updateDataObjInterface = {
-    template: false,
-    componentPositions: false,
-    addComponents: [],
-    modifiedComponents: [],
-    deleteComponents: [],
-    deleteGroups: []
-};
-
 
 const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
@@ -57,18 +39,24 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const [ loading, setLoading ] = useState(true);
     const [ activeSlug, setActiveSlug ] = useState(slug);
     const [ canSave, setCanSave ] = useState(false); // Can save
-    const [ page, setPage ] = useState({} as mod_pageModel); // page
+    
+    const [ page, setPage ] = useState({} as mod_pageModel); // page PageContext
+    
     const [ pageMarkup, setPageMarkup ] = useState(''); // Page preview markup
     // Template
     const [ templates, setTemplates ] = useState([]);
     // Selected component
     const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component'>('preview')
+    
     const [ selectedPageComponent, setSelectedPageComponent ] = useState({} as mod_page_componentModel);
+    const [ selectedPageCompID, setSelectedPageCompID ] = useState('');
+
     const [ mouseYPos, setMouseYPos ] = useState(0);
     const [ dragTarget, setDragTarget ] = useState<HTMLElement>();
+
     // New data
     // Used to track and store data changes
-    const [ updatedData, setUpdateData ] = useState(defaultUpdateDataObj);
+    const [ updatedData, setUpdatedData ] = useState(defaultUpdateDataObj.updatedData);
 
 
 
@@ -107,41 +95,10 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         }
                         page_components {
                             _id
-                            component_id
                             position
                             component {
                                 preview_url
                                 name
-                                file_path
-                                file_name
-                                date_added
-                                description
-                                date_modified
-                            }
-                            content_types {
-                                _id
-                                name
-                                type
-                                parent
-                                config {
-                                    min
-                                    max
-                                    default
-                                }
-                            }
-                            groups {
-                                _id
-                                page_component_id
-                                parent_group
-                                parent_config_id
-                                position
-                            }
-                            data {
-                                page_component_id
-                                config_id
-                                value
-                                group_id
-                                root
                             }
                         }
                     }
@@ -187,6 +144,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             addNotification('there was an unexpected error while getting the template data.','error');
         });
     }
+    
 
     // -----------------------------------
     // Components
@@ -283,7 +241,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
         // Update updatedData state
         updatedData.addComponents.push(newPageComponent._id);
-        setUpdateData(updatedData);
+        updatedData.pageComponentDownloaded.push(newPageComponent._id);
+        setUpdatedData(updatedData);
 
         // set allow save
         setCanSave(true);
@@ -292,134 +251,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             ...modalState,
             state: false
         });
-    }
-    // Update content type for selected page comp
-    const updateContentTypeData = (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => {
-        // Find the corresponding page component in the page object
-        const pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
-        if(pageComponent !== undefined) {
-            // find corresponding content type data fields
-            const dataObj = pageComponent.data.find( x => x.config_id === _id && x.group_id === group_id);
-            if(dataObj !== undefined) {
-                dataObj.value = data;
-                setSelectedPageComponent({
-                    ...pageComponent
-                });
-                // update updateData status
-                // if not a new component, add to modified components object
-                let findNewComp = updatedData.addComponents.findIndex( x => x === selectedPageComponent._id);
-                let findAlreadyModified = updatedData.modifiedComponents.findIndex( x => x === selectedPageComponent._id );
-                if(findNewComp === -1 && findAlreadyModified === -1) {
-                    updatedData.modifiedComponents.push(selectedPageComponent._id);
-                    setUpdateData({
-                        ...updatedData
-                    });
-                }
-                // set allow save
-                setCanSave(true);
-            }
-        }
-    }
-    // add new group for given repeater
-    const addRepeaterDataGroup = (content_type: mod_contentTypesConfigModel, repeaterGroupID: mod_contentTypesDatabaseModel["group_id"]) => {
-        if(content_type.type === 'repeater' ) {
-            const createGroup = () => {
-                // Make recurisve to handle repeater children in the block
-                // get all of the repeaters children, and create a new set of data for it!
-                const componentData: Array<mod_contentTypesDatabaseModel> = [];
-                const componentDataGroups: Array<mod_contentTypeFieldGroupModel> = [];
-
-                const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], group_id?: mod_contentTypesDatabaseModel["group_id"]) => {
-                    // Create a new group obj
-                    const groupObj: mod_contentTypeFieldGroupModel = {
-                        _id: uuidv1(),
-                        page_component_id: selectedPageComponent._id,
-                        parent_group: group_id,
-                        parent_config_id: _id,
-                        position: 1
-                    }
-                    componentDataGroups.push(groupObj);
-
-                    // add data for repeaters children
-                    selectedPageComponent.content_types?.forEach((contentType) => {
-                        if(contentType.parent === _id && contentType.type !== 'repeater') {
-                            componentData.push({
-                                page_component_id: selectedPageComponent._id,
-                                config_id: contentType._id,
-                                value: contentType.config.default || '',
-                                group_id: groupObj._id,
-                                root: false
-                            });
-                        } 
-                        else if(contentType.parent === _id && contentType.type === 'repeater') {
-                            componentData.push({
-                                page_component_id: selectedPageComponent._id,
-                                config_id: contentType._id,
-                                value: undefined,
-                                group_id: groupObj._id,
-                                root: false
-                            });
-                            addRepeaterChildrenGroups(contentType._id, groupObj._id);
-                        }
-                    });
-                }
-                addRepeaterChildrenGroups(content_type._id, repeaterGroupID)
-
-                // add new data to the selectedComponent and the page state
-                let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
-                if(pageComponent !== undefined) {
-                    pageComponent.groups = pageComponent.groups.concat(componentDataGroups);
-                    pageComponent.data = pageComponent.data.concat(componentData);
-                    setCanSave(true);
-                    setSelectedPageComponent({
-                        ...pageComponent
-                    });
-                }
-            }
-            // If the config max is defined, check the current amount of groups!
-            if(content_type.config.max != null) {
-                // Filter all data that belongs to this content type
-                const contentTypeDataGroups = selectedPageComponent.groups.filter( x => x.parent_group === repeaterGroupID);
-                if(contentTypeDataGroups.length < parseInt(content_type.config.max)) createGroup();
-                else addNotification(`you have reached the maxium number of groups (${content_type.config.max}) for this field!`, 'warning');
-            }
-            else createGroup();
-        }
-    }
-    const deleteRepeaterGroup = (group_id?: mod_contentTypeFieldGroupModel["_id"]) => {
-        if(group_id !== undefined) {
-            // Delete the group ID
-            // Delete all page data with that group ID
-            // Delte any groups that have the group ID as its parent_group - and so on
-            let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
-            if(pageComponent !== undefined) {
-                // If page component is not a in updatedData.addComponents,
-                // add this group id to the updatedData.deleteGroups array (only the top level has to be added as the reference will delete its children)
-                const isNewComponent = updatedData.addComponents.find( x => x === pageComponent?._id ); 
-                if(isNewComponent === undefined) {
-                    updatedData.deleteGroups.push(group_id);
-                    setUpdateData({ ...updatedData });
-                }
-
-                const removeDataGroupIDs: Array<string> = [];
-                pageComponent.groups = pageComponent.groups.filter((group) => {
-                    if(group._id === group_id) removeDataGroupIDs.push(group_id);
-                    else if(group.parent_group === group_id) removeDataGroupIDs.push(group._id);
-                    else return group;
-                });
-                pageComponent.data = pageComponent.data.filter((data) => {
-                    if(data.group_id !== undefined) {
-                        const findGroupID = removeDataGroupIDs.find( x => x === data.group_id ); 
-                        if(!findGroupID) return data;
-                    }
-                    else return data;
-                });
-                setSelectedPageComponent({
-                    ...pageComponent
-                });
-                setCanSave(true);
-            }
-        }
     }
     const deleteComponent = (page_component_id: mod_page_componentModel["_id"]) => {
         if(selectedPageComponent._id === page_component_id) {
@@ -435,7 +266,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         const findNewComponent = updatedData.addComponents.find( x => x === page_component_id);
         if(findNewComponent === undefined) {
             updatedData.deleteComponents.push(page_component_id);
-            setUpdateData({
+            setUpdatedData({
                 ...updatedData
             });
         }
@@ -480,7 +311,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             ...page
         });
         updatedData.componentPositions = true;
-        setUpdateData(updatedData);
+        setUpdatedData(updatedData);
         setCanSave(true);
     }
     // -----------------------------------
@@ -513,7 +344,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 const deleteGroupQuery = await deleteGroupsHandler(page, updatedData);
                 const fieldDataQuery = await saveFieldDataHandler(page, updatedData);
                 setCanSave(false);
-                setUpdateData(defaultUpdateDataObj);
+                setUpdatedData(defaultUpdateDataObj.updatedData);
                 // Notification
                 addNotification(`you're page has been saved successfully!`, 'success');
             });
@@ -548,6 +379,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             const target = e.target as HTMLTextAreaElement;
                             if(target) target.classList.add('active');
                             setSelectedPageComponent(page.page_components[i]);
+                            setSelectedPageCompID(page.page_components[i]._id)
                             setPageMode('edit_component');
                         });
                     }}>
@@ -671,118 +503,121 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     
 
     return (
-        <div className='pageEditCon' key={activeSlug}>
-            <NotificationPopup/>
-            <EditPageHeader 
-                pageName={page.name}
-                canSave={canSave}
-                saveCallback={savePageData}/>
-            <div className="sidebar">
-                {/* Title */}
-                <div className="row">
-                    <h1>{ page.name }</h1>
-                </div>
-                {/* Edit Page Data */}
-                <div className="row">
-                    {/* Page content */}
-                    <div className='editContentRow'>
-                        <div className="imgCon"><FontAwesomeIcon icon={faAlignJustify}/></div>
-                        <div className='mainCol'>
-                            <p>content</p>
-                            <div>
-                                {/* Edit this row */}
-                                <button className='btnStyleBlank' onClick={() => {  }}>
-                                    <CoreIcon icon={faEdit} style={'transparent'}/>
-                                </button>
+        <PageContext.Provider value={{ page, setPage }}>
+            <UpdatedDataContext.Provider value={{ updatedData, setUpdatedData}}>
+                <div className='pageEditCon' key={activeSlug}>
+                    <NotificationPopup/>
+                    <EditPageHeader 
+                        pageName={page.name}
+                        canSave={canSave}
+                        saveCallback={savePageData}/>
+                    <div className="sidebar">
+                        {/* Title */}
+                        <div className="row">
+                            <h1>{ page.name }</h1>
+                        </div>
+                        {/* Edit Page Data */}
+                        <div className="row">
+                            {/* Page content */}
+                            <div className='editContentRow'>
+                                <div className="imgCon"><FontAwesomeIcon icon={faAlignJustify}/></div>
+                                <div className='mainCol'>
+                                    <p>content</p>
+                                    <div>
+                                        {/* Edit this row */}
+                                        <button className='btnStyleBlank' onClick={() => {  }}>
+                                            <CoreIcon icon={faEdit} style={'transparent'}/>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+                            {/* SEO */}
+                            <div className='editContentRow'>
+                                <div className="imgCon"><FontAwesomeIcon icon={faSearchengin}/></div>
+                                <div className='mainCol'>
+                                    <p>seo</p>
+                                    <div>
+                                        {/* Edit this row */}
+                                        <button className='btnStyleBlank' onClick={() => {  }}>
+                                            <CoreIcon icon={faEdit} style={'transparent'}/>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            {/* template */}
+                            { page.type === 'page' ? 
+                                <SelectInput 
+                                    value={page.template}
+                                    options={templates}
+                                    id={"templateSelect"}
+                                    name={"template"}
+                                    required={true}
+                                    errorMsg={"there was an unexpected error!"}
+                                    updateValue={(value) => {
+                                        page.template = value;
+                                        setPage({
+                                            ...page
+                                        })
+                                        setUpdatedData({
+                                            ...updatedData,
+                                            template: true
+                                        });
+                                        setCanSave(true);
+                                    }}
+                                    label="template"
+                                    style={'--hide-seperator --no-margin-bottom'}/>
+                            : null }
+                        </div>
+                        {/* Page Components */}
+                        <div className='row'>
+                            {/* Add component */}
+                            <button 
+                                className="btnStyle1"
+                                onClick={() => {
+                                    setModalState({
+                                        ...modalState,
+                                        state: true,
+                                        title: 'add component',
+                                        size: 'standard',
+                                        body: 'select a component bellow to add to your page',
+                                        element: <ComponentListModal addComponentCallback={addComponent}/>
+                                    });
+                                }}>
+                                add component
+                            </button>
+                            {
+                                pageComponents.length ?
+                                    <div className="componentsCon">
+                                        {/* Components */}
+                                        { pageComponents }
+                                    </div>
+                                : null
+                            }
                         </div>
                     </div>
-                    {/* SEO */}
-                    <div className='editContentRow'>
-                        <div className="imgCon"><FontAwesomeIcon icon={faSearchengin}/></div>
-                        <div className='mainCol'>
-                            <p>seo</p>
-                            <div>
-                                {/* Edit this row */}
-                                <button className='btnStyleBlank' onClick={() => {  }}>
-                                    <CoreIcon icon={faEdit} style={'transparent'}/>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {/* template */}
-                    { page.type === 'page' ? 
-                        <SelectInput 
-                            value={page.template}
-                            options={templates}
-                            id={"templateSelect"}
-                            name={"template"}
-                            required={true}
-                            errorMsg={"there was an unexpected error!"}
-                            updateValue={(value) => {
-                                page.template = value;
-                                setPage({
-                                    ...page
-                                })
-                                setUpdateData({
-                                    ...updatedData,
-                                    template: true
-                                });
-                                setCanSave(true);
-                            }}
-                            label="template"
-                            style={'--hide-seperator --no-margin-bottom'}/>
-                    : null }
-                </div>
-                {/* Page Components */}
-                <div className='row'>
-                    {/* Add component */}
-                    <button 
-                        className="btnStyle1"
-                        onClick={() => {
-                            setModalState({
-                                ...modalState,
-                                state: true,
-                                title: 'add component',
-                                size: 'standard',
-                                body: 'select a component bellow to add to your page',
-                                element: <ComponentListModal addComponentCallback={addComponent}/>
-                            });
-                        }}>
-                        add component
-                    </button>
                     {
-                        pageComponents.length ?
-                            <div className="componentsCon">
-                                {/* Components */}
-                                { pageComponents }
-                            </div>
-                        : null
+                        pageMode === 'preview'
+                        ?
+                        <PagePreview
+                            pageMarkup={pageMarkup}/>
+                        :
+                        <EditPageComponent
+                            page_component_id={selectedPageCompID}
+                            setCanSave={setCanSave}
+                            addNotification={addNotification}
+                            exit={() => {
+                                checkEditComponentForErrors(() => {
+                                    // Success
+                                    const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                                    allEditRows.forEach((ele) => ele.classList.remove('active'));
+                                    setPageMode('preview');
+                                    console.log('set cooldown to update page preview');
+                                });
+                            }}/> 
                     }
                 </div>
-            </div>
-            {
-                pageMode === 'preview'
-                ?
-                <PagePreview
-                    pageMarkup={pageMarkup}/>
-                :
-                <EditPageComponent
-                    page_component={selectedPageComponent}
-                    exit={() => {
-                        checkEditComponentForErrors(() => {
-                            // Success
-                            const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
-                            allEditRows.forEach((ele) => ele.classList.remove('active'));
-                            setPageMode('preview');
-                            console.log('set cooldown to update page preview');
-                        });
-                    }}
-                    updateData={updateContentTypeData}
-                    addRepeaterGroup={addRepeaterDataGroup}
-                    deleteGroup={deleteRepeaterGroup}/> 
-            }
-        </div>
+            </UpdatedDataContext.Provider>
+        </PageContext.Provider>
     );
 }
 
