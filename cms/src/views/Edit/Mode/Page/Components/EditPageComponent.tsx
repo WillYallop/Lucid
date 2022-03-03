@@ -39,16 +39,13 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
 
     // Donwload the page component, if it doesnt have data already
     const setPageComponentHandler = () => {
-        if(updatedData != undefined) {
+        if(updatedData !== undefined && page !== undefined) {
             // Check if the page component ID exists in updatedData.pageComponentDownloaded
             const findIfDownloaded = updatedData.pageComponentDownloaded.find( x => x === page_component_id );
             if(findIfDownloaded != undefined) {
                 // Find component in the page state
                 const pageComp = page?.page_components.find( x => x._id === page_component_id );
-                if(pageComp != undefined) {
-                    console.log(pageComp);
-                    setPageComponent(pageComp);
-                }
+                if(pageComp != undefined) setPageComponent(pageComp);
                 else throw new Error('this page cannot be found!');
             }
             else {
@@ -64,6 +61,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                                 component_id
                                 position
                                 component {
+                                    name
                                     preview_url
                                     file_path
                                     file_name
@@ -105,7 +103,19 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                     const pageComponent: mod_page_componentModel = result.data.data.page_components.get_single || {};
                     if(pageComponent) {
                         if(!mounted.current) return null;
+                        // update page
+
+                        let findPageComponentIndex = page?.page_components.findIndex( x => x._id === page_component_id );
+                        if(findPageComponentIndex !== -1) {
+                            page.page_components[findPageComponentIndex] = pageComponent;
+                            setPage({
+                                ...page
+                            });
+                            updatedData.pageComponentDownloaded.push(page_component_id);
+                        }
+                        // update selected
                         setPageComponent(pageComponent);
+
                     }
                     else {
                         addNotification(formatLucidError(result.data.errors[0].message).message,'error');
