@@ -1,5 +1,5 @@
 import { getSingleFileContent, writeSingleFile, listDirectoryFiles } from './theme';
-import { __generateErrorString } from './helper/shared';
+import { __generateErrorString } from '../helper/shared';
 import validate from '../validator';
 import { v1 as uuidv1 } from 'uuid';
 import merge from 'lodash/merge';

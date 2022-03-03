@@ -1,7 +1,7 @@
 import db from '../../../db';
 import moment from 'moment';
 import validate from '../../../validator';
-import { __convertStringLowerUnderscore } from '../../../controller/helper/shared';
+import { __convertStringLowerUnderscore } from '../../../helper/shared';
 import { __updateSetQueryGen } from '../shared/functions';
 
 

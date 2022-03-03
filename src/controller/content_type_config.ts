@@ -1,7 +1,7 @@
 import { getSingleFileContent, writeSingleFile } from './theme';
 import validate from '../validator';
 import { v1 as uuidv1 } from 'uuid';
-import { __generateErrorString } from './helper/shared';
+import { __generateErrorString } from '../helper/shared';
 import merge from 'lodash/merge';
 
 /*

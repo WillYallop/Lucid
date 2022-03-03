@@ -1,5 +1,5 @@
 import { listDirectoryFiles } from './theme';
-import { __generateErrorString } from './helper/shared';
+import { __generateErrorString } from '../helper/shared';
 
 // ------------------------------------ ------------------------------------
 // get all templates

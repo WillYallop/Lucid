@@ -66,3 +66,19 @@ interface gene_generateAppRes {
     build_time: number,
     pages_built: number
 }
+
+
+
+// ---------------------
+// -- NEW
+// ---------------------
+interface gen_generatePreviewConfig {
+    data_mode: 'live' | 'provided'
+    page_id: mod_pageModel["_id"]
+    page_components: Array<{
+        _id: mod_pageComponentsModel["_id"]
+        component_id: mod_componentModel["_id"]
+        groups?: Array<mod_contentTypeFieldGroupModel>
+        data?: Array<mod_contentTypesDatabaseModel>
+    }>
+}

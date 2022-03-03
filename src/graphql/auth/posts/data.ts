@@ -1,6 +1,6 @@
 import { postsController } from '../../../index';
 import db from '../../../db';
-import { __generateErrorString } from '../../../controller/helper/shared';
+import { __generateErrorString } from '../../../helper/shared';
 import { pageResetHandler } from '../page/data';
 
 // Get single post

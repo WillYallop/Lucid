@@ -7,7 +7,7 @@ import validate from '../../../validator';
 // Controllers
 import { getSingleSEO, saveSingleSEO } from '../seo/data';
 import { getAllPageComponents } from '../page_component/data';
-import { __generateErrorString } from '../../../controller/helper/shared';
+import { __generateErrorString } from '../../../helper/shared';
 
 
 // Get single page

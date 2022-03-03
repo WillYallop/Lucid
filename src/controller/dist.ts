@@ -2,7 +2,7 @@ import * as fs from 'fs-extra';
 
 const path = require('path');
 const config = require(path.resolve("./lucid.config.js"));
-import { __generateErrorString } from './helper/shared';
+import { __generateErrorString } from '../helper/shared';
 
 const themDir = path.resolve(config.directories.theme);
 const templatesDir = path.resolve(config.directories.templates);

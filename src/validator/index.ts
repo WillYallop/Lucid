@@ -1,7 +1,7 @@
 // Methods
 import { verifyFileExists } from "../controller/theme";
 import validatorConfig from './validator-config';
-import { __generateErrorString } from '../controller/helper/shared';
+import { __generateErrorString } from '../helper/shared';
 import { version as uuidVersion } from 'uuid';
 import { validate as uuidValidate } from 'uuid';
 

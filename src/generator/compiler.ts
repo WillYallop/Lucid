@@ -81,12 +81,10 @@ const componentCompiler = async (components: Array<gen_generateAppInpComponentMo
         const componentsMap: gene_componentsMap = new Map();
         // Build templates out
         for (const component of components) {
-
             // Register script tag
             lucidScriptTagRegister();
             // Register asset tag
             lucidAssetTagRegister();
-
             const data = await __generateDataField(component.content_types); // TODO
             const dir = path.resolve(`${themeDir}/components/${component.file_path}`);
             const output = await engine.renderFile(dir, data);
