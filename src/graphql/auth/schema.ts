@@ -67,7 +67,7 @@ const baseQuery = new GraphQLObjectType({
             description: TemplateQuery.description,
             resolve: () => { return {} }
         },
-        page_component: {
+        page_components: {
             type: PageComponentQuery,
             description: PageComponentQuery.description,
             resolve: () => { return {} }
