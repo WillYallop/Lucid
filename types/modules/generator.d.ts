@@ -77,8 +77,44 @@ interface gen_generatePreviewConfig {
     page_id: mod_pageModel["_id"]
     page_components: Array<{
         _id: mod_pageComponentsModel["_id"]
-        component_id: mod_componentModel["_id"]
+        component: {
+            _id: mod_componentModel["_id"]
+            file_path: mod_componentModel["file_path"]
+            name: mod_componentModel["name"]
+        }
         groups?: Array<mod_contentTypeFieldGroupModel>
         data?: Array<mod_contentTypesDatabaseModel>
     }>
 }
+
+// Template compiler
+interface gen_templateCompilerProps {
+    template: mod_pageModel["template"],
+    seo: {
+        title: mod_pageModel["seo"]["title"]
+        description: mod_pageModel["seo"]["description"]
+        og_title: mod_pageModel["seo"]["og_title"]
+        og_description: mod_pageModel["seo"]["og_description"]
+        og_image: mod_pageModel["seo"]["og_image"]
+    },
+    components?: gen_componentCompiledMap
+
+    // Undecided!
+    head: string
+    footer: string
+}
+
+// Components comiler
+interface gen_componentCompilerProps {
+    component: {
+        _id: mod_componentModel["_id"]
+        file_path: mod_componentModel["file_path"]
+        name: mod_componentModel["name"]
+    }
+    groups: Array<mod_contentTypeFieldGroupModel>
+    data: Array<mod_contentTypesDatabaseModel>
+}
+type gen_componentCompiledMap = Map<mod_componentModel["_id"], {
+    _id: mod_componentModel["_id"]
+    markup: string
+}>
