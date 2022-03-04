@@ -26,6 +26,8 @@ import { PageComponentQuery } from './page_component/query';
 import { UtilityQuery } from './utility/query';
 // Templates
 import { TemplateQuery } from './template/query';
+// Generator
+import { GeneratorQuery } from './generator/query';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -70,6 +72,11 @@ const baseQuery = new GraphQLObjectType({
         page_components: {
             type: PageComponentQuery,
             description: PageComponentQuery.description,
+            resolve: () => { return {} }
+        },
+        generator: {
+            type: GeneratorQuery,
+            description: GeneratorQuery.description,
             resolve: () => { return {} }
         }
     }

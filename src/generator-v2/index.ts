@@ -59,7 +59,12 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
             head: '',
             footer: ''
         });
-        
+
+
+        return {
+            template: markupRes.template,
+            components: Array.from(markupRes.components.values())
+        };
     }
     catch(err) {
         throw(err);
