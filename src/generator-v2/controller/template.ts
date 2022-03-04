@@ -1,5 +1,5 @@
 import { Liquid } from 'liquidjs';
-import islandScriptHandler from './island';
+import islandScriptHandler, { stripTempIslandObjEle } from './island';
 // Custom scripts
 import { lucidAssetTagRegister } from './tags/lucidAsset';
 import { lucidScriptTagRegister } from './tags/lucidScript';
@@ -35,13 +35,15 @@ export default async (config: gen_templateCompilerProps, addComponents: boolean,
         const templateDir = path.resolve(`${themeDir}/templates/${config.template}`);
         const markup = await engine.renderFile(templateDir);
 
+        // Check if it has islandScriptObj, strip it out
+        const islandRes = await stripTempIslandObjEle(markup);
         // Merge all components script config into array
-        let scriptConfigArray: Array<gen_islandScriptConfig> = [];
+        let scriptConfigArray: Array<gen_islandScriptConfig> = islandRes.scriptConfig;
         for (let [key, value] of config.components) {
             scriptConfigArray = scriptConfigArray.concat(value.scriptConfig);
         }
         // use scriptmarkup to build island script loader
-        const newMarkup = await islandScriptHandler(markup, scriptConfigArray);
+        const newMarkup = await islandScriptHandler(islandRes.markup, scriptConfigArray);
 
         return stringify ? JSON.stringify(newMarkup) : newMarkup;
     }

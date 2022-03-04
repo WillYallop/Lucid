@@ -195,6 +195,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         .then((result) => {
             const data = result.data.data.generator.preview || {};
             
+            let template = JSON.parse(data.template);
+            console.log(template);
+            setPageMarkup(template);
         })
         .catch((err) => {
             setLoading(false);
