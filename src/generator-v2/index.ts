@@ -26,18 +26,23 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
         const componentData: Array<gen_componentCompilerProps> = [];
         // Build out the component data array
         config.page_components.forEach((pageComp) => {
+            // Find corresponding page
+            const findPageComp = pageLiveData.page_components.find( x => x._id === pageComp._id );
+
             // Set groups and data variables
             let groups: Array<mod_contentTypeFieldGroupModel> = [];
             let data: Array<mod_contentTypesDatabaseModel> = [];
-            if('provided' === config.data_mode) {
-                groups = pageComp.groups !== undefined ? pageComp.groups : [];
-                data = pageComp.data !== undefined ? pageComp.data : [];
+            let contentTypes: Array<mod_contentTypesConfigModel> = [];
+            if('provided' === config.data_mode) { // uses live data as a fallback
+                groups = pageComp.groups !== undefined ? pageComp.groups : findPageComp !== undefined ? findPageComp.groups : [];;
+                data = pageComp.data !== undefined ? pageComp.data : findPageComp !== undefined ? findPageComp.data : [];;
             }
             else if('live' === config.data_mode) {
-                const findPageComp = pageLiveData.page_components.find( x => x._id === pageComp._id );
                 groups = findPageComp !== undefined ? findPageComp.groups : [];
                 data = findPageComp !== undefined ? findPageComp.data : [];
             }
+            contentTypes = findPageComp !== undefined ? findPageComp.content_types : [];
+
             // Add to components data array
             componentData.push({
                 component: {
@@ -46,7 +51,8 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
                     name: pageComp.component.name
                 },
                 groups: groups,
-                data: data
+                data: data,
+                content_types: contentTypes
             })
         });
 

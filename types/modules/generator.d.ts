@@ -89,14 +89,8 @@ interface gen_generatePreviewConfig {
 
 // Template compiler
 interface gen_templateCompilerProps {
-    template: mod_pageModel["template"],
-    seo: {
-        title: mod_pageModel["seo"]["title"]
-        description: mod_pageModel["seo"]["description"]
-        og_title: mod_pageModel["seo"]["og_title"]
-        og_description: mod_pageModel["seo"]["og_description"]
-        og_image: mod_pageModel["seo"]["og_image"]
-    },
+    template: mod_pageModel["template"]
+    seo: mod_pageModel["seo"]
     components?: gen_componentCompiledMap
 
     // Undecided!
@@ -111,6 +105,7 @@ interface gen_componentCompilerProps {
         file_path: mod_componentModel["file_path"]
         name: mod_componentModel["name"]
     }
+    content_types: Array<mod_contentTypesConfigModel>
     groups: Array<mod_contentTypeFieldGroupModel>
     data: Array<mod_contentTypesDatabaseModel>
 }

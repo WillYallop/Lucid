@@ -54,11 +54,11 @@ export const GeneratePreviewPageComponentsInputModel = new GraphQLInputObjectTyp
             description: GeneratePreviewPageComponentsComponentInputModel.description
         },
         groups: {
-            type: ContentTypeFieldGroupInputModel,
+            type: GraphQLList(ContentTypeFieldGroupInputModel),
             description: ContentTypeFieldGroupInputModel.description
         },
         data: {
-            type: ContentTypeDatabaseInputModel,
+            type: GraphQLList(ContentTypeDatabaseInputModel),
             description: ContentTypeDatabaseInputModel.description
         }
     })
