@@ -2,6 +2,7 @@
 import componentCompiler from './controller/component';
 import templateCompiler from './controller/template';
 import staticHandler from './controller/static';
+
 // Data
 import { getSingle as getSinglePage } from '../graphql/auth/page/data';
 // Helpers
@@ -57,15 +58,15 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
         });
 
         // Build components
-        markupRes.components = await componentCompiler(componentData);
+        markupRes.components = await componentCompiler(componentData, true);
         // Build template
         markupRes.template = await templateCompiler({
             template: pageLiveData.template,
+            components: markupRes.components,
             seo: pageLiveData.seo,
             head: '',
             footer: ''
-        });
-
+        }, false, true);
 
         return {
             template: markupRes.template,

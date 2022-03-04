@@ -16,15 +16,17 @@ const themeDir = config.directories.theme;
 // Liquid Engine
 const engine = new Liquid({
     root: path.resolve(themeDir),
-    extname: '.liquid'
+    extname: '.liquid',
+    strictVariables: false,
+    strictFilters: false
 });
 
-export default async (config: gen_templateCompilerProps): Promise<string> => {
+export default async (config: gen_templateCompilerProps, addComponents: boolean, stringify: boolean): Promise<string> => {
     try {
         // Register custom tags
         lucidHeadTagRegister(engine, config.head); // lucidHead
         lucidSEOTagRegister(engine, config.seo); // lucidSEO
-        lucidAppTagRegister(engine, config.components); // lucidApp
+        lucidAppTagRegister(engine, config.components, addComponents); // lucidApp
         lucidFooterTagRegister(engine, config.footer); // lucidFooter
         lucidScriptTagRegister(engine); // lucidScript
         lucidAssetTagRegister(engine); // lucidAsset
@@ -32,9 +34,16 @@ export default async (config: gen_templateCompilerProps): Promise<string> => {
         // Render page
         const templateDir = path.resolve(`${themeDir}/templates/${config.template}`);
         const markup = await engine.renderFile(templateDir);
-        const newMarkup = await islandScriptHandler(markup);
 
-        return newMarkup
+        // Merge all components script config into array
+        let scriptConfigArray: Array<gen_islandScriptConfig> = [];
+        for (let [key, value] of config.components) {
+            scriptConfigArray = scriptConfigArray.concat(value.scriptConfig);
+        }
+        // use scriptmarkup to build island script loader
+        const newMarkup = await islandScriptHandler(markup, scriptConfigArray);
+
+        return stringify ? JSON.stringify(newMarkup) : newMarkup;
     }
     catch(err) {
         throw(err);

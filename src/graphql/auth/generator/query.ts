@@ -7,7 +7,7 @@ import generator from '../../../generator-v2';
 
 // Get multiple pages
 const genPreview: GraphQLFieldConfig<any, any, any> = {
-    type: GraphQLList(GeneratorPreviewMarkupOutputModel),
+    type: GeneratorPreviewMarkupOutputModel,
     description: 'Get multiple pages',
     args: {
         data_mode: { type: GraphQLNonNull(GraphQLString) },

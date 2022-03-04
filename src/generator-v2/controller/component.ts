@@ -2,6 +2,8 @@ import { Liquid } from 'liquidjs';
 // Custom scripts
 import { lucidAssetTagRegister } from './tags/lucidAsset';
 import { lucidScriptTagRegister } from './tags/lucidScript';
+// island
+import { stripTempIslandObjEle } from './island';
 
 // Path and theme directory
 const path = require('path');
@@ -11,15 +13,15 @@ const themeDir = config.directories.theme;
 // Liquid Engine
 const engine = new Liquid({
     root: path.resolve(themeDir),
-    extname: '.liquid'
+    extname: '.liquid',
+    strictVariables: false,
+    strictFilters: false
 });
 
 
 const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
     try {
-        
         const responseObj: any = {};
-
         // Build Repeaters Value 
         const buildRepeaterArray = async (contentTypeID: mod_contentTypesConfigModel["_id"]): Promise<Array<any>> => {
             // For this content type ID, find all of its groups, and create an object with for them.
@@ -55,7 +57,6 @@ const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
             }
             return repeaterValue;
         }
-
         // for the content types
         // for root types, if not repeater add, else add array and build out the repeater objects
         for await(const contentType of data.content_types) {
@@ -74,7 +75,6 @@ const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
             }
             else continue;
         }
-
         return responseObj
     }
     catch(err) {
@@ -83,7 +83,7 @@ const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
 }
 
 
-export default async (config: Array<gen_componentCompilerProps>) => {
+export default async (config: Array<gen_componentCompilerProps>, stringify: boolean) => {
     try {
         // Create empty component map
         const componentsMap: gen_componentCompiledMap = new Map();
@@ -92,12 +92,20 @@ export default async (config: Array<gen_componentCompilerProps>) => {
             // register tags - TODO - this may be able to be moved up out of the loop!
             lucidScriptTagRegister(engine); // lucidScript
             lucidAssetTagRegister(engine); // lucidAsset
+            
+            // generate component data 
             const componentData = await __generateComponentDataObj(data);
+            // Build markup
             const componentDir = path.resolve(`${themeDir}/components/${data.component.file_path}`);
-            const markup = await engine.renderFile(componentDir, componentData);
+            let markup = await engine.renderFile(componentDir, componentData);
+
+            // Check if it has islandScriptObj, strip it out
+            const islandRes = await stripTempIslandObjEle(markup)
+
             componentsMap.set(data.component.name, {
                 _id: data.component._id,
-                markup: markup
+                markup: stringify ? JSON.stringify(islandRes.markup) : islandRes.markup,
+                scriptConfig: islandRes.scriptConfig
             });
         }
         return componentsMap;

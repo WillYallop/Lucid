@@ -91,7 +91,7 @@ interface gen_generatePreviewConfig {
 interface gen_templateCompilerProps {
     template: mod_pageModel["template"]
     seo: mod_pageModel["seo"]
-    components?: gen_componentCompiledMap
+    components: gen_componentCompiledMap
 
     // Undecided!
     head: string
@@ -111,5 +111,12 @@ interface gen_componentCompilerProps {
 }
 type gen_componentCompiledMap = Map<mod_componentModel["_id"], {
     _id: mod_componentModel["_id"]
-    markup: string
+    markup: string,
+    scriptConfig: Array<gen_islandScriptConfig>
 }>
+
+
+interface gen_islandScriptConfig {
+    id: string
+    src: string
+}

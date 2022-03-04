@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useContext } from 'react';
 import axios from 'axios';
 import { v1 as uuidv1 } from 'uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 // Components
 import PagePreview from './Components/PagePreview';
 import EditPageHeader from './Components/EditPageHeader';
@@ -97,7 +98,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             _id
                             position
                             component {
+                                _id
                                 preview_url
+                                file_path
                                 name
                             }
                         }
@@ -111,6 +114,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             if(page) {
                 if(!mounted.current) return null;
                 setPage(page);
+
+                generatePagePreview(page);
             }
             else {
                 addNotification(formatLucidError(result.data.errors[0].message).message,'error');
@@ -143,6 +148,58 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             console.log(err);
             addNotification('there was an unexpected error while getting the template data.','error');
         });
+    }
+
+    const generatePagePreview = (pageData: mod_pageModel) => {
+        setLoading(true);
+
+        const pageComponentsArr: any = []; 
+        pageData.page_components.forEach((pageComp) => {
+            pageComponentsArr.push({
+                _id: pageComp._id,
+                component: {
+                    _id: pageComp.component._id,
+                    file_path: pageComp.component.file_path,
+                    name: pageComp.component.name
+                }
+            })
+        });
+
+        let queryObject: any = {
+            query: {
+                generator: {
+                    preview: {
+                        __args: {
+                            data_mode: "live",
+                            page_id: pageData._id,
+                            page_components: pageComponentsArr
+                        },
+                        template: true,
+                        components: {
+                            _id: true,
+                            markup: true
+                        }
+                    }
+                }
+            }
+        };
+
+        const queryString = jsonToGraphQLQuery(queryObject, { pretty: true });
+        axios({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+              query: queryString
+            }
+        })
+        .then((result) => {
+            const data = result.data.data.generator.preview || {};
+            
+        })
+        .catch((err) => {
+            setLoading(false);
+            addNotification('there was an unexpected error while getting the page data.','error');
+        })
     }
     
 
