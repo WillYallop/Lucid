@@ -4,6 +4,8 @@ import { lucidAssetTagRegister } from './tags/lucidAsset';
 import { lucidScriptTagRegister } from './tags/lucidScript';
 // island
 import { stripTempIslandObjEle } from './island';
+// helpers
+import { __convertStringLowerUnderscore } from '../../helper/shared';
 
 // Path and theme directory
 const path = require('path');
@@ -17,6 +19,7 @@ const engine = new Liquid({
     strictVariables: false,
     strictFilters: false
 });
+
 
 
 const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
@@ -44,11 +47,11 @@ const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
                     const contentType = data.content_types.find( x => x._id === field.config_id );
                     if(contentType !== undefined) {
                         if(contentType.type != 'repeater') {
-                            groupObj[contentType.name] = field.value; // TODO - atm these are potentially all strings, and will need updating to their corresponding content type
+                            groupObj[__convertStringLowerUnderscore(contentType.name)] = field.value; // TODO - atm these are potentially all strings, and will need updating to their corresponding content type
                         }
                         else {
                             const repeaterArray = await buildRepeaterArray(contentType._id);
-                            groupObj[contentType.name] = repeaterArray;
+                            groupObj[__convertStringLowerUnderscore(contentType.name)] = repeaterArray;
                         }
                     }
                 }
@@ -65,11 +68,11 @@ const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
             if(dataObj !== undefined) {
                 if(contentType.parent === 'root') {
                     if(contentType.type != 'repeater') {
-                        responseObj[contentType.name] = dataObj.value; // TODO - atm these are potentially all strings, and will need updating to their corresponding content type
+                        responseObj[__convertStringLowerUnderscore(contentType.name)] = dataObj.value; // TODO - atm these are potentially all strings, and will need updating to their corresponding content type
                     }
                     else {
                         const repeaterArray = await buildRepeaterArray(contentType._id);
-                        responseObj[contentType.name] = repeaterArray;
+                        responseObj[__convertStringLowerUnderscore(contentType.name)] = repeaterArray;
                     }
                 }
             }
@@ -82,7 +85,6 @@ const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
     }
 }
 
-
 export default async (config: Array<gen_componentCompilerProps>, stringify: boolean) => {
     try {
         // Create empty component map
@@ -92,16 +94,13 @@ export default async (config: Array<gen_componentCompilerProps>, stringify: bool
             // register tags - TODO - this may be able to be moved up out of the loop!
             lucidScriptTagRegister(engine); // lucidScript
             lucidAssetTagRegister(engine); // lucidAsset
-            
             // generate component data 
             const componentData = await __generateComponentDataObj(data);
             // Build markup
             const componentDir = path.resolve(`${themeDir}/components/${data.component.file_path}`);
             let markup = await engine.renderFile(componentDir, componentData);
-
             // Check if it has islandScriptObj, strip it out
             const islandRes = await stripTempIslandObjEle(markup)
-
             componentsMap.set(data.component.name, {
                 _id: data.component._id,
                 markup: stringify ? JSON.stringify(islandRes.markup) : islandRes.markup,

@@ -195,7 +195,13 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         .then((result) => {
             const data = result.data.data.generator.preview || {};
             
-            let template = JSON.parse(data.template);
+            let template: string = JSON.parse(data.template);
+            let components = '';
+            data.components.forEach((compStr:any) => {
+                components+=JSON.parse(compStr.markup);
+            });
+            template = template.replace('<lucidPreviewAddComponents/>', components);
+
             console.log(template);
             setPageMarkup(template);
         })

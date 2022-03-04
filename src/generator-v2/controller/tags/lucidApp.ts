@@ -9,7 +9,7 @@ export const lucidAppTagRegister = (engine: Liquid, data: gen_templateCompilerPr
                     emitter.write(value.markup);
                 }
             }
-            else emitter.write('');
+            else emitter.write('<lucidPreviewAddComponents/>');
         }
     });
 }
