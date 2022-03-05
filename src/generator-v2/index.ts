@@ -2,6 +2,7 @@
 import componentCompiler from './controller/component';
 import templateCompiler from './controller/template';
 import staticHandler from './controller/static';
+import assetsHandler from './controller/assets';
 
 // Data
 import { getSingle as getSinglePage } from '../graphql/auth/page/data';
@@ -68,6 +69,8 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
             head: '',
             footer: ''
         }, false, true);
+
+        await assetsHandler();
 
         return {
             template: markupRes.template,
