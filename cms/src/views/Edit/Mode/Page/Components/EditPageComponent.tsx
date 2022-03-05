@@ -18,7 +18,7 @@ import getApiUrl from '../../../../../functions/getApiUrl';
 
 interface editPageComponentProps {
     page_component_id: mod_page_componentModel["_id"]
-    exit: () => void
+    exit: (pageComponentID: mod_pageComponentsModel["_id"]) => void
     setCanSave: (state: boolean) => void
     addNotification: (message: string, type: 'error' | 'warning' | 'success') => void
 }
@@ -61,6 +61,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                                 component_id
                                 position
                                 component {
+                                    _id
                                     name
                                     preview_url
                                     file_path
@@ -367,7 +368,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                 <div className="headerRow">
                     <button
                         className={`btnStyle3`} 
-                        onClick={exit}>
+                        onClick={() => exit(pageComponent._id)}>
                         <CoreIcon 
                             icon={faSignInAlt}
                             style={'flip-horizontal'}/>

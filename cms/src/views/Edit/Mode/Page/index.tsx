@@ -14,7 +14,7 @@ import EditPageComponent from './Components/EditPageComponent';
 import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
 // Context
 import { ModalContext, PageNotificationContext } from "../../../../helper/Context";
-import { PageContext, UpdatedDataContext, defaultUpdateDataObj } from './functions/PageContext';
+import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContext, defaultPageMarkupContextInt, pageMarkupContextInt } from './functions/PageContext';
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import getApiUrl from '../../../../functions/getApiUrl';
@@ -43,7 +43,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     
     const [ page, setPage ] = useState({} as mod_pageModel); // page PageContext
     
-    const [ pageMarkup, setPageMarkup ] = useState(''); // Page preview markup
+    const [ markupObj, setMarkupObj ] = useState(defaultPageMarkupContextInt.markupObj); // Page preview markup obj
     // Template
     const [ templates, setTemplates ] = useState([]);
     // Selected component
@@ -114,8 +114,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             if(page) {
                 if(!mounted.current) return null;
                 setPage(page);
-
-                generatePagePreview(page);
+                generatePagePreview('live', page);
             }
             else {
                 addNotification(formatLucidError(result.data.errors[0].message).message,'error');
@@ -150,28 +149,54 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         });
     }
 
-    const generatePagePreview = (pageData: mod_pageModel) => {
-        setLoading(true);
+    const generatePagePreview = (mode: 'live' | 'provided', pageData?: mod_pageModel, pageComponentID?: mod_componentModel["_id"]) => {
 
         const pageComponentsArr: any = []; 
-        pageData.page_components.forEach((pageComp) => {
-            pageComponentsArr.push({
-                _id: pageComp._id,
-                component: {
-                    _id: pageComp.component._id,
-                    file_path: pageComp.component.file_path,
-                    name: pageComp.component.name
+        if(mode === 'live') {
+            if(pageData !== undefined) {
+                pageData.page_components.forEach((pageComp) => {
+                    pageComponentsArr.push({
+                        _id: pageComp._id,
+                        component: {
+                            _id: pageComp.component._id,
+                            file_path: pageComp.component.file_path,
+                            name: pageComp.component.name
+                        }
+                    })
+                });
+            }
+        }
+        else if(mode === 'provided') {
+            if(pageComponentID !== undefined) {
+                // find matching page component
+                const findPageComp = page.page_components.find( x => x._id === pageComponentID );
+                if(findPageComp !== undefined) {
+                    const dataArr = findPageComp.data.filter((data) => {
+                        if(typeof data.value === 'number') data.value = data.value.toString();
+                        return data;
+                    });
+                    pageComponentsArr.push({
+                        _id: findPageComp._id,
+                        component: {
+                            _id: findPageComp.component._id,
+                            file_path: findPageComp.component.file_path,
+                            name: findPageComp.component.name
+                        },
+                        groups: findPageComp.groups,
+                        data: dataArr
+                    });
                 }
-            })
-        });
+            }
+        }
 
-        let queryObject: any = {
+        // Generate the query strings
+        const queryObject: any = {
             query: {
                 generator: {
                     preview: {
                         __args: {
-                            data_mode: "live",
-                            page_id: pageData._id,
+                            data_mode: mode,
+                            page_id: pageData !== undefined ? pageData._id : page._id,
                             page_components: pageComponentsArr
                         },
                         template: true,
@@ -183,8 +208,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 }
             }
         };
-
         const queryString = jsonToGraphQLQuery(queryObject, { pretty: true });
+
+        // send query
         axios({
             url: getApiUrl(),
             method: 'post',
@@ -193,21 +219,21 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             }
         })
         .then((result) => {
-            const data = result.data.data.generator.preview || {};
-            
-            let template: string = JSON.parse(data.template);
-            let components = '';
-            data.components.forEach((compStr:any) => {
-                components+=JSON.parse(compStr.markup);
-            });
-            template = template.replace('<lucidPreviewAddComponents/>', components);
-
-            console.log(template);
-            setPageMarkup(template);
+            const data: pageMarkupContextInt["markupObj"] = result.data.data.generator.preview || {};
+            if(mode === 'live') setMarkupObj(data);
+            else {
+                // go through template, and components in this result.data obj and replace matching ones with new markup
+                markupObj.template = data.template;
+                for(let i = 0; i < data.components.length; i++) {
+                    let findMatchCompIndex = markupObj.components.findIndex( x => x._id === data.components[i]._id )
+                    if(findMatchCompIndex !== -1) markupObj.components[findMatchCompIndex] = data.components[i];
+                }
+                setMarkupObj({...markupObj});
+            }
         })
         .catch((err) => {
             setLoading(false);
-            addNotification('there was an unexpected error while getting the page data.','error');
+            addNotification('there was an unexpected error while generating the page','error');
         })
     }
     
@@ -412,7 +438,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 setCanSave(false);
                 setUpdatedData(defaultUpdateDataObj.updatedData);
                 // Notification
-                addNotification(`you're page has been saved successfully!`, 'success');
+                addNotification(`your page has been saved successfully!`, 'success');
             });
         }
         catch(err) {
@@ -509,54 +535,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         mounted.current = true;
         getPageData();
         getAllTemplates();
-        
-        // Temp
-        setPageMarkup(`
-            <style>
-                .gridCon {
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    gap: 20px;
-                }
-                .box {
-                    height: 200px;
-                    background-color: #1B1B1B;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    color: white;
-                    font-size: 30px;
-                }
-                @media only screen and (max-width: 700px) {
-                    .gridCon {
-                        grid-template-columns: repeat(2, 1fr);
-                    }
-                }
-                @media only screen and (max-width: 400px) {
-                    .gridCon {
-                        grid-template-columns: repeat(1, 1fr);
-                    }
-                }
-            </style>
-
-            <div>
-                <h1>Page</h1>
-                <a href="/about">About</a>           
-                <a href="https://williamyallop.com">William Yallop Portfolio</a> 
-            </div>
-            <div class="gridCon">
-                <div class="box">1</div>
-                <div class="box">2</div>
-                <div class="box">3</div>
-                <div class="box">4</div>
-                <div class="box">5</div>
-                <div class="box">6</div>
-                <div class="box">7</div>
-                <div class="box">8</div>
-                <div class="box">9</div>
-            </div>
-        `);
-
         return () => {
             mounted.current = false;
             setPage({} as mod_pageModel);
@@ -662,22 +640,22 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         </div>
                     </div>
                     {
-                        pageMode === 'preview'
-                        ?
-                        <PagePreview
-                            pageMarkup={pageMarkup}/>
-                        :
+                        pageMode === 'preview' ?
+                        <PageMarkupContext.Provider value={{ markupObj, setMarkupObj }}>
+                            <PagePreview/>
+                        </PageMarkupContext.Provider> :
                         <EditPageComponent
                             page_component_id={selectedPageCompID}
                             setCanSave={setCanSave}
                             addNotification={addNotification}
-                            exit={() => {
+                            exit={(pageComponentID: mod_pageComponentsModel["_id"]) => {
                                 checkEditComponentForErrors(() => {
                                     // Success
                                     const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
                                     allEditRows.forEach((ele) => ele.classList.remove('active'));
                                     setPageMode('preview');
                                     console.log('set cooldown to update page preview');
+                                    generatePagePreview('provided', undefined, pageComponentID);
                                 });
                             }}/> 
                     }

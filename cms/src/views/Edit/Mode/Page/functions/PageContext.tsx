@@ -32,3 +32,25 @@ export const defaultUpdateDataObj: updatedDataContextInt = {
     }
 };
 export const UpdatedDataContext = createContext<Partial<updatedDataContextInt>>(defaultUpdateDataObj);
+
+
+// ---------------------------------------
+// Page preview markup data
+// ---------------------------------------
+export interface pageMarkupContextInt {
+    markupObj: {
+        template: string
+        components: Array<{
+            _id: string
+            markup: string
+        }>
+    }
+    setMarkupObj?: any
+}
+export const defaultPageMarkupContextInt: pageMarkupContextInt = {
+    markupObj: {
+        template: '',
+        components: []
+    }
+};
+export const PageMarkupContext = createContext<Partial<pageMarkupContextInt>>(defaultPageMarkupContextInt);

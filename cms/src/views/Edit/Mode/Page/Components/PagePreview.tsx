@@ -1,13 +1,14 @@
+import { useEffect, useState, useContext } from "react";
 // Components
-import { useEffect, useState } from "react";
 import WidthScrollBar from "./WidthScrollbar";
 import { useNavigate } from "react-router-dom";
+// Context
+import { PageMarkupContext } from '../functions/PageContext';
 
 interface pagePreviewPops {
-    pageMarkup: string
 }
 
-const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
+const PagePreview: React.FC<pagePreviewPops> = ({  }) => {
 
     const navigate = useNavigate();
 
@@ -16,14 +17,31 @@ const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
     // ---------------------------------------------------------------------/
     const iframeConID = 'iframeConID';
     const iframeID = 'sitePreviewFrame';
-
     
 
     // ---------------------------------------------------------------------/
     // - STATE -------------------------------------------------------------/
     // ---------------------------------------------------------------------/
-    const [ srcDoc, setSrcDoc ] = useState('');
+    const [ markup, setMarkup ] = useState('');
+    const { markupObj, setMarkupObj } = useContext(PageMarkupContext);
 
+
+    // ---------------------------------------------------------------------/
+    // - DATA --------------------------------------------------------------/
+    // ---------------------------------------------------------------------/
+    const buildPageMarkup = () => {
+        if(markupObj != undefined) {
+            if(markupObj.template.length) {
+                let template: string = JSON.parse(markupObj.template);
+                let components = '';
+                markupObj.components.forEach((compStr:any) => {
+                    components+=JSON.parse(compStr.markup);
+                });
+                template = template.replace('<lucidPreviewAddComponents/>', components);
+                setMarkup(template);
+            }
+        }
+    }
 
 
     // ---------------------------------------------------------------------/
@@ -64,13 +82,12 @@ const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
 
     // Create
     useEffect(() => {
-        // Temp
-        setSrcDoc(pageMarkup);
+        buildPageMarkup();
 
         return () => {
             iframeLinkEventHandler('destroy');
         }
-    }, [pageMarkup]);
+    }, [markupObj]);
 
 
     return (
@@ -82,7 +99,7 @@ const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
                 }}
                 iframeContainerID={iframeConID}/>
             <div id={iframeConID} className="iframeContainer">
-                <iframe id={iframeID} srcDoc={srcDoc} onLoad={() => { iframeLinkEventHandler('create') }}></iframe>
+                <iframe id={iframeID} srcDoc={markup} onLoad={() => { iframeLinkEventHandler('create') }}></iframe>
             </div>
         </div>
     )
