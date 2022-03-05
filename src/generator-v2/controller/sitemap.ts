@@ -1,4 +1,4 @@
-export default async () => {
+export default async (pages: gen_builtPagesMap) => {
     try {
 
     }

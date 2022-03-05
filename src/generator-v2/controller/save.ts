@@ -7,7 +7,7 @@ const distDir = path.resolve(config.directories.dist);
 
 // Handles writing the page data to the app dist
 
-export default async (pages: gene_pagseMap): Promise<boolean> => {
+export default async (pages: gen_builtPagesMap): Promise<boolean> => {
     try {
         try {
             // Save new site to a temp directory

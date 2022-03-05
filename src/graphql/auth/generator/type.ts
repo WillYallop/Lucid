@@ -1,5 +1,5 @@
 
-import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLInputObjectType } from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLList, GraphQLNonNull, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLInputObjectType, GraphQLFloat } from 'graphql';
 import { ContentTypeFieldGroupInputModel, ContentTypeDatabaseInputModel } from '../content_type_fields/type';
 
 // ---------------
@@ -38,8 +38,20 @@ export const GeneratorPreviewMarkupOutputComponentsModel = new GraphQLObjectType
     })
 });
 
-
-
+export const GeneratorSiteOutputModel = new GraphQLObjectType({
+    name: 'GeneratorSiteOutputModel',
+    description: 'Generator site output model',
+    fields: () => ({
+        build_time: {
+            type: GraphQLNonNull(GraphQLFloat),
+            description: 'Time taken to build the site'
+        },
+        pages_built: {
+            type: GraphQLNonNull(GraphQLInt),
+            description: 'Total pages built'
+        }
+    })
+});
 
 // ---------------
 // -- Inputs -----

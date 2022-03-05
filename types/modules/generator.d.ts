@@ -118,8 +118,13 @@ type gen_componentCompiledMap = Map<mod_componentModel["_id"], {
     scriptConfig: Array<gen_islandScriptConfig>
 }>
 
-
+// Island script gen
 interface gen_islandScriptConfig {
     id: string
     src: string
 }
+
+type gen_builtPagesMap = Map<mod_pageModel["_id"], {
+    slug: mod_pageModel["slug"]
+    markup: string
+}>

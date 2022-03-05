@@ -1,6 +1,6 @@
 import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean, GraphQLID } from 'graphql';
 // @ts-ignore: Unreachable code error
-import { GeneratePreviewPageComponentsInputModel, GeneratorPreviewMarkupOutputModel } from './type';
+import { GeneratePreviewPageComponentsInputModel, GeneratorPreviewMarkupOutputModel, GeneratorSiteOutputModel } from './type';
 // Generator
 import generator from '../../../generator-v2';
 
@@ -25,10 +25,19 @@ const genPreview: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
+const genSite: GraphQLFieldConfig<any, any, any> = {
+    type: GeneratorSiteOutputModel,
+    description: GeneratorSiteOutputModel.description,
+    resolve: () => {
+        return generator('site');
+    }
+}
+
 export const GeneratorQuery = new GraphQLObjectType({
     name: 'GeneratorQuery',
     description: 'The generator base query',
     fields: {
-        preview: genPreview
+        preview: genPreview,
+        site: genSite
     }
 })

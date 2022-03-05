@@ -387,7 +387,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
     }
     else {
         return (
-            <h1>Loading</h1>
+            <></>
         )
     }
 
