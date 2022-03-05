@@ -101,7 +101,7 @@ export default async (config: Array<gen_componentCompilerProps>, stringify: bool
             let markup = await engine.renderFile(componentDir, componentData);
             // Check if it has islandScriptObj, strip it out
             const islandRes = await stripTempIslandObjEle(markup)
-            componentsMap.set(data.component.name, {
+            componentsMap.set(data.component.page_component_id, {
                 _id: data.component._id,
                 page_component_id: data.component.page_component_id,
                 markup: stringify ? JSON.stringify(islandRes.markup) : islandRes.markup,

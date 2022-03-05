@@ -11,6 +11,7 @@ import sitemapHandler from './controller/sitemap';
 
 // Data
 import { getSingle as getSinglePage } from '../graphql/auth/page/data';
+import { getAll as getAllContentTypes } from '../controller/content_type_config';
 // Helpers
 import { __generateErrorString } from "../helper/shared";
 
@@ -32,7 +33,7 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
 
         const componentData: Array<gen_componentCompilerProps> = [];
         // Build out the component data array
-        config.page_components.forEach((pageComp) => {
+        for await(const pageComp of config.page_components) {
             // Find corresponding page
             const findPageComp = pageLiveData.page_components.find( x => x._id === pageComp._id );
 
@@ -40,15 +41,17 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
             let groups: Array<mod_contentTypeFieldGroupModel> = [];
             let data: Array<mod_contentTypesDatabaseModel> = [];
             let contentTypes: Array<mod_contentTypesConfigModel> = [];
-            if('provided' === config.data_mode) { // uses live data as a fallback
-                groups = pageComp.groups !== undefined ? pageComp.groups : findPageComp !== undefined ? findPageComp.groups : [];;
-                data = pageComp.data !== undefined ? pageComp.data : findPageComp !== undefined ? findPageComp.data : [];;
+
+            if('provided' === config.data_mode) { 
+                groups = pageComp.groups !== undefined ? pageComp.groups : [];
+                data = pageComp.data !== undefined ? pageComp.data : [];
+                contentTypes = await getAllContentTypes(pageComp.component._id);
             }
             else if('live' === config.data_mode) {
                 groups = findPageComp !== undefined ? findPageComp.groups : [];
                 data = findPageComp !== undefined ? findPageComp.data : [];
+                contentTypes = findPageComp !== undefined ? findPageComp.content_types : [];
             }
-            contentTypes = findPageComp !== undefined ? findPageComp.content_types : [];
 
             // Add to components data array
             componentData.push({
@@ -62,7 +65,7 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
                 data: data,
                 content_types: contentTypes
             })
-        });
+        }
 
         // Build components
         markupRes.components = await componentCompiler(componentData, true);
