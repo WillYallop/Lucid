@@ -8,7 +8,7 @@ import { faPlus, faTrashAlt, faGripLines } from '@fortawesome/free-solid-svg-ico
 
 interface contentTypeFieldRepeaterProps {
     content_type: mod_contentTypesConfigModel
-    getGroups: (repeater_id: mod_contentTypesConfigModel["_id"], group_id?: string) => { [key: string]: Array<ReactElement> }
+    getGroups: (repeater_id: mod_contentTypesConfigModel["_id"], group_id?: mod_contentTypesDatabaseModel["group_id"]) => { [key: string]: Array<ReactElement> }
     addRepeaterGroup: (content_type: mod_contentTypesConfigModel, parent_group_id: mod_contentTypesDatabaseModel["group_id"]) => void
     data: mod_contentTypesDatabaseModel
     deleteGroup: (group_id?: mod_contentTypeFieldGroupModel["_id"]) => void

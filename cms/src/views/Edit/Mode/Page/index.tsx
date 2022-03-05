@@ -227,6 +227,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 for(let i = 0; i < data.components.length; i++) {
                     let findMatchCompIndex = markupObj.components.findIndex( x => x._id === data.components[i]._id )
                     if(findMatchCompIndex !== -1) markupObj.components[findMatchCompIndex] = data.components[i];
+                    else markupObj.components.push(data.components[i]);
                 }
                 setMarkupObj({...markupObj});
             }
@@ -291,7 +292,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     page_component_id: newPageComponentID,
                     config_id: contentType._id,
                     value: contentType.config.default || '',
-                    group_id: undefined,
+                    group_id: null,
                     root: true
                 });
             }
@@ -654,7 +655,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                     const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
                                     allEditRows.forEach((ele) => ele.classList.remove('active'));
                                     setPageMode('preview');
-                                    console.log('set cooldown to update page preview');
                                     generatePagePreview('provided', undefined, pageComponentID);
                                 });
                             }}/> 
