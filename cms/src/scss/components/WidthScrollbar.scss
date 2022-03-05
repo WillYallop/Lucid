@@ -3,6 +3,7 @@
     background-color: map-get($map: $accent_colours, $key: _03_01);
     left: 0;
     position: relative;
+    z-index: 2;
     .pageSize {
         position: absolute;
         left: 50%;

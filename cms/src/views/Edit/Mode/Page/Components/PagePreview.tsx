@@ -2,13 +2,15 @@ import { useEffect, useState, useContext } from "react";
 // Components
 import WidthScrollBar from "./WidthScrollbar";
 import { useNavigate } from "react-router-dom";
+import UtilityLoading from "../../../../../components/Ultility/Loading";
 // Context
 import { PageMarkupContext, PageContext } from '../functions/PageContext';
 
 interface pagePreviewPops {
+    loading: boolean
 }
 
-const PagePreview: React.FC<pagePreviewPops> = ({  }) => {
+const PagePreview: React.FC<pagePreviewPops> = ({ loading }) => {
 
     const navigate = useNavigate();
 
@@ -104,6 +106,13 @@ const PagePreview: React.FC<pagePreviewPops> = ({  }) => {
             <div id={iframeConID} className="iframeContainer">
                 <iframe id={iframeID} srcDoc={markup} onLoad={() => { iframeLinkEventHandler('create') }}></iframe>
             </div>
+            {
+                loading ?
+                    <div className="pagePreviewLoadingCon">
+                        <UtilityLoading mode="transparent"/>
+                    </div>
+                : null
+            }
         </div>
     )
 }

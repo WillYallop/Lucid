@@ -150,7 +150,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     }
 
     const generatePagePreview = (mode: 'live' | 'provided', pageData?: mod_pageModel, pageComponentID?: mod_componentModel["_id"]) => {
-
+        setLoading(true);
         const pageComponentsArr: any = []; 
         if(mode === 'live') {
             if(pageData !== undefined) {
@@ -233,6 +233,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 }
                 setMarkupObj({...markupObj});
             }
+            setLoading(false);
         })
         .catch((err) => {
             setLoading(false);
@@ -654,7 +655,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     {
                         pageMode === 'preview' ?
                         <PageMarkupContext.Provider value={{ markupObj, setMarkupObj }}>
-                            <PagePreview/>
+                            <PagePreview loading={loading}/>
                         </PageMarkupContext.Provider> :
                         <EditPageComponent
                             page_component_id={selectedPageCompID}
