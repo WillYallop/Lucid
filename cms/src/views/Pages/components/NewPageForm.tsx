@@ -234,6 +234,7 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
                         )
                         {
                             _id
+                            slug
                         }
                     }
                 }`;
@@ -252,7 +253,8 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
                             ...modalState,
                             state: false
                         });
-                        navigate(`/edit/page/${pageRes._id}`);
+                        if(pageRes.slug === '/') navigate(`/edit/page/homepage`);
+                        navigate(`/edit/page/${pageRes.slug}`);
                     }
                     else {
                         setFormError({

@@ -4,8 +4,9 @@ import axios from "axios";
 // Components
 import CoreIcon from '../../../../../components/Core/Icon';
 import SearchInput from "../../../../../components/Core/Inputs/SearchInput";
+import DeleteConfirmModal from '../../../../../components/Modal/DeleteConfirmModal';
 // Context
-import { PageNotificationContext } from "../../../../../helper/Context";
+import { PageNotificationContext, ModalContext } from "../../../../../helper/Context";
 // Icons
 import { faSignInAlt, faSave } from '@fortawesome/free-solid-svg-icons';
 // Functions 
@@ -28,6 +29,7 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
     const mounted = useRef(false);
     const navigate = useNavigate();
 
+    const { modalState, setModalState } = useContext(ModalContext);
     const { notifications, setNotifications } = useContext(PageNotificationContext);
     const [ notificationTimeout, setNotificationTimeout ] = useState<ReturnType<typeof setTimeout>>();
     const [ pageSearchQuery, setPageSearchQuery ] = useState('');
@@ -89,9 +91,27 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
             <button className='pageSearchBtn'
                 type='button'
                 key={pageSearchResults[i]._id}
-                onClick={() => { 
-                    if(pageSearchResults[i].slug === '/') navigate(`/edit/page/homepage`);
-                    else navigate(`/edit/page/${pageSearchResults[i].slug}`);
+                onClick={(e) => { 
+                    const navigateAway = () => {
+                        if(pageSearchResults[i].slug === '/') navigate(`/edit/page/homepage`);
+                        else navigate(`/edit/page/${pageSearchResults[i].slug}`);
+                    }
+                    if(canSave) {
+                        e.stopPropagation();
+                        setModalState({
+                            ...modalState,
+                            state: true,
+                            title: 'confirmation',
+                            body: '',
+                            size: 'small',
+                            element: <DeleteConfirmModal 
+                                        btnText={['close', 'continue']}
+                                        message={'you have unsaved changes, these will be lost if navigate to a new page!'}
+                                        action={() => navigateAway()}/>
+                        });
+                    } else {
+                        navigateAway();
+                    }
                  }}>
                 { pageSearchResults[i].name }<span> - {  pageSearchResults[i].slug }</span>
             </button>
@@ -107,7 +127,7 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
             setPageSearchQuery('');
             setPageSearchResults([]);
         }
-    }, [pageName])
+    }, [pageName, canSave])
 
     return (
         <header className="editPageHeader">
@@ -115,7 +135,24 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
             {/* Edit */}
             <button 
                 className='btnStyleBlank'
-                onClick={() => { navigate('/pages') }}>
+                onClick={(e) => { 
+                        if(canSave) {
+                            e.stopPropagation();
+                            setModalState({
+                                ...modalState,
+                                state: true,
+                                title: 'confirmation',
+                                body: '',
+                                size: 'small',
+                                element: <DeleteConfirmModal 
+                                            btnText={['close', 'continue']}
+                                            message={'you have unsaved changes, these will be lost if you continue!'}
+                                            action={() => navigate('/pages')}/>
+                            });
+                        } else {
+                            navigate('/pages');
+                        }
+                    }}>
                 <CoreIcon icon={faSignInAlt} style={'flip-horizontal'}/>
             </button>
 
