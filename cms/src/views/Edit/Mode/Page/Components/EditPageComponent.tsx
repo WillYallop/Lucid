@@ -355,8 +355,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
         mounted.current = true;
         setPageComponentHandler();
         return () => {
-            generateComponent('provided', undefined, pageComponent._id);
-
+            generateComponent('provided', undefined, page_component_id);
             mounted.current = false;
             setPageComponent({} as mod_page_componentModel);
             setPageReady(false);
