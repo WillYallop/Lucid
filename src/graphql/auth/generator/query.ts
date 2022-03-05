@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, Gra
 // @ts-ignore: Unreachable code error
 import { GeneratePreviewPageComponentsInputModel, GeneratorPreviewMarkupOutputModel, GeneratorSiteOutputModel } from './type';
 // Generator
-import generator from '../../../generator-v2';
+import generator from '../../../generator';
 
 
 // Get multiple pages
