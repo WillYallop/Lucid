@@ -12,6 +12,7 @@ import sitemapHandler from './controller/sitemap';
 // Data
 import { getSingle as getSinglePage } from '../graphql/auth/page/data';
 import { getAll as getAllContentTypes } from '../controller/content_type_config';
+import { getSinglePostTypeByName } from '../controller/posts';
 // Helpers
 import { __generateErrorString } from "../helper/shared";
 
@@ -140,12 +141,20 @@ const generateSite = async () => {
                     footer: ''
                 }, true, false);
 
+
+
                 let slug = '/';
                 if(!pageData.is_homepage) slug += pageData.slug;
                 if(pageData.has_parent) {
                     slug = await getpageFullSlug(pageData.parent_id, slug);
                 }
-    
+                if(pageData.type === 'post') {
+                    const postObj = await getSinglePostTypeByName(pageData.post_name);
+                    // find post parent page
+                    const parentPage = await db.oneOrNone('SELECT _id FROM pages WHERE post_type_id=$1', postObj._id);
+                    if(parentPage) slug = await getpageFullSlug(parentPage._id, slug);
+                }
+
                 builtPages.set(pageData._id, {
                     slug: slug,
                     markup: template
