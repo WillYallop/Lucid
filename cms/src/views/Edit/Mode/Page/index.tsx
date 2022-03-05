@@ -342,7 +342,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         generatePagePreview('provided', undefined, newPageComponent._id);
 
         // set allow save
-        setCanSave(true);
+        setCanSaveState(true);
 
         setModalState({
             ...modalState,
@@ -416,7 +416,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         });
         updatedData.componentPositions = true;
         setUpdatedData(updatedData);
-        setCanSave(true);
+        setCanSaveState(true);
     }
     // -----------------------------------
     // Notifications
@@ -437,6 +437,11 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // ---------------------------------------------------------------------/
     // - Save --------------------------------------------------------------/
     // ---------------------------------------------------------------------/
+    const setCanSaveState = (state: boolean) => {
+        if(state) window.onbeforeunload = (e) => "you have unsaved changes. these will be lost if you navigate away";
+        else window.onbeforeunload = null;
+        setCanSave(state);
+    }
     const savePageData = async () => {
         try {
             checkEditComponentForErrors(async () => {
@@ -447,7 +452,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 const groupQuery = await saveGroupsHandler(page, updatedData);
                 const deleteGroupQuery = await deleteGroupsHandler(page, updatedData);
                 const fieldDataQuery = await saveFieldDataHandler(page, updatedData);
-                setCanSave(false);
+                setCanSaveState(false);
                 setUpdatedData(defaultUpdateDataObj.updatedData);
                 // Notification
                 addNotification(`your page has been saved successfully!`, 'success');
@@ -618,7 +623,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                             ...updatedData,
                                             template: true
                                         });
-                                        setCanSave(true);
+                                        setCanSaveState(true);
                                         generatePagePreview('provided', undefined, undefined);
                                     }}
                                     label="template"
@@ -659,15 +664,15 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         </PageMarkupContext.Provider> :
                         <EditPageComponent
                             page_component_id={selectedPageCompID}
-                            setCanSave={setCanSave}
+                            setCanSave={setCanSaveState}
                             addNotification={addNotification}
-                            exit={(pageComponentID: mod_pageComponentsModel["_id"]) => {
+                            generateComponent={generatePagePreview}
+                            exit={() => {
                                 checkEditComponentForErrors(() => {
                                     // Success
                                     const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
                                     allEditRows.forEach((ele) => ele.classList.remove('active'));
                                     setPageMode('preview');
-                                    generatePagePreview('provided', undefined, pageComponentID);
                                 });
                             }}/> 
                     }

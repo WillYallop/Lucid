@@ -18,12 +18,13 @@ import getApiUrl from '../../../../../functions/getApiUrl';
 
 interface editPageComponentProps {
     page_component_id: mod_page_componentModel["_id"]
-    exit: (pageComponentID: mod_pageComponentsModel["_id"]) => void
+    generateComponent: (mode: 'live' | 'provided', pageData?: mod_pageModel, pageComponentID?: mod_componentModel["_id"]) => void
+    exit: () => void
     setCanSave: (state: boolean) => void
     addNotification: (message: string, type: 'error' | 'warning' | 'success') => void
 }
 
-const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id, exit, setCanSave, addNotification }) => {
+const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id, exit, setCanSave, addNotification, generateComponent }) => {
 
     const mounted = useRef(false);
 
@@ -354,6 +355,8 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
         mounted.current = true;
         setPageComponentHandler();
         return () => {
+            generateComponent('provided', undefined, pageComponent._id);
+
             mounted.current = false;
             setPageComponent({} as mod_page_componentModel);
             setPageReady(false);
@@ -368,7 +371,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                 <div className="headerRow">
                     <button
                         className={`btnStyle3`} 
-                        onClick={() => exit(pageComponent._id)}>
+                        onClick={exit}>
                         <CoreIcon 
                             icon={faSignInAlt}
                             style={'flip-horizontal'}/>
