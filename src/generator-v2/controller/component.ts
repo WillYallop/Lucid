@@ -103,6 +103,7 @@ export default async (config: Array<gen_componentCompilerProps>, stringify: bool
             const islandRes = await stripTempIslandObjEle(markup)
             componentsMap.set(data.component.name, {
                 _id: data.component._id,
+                page_component_id: data.component.page_component_id,
                 markup: stringify ? JSON.stringify(islandRes.markup) : islandRes.markup,
                 scriptConfig: islandRes.scriptConfig
             });

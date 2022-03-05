@@ -11,12 +11,14 @@ const genPreview: GraphQLFieldConfig<any, any, any> = {
     description: 'Get multiple pages',
     args: {
         data_mode: { type: GraphQLNonNull(GraphQLString) },
+        template: { type: GraphQLString },
         page_id: { type: GraphQLNonNull(GraphQLID) },
         page_components: { type: GraphQLNonNull(GraphQLList(GeneratePreviewPageComponentsInputModel)) }
     },
     resolve: (_, args)  => {
         return generator('preview', {
             data_mode: args.data_mode,
+            template: args.template,
             page_id: args.page_id,
             page_components: args.page_components
         });

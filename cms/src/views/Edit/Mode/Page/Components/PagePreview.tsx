@@ -3,7 +3,7 @@ import { useEffect, useState, useContext } from "react";
 import WidthScrollBar from "./WidthScrollbar";
 import { useNavigate } from "react-router-dom";
 // Context
-import { PageMarkupContext } from '../functions/PageContext';
+import { PageMarkupContext, PageContext } from '../functions/PageContext';
 
 interface pagePreviewPops {
 }
@@ -24,18 +24,21 @@ const PagePreview: React.FC<pagePreviewPops> = ({  }) => {
     // ---------------------------------------------------------------------/
     const [ markup, setMarkup ] = useState('');
     const { markupObj, setMarkupObj } = useContext(PageMarkupContext);
-
+    const { page, setPage } = useContext(PageContext);
 
     // ---------------------------------------------------------------------/
     // - DATA --------------------------------------------------------------/
     // ---------------------------------------------------------------------/
     const buildPageMarkup = () => {
-        if(markupObj != undefined) {
+        if(markupObj != undefined && page != undefined) {
             if(markupObj.template.length) {
                 let template: string = JSON.parse(markupObj.template);
                 let components = '';
-                markupObj.components.forEach((compStr:any) => {
-                    components+=JSON.parse(compStr.markup);
+                // Filter over components in their order
+                page.page_components.sort((a,b) => a.position - b.position);
+                page.page_components.forEach((pageComp) => {
+                    const findMarkup = markupObj.components.find( x => x.page_component_id === pageComp._id );
+                    if(findMarkup != undefined) components+=JSON.parse(findMarkup.markup);
                 });
                 template = template.replace('<lucidPreviewAddComponents/>', components);
                 setMarkup(template);

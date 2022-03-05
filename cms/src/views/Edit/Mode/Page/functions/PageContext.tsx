@@ -42,6 +42,7 @@ export interface pageMarkupContextInt {
         template: string
         components: Array<{
             _id: string
+            page_component_id: string
             markup: string
         }>
     }

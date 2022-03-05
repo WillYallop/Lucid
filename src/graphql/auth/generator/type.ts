@@ -30,6 +30,10 @@ export const GeneratorPreviewMarkupOutputComponentsModel = new GraphQLObjectType
         markup: {
             type: GraphQLNonNull(GraphQLString),
             description: 'The components markup'
+        },
+        page_component_id: {
+            type: GraphQLNonNull(GraphQLID),
+            description: 'The components corresponding page ID'
         }
     })
 });

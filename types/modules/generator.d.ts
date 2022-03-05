@@ -75,6 +75,7 @@ interface gene_generateAppRes {
 interface gen_generatePreviewConfig {
     data_mode: 'live' | 'provided'
     page_id: mod_pageModel["_id"]
+    template: mod_pageModel["template"]
     page_components: Array<{
         _id: mod_pageComponentsModel["_id"]
         component: {
@@ -102,6 +103,7 @@ interface gen_templateCompilerProps {
 interface gen_componentCompilerProps {
     component: {
         _id: mod_componentModel["_id"]
+        page_component_id: mod_pageComponentsModel["_id"]
         file_path: mod_componentModel["file_path"]
         name: mod_componentModel["name"]
     }
@@ -111,6 +113,7 @@ interface gen_componentCompilerProps {
 }
 type gen_componentCompiledMap = Map<mod_componentModel["_id"], {
     _id: mod_componentModel["_id"]
+    page_component_id: mod_pageComponentsModel["_id"]
     markup: string,
     scriptConfig: Array<gen_islandScriptConfig>
 }>

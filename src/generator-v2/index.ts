@@ -48,6 +48,7 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
             componentData.push({
                 component: {
                     _id: pageComp.component._id,
+                    page_component_id: pageComp._id,
                     file_path: pageComp.component.file_path,
                     name: pageComp.component.name
                 },
@@ -61,7 +62,7 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
         markupRes.components = await componentCompiler(componentData, true);
         // Build template
         markupRes.template = await templateCompiler({
-            template: pageLiveData.template,
+            template: config.data_mode === 'live' ? pageLiveData.template : config.template ? config.template : pageLiveData.template,
             components: markupRes.components,
             seo: pageLiveData.seo,
             head: '',

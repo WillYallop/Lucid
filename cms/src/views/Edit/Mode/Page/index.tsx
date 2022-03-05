@@ -196,12 +196,14 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     preview: {
                         __args: {
                             data_mode: mode,
+                            template: page.template || null,
                             page_id: pageData !== undefined ? pageData._id : page._id,
                             page_components: pageComponentsArr
                         },
                         template: true,
                         components: {
                             _id: true,
+                            page_component_id: true,
                             markup: true
                         }
                     }
@@ -225,7 +227,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 // go through template, and components in this result.data obj and replace matching ones with new markup
                 markupObj.template = data.template;
                 for(let i = 0; i < data.components.length; i++) {
-                    let findMatchCompIndex = markupObj.components.findIndex( x => x._id === data.components[i]._id )
+                    let findMatchCompIndex = markupObj.components.findIndex( x => x._id === data.components[i]._id && x.page_component_id === data.components[i].page_component_id)
                     if(findMatchCompIndex !== -1) markupObj.components[findMatchCompIndex] = data.components[i];
                     else markupObj.components.push(data.components[i]);
                 }
@@ -336,6 +338,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         updatedData.addComponents.push(newPageComponent._id);
         updatedData.pageComponentDownloaded.push(newPageComponent._id);
         setUpdatedData(updatedData);
+        generatePagePreview('provided', undefined, newPageComponent._id);
 
         // set allow save
         setCanSave(true);
@@ -356,6 +359,12 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         setPage({
             ...page
         });
+        // Remove from the markupObj
+        const markupCompIndex = markupObj.components.findIndex( x => x.page_component_id === page_component_id );
+        if(markupCompIndex !== -1) markupObj.components.splice(markupCompIndex, 1);
+        setMarkupObj({...markupObj});
+        generatePagePreview('provided', undefined, undefined);
+        // If its not a new component, add it to the updatedData object to track it and delete on save
         const findNewComponent = updatedData.addComponents.find( x => x === page_component_id);
         if(findNewComponent === undefined) {
             updatedData.deleteComponents.push(page_component_id);
@@ -387,6 +396,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 }
             }
             updatePageComponentPositions();
+            setMarkupObj({...markupObj}); // retrigger the buildPageMarkup function in the PagePreview component
         }
     }
     const updatePageComponentPositions = () => {
@@ -608,6 +618,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                             template: true
                                         });
                                         setCanSave(true);
+                                        generatePagePreview('provided', undefined, undefined);
                                     }}
                                     label="template"
                                     style={'--hide-seperator --no-margin-bottom'}/>
