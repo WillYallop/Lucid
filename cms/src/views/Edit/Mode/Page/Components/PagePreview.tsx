@@ -36,12 +36,14 @@ const PagePreview: React.FC<pagePreviewPops> = ({ loading }) => {
             if(markupObj.template.length) {
                 let template: string = JSON.parse(markupObj.template);
                 let components = '';
-                // Filter over components in their order
-                page.page_components.sort((a,b) => a.position - b.position);
-                page.page_components.forEach((pageComp) => {
-                    const findMarkup = markupObj.components.find( x => x.page_component_id === pageComp._id );
-                    if(findMarkup != undefined) components+=JSON.parse(findMarkup.markup);
-                });
+                if(page.page_components) {
+                    // Filter over components in their order
+                    page.page_components.sort((a,b) => a.position - b.position);
+                    page.page_components.forEach((pageComp) => {
+                        const findMarkup = markupObj.components.find( x => x.page_component_id === pageComp._id );
+                        if(findMarkup != undefined) components+=JSON.parse(findMarkup.markup);
+                    });
+                }
                 template = template.replace('<lucidPreviewAddComponents/>', components);
                 setMarkup(template);
             }
@@ -91,6 +93,7 @@ const PagePreview: React.FC<pagePreviewPops> = ({ loading }) => {
 
         return () => {
             iframeLinkEventHandler('destroy');
+            setMarkup('');
         }
     }, [markupObj]);
 

@@ -555,7 +555,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         return () => {
             mounted.current = false;
             setPage({} as mod_pageModel);
+            setUpdatedData(defaultUpdateDataObj.updatedData);
             setLoading(true);
+            setCanSaveState(false);
             setActiveSlug(slug);
             setTemplates([]);
         }
