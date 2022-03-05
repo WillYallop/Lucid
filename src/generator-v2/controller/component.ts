@@ -26,14 +26,16 @@ const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
     try {
         const responseObj: any = {};
         // Build Repeaters Value 
-        const buildRepeaterArray = async (contentTypeID: mod_contentTypesConfigModel["_id"]): Promise<Array<any>> => {
+        const buildRepeaterArray = async (contentTypeID: mod_contentTypesConfigModel["_id"], groupID: mod_contentTypesDatabaseModel["group_id"]): Promise<Array<any>> => {
             // For this content type ID, find all of its groups, and create an object with for them.
             // If they have a repeater in them call this functionm recursivly.
             const repeaterValue: Array<any> = [];
             // filter all of repeaters corresponding groups.
             const repeatersGroups = data.groups.filter((group) => {
-                if(group.parent_config_id === contentTypeID) return group;
+                if(group.parent_config_id === contentTypeID && group.parent_group === groupID) return group;
             });
+
+
             // For groups, find their corresponding data
             for await (const group of repeatersGroups) {
                 const groupObj: any = {};
@@ -50,7 +52,7 @@ const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
                             groupObj[__convertStringLowerUnderscore(contentType.name)] = field.value; // TODO - atm these are potentially all strings, and will need updating to their corresponding content type
                         }
                         else {
-                            const repeaterArray = await buildRepeaterArray(contentType._id);
+                            const repeaterArray = await buildRepeaterArray(contentType._id, group._id);
                             groupObj[__convertStringLowerUnderscore(contentType.name)] = repeaterArray;
                         }
                     }
@@ -71,7 +73,7 @@ const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
                         responseObj[__convertStringLowerUnderscore(contentType.name)] = dataObj.value; // TODO - atm these are potentially all strings, and will need updating to their corresponding content type
                     }
                     else {
-                        const repeaterArray = await buildRepeaterArray(contentType._id);
+                        const repeaterArray = await buildRepeaterArray(contentType._id, dataObj.group_id);
                         responseObj[__convertStringLowerUnderscore(contentType.name)] = repeaterArray;
                     }
                 }

@@ -239,7 +239,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                             componentData.push({
                                 page_component_id: pageComponent._id,
                                 config_id: contentType._id,
-                                value: undefined,
+                                value: null,
                                 group_id: groupObj._id,
                                 root: false
                             });
