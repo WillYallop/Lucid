@@ -2,6 +2,7 @@ import { useEffect, useContext, useState } from 'react';
 // components
 import TextInput from "../../../../../../components/Core/Inputs/TextInput";
 import TextareaInput from '../../../../../../components/Core/Inputs/TextareaInput';
+import TargetTextLengthBar from './TargetTextLengthBar';
 // Context
 import { PageContext, UpdatedDataContext } from '../../functions/PageContext';
 
@@ -25,6 +26,7 @@ const EditMeta: React.FC<editMetaProps> = ({ setCanSave }) => {
                 name={'metaTitle'}
                 required={false}
                 errorMsg={''}
+                style={'dropdown-open'}
                 updateValue={(value) => { 
                     if(page !== undefined && updatedData !== undefined) {
                         page.seo.title = value;
@@ -33,7 +35,14 @@ const EditMeta: React.FC<editMetaProps> = ({ setCanSave }) => {
                         setUpdatedData({...updatedData});
                         setCanSave(true);
                     }
-                }}/>
+                }}>
+                    <TargetTextLengthBar
+                        target={60}
+                        max={70}
+                        min={10}
+                        length={page?.seo.title.length ? page?.seo.title.length : 0}/>
+                    <p id='metaTitleInp-described-by' className='describedBy describedBy--marginTop'>the recommended length for the title is between 50 and 70 characters!</p>
+                </TextInput>
 
             {/* Meta description */}
             <TextareaInput
@@ -43,7 +52,7 @@ const EditMeta: React.FC<editMetaProps> = ({ setCanSave }) => {
                 name={'metaDescription'}
                 required={false}
                 errorMsg={''}
-                described_by={'the recommended length for the description is between 50 and 160 characters!'}
+                style={'dropdown-open'}
                 updateValue={(value) => { 
                     if(page !== undefined && updatedData !== undefined) {
                         page.seo.description = value;
@@ -52,7 +61,14 @@ const EditMeta: React.FC<editMetaProps> = ({ setCanSave }) => {
                         setUpdatedData({...updatedData});
                         setCanSave(true);
                     }
-                }}/>
+                }}>
+                    <TargetTextLengthBar
+                        max={160}
+                        min={50}
+                        target={140}
+                        length={page?.seo.description.length ? page?.seo.description.length : 0}/>
+                    <p id='metaDescriptionInp-described-by' className='describedBy describedBy--marginTop'>the recommended length for the description is between 50 and 160 characters!</p>
+                </TextareaInput>
 
             {/* Meta canonical */}
             <TextInput

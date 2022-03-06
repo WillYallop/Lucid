@@ -20,6 +20,13 @@ p {
     }
 }
 
+.describedBy {
+    font-size: rem(14);
+    &--marginTop {
+        margin-top: rem(10);
+    }
+}
+
 .typography {
 
     &__left {

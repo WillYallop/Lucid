@@ -3,6 +3,7 @@ import { useEffect, useContext, useState } from 'react';
 import TextInput from "../../../../../../components/Core/Inputs/TextInput";
 import TextareaInput from '../../../../../../components/Core/Inputs/TextareaInput';
 import SelectInput from '../../../../../../components/Core/Inputs/SelectInput';
+import TargetTextLengthBar from './TargetTextLengthBar';
 // Context
 import { PageContext, UpdatedDataContext } from '../../functions/PageContext';
 
@@ -78,7 +79,7 @@ const EditMetaOG: React.FC<editOGProps> = ({ setCanSave }) => {
                         name={'metaOGDescription'}
                         required={false}
                         errorMsg={''}
-                        described_by={'the recommended length for the description is between 50 and 160 characters!'}
+                        style={'dropdown-open'}
                         updateValue={(value) => { 
                             if(page !== undefined && updatedData !== undefined) {
                                 page.seo.og_description = value;
@@ -87,7 +88,14 @@ const EditMetaOG: React.FC<editOGProps> = ({ setCanSave }) => {
                                 setUpdatedData({...updatedData});
                                 setCanSave(true);
                             }
-                        }}/>
+                        }}>
+                            <TargetTextLengthBar
+                                target={50}
+                                max={200}
+                                min={10}
+                                length={page?.seo.og_description.length ? page?.seo.og_description.length : 0}/>
+                            <p id='metaOGDescriptionInp-described-by' className='describedBy describedBy--marginTop'>the optimum length for the og description is 55 characters or under, with the upper limit at 200!</p>
+                        </TextareaInput>
 
                     {/* og image */}
                     <TextInput
@@ -166,7 +174,7 @@ const EditMetaOG: React.FC<editOGProps> = ({ setCanSave }) => {
                         name={'metaTwitterDescription'}
                         required={false}
                         errorMsg={''}
-                        described_by={'the recommended length for the description is between 50 and 160 characters!'}
+                        style={'dropdown-open'}
                         updateValue={(value) => { 
                             if(page !== undefined && updatedData !== undefined) {
                                 page.seo.twitter_description = value;
@@ -175,7 +183,15 @@ const EditMetaOG: React.FC<editOGProps> = ({ setCanSave }) => {
                                 setUpdatedData({...updatedData});
                                 setCanSave(true);
                             }
-                        }}/>
+                        }}>
+                            <TargetTextLengthBar
+                                target={125}
+                                max={200}
+                                min={10}
+                                length={page?.seo.twitter_description.length ? page?.seo.twitter_description.length : 0}/>
+                            <p id='metaTwitterDescriptionInp-described-by' className='describedBy describedBy--marginTop'>
+                                the optimum length for the twitter description is 125 characters or under, with the upper limit at 200. note that at this length however, it may not all be shown still!</p>
+                        </TextareaInput>
 
                     {/* twitter image */}
                     <TextInput

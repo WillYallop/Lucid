@@ -9,7 +9,7 @@ interface textareaInputProps {
     described_by?: string
     max?: number
     min?: number
-    style?: '--no-margin' | '--no-margin-bottom'
+    style?: '--no-margin' | '--no-margin-bottom' | 'dropdown-open'
     updateValue: (value: string) => void
 }
 
@@ -46,13 +46,13 @@ const TextareaInput: React.FC<textareaInputProps> = ({ label, value, id, name, r
                 children 
             ?
                 <> 
-                    { described_by ?  describedBy : null }
+                    { described_by ?  <p className="describedBy">{describedBy}</p> : null }
                     { children } 
                     <span className="speratorRow"></span>
                 </> 
             : 
                 <> 
-                    { described_by ? <>{describedBy}<span className="speratorRow"></span></> : null }
+                    { described_by ? <><p className="describedBy">{describedBy}</p><span className="speratorRow"></span></> : null }
                 </> 
             }
         </div>

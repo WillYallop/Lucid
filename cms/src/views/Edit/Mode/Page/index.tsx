@@ -41,21 +41,16 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const [ loading, setLoading ] = useState(true);
     const [ activeSlug, setActiveSlug ] = useState(slug);
     const [ canSave, setCanSave ] = useState(false); // Can save
-    
     const [ page, setPage ] = useState({} as mod_pageModel); // page PageContext
-    
     const [ markupObj, setMarkupObj ] = useState(defaultPageMarkupContextInt.markupObj); // Page preview markup obj
     // Template
     const [ templates, setTemplates ] = useState([]);
     // Selected component
     const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component' | 'seo'>('preview')
-    
     const [ selectedPageComponent, setSelectedPageComponent ] = useState({} as mod_page_componentModel);
     const [ selectedPageCompID, setSelectedPageCompID ] = useState('');
-
     const [ mouseYPos, setMouseYPos ] = useState(0);
     const [ dragTarget, setDragTarget ] = useState<HTMLElement>();
-
     // New data
     // Used to track and store data changes
     const [ updatedData, setUpdatedData ] = useState(defaultUpdateDataObj.updatedData);

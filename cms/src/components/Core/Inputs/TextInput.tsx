@@ -10,7 +10,7 @@ interface textInputProps {
     max?: number
     min?: number
     pattern?: string
-    style?: '--no-margin' | '--hide-seperator' | '--no-margin-bottom'
+    style?: '--no-margin' | '--hide-seperator' | '--no-margin-bottom' | 'dropdown-open'
     updateValue: (value: string) => void
 }
 
@@ -49,13 +49,13 @@ const TextInput: React.FC<textInputProps> = ({ label, value, id, name, required,
                 children 
             ?
                 <> 
-                    { described_by ?  describedBy : null }
+                    { described_by ? <p className="describedBy">{describedBy}</p> : null }
                     { children } 
                     <span className={`speratorRow ${ style ? style : '' }`}></span>
                 </> 
             : 
                 <> 
-                    { described_by ? <>{describedBy}<span className={`speratorRow ${ style ? style : '' }`}></span></> : null }
+                    { described_by ? <><p className="describedBy">{describedBy}</p><span className={`speratorRow ${ style ? style : '' }`}></span></> : null }
                 </> 
             }
         </div>
