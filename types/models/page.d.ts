@@ -11,9 +11,19 @@ interface mod_pageModel {
         page_id: mod_pageModel["_id"]
         title: string
         description: string
+        canonical: string
+        robots: string
+        og_type: string
         og_title: string
         og_description: string
         og_image: string
+        twitter_card: 'summary' | 'summary_large_image' | 'app' | 'player'
+        twitter_title: string
+        twitter_description: string
+        twitter_image: string
+        twitter_creator: string
+        twitter_site: string
+        twitter_player: string
     }
     page_components: Array<mod_pageComponentsModel>,
     type: 'page' | 'post'

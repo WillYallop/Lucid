@@ -10,7 +10,7 @@ interface textInputProps {
     max?: number
     min?: number
     pattern?: string
-    style?: '--no-margin' | '--hide-seperator'
+    style?: '--no-margin' | '--hide-seperator' | '--no-margin-bottom'
     updateValue: (value: string) => void
 }
 

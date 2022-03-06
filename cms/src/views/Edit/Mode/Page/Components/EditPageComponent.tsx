@@ -11,7 +11,6 @@ import ContentTypeFieldRepeater from './ContentTypeFields/Repeater';
 import { PageContext, UpdatedDataContext } from '../functions/PageContext';
 // Icons
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import React from 'react';
 // Functions
 import formatLucidError from '../../../../../functions/formatLucidError';
 import getApiUrl from '../../../../../functions/getApiUrl';
@@ -365,7 +364,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
 
     if(pageReady) {
         return (
-            <div className="editPageCompCon">
+            <div className="editPageCon">
                 {/* Header */}
                 <div className="headerRow">
                     <button

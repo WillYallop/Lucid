@@ -12,6 +12,7 @@ import CoreIcon from '../../../../components/Core/Icon';
 import NotificationPopup from '../../../../components/Core/Notifications/NotificationPopup';
 import EditPageComponent from './Components/EditPageComponent';
 import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
+import EditSEO from './Components/EditSEO/EditSEO';
 // Context
 import { ModalContext, PageNotificationContext } from "../../../../helper/Context";
 import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContext, defaultPageMarkupContextInt, pageMarkupContextInt } from './functions/PageContext';
@@ -47,7 +48,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // Template
     const [ templates, setTemplates ] = useState([]);
     // Selected component
-    const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component'>('preview')
+    const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component' | 'seo'>('preview')
     
     const [ selectedPageComponent, setSelectedPageComponent ] = useState({} as mod_page_componentModel);
     const [ selectedPageCompID, setSelectedPageCompID ] = useState('');
@@ -586,25 +587,19 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 <div className="imgCon"><FontAwesomeIcon icon={faAlignJustify}/></div>
                                 <div className='mainCol'>
                                     <p>content</p>
-                                    <div>
-                                        {/* Edit this row */}
-                                        <button className='btnStyleBlank' onClick={() => {  }}>
-                                            <CoreIcon icon={faEdit} style={'transparent'}/>
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                             {/* SEO */}
-                            <div className='editContentRow'>
+                            <div className='editContentRow' onClick={(e) => {
+                                const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                                allEditRows.forEach((ele) => ele.classList.remove('active'));
+                                const target = e.target as HTMLTextAreaElement;
+                                if(target) target.classList.add('active');
+                                setPageMode('seo');
+                            }}>
                                 <div className="imgCon"><FontAwesomeIcon icon={faSearchengin}/></div>
                                 <div className='mainCol'>
                                     <p>seo</p>
-                                    <div>
-                                        {/* Edit this row */}
-                                        <button className='btnStyleBlank' onClick={() => {  }}>
-                                            <CoreIcon icon={faEdit} style={'transparent'}/>
-                                        </button>
-                                    </div>
                                 </div>
                             </div>
                             {/* template */}
@@ -659,25 +654,48 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             }
                         </div>
                     </div>
+
+                    {/* Edit SEO page */}
                     {
-                        pageMode === 'preview' ?
-                        <PageMarkupContext.Provider value={{ markupObj, setMarkupObj }}>
-                            <PagePreview loading={loading}/>
-                        </PageMarkupContext.Provider> :
-                        <EditPageComponent
-                            page_component_id={selectedPageCompID}
-                            setCanSave={setCanSaveState}
-                            addNotification={addNotification}
-                            generateComponent={generatePagePreview}
-                            exit={() => {
-                                checkEditComponentForErrors(() => {
+                        pageMode === 'seo' ?
+                            <EditSEO                             
+                                exit={() => { 
                                     // Success
                                     const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
                                     allEditRows.forEach((ele) => ele.classList.remove('active'));
-                                    setPageMode('preview');
-                                });
-                            }}/> 
+                                    setPageMode('preview'); 
+                                }}/>
+                        : null
                     }
+
+                    {/* Page preview page */}
+                    {
+                        pageMode === 'preview' ?
+                            <PageMarkupContext.Provider value={{ markupObj, setMarkupObj }}>
+                                <PagePreview loading={loading}/>
+                            </PageMarkupContext.Provider>
+                        : null
+                    }
+
+                    {/* Edit component page */}
+                    {
+                        pageMode === 'edit_component' ?
+                            <EditPageComponent
+                                page_component_id={selectedPageCompID}
+                                setCanSave={setCanSaveState}
+                                addNotification={addNotification}
+                                generateComponent={generatePagePreview}
+                                exit={() => {
+                                    checkEditComponentForErrors(() => {
+                                        // Success
+                                        const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                                        allEditRows.forEach((ele) => ele.classList.remove('active'));
+                                        setPageMode('preview');
+                                    });
+                                }}/> 
+                        : null
+                    }
+
                 </div>
             </UpdatedDataContext.Provider>
         </PageContext.Provider>

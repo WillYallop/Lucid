@@ -149,4 +149,18 @@
             }
         }
     }
+    
+    .editPageCon {
+        width: calc(100% - rem(300));
+        height: calc(100% - rem(50));
+        padding: rem(20);
+        overflow-y: auto;
+        // Top header
+        .headerRow {
+            margin-top: 0;
+        }
+        .body {
+            margin-top: rem(20);
+        }
+    }
 }

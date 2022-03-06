@@ -1,0 +1,31 @@
+.editPageCon {
+    .body {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        .searchResultPreviewCon {
+            width: 100%;
+            background-color: white;
+            padding: rem(20);
+            h2 {
+                color: black;
+            }
+        }
+        .mainContent {
+            width: calc(100% - rem(360));
+            margin-top: rem(20);
+            .buttonRow {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: rem(10);
+                button {
+                    width: calc(50% - rem(5));
+                }
+            }
+        }
+        .socialsSidebar {
+            width: rem(350);
+            margin-top: rem(20);
+        }
+    }
+}
