@@ -4,7 +4,7 @@ import SearchResultPreview from './SearchResultPreview';
 import EditMetaOG from './EditMetaOG';
 import EditMeta from './EditMeta';
 import TwitterCardPreview from './TwitterCardPreview';
-import FacebookCardPreview from './FacebookCardPreview';
+import FacebookCardPreview from './OGCardPreview';
 // Icons
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 

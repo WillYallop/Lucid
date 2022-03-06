@@ -13,7 +13,7 @@ const __generateSEOMarkup = async (seo: gen_templateCompilerProps["seo"]): Promi
     if(seo.og_description) seoMarkup += `<meta property="og:description" content="${seo.og_description}"/>`;
     if(seo.og_image) seoMarkup += `<meta property="og:image" content="${seo.og_image}"/>`;
     
-    if(seo.twitter_card) seoMarkup += `<meta name="twitter:card" content="${seo.twitter_card}"/>`;
+    if(seo.twitter_card) seoMarkup += `<meta name="twitter:card" content="${seo.twitter_card.replaceAll(' ', '_')}"/>`;
     if(seo.twitter_title) seoMarkup += `<meta name="twitter:title" content="${seo.twitter_title}" />`;
     if(seo.twitter_description) seoMarkup += `<meta name="twitter:description" content="${seo.twitter_description}" />`;
     if(seo.twitter_image) seoMarkup += `<meta name="twitter:image" content="${seo.twitter_image}" />`;

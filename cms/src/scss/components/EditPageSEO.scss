@@ -40,9 +40,6 @@
             &:last-child {
                 margin-bottom: 0;
             }
-            &.facebook {
-
-            }
             &.twitter {
                 .card {
                     border-radius: rem(10);
@@ -110,6 +107,8 @@
                 justify-content: center;
                 align-items: center;
                 border-radius: rem(10);
+                text-align: center;
+                padding: rem(20);
                 p {
                     color: rgb(83, 83, 83);
                 }
