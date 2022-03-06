@@ -51,6 +51,23 @@ interface updateDataObjInterface {
     template: boolean
     componentPositions: boolean
     addComponents: Array<string>
+    seoFields: {
+        title: boolean
+        description: boolean
+        canonical: boolean
+        robots: boolean
+        og_type: boolean
+        og_title: boolean
+        og_description: boolean
+        og_image: boolean
+        twitter_card: boolean
+        twitter_title: boolean
+        twitter_description: boolean
+        twitter_image: boolean
+        twitter_creator: boolean
+        twitter_site: boolean
+        twitter_player: boolean
+    }
     modifiedComponents: Array<string>
     deleteComponents: Array<string>
     deleteGroups: Array<string>

@@ -6,9 +6,14 @@ import SelectInput from '../../../../../../components/Core/Inputs/SelectInput';
 // Context
 import { PageContext, UpdatedDataContext } from '../../functions/PageContext';
 
-const EditMetaOG: React.FC = () => {
+interface editOGProps {
+    setCanSave: (state: boolean) => void
+}
+
+const EditMetaOG: React.FC<editOGProps> = ({ setCanSave }) => {
 
     const { page, setPage } = useContext(PageContext);
+    const { updatedData, setUpdatedData } = useContext(UpdatedDataContext);
     const [ tab, setTab ] = useState<'og' | 'twitter'>('og')
 
     return (
@@ -38,9 +43,12 @@ const EditMetaOG: React.FC = () => {
                         ]}
                         errorMsg={''}
                         updateValue={(value) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.og_type = value;
                                 setPage({...page});
+                                updatedData.seoFields.og_type = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}/>
 
@@ -53,9 +61,12 @@ const EditMetaOG: React.FC = () => {
                         required={false}
                         errorMsg={''}
                         updateValue={(value) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.og_title = value;
                                 setPage({...page});
+                                updatedData.seoFields.og_title = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}/>
 
@@ -69,9 +80,12 @@ const EditMetaOG: React.FC = () => {
                         errorMsg={''}
                         described_by={'the reccomened length for the description is between 50 and 160 characters!'}
                         updateValue={(value) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.og_description = value;
                                 setPage({...page});
+                                updatedData.seoFields.og_description = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}/>
 
@@ -84,9 +98,12 @@ const EditMetaOG: React.FC = () => {
                         required={false}
                         errorMsg={''}
                         updateValue={(value) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.og_image = value;
                                 setPage({...page});
+                                updatedData.seoFields.og_image = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}
                         style={'--no-margin-bottom'}/>
@@ -113,9 +130,12 @@ const EditMetaOG: React.FC = () => {
                         ]}
                         errorMsg={''}
                         updateValue={(value: any) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.twitter_card = value;
                                 setPage({...page});
+                                updatedData.seoFields.twitter_card = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}/>
 
@@ -129,9 +149,12 @@ const EditMetaOG: React.FC = () => {
                         required={false}
                         errorMsg={''}
                         updateValue={(value) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.twitter_title = value;
                                 setPage({...page});
+                                updatedData.seoFields.twitter_title = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}/>
 
@@ -145,9 +168,12 @@ const EditMetaOG: React.FC = () => {
                         errorMsg={''}
                         described_by={'the reccomened length for the description is between 50 and 160 characters!'}
                         updateValue={(value) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.twitter_description = value;
                                 setPage({...page});
+                                updatedData.seoFields.twitter_description = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}/>
 
@@ -160,9 +186,12 @@ const EditMetaOG: React.FC = () => {
                         required={false}
                         errorMsg={''}
                         updateValue={(value) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.twitter_image = value;
                                 setPage({...page});
+                                updatedData.seoFields.twitter_image = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}/>
 
@@ -175,9 +204,12 @@ const EditMetaOG: React.FC = () => {
                         required={false}
                         errorMsg={''}
                         updateValue={(value) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.twitter_site = value;
                                 setPage({...page});
+                                updatedData.seoFields.twitter_site = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}/>
 
@@ -190,9 +222,12 @@ const EditMetaOG: React.FC = () => {
                         required={false}
                         errorMsg={''}
                         updateValue={(value) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.twitter_creator = value;
                                 setPage({...page});
+                                updatedData.seoFields.twitter_creator = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}/>
 
@@ -205,9 +240,12 @@ const EditMetaOG: React.FC = () => {
                         required={false}
                         errorMsg={''}
                         updateValue={(value) => { 
-                            if(page != undefined) {
+                            if(page !== undefined && updatedData !== undefined) {
                                 page.seo.twitter_player = value;
                                 setPage({...page});
+                                updatedData.seoFields.twitter_player = true;
+                                setUpdatedData({...updatedData});
+                                setCanSave(true);
                             }
                         }}/>
                 </>

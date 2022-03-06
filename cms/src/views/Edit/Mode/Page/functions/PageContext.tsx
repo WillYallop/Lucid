@@ -24,6 +24,23 @@ export const defaultUpdateDataObj: updatedDataContextInt = {
     updatedData: {
         template: false,
         componentPositions: false,
+        seoFields: {
+            title: false,
+            description: false,
+            canonical: false,
+            robots: false,
+            og_type: false,
+            og_title: false,
+            og_description: false,
+            og_image: false,
+            twitter_card: false,
+            twitter_title: false,
+            twitter_description: false,
+            twitter_image: false,
+            twitter_creator: false,
+            twitter_site: false,
+            twitter_player: false
+        },
         addComponents: [],
         modifiedComponents: [],
         deleteComponents: [],

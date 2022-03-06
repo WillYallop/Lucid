@@ -254,7 +254,7 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
                             state: false
                         });
                         if(pageRes.slug === '/') navigate(`/edit/page/homepage`);
-                        navigate(`/edit/page/${pageRes.slug}`);
+                        else navigate(`/edit/page/${pageRes.slug}`);
                     }
                     else {
                         setFormError({

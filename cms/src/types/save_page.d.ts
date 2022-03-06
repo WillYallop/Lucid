@@ -20,6 +20,50 @@ interface sapa_gen_pageQueryObj {
     }
 }
 
+// Save seo query object
+interface sapa_gen_seoQueryObj {
+    mutation: {
+        seo: {
+            update_single: {
+                __args: {
+                    page_id: string
+                    title?: string
+                    description?: string
+                    canonical?: string
+                    robots?: string
+                    og_type?: string
+                    og_title?: string
+                    og_description?: string
+                    og_image?: string
+                    twitter_card?: string
+                    twitter_title?: string
+                    twitter_description?: string
+                    twitter_image?: string
+                    twitter_creator?: string
+                    twitter_site?: string
+                    twitter_player?: string
+                }
+                page_id: boolean
+                title: boolean
+                description: boolean
+                canonical: boolean
+                robots: boolean
+                og_type: boolean
+                og_title: boolean
+                og_description: boolean
+                og_image: boolean
+                twitter_card: boolean
+                twitter_title: boolean
+                twitter_description: boolean
+                twitter_image: boolean
+                twitter_creator: boolean
+                twitter_site: boolean
+                twitter_player: boolean
+            }
+        }
+    }
+}
+
 // Save page components query object
 interface sapa_gen_pageComponentsQueryObj {
     mutation: {

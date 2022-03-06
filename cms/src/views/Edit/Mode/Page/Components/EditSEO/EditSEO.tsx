@@ -10,9 +10,10 @@ import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
 interface editSEOProps {
     exit: () => void
+    setCanSave: (state: boolean) => void
 }
 
-const EditSEO: React.FC<editSEOProps> = ({ exit }) => {
+const EditSEO: React.FC<editSEOProps> = ({ exit, setCanSave }) => {
 
     return (
         <div className="editPageCon">
@@ -34,9 +35,9 @@ const EditSEO: React.FC<editSEOProps> = ({ exit }) => {
                 {/* main content */}
                 <div className="mainContent">
                     {/* meta */}
-                    <EditMeta/>
+                    <EditMeta setCanSave={setCanSave}/>
                     {/* socials meta */}
-                    <EditMetaOG/>
+                    <EditMetaOG setCanSave={setCanSave}/>
                 </div>
                 {/* socials sidebar */}
                 <div className="socialsSidebar">

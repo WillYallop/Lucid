@@ -48,6 +48,70 @@ export const savePageHandler = async (page: mod_pageModel, updateConfig: updateD
     }
 }
 
+// Handles generating the query to update the seo 
+export const saveSEOHandler = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
+    try {
+        let send = false;
+        let queryObject: sapa_gen_seoQueryObj = {
+            mutation: {
+                seo: {
+                    update_single: {
+                        __args: {
+                            page_id: page._id
+                        },
+                        page_id: true,
+                        title: true,
+                        description: true,
+                        canonical: true,
+                        robots: true,
+                        og_type: true,
+                        og_title: true,
+                        og_description: true,
+                        og_image: true,
+                        twitter_card: true,
+                        twitter_title: true,
+                        twitter_description: true,
+                        twitter_image: true,
+                        twitter_creator: true,
+                        twitter_site: true,
+                        twitter_player: true
+                    }
+                }
+            }
+        };
+
+        for (const key in updateConfig.seoFields) {
+            // @ts-expect-error
+            if(updateConfig.seoFields[key]) {
+                send = true;
+                // @ts-expect-error
+                queryObject.mutation.seo.update_single.__args[key] = page.seo[key];
+            }
+        }
+
+        // Generate query string
+        const query = send ? jsonToGraphQLQuery(queryObject, { pretty: true }) : '';
+        // 
+        if(send) {
+            const data = await __sendQuery(query, 'an unexpeted error occured while updating the seo');
+            return {
+                send: send, 
+                query: query,
+                data: data
+            }
+        } 
+        else {
+            return {
+                send: send,
+                query: query
+            }
+        }
+    }
+    catch(err) {
+        throw err;
+    } 
+}
+
 // Handles generating the query for all of the page components
 export const savePageComponentsHandler = async (page: mod_pageModel, updateConfig: updateDataObjInterface): Promise<sapa_queryGenRes> => {
     try {

@@ -19,7 +19,7 @@ import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContex
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import getApiUrl from '../../../../functions/getApiUrl';
-import { savePageHandler, savePageComponentsHandler, deletePageComponentsHandler, saveGroupsHandler, saveFieldDataHandler, deleteGroupsHandler } from './functions/savePageHandler';
+import { savePageHandler, savePageComponentsHandler, deletePageComponentsHandler, saveGroupsHandler, saveFieldDataHandler, deleteGroupsHandler, saveSEOHandler } from './functions/savePageHandler';
 // Icons
 import { faTh, faEdit, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
 import { faSearchengin } from '@fortawesome/free-brands-svg-icons';
@@ -458,6 +458,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             checkEditComponentForErrors(async () => {
                 // Generate all of the queryies we need
                 const pageQuery = await savePageHandler(page, updatedData);
+                const seoQuery = await saveSEOHandler(page, updatedData);
+                console.log(seoQuery);
                 const pageComponentsQuery = await savePageComponentsHandler(page, updatedData);
                 const deletePageComponentQuery = await deletePageComponentsHandler(page, updatedData);
                 const groupQuery = await saveGroupsHandler(page, updatedData);
@@ -596,7 +598,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             <div className='editContentRow'>
                                 <div className="imgCon"><FontAwesomeIcon icon={faAlignJustify}/></div>
                                 <div className='mainCol'>
-                                    <p>content</p>
+                                    <p>page</p>
                                 </div>
                             </div>
                             {/* SEO */}
@@ -674,7 +676,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                     const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
                                     allEditRows.forEach((ele) => ele.classList.remove('active'));
                                     setPageMode('preview'); 
-                                }}/>
+                                }}
+                                setCanSave={setCanSaveState}/>
                         : null
                     }
 
