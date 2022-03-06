@@ -15,18 +15,18 @@ const TwitterCardPreview: React.FC = () => {
                         <div className="card">
                             <img src={page?.seo.twitter_image} alt="Facebook og image card preview" />
                             <div className="contentBlock">
-                                <h3 className='title'>{ page?.seo.twitter_title }</h3>
-                                <p className='description'>{ page?.seo.twitter_description }</p>
-                                <span className='domain'>domain.com/{ page?.slug === '/' ? '' : page?.slug }</span>
+                                { page?.seo.twitter_title ? <h3 className='title'>{ page?.seo.twitter_title }</h3> : null }
+                                { page?.seo.og_description ? <p className='description'>{ page?.seo.twitter_description }</p> : null }
+                                { page?.slug ? <span className='domain'>domain.com/{ page?.slug === '/' ? '' : page?.slug }</span> : null }
                             </div>
                         </div>
                     :
                         <div className="card noimage">
                             <div className='blankImage'></div>
                             <div className="contentBlock">
-                                <h3 className='title'>{ page?.seo.twitter_title }</h3>
-                                <p className='description'>{ page?.seo.twitter_description }</p>
-                                <span className='domain'>domain.com/{ page?.slug === '/' ? '' : page?.slug }</span>
+                                { page?.seo.twitter_title ? <h3 className='title'>{ page?.seo.twitter_title }</h3> : null }
+                                { page?.seo.og_description ? <p className='description'>{ page?.seo.twitter_description }</p> : null }
+                                { page?.slug ? <span className='domain'>domain.com/{ page?.slug === '/' ? '' : page?.slug }</span> : null }
                             </div>
                         </div>
                 }
