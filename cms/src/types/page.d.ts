@@ -3,6 +3,7 @@ interface mod_pageModel {
     _id: string
     template: string
     slug: string
+    live_path: string
     name: string
     seo: {
         page_id: mod_pageModel["_id"]

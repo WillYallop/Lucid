@@ -14,7 +14,7 @@ const FacebookCardPreview: React.FC = () => {
                     <div className="card">
                         <img src={page?.seo.og_image} alt="Facebook og image card preview" />
                         <div className="contentBlock">
-                            { page?.slug ? <span className='domain'>domain.com/{ page?.slug === '/' ? '' : page?.slug }</span> : null }
+                            { page?.slug ? <span className='domain'>domain.com{ page?.live_path }</span> : null }
                             { page?.seo.og_title ? <h3 className='title'>{ page?.seo.og_title }</h3> : null }
                             { page?.seo.og_description ? <p className='description'>{ page?.seo.og_description }</p> : null }
                         </div>
@@ -23,7 +23,7 @@ const FacebookCardPreview: React.FC = () => {
                     <div className="card noimage">
                         <div className='blankImage'></div>
                         <div className="contentBlock">
-                            { page?.slug ? <span className='domain'>domain.com/{ page?.slug === '/' ? '' : page?.slug }</span> : null }
+                            { page?.slug ? <span className='domain'>domain.com{ page?.live_path }</span> : null }
                             { page?.seo.og_title ? <h3 className='title'>{ page?.seo.og_title }</h3> : null }
                             { page?.seo.og_description ? <p className='description'>{ page?.seo.og_description }</p> : null }
                         </div>

@@ -17,7 +17,7 @@ const TwitterCardPreview: React.FC = () => {
                             <div className="contentBlock">
                                 { page?.seo.twitter_title ? <h3 className='title'>{ page?.seo.twitter_title }</h3> : null }
                                 { page?.seo.og_description ? <p className='description'>{ page?.seo.twitter_description }</p> : null }
-                                { page?.slug ? <span className='domain'>domain.com/{ page?.slug === '/' ? '' : page?.slug }</span> : null }
+                                { page?.slug ? <span className='domain'>domain.com{ page?.live_path }</span> : null }
                             </div>
                         </div>
                     :
@@ -26,7 +26,7 @@ const TwitterCardPreview: React.FC = () => {
                             <div className="contentBlock">
                                 { page?.seo.twitter_title ? <h3 className='title'>{ page?.seo.twitter_title }</h3> : null }
                                 { page?.seo.og_description ? <p className='description'>{ page?.seo.twitter_description }</p> : null }
-                                { page?.slug ? <span className='domain'>domain.com/{ page?.slug === '/' ? '' : page?.slug }</span> : null }
+                                { page?.slug ? <span className='domain'>domain.com{ page?.live_path }</span> : null }
                             </div>
                         </div>
                 }

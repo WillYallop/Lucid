@@ -3,18 +3,31 @@ import moment from 'moment';
 import { __updateSetQueryGen } from '../shared/functions';
 import { generateSlug } from "random-word-slugs";
 import validate from '../../../validator';
+import { getSinglePostTypeByName } from '../../../controller/posts';
 
 // Controllers
 import { getSingleSEO, saveSingleSEO } from '../seo/data';
 import { getAllPageComponents } from '../page_component/data';
 import { __generateErrorString } from '../../../helper/shared';
 
+export const __buildPageLivePath = async (_id: mod_pageModel["_id"], slug: mod_pageModel["slug"]) => {
+    try {
+        // Query for parent slug
+        let res = await db.one('SELECT slug, has_parent, parent_id FROM pages WHERE _id=$1', _id);
+        slug = '/'+res.slug + slug;
+        if(res.has_parent) slug = await __buildPageLivePath(res.parent_id, slug);
+        return slug;
+    }
+    catch(err) {
+        throw err;
+    }
+}
 
 // Get single page
 export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel["slug"]) => {
     try {
         let page_id;
-        let page;
+        let page: mod_pageModel;
         if(_id != undefined) {
             page_id = _id;
             page = await db.one('SELECT * FROM pages WHERE _id=$1', page_id);
@@ -33,6 +46,20 @@ export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel
         // Get SEO Object
         page.seo = await getSingleSEO(page_id);
         page.page_components = await getAllPageComponents(page_id);
+
+        // Build full slug
+        page.live_path = '/';
+        if(!page.is_homepage) page.live_path += page.slug;
+        if(page.has_parent) {
+            page.live_path = await __buildPageLivePath(page.parent_id, page.live_path);
+        }
+        if(page.type === 'post') {
+            const postObj = await getSinglePostTypeByName(page.post_name);
+            // find post parent page
+            const parentPage = await db.oneOrNone('SELECT _id FROM pages WHERE post_type_id=$1', postObj._id);
+            if(parentPage) page.live_path = await __buildPageLivePath(parentPage._id, page.live_path);
+        }
+
         return page;
     }
     catch(err) {

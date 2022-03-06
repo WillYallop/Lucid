@@ -8,7 +8,7 @@ const SearchResultPreview: React.FC = () => {
 
     return (
         <div className="searchResultPreviewCon">
-            <span className='domain'>domain.com/{ page?.slug === '/' ? '' : page?.slug }</span>
+            <span className='domain'>domain.com{ page?.live_path }</span>
             <h3 className='title'>{ page?.seo.title }</h3>
             <p className='description'>{ page?.seo.description }</p>
         </div>

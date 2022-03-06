@@ -77,6 +77,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         _id
                         template
                         slug
+                        live_path
                         name
                         type
                         post_name
