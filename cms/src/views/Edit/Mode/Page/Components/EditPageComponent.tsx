@@ -42,13 +42,15 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
         if(updatedData !== undefined && page !== undefined) {
             // Check if the page component ID exists in updatedData.pageComponentDownloaded
             const findIfDownloaded = updatedData.pageComponentDownloaded.find( x => x === page_component_id );
-            if(findIfDownloaded != undefined) {
+            console.log(updatedData);
+            if(findIfDownloaded !== undefined) {
                 // Find component in the page state
                 const pageComp = page?.page_components.find( x => x._id === page_component_id );
                 if(pageComp != undefined) setPageComponent(pageComp);
                 else throw new Error('this page cannot be found!');
             }
             else {
+                console.log('DONWLOAD PAGE COMPONENT!');
                 // Download page
                 axios({
                     url: getApiUrl(),
@@ -105,7 +107,6 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                     if(pageComponent) {
                         if(!mounted.current) return null;
                         // update page
-
                         let findPageComponentIndex = page?.page_components.findIndex( x => x._id === page_component_id );
                         if(findPageComponentIndex !== -1) {
                             page.page_components[findPageComponentIndex] = pageComponent;
@@ -354,8 +355,8 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
         mounted.current = true;
         setPageComponentHandler();
         return () => {
-            generateComponent('provided', undefined, page_component_id);
             mounted.current = false;
+            generateComponent('provided', undefined, page_component_id);
             setPageComponent({} as mod_page_componentModel);
             setPageReady(false);
         }

@@ -177,7 +177,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             if(pageComponentID !== undefined) {
                 // find matching page component
                 const findPageComp = page.page_components.find( x => x._id === pageComponentID );
-                if(findPageComp !== undefined) {
+                if(findPageComp !== undefined && findPageComp.data !== undefined) {
                     const dataArr = findPageComp.data.filter((data) => {
                         if(typeof data.value === 'number') data.value = data.value.toString();
                         return data;
@@ -565,6 +565,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             mounted.current = false;
             setPage({} as mod_pageModel);
             setUpdatedData(defaultUpdateDataObj.updatedData);
+            updatedData.pageComponentDownloaded = [];
             setLoading(true);
             setCanSaveState(false);
             setActiveSlug(slug);
