@@ -67,6 +67,7 @@ const EditMetaOG: React.FC = () => {
                         name={'metaOGDescription'}
                         required={false}
                         errorMsg={''}
+                        described_by={'the reccomened length for the description is between 50 and 160 characters!'}
                         updateValue={(value) => { 
                             if(page != undefined) {
                                 page.seo.og_description = value;
@@ -142,6 +143,7 @@ const EditMetaOG: React.FC = () => {
                         name={'metaTwitterDescription'}
                         required={false}
                         errorMsg={''}
+                        described_by={'the reccomened length for the description is between 50 and 160 characters!'}
                         updateValue={(value) => { 
                             if(page != undefined) {
                                 page.seo.twitter_description = value;

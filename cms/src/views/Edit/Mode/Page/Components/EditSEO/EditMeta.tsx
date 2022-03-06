@@ -35,6 +35,7 @@ const EditMeta: React.FC = () => {
                 name={'metaDescription'}
                 required={false}
                 errorMsg={''}
+                described_by={'the reccomened length for the description is between 50 and 160 characters!'}
                 updateValue={(value) => { 
                     if(page != undefined) {
                         page.seo.description = value;

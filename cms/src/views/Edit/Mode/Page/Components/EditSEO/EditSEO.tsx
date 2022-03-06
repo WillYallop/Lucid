@@ -3,6 +3,8 @@ import CoreIcon from '../../../../../../components/Core/Icon';
 import SearchResultPreview from './SearchResultPreview';
 import EditMetaOG from './EditMetaOG';
 import EditMeta from './EditMeta';
+import TwitterCardPreview from './TwitterCardPreview';
+import FacebookCardPreview from './FacebookCardPreview';
 // Icons
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -39,7 +41,8 @@ const EditSEO: React.FC<editSEOProps> = ({ exit }) => {
                 {/* socials sidebar */}
                 <div className="socialsSidebar">
                     <div className='blockCon'>
-                        <h2>socials preview</h2>
+                        <FacebookCardPreview />
+                        <TwitterCardPreview />
                     </div>
                 </div>
                 
