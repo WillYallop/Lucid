@@ -21,12 +21,28 @@ CREATE TABLE pages (
 
 CREATE TABLE page_seo (
     page_id uuid UNIQUE REFERENCES pages (_id) ON DELETE CASCADE,
+
     title VARCHAR NOT NULL,
-    description VARCHAR NOT NUll,
+    description VARCHAR NOT NULL,
+    canonical VARCHAR NOT NULL,
+    robots VARCHAR NOT NULL,
+
+    og_type VARCHAR NOT NULL,
     og_title VARCHAR NOT NULL,
     og_description VARCHAR NOT NULL,
-    og_image VARCHAR NOT NULL
+    og_image VARCHAR NOT NULL,
+
+    twitter_card VARCHAR NOT NULL,
+    twitter_title VARCHAR NOT NULL,
+    twitter_description VARCHAR NOT NULL,
+    twitter_image VARCHAR NOT NULL,
+    twitter_creator VARCHAR NOT NULL,
+    twitter_site VARCHAR NOT NULL,
+    twitter_player VARCHAR NOT NULL
 );
+
+
+
 
 -- Menues
 CREATE TABLE menus (

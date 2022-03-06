@@ -8,7 +8,7 @@ export const updateSingleSEO = async (page_id: mod_pageModel["_id"], data: cont_
         // Add some validation for the field - refer to controllers 
 
         // Create new object to update the page with
-        let updateObj: cont_seo_updateSingleUpdateObj = {};
+        let updateObj: cont_seo_updateSingleInp = {};
         // Set other data
         if(data.title != undefined) updateObj.title = data.title;
         if(data.description != undefined) updateObj.description = data.description;
@@ -38,7 +38,7 @@ export const getSingleSEO = async (page_id: mod_pageModel["_id"]) => {
 }
 
 // Save single SEO
-export const saveSingleSEO = async (data: const_seo_saveSingleInp) => {
+export const saveSingleSEO = async (data: mod_pageModel["seo"]) => {
     try {
         let seoRes = await db.one('INSERT INTO page_seo(page_id, title, description, og_title, og_description, og_image) VALUES(${page_id}, ${title}, ${description}, ${og_title}, ${og_description}, ${og_image}) RETURNING *', {
             page_id: data.page_id,
