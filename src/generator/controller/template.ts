@@ -4,7 +4,6 @@ import islandScriptHandler, { stripTempIslandObjEle } from './island';
 import { lucidAssetTagRegister } from './tags/lucidAsset';
 import { lucidScriptTagRegister } from './tags/lucidScript';
 import { lucidHeadTagRegister } from './tags/lucidHead';
-import { lucidSEOTagRegister } from './tags/lucidSEO';
 import { lucidAppTagRegister } from './tags/lucidApp';
 import { lucidFooterTagRegister } from './tags/lucidFooter';
 
@@ -24,8 +23,7 @@ const engine = new Liquid({
 export default async (config: gen_templateCompilerProps, addComponents: boolean, stringify: boolean): Promise<string> => {
     try {
         // Register custom tags
-        lucidHeadTagRegister(engine, config.head); // lucidHead
-        lucidSEOTagRegister(engine, config.seo); // lucidSEO
+        lucidHeadTagRegister(engine, config.head, config.seo); // lucidHead
         lucidAppTagRegister(engine, config.components, addComponents); // lucidApp
         lucidFooterTagRegister(engine, config.footer); // lucidFooter
         lucidScriptTagRegister(engine); // lucidScript

@@ -90,10 +90,20 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         seo {
                             page_id
                             title
-                            og_title
                             description
+                            canonical
+                            robots
+                            og_type
+                            og_title
                             og_description
                             og_image
+                            twitter_card
+                            twitter_title
+                            twitter_description
+                            twitter_image
+                            twitter_creator
+                            twitter_site
+                            twitter_player
                         }
                         page_components {
                             _id
