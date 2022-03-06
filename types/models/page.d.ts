@@ -17,7 +17,7 @@ interface mod_pageModel {
         og_title: string
         og_description: string
         og_image: string
-        twitter_card: 'summary' | 'summary_large_image' | 'app' | 'player'
+        twitter_card: 'summary' | 'summary large image' | 'app' | 'player'
         twitter_title: string
         twitter_description: string
         twitter_image: string

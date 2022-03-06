@@ -120,9 +120,19 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
             page_id: getPageRes._id,
             title: data.name,
             description: "",
+            canonical: "",
+            robots: "",
+            og_type: "",
             og_title: data.name,
             og_description: "",
-            og_image: ""
+            og_image: "",
+            twitter_card: "summary",
+            twitter_title: data.name,
+            twitter_description: "",
+            twitter_image: "",
+            twitter_creator: "",
+            twitter_site: "",
+            twitter_player: ""
         });
         return getPageRes;
     }
