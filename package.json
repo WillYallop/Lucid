@@ -2,25 +2,26 @@
   "name": "lucid",
   "version": "0.10.0",
   "description": "Lucid is a fully functioning CMS with static site generation, liquid templating, themes and media CDN.",
-  "main": "dist/server.js",
+  "main": "./dist/index.js",
   "keywords": [
     "Lucid",
     "CMS",
     "Static Generation",
     "GraphQL"
   ],
+  "files": [
+    "./dist",
+    "./cms",
+    "./types"
+  ],
+  "types": "./types/index.d.ts",
   "repository": {
     "type": "git",
     "url": "https://github.com/WillYallop/Lucid"
   },
   "scripts": {
     "test": "jest --verbose ./tests --colors --coverage",
-    "dev": "tsc-watch --onSuccess \"nodemon dist/server.js\"",
-    "start": "tsc && node dist/server.js",
     "build": "tsc"
-  },
-  "bin": {
-    "lucid": "./cli/lucid.js"
   },
   "author": "William Yallop",
   "license": "ISC",
@@ -39,9 +40,7 @@
     "@types/vhost": "^3.0.4",
     "express-graphql": "^0.12.0",
     "jest": "^27.4.7",
-    "nodemon": "^2.0.15",
     "ts-jest": "^27.1.2",
-    "tsc-watch": "^4.5.0",
     "tslint": "^6.1.3",
     "typescript": "^4.5.2"
   },
