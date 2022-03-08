@@ -72,7 +72,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         _id
                         template
                         slug
-                        live_path
+                        path
                         name
                         type
                         post_name
@@ -205,7 +205,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             data_mode: mode,
                             template: page.template || null,
                             page_id: pageData !== undefined ? pageData._id : page._id,
-                            page_components: pageComponentsArr
+                            page_components: pageComponentsArr,
+                            location: window.location.origin
                         },
                         template: true,
                         components: {
