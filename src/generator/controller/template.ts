@@ -26,8 +26,8 @@ export default async (config: gen_templateCompilerProps, addComponents: boolean,
         lucidHeadTagRegister(engine, config.head, config.seo); // lucidHead
         lucidAppTagRegister(engine, config.components, addComponents); // lucidApp
         lucidFooterTagRegister(engine, config.footer); // lucidFooter
-        lucidScriptTagRegister(engine); // lucidScript
-        lucidAssetTagRegister(engine); // lucidAsset
+        lucidScriptTagRegister(engine, config.mode, config.relative_path); // lucidScript
+        lucidAssetTagRegister(engine, config.mode, config.relative_path); // lucidAsset
 
         // Render page
         const templateDir = path.resolve(`${themeDir}/templates/${config.template}`);

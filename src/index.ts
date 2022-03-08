@@ -1,11 +1,8 @@
 /// <reference path="../types/index.d.ts" />
 
-const path = require('path');
-const config = require(path.resolve("./lucid.config.js"));
-
 import clc from 'cli-color';
 
-import app from "./app";
+import lucid from "./app";
 import http from 'http';
 import ip from 'ip';
 
@@ -21,28 +18,33 @@ import * as templateController from './controller/template';
 
 const start = () => {
 
-    const port = process.env.PORT || 80;
-    const server = http.createServer(app);
-    server.listen(port);
+    // Start app
+    const appPort = process.env.APP_PORT || 7343;
+    const appServer = http.createServer(lucid.app);
+    appServer.listen(appPort);
 
-    console.log((clc.yellow('-------------------------------------------------------------------------------------')));
-    console.log();
-    console.log(clc.yellow(clc.bold("Welcome to Lucid!")));
-    console.log();
-    console.log(clc.yellow("First time? Read our set up guide @ https://lucidcms.com/getting-started"));
-    console.log(clc.yellow("Documentation? Dive in @ https://lucidcms.com/documentation"));
-    console.log();
-    process.stdout.write(clc.yellow(clc.columns([
-        [clc.bold("Domain"), clc.bold("IP")],
-        [`${ config.https ? 'https://' : 'http://' }${ config.domain }`, `${ip.address()}:${port}`],
-        [`${ config.https ? 'https://' : 'http://' }cms.${ config.domain }`, `${ip.address()}:${port}`],
-        [`${ config.https ? 'https://' : 'http://' }api.${ config.domain }`, `${ip.address()}:${port}`],
-        [`${ config.https ? 'https://' : 'http://' }assets.${ config.domain }`, `${ip.address()}:${port}`],
-      ]))
-    );
-    console.log();
-    console.log((clc.yellow('-------------------------------------------------------------------------------------')));
-      
+    // Start cms
+    const cmsPort = process.env.CMS_PORT || 7344;
+    const cmsServer = http.createServer(lucid.cms);
+    cmsServer.listen(cmsPort);
+
+    if(process.env.NODE_ENV == 'development') {
+        console.log((clc.yellow('-------------------------------------------------------------------------------------')));
+        console.log();
+        console.log(clc.yellow(clc.bold("Welcome to Lucid!")));
+        console.log();
+        console.log(clc.yellow("First time? Read our set up guide @ https://lucidcms.com/getting-started"));
+        console.log(clc.yellow("Documentation? Dive in @ https://lucidcms.com/documentation"));
+        console.log();
+        process.stdout.write(clc.yellow(clc.columns([
+            [clc.bold("URL"), clc.bold("PORT"), clc.bold("SERVICE")],
+            [`http://${ip.address()}:${appPort}`, `${appPort}`, 'app'],
+            [`http://${ip.address()}:${cmsPort}`, `${cmsPort}`, 'cms']
+          ]))
+        );
+        console.log();
+        console.log((clc.yellow('-------------------------------------------------------------------------------------')));
+    }
 }
 
 

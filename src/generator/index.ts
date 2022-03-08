@@ -59,6 +59,8 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
                     file_path: pageComp.component.file_path,
                     name: pageComp.component.name
                 },
+                mode: 'preview',
+                relative_path: config.location,
                 groups: groups,
                 data: data,
                 content_types: contentTypes
@@ -69,6 +71,8 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
         markupRes.components = await componentCompiler(componentData, true);
         // Build template
         markupRes.template = await templateCompiler({
+            mode: 'preview',
+            relative_path: config.location,
             template: config.data_mode === 'live' ? pageLiveData.template : config.template ? config.template : pageLiveData.template,
             components: markupRes.components,
             seo: pageLiveData.seo,
@@ -120,6 +124,8 @@ const generateSite = async () => {
                                 file_path: pageComp.component.file_path,
                                 name: pageComp.component.name
                             },
+                            mode: 'site',
+                            relative_path: pageData.path,
                             groups: pageComp.groups,
                             data: pageComp.data,
                             content_types: pageComp.content_types
@@ -131,6 +137,8 @@ const generateSite = async () => {
                 const components = await componentCompiler(componentData, false);
                 // Build template
                 const template = await templateCompiler({
+                    mode: 'site',
+                    relative_path: pageData.path,
                     template: pageData.template,
                     components: components,
                     seo: pageData.seo,
@@ -139,7 +147,7 @@ const generateSite = async () => {
                 }, true, false);
 
                 builtPages.set(pageData._id, {
-                    slug: pageData.live_path,
+                    slug: pageData.path,
                     markup: template
                 });
             }

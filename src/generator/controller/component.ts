@@ -94,8 +94,8 @@ export default async (config: Array<gen_componentCompilerProps>, stringify: bool
         // Build templates out
         for (const data of config) {
             // register tags - TODO - this may be able to be moved up out of the loop!
-            lucidScriptTagRegister(engine); // lucidScript
-            lucidAssetTagRegister(engine); // lucidAsset
+            lucidScriptTagRegister(engine, data.mode, data.relative_path); // lucidScript
+            lucidAssetTagRegister(engine, data.mode, data.relative_path); // lucidAsset
             // generate component data 
             const componentData = await __generateComponentDataObj(data);
             // Build markup

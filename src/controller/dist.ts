@@ -56,7 +56,7 @@ const copyAssets = async () => {
 // ------------------------------------ ------------------------------------
 //  Handles creating the sitemap
 // ------------------------------------ ------------------------------------
-const createSitemap = async (pages: gene_pagseMap) => {
+const createSitemap = async (pages: gen_builtPagesMap) => {
     try {
         console.log('Build Sitemap!');
     }
@@ -68,7 +68,7 @@ const createSitemap = async (pages: gene_pagseMap) => {
 // ------------------------------------ ------------------------------------
 //  Handles saving pages map to the designated dist directory
 // ------------------------------------ ------------------------------------
-const savePages = async (pages: gene_pagseMap): Promise<boolean> => {
+const savePages = async (pages: gen_builtPagesMap): Promise<boolean> => {
     try {
         // Save new site to a temp directory
         for (const [key, value] of pages.entries()) {

@@ -1,16 +1,11 @@
 import { Liquid, TagToken, Context, Emitter, TopLevelToken } from 'liquidjs';
+import buildAssetRelativePath from './helpers/relative_path';
 
-const path = require('path');
-const config = require(path.resolve("./lucid.config.js"));
-const domain = config.domain;
-const hasHttps = config.https;
-
-
-export const lucidAssetTagRegister = (engine: Liquid) => {
+export const lucidAssetTagRegister = (engine: Liquid, mode: gen_componentCompilerProps["mode"], relative_path: string) => {
     return engine.registerTag('lucidAsset', {
         parse: function(tagToken: TagToken, remainTokens: TopLevelToken[]) {
-            let assetPath = tagToken.args.replaceAll('"', '');
-            this.assetSrc = `"${hasHttps?'https://':'http://'}assets.${domain}${assetPath}"`;
+            const assetPath = tagToken.args.replaceAll('"', '');
+            this.assetSrc = `"${buildAssetRelativePath(mode, relative_path, assetPath)}"`;
         },
         render: async function(ctx: Context, emitter: Emitter) {
             emitter.write(this.assetSrc);
