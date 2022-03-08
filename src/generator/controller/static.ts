@@ -9,7 +9,7 @@ const themDir = path.resolve(config.directories.theme);
 export default async () => {
     try {
         if(fs.existsSync(`${themDir}/static`)) {
-            await fs.copy(`${themDir}/static`, config.directories.dist);
+            await fs.copy(`${themDir}/static`, `${config.build}/app`);
         }
         return true
     }

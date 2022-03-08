@@ -8,7 +8,7 @@ import { getSinglePostTypeByName } from '../../../controller/posts';
 // Controllers
 import { getSingleSEO, saveSingleSEO } from '../seo/data';
 import { getAllPageComponents } from '../page_component/data';
-import { __generateErrorString } from '../../../helper/shared';
+import { __generateErrorString } from '../../../functions/shared';
 
 export const __buildPageLivePath = async (_id: mod_pageModel["_id"], slug: mod_pageModel["slug"]) => {
     try {

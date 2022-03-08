@@ -2,13 +2,12 @@ import * as fs from 'fs-extra';
 
 const path = require('path');
 const config = require(path.resolve("./lucid.config.js"));
-import { __generateErrorString } from '../helper/shared';
+import { __generateErrorString } from '../functions/shared';
 
 const themDir = path.resolve(config.directories.theme);
 const templatesDir = path.resolve(config.directories.templates);
-const tempGenDir =  path.resolve(config.directories.temp + '/generate');
-const distDir = path.resolve(config.directories.dist);
-const assetDir = path.resolve(config.directories.assets_dist);
+const tempGenDir =  path.resolve('./temp/generate');
+const distDir = path.resolve(`${config.build}/app`);
 
 // ------------------------------------ ------------------------------------
 //  Handles building the default boiler app
@@ -32,7 +31,7 @@ const buildDefaultApp = async () => {
 const copyStatic = async () => {
     try {
         if(fs.existsSync(`${themDir}/static`)) {
-            await fs.copy(`${themDir}/static`, config.directories.dist); // Copy temp to app dist
+            await fs.copy(`${themDir}/static`, `${config.build}/app`); // Copy temp to app dist
         }
         return true
     }
@@ -44,7 +43,7 @@ const copyStatic = async () => {
 const copyAssets = async () => {
     try {
         if(fs.existsSync(`${themDir}/assets`)) {
-            await fs.copy(`${themDir}/assets`, config.directories.assets_dist); 
+            await fs.copy(`${themDir}/assets`, `${config.build}/assets`); 
         }
         return true
     }

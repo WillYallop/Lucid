@@ -53,8 +53,8 @@ app.use(morgan('dev'));
 
 // ------------------------------------
 // Routes
-app.use('/', express.static(path.resolve(config.directories.dist), { extensions: ['html'] }));
-app.use('/assets', express.static(path.resolve(config.directories.assets_dist)));
+app.use('/', express.static(path.resolve(`${config.build}/app`), { extensions: ['html'] }));
+app.use('/assets', express.static(path.resolve(`${config.build}/assets`)));
 
 // ------------------------------------
 // ERROR HANDLING
@@ -94,7 +94,7 @@ cms.use('/api/v1', expressGraphQL({
 cms.use('/cdn', (req, res, next) => {
     res.send('THIS WILL BE THE CDN');
 });
-cms.use('/app-assets', express.static(path.resolve(config.directories.assets_dist)));
+cms.use('/app-assets', express.static(path.resolve(`${config.build}/assets`)));
 
 /// cms react route
 cms.use(express.static(path.join(__dirname, "..",  "cms", "build")));

@@ -1,19 +1,20 @@
 import * as fs from 'fs-extra';
+import { createBuildDir } from '../../functions/build_process'; 
 
 const path = require('path');
 const config = require(path.resolve("./lucid.config.js"));
-const tempGenDir =  path.resolve(config.directories.temp + '/generate');
-const distDir = path.resolve(config.directories.dist);
+const tempGenDir =  path.resolve('./temp/generate');
+const distDir = path.resolve(`${config.build}/app`);
 
 // Handles writing the page data to the app dist
 
 export default async (pages: gen_builtPagesMap): Promise<boolean> => {
     try {
+        createBuildDir();
         try {
             // Save new site to a temp directory
             for (const [key, value] of pages.entries()) {
                 fs.outputFileSync(`${tempGenDir}${value.slug}/index.html`, value.markup); 
-                console.log(`Page "/${value.slug}" has been created!`);
             }
             fs.rmdirSync(distDir, { recursive: true }); // Wipe app dist
             fs.copySync(tempGenDir, distDir); // Copy temp to app dist

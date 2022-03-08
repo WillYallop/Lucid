@@ -1,10 +1,9 @@
 /// <reference path="../types/index.d.ts" />
 
-import clc from 'cli-color';
+import http from 'http';
 
 import lucid from "./app";
-import http from 'http';
-import ip from 'ip';
+import buildProcess from './functions/build_process';
 
 import validate from "./validator";
 import validatorConfig from './validator/validator-config';
@@ -16,7 +15,7 @@ import * as distController from './controller/dist';
 import * as contentTypeController from './controller/content_type_config';
 import * as templateController from './controller/template';
 
-const start = () => {
+const start = async () => {
 
     // Start app
     const appPort = process.env.APP_PORT || 7343;
@@ -28,23 +27,9 @@ const start = () => {
     const cmsServer = http.createServer(lucid.cms);
     cmsServer.listen(cmsPort);
 
-    if(process.env.NODE_ENV == 'development') {
-        console.log((clc.yellow('-------------------------------------------------------------------------------------')));
-        console.log();
-        console.log(clc.yellow(clc.bold("Welcome to Lucid!")));
-        console.log();
-        console.log(clc.yellow("First time? Read our set up guide @ https://lucidcms.com/getting-started"));
-        console.log(clc.yellow("Documentation? Dive in @ https://lucidcms.com/documentation"));
-        console.log();
-        process.stdout.write(clc.yellow(clc.columns([
-            [clc.bold("URL"), clc.bold("PORT"), clc.bold("SERVICE")],
-            [`http://${ip.address()}:${appPort}`, `${appPort}`, 'app'],
-            [`http://${ip.address()}:${cmsPort}`, `${cmsPort}`, 'cms']
-          ]))
-        );
-        console.log();
-        console.log((clc.yellow('-------------------------------------------------------------------------------------')));
-    }
+    buildProcess();
+
+
 }
 
 

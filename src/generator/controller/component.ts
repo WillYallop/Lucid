@@ -5,7 +5,7 @@ import { lucidScriptTagRegister } from './tags/lucidScript';
 // island
 import { stripTempIslandObjEle } from './island';
 // helpers
-import { __convertStringLowerUnderscore } from '../../helper/shared';
+import { __convertStringLowerUnderscore } from '../../functions/shared';
 
 // Path and theme directory
 const path = require('path');

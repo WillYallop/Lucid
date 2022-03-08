@@ -1,3 +1,4 @@
+import * as fs from 'fs-extra';
 import db from '../db';
 // Generator controllers
 import componentCompiler from './controller/component';
@@ -11,8 +12,7 @@ import sitemapHandler from './controller/sitemap';
 import { getSingle as getSinglePage } from '../graphql/auth/page/data';
 import { getAll as getAllContentTypes } from '../controller/content_type_config';
 // Helpers
-import { __generateErrorString } from "../helper/shared";
-
+import { __generateErrorString } from "../functions/shared";
 
 // Generate site preview template and components
 const generatePreview = async (config: gen_generatePreviewConfig) => {
@@ -91,7 +91,6 @@ const generatePreview = async (config: gen_generatePreviewConfig) => {
         throw(err);
     }
 }
-
 
 // Generate entire site
 const generateSite = async () => {
@@ -175,7 +174,6 @@ const generateSite = async () => {
         throw(err);
     }
 }
-
 
 // Generator Handler
 export default async (mode: 'site' | 'preview', data?: gen_generatePreviewConfig) => {

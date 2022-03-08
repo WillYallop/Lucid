@@ -4,8 +4,8 @@ const path = require('path');
 const config = require(path.resolve("./lucid.config.js"));
 
 const templatesDir = path.resolve(config.directories.templates);
-const tempGenDir =  path.resolve(config.directories.temp + '/generate');
-const distDir = path.resolve(config.directories.dist);
+const tempGenDir =  path.resolve('./temp/generate');
+const distDir = path.resolve(`${config.build}/app`);
 
 
 // Handles building out the boilerplate app
