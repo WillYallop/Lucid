@@ -53,8 +53,8 @@ app.use(morgan('dev'));
 
 // ------------------------------------
 // Routes
-app.use('/assets', express.static(path.resolve(config.directories.assets_dist)));
 app.use('/', express.static(path.resolve(config.directories.dist), { extensions: ['html'] }));
+app.use('/assets', express.static(path.resolve(config.directories.assets_dist)));
 
 // ------------------------------------
 // ERROR HANDLING
