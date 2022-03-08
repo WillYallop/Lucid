@@ -20,9 +20,9 @@ export const Page = new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLString),
             description: 'The pages slug'
         },
-        live_path: {
+        path: {
             type: GraphQLNonNull(GraphQLString),
-            description: 'The pages live path'
+            description: 'The pages path'
         },
         name: {
             type: GraphQLNonNull(GraphQLString),

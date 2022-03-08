@@ -48,16 +48,16 @@ export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel
         page.page_components = await getAllPageComponents(page_id);
 
         // Build full slug
-        page.live_path = '/';
-        if(!page.is_homepage) page.live_path += page.slug;
+        page.path = '/';
+        if(!page.is_homepage) page.path += page.slug;
         if(page.has_parent) {
-            page.live_path = await __buildPageLivePath(page.parent_id, page.live_path);
+            page.path = await __buildPageLivePath(page.parent_id, page.path);
         }
         if(page.type === 'post') {
             const postObj = await getSinglePostTypeByName(page.post_name);
             // find post parent page
             const parentPage = await db.oneOrNone('SELECT _id FROM pages WHERE post_type_id=$1', postObj._id);
-            if(parentPage) page.live_path = await __buildPageLivePath(parentPage._id, page.live_path);
+            if(parentPage) page.path = await __buildPageLivePath(parentPage._id, page.path);
         }
 
         return page;
