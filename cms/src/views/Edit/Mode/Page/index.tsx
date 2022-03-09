@@ -206,7 +206,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             template: page.template || null,
                             page_id: pageData !== undefined ? pageData._id : page._id,
                             page_components: pageComponentsArr,
-                            location: window.location.origin
+                            location: window.location.origin === 'http://localhost:3000' ? 'http://192.168.1.103:7344' : window.location.origin
                         },
                         template: true,
                         components: {
