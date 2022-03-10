@@ -18,7 +18,7 @@ import { ModalContext, PageNotificationContext } from "../../../../helper/Contex
 import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContext, defaultPageMarkupContextInt, pageMarkupContextInt } from './functions/PageContext';
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
-import getApiUrl from '../../../../functions/getApiUrl';
+import getApiUrl, { cmdDevOrgin } from '../../../../functions/getApiUrl';
 import { savePageHandler, savePageComponentsHandler, deletePageComponentsHandler, saveGroupsHandler, saveFieldDataHandler, deleteGroupsHandler, saveSEOHandler } from './functions/savePageHandler';
 // Icons
 import { faTh, faEdit, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
@@ -206,7 +206,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                             template: page.template || null,
                             page_id: pageData !== undefined ? pageData._id : page._id,
                             page_components: pageComponentsArr,
-                            location: window.location.origin === 'http://localhost:3000' ? 'http://192.168.1.103:7344' : window.location.origin
+                            location: window.location.origin === 'http://localhost:3000' ? cmdDevOrgin : window.location.origin
                         },
                         template: true,
                         components: {
