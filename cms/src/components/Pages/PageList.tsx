@@ -1,5 +1,4 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
-import axios from 'axios';
 // Context
 import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext, ModalContext } from "../../helper/Context";
 // Components
@@ -8,7 +7,6 @@ import DeleteConfirmModal from '../Modal/DeleteConfirmModal';
 import IllustrationMessage from '../Layout/IllustationMessage';
 import UtilityLoading from '../Ultility/Loading';
 // Functions
-import getApiUrl from "../../functions/getApiUrl";
 import formatLucidError from '../../functions/formatLucidError';
 // Assets
 import noDataIllustration from '../../assets/noDataIllustration.svg';

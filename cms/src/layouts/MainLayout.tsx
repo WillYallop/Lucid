@@ -1,5 +1,4 @@
 import React, { ReactElement, useState, useEffect } from 'react';
-import axios from 'axios';
 import { Outlet } from "react-router-dom";
 // Components
 import Header from "../components/Layout/Header";
@@ -8,6 +7,8 @@ import Modal from '../components/Modal/Modal';
 import LoadingIndicator from '../components/Layout/LoadingIndicator';
 // Functions
 import getApiUrl from "../functions/getApiUrl";
+// data
+import { utilityPing } from '../data/utility';
 
 const MainLayout: React.FC = () => {
     // Navigation State
@@ -25,26 +26,16 @@ const MainLayout: React.FC = () => {
 
     // To do - move this and update query 
     const checkAPIConnection = () => {
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: `
-                query {
-                    utility {
-                        ping
-                        {
-                            recieved
-                        }
-                    }
-                }`
-            }
-        })
-        .then((result) => {
-            const pingRecieved: boolean = result.data.data.utility.ping.recieved;
+
+        utilityPing({
+            __args: {},
+            recieved: true
+        },
+        (response) => {
+            const pingRecieved = response.data.data.utility.ping.recieved;
             if(!pingRecieved) setConnectionErrorState(false);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             console.log(err);
             setConnectionErrorState(true);
         })
