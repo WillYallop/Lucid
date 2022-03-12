@@ -1,5 +1,4 @@
 import { ReactElement, useEffect, useState, useContext } from 'react';
-import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 // Components
 import SelectInput from '../../../components/Core/Inputs/SelectInput';
@@ -7,11 +6,15 @@ import TextInput from '../../../components/Core/Inputs/TextInput';
 import SearchInput from '../../../components/Core/Inputs/SearchInput';
 // Functions
 import formValidationHandler from "../../../functions/formValidationHandler";
-import getApiUrl from "../../../functions/getApiUrl";
 import validatorConfig from '../../../functions/validatorConfig';
 import formatLucidError from '../../../functions/formatLucidError';
 // Context
 import { LoadingContext } from "../../../helper/Context";
+// data
+import { getTemplates } from '../../../data/template';
+import { searchPageName } from '../../../data/page';
+import { saveSinglePost } from '../../../data/post';
+
 
 interface newPostTypeFormInterface {
     callback: () => void
@@ -28,7 +31,7 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
 
     const { loadingState, setLoadingState } = useContext(LoadingContext);
 
-    const [ templates, setTemplates ] = useState([]);
+    const [ templates, setTemplates ] = useState<Array<string>>([]);
     const [ selectedTemplate, setSelectedTemplate ] = useState('');
 
     const [ postName, setPostName ] = useState('');
@@ -42,24 +45,16 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
     // -------------------------------------------------------
     const getAllTemplates = () => {
         setLoadingState(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `query {
-                    template {
-                        get_all
-                    }	
-                }`
-            }
-        })
-        .then((result) => {
-            const templates = result.data.data.template.get_all || [];
+        getTemplates({
+            __args: {}
+        },
+        (response) => {
+            const templates = response.data.data.template.get_all || [];
             setTemplates(templates);
             setSelectedTemplate(templates[0]);
             setLoadingState(false);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             console.log(err);
             setLoadingState(false);
         })
@@ -73,44 +68,33 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
 
 
     // Page search
-    const searchPageName = (value: string) => {
+    const searchPageNameHandler = (value: string) => {
         setLoadingState(true);
         // Search query and and set page search results
-        const query = `query {
-            page {
-                search_name (
-                    query: "${value}"
-                    full_slug: true
-                    allow_home: false
-                    type: "page"
-                )
-                {
-                    slug
-                    name
-                    _id
-                }
-            }
-        }`;
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((res) => {
-            if(res.data.data.page.search_name) {
-                setPageSearchResults(res.data.data.page.search_name);
+        searchPageName({
+            __args: {
+                query: value,
+                full_slug: true,
+                allow_home: false,
+                type: "page"
+            },
+            slug: true,
+            name: true,
+            _id: true
+        },
+        (response) => {
+            if(response.data.data.page.search_name) {
+                setPageSearchResults(response.data.data.page.search_name);
             }
             else {
                 setFormError({
                     error: true,
-                    message: formatLucidError(res.data.errors[0].message).message
+                    message: formatLucidError(response.data.errors[0].message).message
                 });
             }
             setLoadingState(false);
-        })
-        .catch(() => {
+        },
+        (err) => {
             setFormError({
                 error: true,
                 message: 'An unexpected error occured while querying the pages!'
@@ -155,42 +139,31 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
             e: e,
             onValidatePass: (fields) => {
                 setLoadingState(true);
-                const query = `mutation {
-                    post {
-                      save_single (
-                            name: "${fields['name']}"
-                            template_path: "${fields["template_path"]}"
-                            ${ selectedPage._id ? 'page_id: "'+ selectedPage._id +'"' : ''}
-                        ) 
-                        { 
-                            _id
-                            name
-                            template_path
-                        }
-                    }
-                }`;
-                // Save single component data
-                axios({
-                    url: getApiUrl(),
-                    method: 'post',
-                    data: {
-                        query: query
-                    }
-                })
-                .then((res) => {
-                    if(res.data.data.post.save_single) {
+                let queryObj: data_post_saveSingleQuery["query"]["post"]["save_single"]["__args"] = {
+                    name: fields['name'],
+                    template_path: fields["template_path"],
+                }
+                if(selectedPage._id) queryObj.page_id = selectedPage._id;
+                saveSinglePost({
+                    __args: queryObj,
+                    _id: true,
+                    name: true,
+                    template_path: true
+                },
+                (response) => {
+                    if(response.data.data.post.save_single) {
                         callback()
-                        navigate(`/posts/${res.data.data.post.save_single.name}`);
+                        navigate(`/posts/${response.data.data.post.save_single.name}`);
                     }
                     else {
                         setFormError({
                             error: true,
-                            message: formatLucidError(res.data.errors[0].message).message
+                            message: formatLucidError(response.data.errors[0].message).message
                         });
                     }
                     setLoadingState(false);
-                })
-                .catch(() => {
+                },
+                (err) => {
                     setFormError({
                         error: true,
                         message: 'An unexpected error occured while saving the post type!'
@@ -246,7 +219,7 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
                     label={'assigned page'}
                     described_by={'assign a page for this post type, if set to a page that already has one it will replace it, and it cannot be set to the homepage!'}
                     results={pageResultElements}
-                    searchAction={searchPageName}
+                    searchAction={searchPageNameHandler}
                     style={'--hide-seperator'}>
                     { selectedPage.name ? <div className="noteRow">selected: {selectedPage.name}</div> : null }
                 </SearchInput>
