@@ -79,8 +79,19 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
     const getContentType = () => {
         setLoadingState(true);
         getSingleContentTypeConfig({
-            component_id: component__id,
-            content_type_id: contentType__id
+            __args: {
+                component_id: component__id,
+                content_type_id: contentType__id
+            },
+            _id: true,
+            name: true,
+            type: true,
+            parent: true,
+            config: {
+                min: true,
+                max: true,
+                default: true
+            }
         },
         (response) => {
             const contentTypeData = response.data.data.content_type_config.get_single || {};
@@ -125,12 +136,23 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
     const createContentTypeAction = (configObj: mod_contentTypesConfigModel["config"]) => {
         setLoadingState(true);
         createSingleContentTypeConfig({
-            component_id: component__id,
-            content_type: {
-                name: name,
-                type: type,
-                parent: contentType__id,
-                config: configObj
+            __args: {
+                component_id: component__id,
+                content_type: {
+                    name: name,
+                    type: type,
+                    parent: contentType__id,
+                    config: configObj
+                }
+            },
+            _id: true,
+            name: true,
+            type: true,
+            parent: true,
+            config: {
+                max: true,
+                min: true,
+                default: true,
             }
         },
         (response) => {
@@ -158,13 +180,24 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
     const updateContentTypeAction = (configObj: mod_contentTypesConfigModel["config"]) => {
         setLoadingState(true);
         updateSingleContentTypeConfig({
-            component_id: component__id,
-            content_type: {
-                _id: contentType?._id,
-                name: name,
-                type: type,
-                parent: contentType.parent,
-                config: configObj
+            __args: {
+                component_id: component__id,
+                content_type: {
+                    _id: contentType?._id,
+                    name: name,
+                    type: type,
+                    parent: contentType.parent,
+                    config: configObj
+                }
+            },
+            _id: true,
+            name: true,
+            type: true,
+            parent: true,
+            config: {
+                max: true,
+                min: true,
+                default: true
             }
         },
         (response) => {

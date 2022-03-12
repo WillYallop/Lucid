@@ -50,9 +50,14 @@ const ComponentDataForm: React.FC<ComponentDataFormProps> = ({ component__id, na
                 setLoadingState(true);
                 // update component
                 updateSingleComponent({
-                    _id: component__id,
-                    name: fields["comp_name"],
-                    description: fields["comp_desc"]
+                    __args: {
+                        _id: component__id,
+                        name: fields["comp_name"],
+                        description: fields["comp_desc"]
+                    },
+                    _id: true,
+                    name: true,
+                    description: true
                 },
                 (response) => {
                     successCallback();

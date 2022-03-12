@@ -61,8 +61,16 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     const getAllComponents = (s: number, l: number) => {
         setLoadingState(true);
         getMultipleComponents({
-            skip: s, 
-            limit: l
+            __args: {
+                skip: s, 
+                limit: l
+            },
+            _id: true,
+            name: true,
+            description: true,
+            preview_url: true,
+            date_added: true,
+            file_path: true
         },
         (response) => {
             const allComponents: Array<componentData> = response.data.data.components.get_multiple || [];

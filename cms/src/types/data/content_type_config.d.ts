@@ -6,7 +6,10 @@ interface data_cont_conf_getSingleQuery {
     query: {
         content_type_config: {
             get_single: {
-                __args: data_cont_conf_getSingleQueryArgs
+                __args: {
+                    component_id: mod_componentModel["_id"]
+                    content_type_id: mod_contentTypesConfigModel["_id"]
+                }
                 _id: boolean
                 name: boolean
                 type: boolean
@@ -19,10 +22,6 @@ interface data_cont_conf_getSingleQuery {
             }
         }
     }
-}
-interface data_cont_conf_getSingleQueryArgs {
-    component_id: mod_componentModel["_id"]
-    content_type_id: mod_contentTypesConfigModel["_id"]
 }
 interface data_cont_conf_getSingleQueryRes {
     data: {
@@ -42,7 +41,15 @@ interface data_cont_conf_createSingleQuery {
     mutation: {
         content_type_config: {
             create_single: {
-                __args: data_cont_conf_createSingleQueryArgs
+                __args: {
+                    component_id: mod_componentModel["_id"]
+                    content_type: {
+                        name: mod_contentTypesConfigModel["name"]
+                        type: mod_contentTypesConfigModel["type"]
+                        parent: mod_contentTypesConfigModel["parent"]
+                        config: mod_contentTypesConfigModel["config"]
+                    }
+                }
                 _id: boolean
                 name: boolean
                 type: boolean
@@ -54,15 +61,6 @@ interface data_cont_conf_createSingleQuery {
                 }
             } 
         }
-    }
-}
-interface data_cont_conf_createSingleQueryArgs {
-    component_id: mod_componentModel["_id"]
-    content_type: {
-        name: mod_contentTypesConfigModel["name"]
-        type: mod_contentTypesConfigModel["type"]
-        parent: mod_contentTypesConfigModel["parent"]
-        config: mod_contentTypesConfigModel["config"]
     }
 }
 interface data_cont_conf_createSingleQueryRes {
@@ -83,7 +81,10 @@ interface data_cont_conf_updateSingleQuery {
     mutation: {
         content_type_config: {
             update_single: {
-                __args: data_cont_conf_updateSingleQueryArgs
+                __args: {
+                    component_id: mod_componentModel["_id"]
+                    content_type: mod_contentTypesConfigModel
+                }
                 _id: boolean
                 name: boolean
                 type: boolean
@@ -96,10 +97,6 @@ interface data_cont_conf_updateSingleQuery {
             }
         }
     }
-}
-interface data_cont_conf_updateSingleQueryArgs {
-    component_id: mod_componentModel["_id"]
-    content_type: mod_contentTypesConfigModel
 }
 interface data_cont_conf_updateSingleQueryRes {
     data: {
@@ -119,15 +116,14 @@ interface data_cont_conf_deleteQuery {
     mutation: {
         content_type_config: {
             delete_single: {
-                __args: data_cont_conf_deleteQueryArgs
+                __args: {
+                    component_id: mod_componentModel["_id"]
+                    content_type_id: mod_contentTypesConfigModel["_id"]
+                }
                 deleted: boolean
             }
         }
     }
-}
-interface data_cont_conf_deleteQueryArgs {
-    component_id: mod_componentModel["_id"]
-    content_type_id: mod_contentTypesConfigModel["_id"]
 }
 interface data_cont_conf_deleteQueryRes {
     data: {

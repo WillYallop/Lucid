@@ -51,7 +51,17 @@ const RegisterComponentForm: React.FC = () => {
     // Get unregistered components
     const getUnregisteredComponentsHandler = () => {
         setLoadingState(true);
-        getUnregisteredComponents({},
+        getUnregisteredComponents({
+            __args: {},
+            unregistered: {
+                file_name: true,
+                file_path: false
+            },
+            totals: {
+                unregistered: true,
+                registered: false
+            }
+        },
         (response) => {
             let res = response.data.data.components.get_unregistered.unregistered;
             if(res) {
@@ -88,10 +98,13 @@ const RegisterComponentForm: React.FC = () => {
                 setLoadingState(true);
                 // Save single component
                 saveSingleComponent({
-                    name: fields.comp_name,
-                    description: fields.comp_desc,
-                    file_path: fields.comp_path,
-                    image: ""
+                    __args: {
+                        name: fields.comp_name,
+                        description: fields.comp_desc,
+                        file_path: fields.comp_path,
+                        image: ""
+                    },
+                    _id: true
                 },
                 (response) => {
                     let newCompData = response.data.data.components.save_single;

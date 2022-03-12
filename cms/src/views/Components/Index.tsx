@@ -78,7 +78,17 @@ const Components: React.FC = () => {
     const [ unregisteredComponents, setUnregisteredComponents ] = useState<unregisteredComponentsData>(defaultUnregisteredComponents);
     const getUnregisteredComponentsHandler = () => {
         setLoadingState(true);
-        getUnregisteredComponents({},
+        getUnregisteredComponents({
+            __args: {},
+            unregistered: {
+                file_name: true,
+                file_path: true
+            },
+            totals: {
+                unregistered: true,
+                registered: true
+            }
+        },
         (response) => {
             const res: unregisteredComponentsData = response.data.data.components.get_unregistered || {};
             setUnregisteredComponents(() => {

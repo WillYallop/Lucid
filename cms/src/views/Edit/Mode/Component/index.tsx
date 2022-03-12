@@ -97,7 +97,28 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     const getComponentData = () => {
         setLoadingState(true);
         getSingleComponent({
-            _id: _id
+            __args: {
+                _id: _id
+            },
+            _id: true,
+            name: true,
+            file_name: true,
+            file_path: true,
+            description: true,
+            preview_url: true,
+            date_added: true,
+            date_modified: true,
+            content_types: {
+                _id: true,
+                name: true,
+                type: true,
+                parent: true,
+                config: {
+                    max: true,
+                    min: true,
+                    default: true
+                }
+            }
         },
         (response) => {
             const componentData = response.data.data.components.get_single || {};
@@ -187,8 +208,11 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                         action={() => {
                             setLoadingState(true);
                             deleteContentTypeConfig({
-                                component_id: _id,
-                                content_type_id: contentType__id
+                                __args: {
+                                    component_id: _id,
+                                    content_type_id: contentType__id
+                                },
+                                deleted: true
                             },
                             (response) => {
                                 const componentData = response.data.data.content_type_config.delete_single;
@@ -233,7 +257,10 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                         action={() => {
                             setLoadingState(true);
                             degrigisterComponent({
-                                _id: component_id
+                                __args: {
+                                    _id: component_id
+                                },
+                                deleted: true
                             },
                             (result) => {
                                 if(result) if(result.data.data.components.delete_single.deleted) navigate('/components');

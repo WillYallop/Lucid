@@ -6,7 +6,9 @@ interface data_comp_getSingleComponentQuery {
     query: {
         components: {
             get_single: {
-                __args: data_comp_getSingeleComponentQueryArgs
+                __args: {
+                    _id: mod_componentModel["_id"]
+                }
                 _id: boolean
                 name: boolean
                 file_name: boolean
@@ -30,9 +32,6 @@ interface data_comp_getSingleComponentQuery {
         }
     }
 }
-interface data_comp_getSingleComponentQueryArgs {
-    _id: mod_componentModel["_id"]
-}
 interface data_comp_getSingleComponentQueryRes {
     data: {
         components: {
@@ -51,7 +50,10 @@ interface data_comp_getMultipleComponentQuery {
     query: {
         components: {
             get_multiple: {
-                __args: data_comp_getMultipleComponentQueryArgs
+                __args: {
+                    skip: number
+                    limit: number
+                }
                 _id: boolean
                 name: boolean
                 description: boolean
@@ -61,10 +63,6 @@ interface data_comp_getMultipleComponentQuery {
             }
         }
     }
-}
-interface data_comp_getMultipleComponentQueryArgs {
-    skip: number
-    limit: number
 }
 interface data_comp_getMultipleComponentQueryRes {
     data: {
@@ -92,16 +90,14 @@ interface data_comp_deregisterComponentQuery {
     mutation: {
         components: {
             delete_single: {
-                __args: data_comp_deregisterComponentQueryArgs
+                __args: {
+                    _id: mod_componentModel["_id"]
+                }
                 deleted: boolean
             }
         }
     }
 }
-interface data_comp_deregisterComponentQueryArgs {
-    _id: mod_componentModel["_id"]
-}
-
 interface data_comp_deregisterComponentQueryRes {
     data: {
         components: {
@@ -122,18 +118,17 @@ interface data_comp_updateComponentQuery {
     mutation: {
         components: {
             update_single: {
-                __args: data_comp_updateComponentQueryArgs
+                __args: {
+                    _id: mod_componentModel["_id"]
+                    name: mod_componentModel["name"]
+                    description: mod_componentModel["description"]
+                }
                 _id: boolean
                 name: boolean
                 description: boolean
             }
         }
     }
-}
-interface data_comp_updateComponentQueryArgs {
-    _id: mod_componentModel["_id"]
-    name: mod_componentModel["name"]
-    description: mod_componentModel["description"]
 }
 interface data_comp_updateComponentQueryRes {
     data: {
@@ -157,7 +152,7 @@ interface data_comp_ungregisteredComponentQuery {
     query: {
         components: {
             get_unregistered: {
-                __args: data_comp_ungregisteredComponentQueryArgs
+                __args: {}
                 unregistered: {
                     file_name: boolean
                     file_path: boolean
@@ -170,7 +165,6 @@ interface data_comp_ungregisteredComponentQuery {
         }
     }
 }
-interface data_comp_ungregisteredComponentQueryArgs {}
 interface data_comp_ungregisteredComponentQueryRes {
     data: {
         components: {
@@ -198,17 +192,16 @@ interface data_comp_saveSingleComponentQuery {
     mutation: {
         components: {
             save_single: {
-                __args: data_comp_saveSingleComponentQueryArgs
+                __args: {
+                    name: mod_componentModel["name"]
+                    description: mod_componentModel["description"]
+                    file_path: mod_componentModel["file_path"]
+                    image: mod_componentModel["preview_url"]
+                }
                 _id: boolean
             }
         }
     }
-}
-interface data_comp_saveSingleComponentQueryArgs {
-    name: mod_componentModel["name"]
-    description: mod_componentModel["description"]
-    file_path: mod_componentModel["file_path"]
-    image: mod_componentModel["preview_url"]
 }
 interface data_comp_saveSingleComponentQueryRes {
     data: {
