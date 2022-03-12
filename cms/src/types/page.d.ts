@@ -26,7 +26,7 @@ interface mod_pageModel {
     type: 'page' | 'post'
     post_name: string
     has_parent: boolean
-    parent_id: string
+    parent_id: string | null
     date_created: string
     last_edited: string
     author: string

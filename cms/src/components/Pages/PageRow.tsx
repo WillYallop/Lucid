@@ -1,13 +1,12 @@
 import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { pageData } from './PageList';
 // Icons
 import { faHome } from '@fortawesome/free-solid-svg-icons';
 
 interface PageRowProps {
-    page: pageData
-    getChildren: (page_id: pageData["_id"]) => Array<React.ReactElement>
-    deleteCallback: (page_id: pageData["_id"]) => void
+    page: mod_pageModel
+    getChildren: (page_id: mod_pageModel["_id"]) => Array<React.ReactElement>
+    deleteCallback: (page_id: mod_pageModel["_id"]) => void
 }
 
 const PageRow: React.FC<PageRowProps> = ({ page, getChildren, deleteCallback }) => {

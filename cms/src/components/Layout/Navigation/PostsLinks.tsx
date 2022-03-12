@@ -1,7 +1,6 @@
 
 import React, { useContext, ReactElement, useState, useEffect } from 'react';
 import { NavLink } from "react-router-dom";
-import axios from 'axios';
 // Components
 import CoreIcon from "../../Core/Icon";
 import NewPostTypeForm from "../../../views/Posts/Components/NewPostTypeForm";
@@ -9,8 +8,6 @@ import NewPostTypeForm from "../../../views/Posts/Components/NewPostTypeForm";
 import { faFile } from '@fortawesome/free-solid-svg-icons';
 // Context
 import { ModalContext } from "../../../helper/Context";
-// Functions
-import getApiUrl from "../../../functions/getApiUrl";
 // data
 import { getMultiplePosts } from '../../../data/post';
 
