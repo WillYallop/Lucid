@@ -127,3 +127,74 @@ interface data_page_deleteSingleQueryRes {
         message: string
     }>
 }
+
+
+// -----------------------------------
+// delete single page
+interface data_page_searchNameQuery {
+    query: {
+        page: {
+            search_name: {
+                __args: {
+                    query: string
+                    full_slug: boolean
+                    allow_home: boolean
+                    type: "all" | "page" | "post"
+                }
+                slug: boolean
+                name: boolean
+                _id: boolean
+            }
+        }
+    }
+}
+interface data_page_searchNameQueryRes {
+    data: {
+        page: {
+            search_name: Array<pageSearchRes>
+        }
+    }
+    errors: Array<{
+        message: string
+    }>
+}
+
+
+// -----------------------------------
+// save single page
+interface data_page_saveSingleQuery {
+    query: {
+        page: {
+            save_single: {
+                __args: {
+                    template: mod_pageModel["template"]
+                    slug: mod_pageModel["slug"]
+                    name: mod_pageModel["name"]
+                    type: mod_pageModel["type"]
+                    has_parent: mod_pageModel["has_parent"]
+                    author: mod_pageModel["author"]
+                    is_homepage: mod_pageModel["is_homepage"]
+
+                    post_name?: mod_pageModel["post_name"]
+                    parent_id?: mod_pageModel["parent_id"]
+                    post_type_id?: mod_pageModel["post_type_id"]
+                }
+                _id: boolean
+                slug: boolean
+            }
+        }
+    }
+}
+interface data_page_saveSingleQueryRes {
+    data: {
+        page: {
+            save_single: {
+                _id: mod_pageModel["_id"]
+                slug: mod_pageModel["slug"]
+            }
+        }
+    }
+    errors: Array<{
+        message: string
+    }>
+}

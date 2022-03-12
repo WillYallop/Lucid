@@ -1,6 +1,5 @@
 import { useState, ReactElement, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 // Components
 import CoreIcon from '../../../../../components/Core/Icon';
 import SearchInput from "../../../../../components/Core/Inputs/SearchInput";
@@ -10,14 +9,9 @@ import { PageNotificationContext, ModalContext } from "../../../../../helper/Con
 // Icons
 import { faSignInAlt, faSave } from '@fortawesome/free-solid-svg-icons';
 // Functions 
-import getApiUrl from "../../../../../functions/getApiUrl";
 import formatLucidError from "../../../../../functions/formatLucidError";
-
-interface pageSerach {
-    slug: string
-    name: string
-    _id: string
-}
+// data
+import { searchPageName } from '../../../../../data/page';
 
 interface editPageHeaderProps {
     pageName: string
@@ -33,7 +27,7 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
     const { notifications, setNotifications } = useContext(PageNotificationContext);
     const [ notificationTimeout, setNotificationTimeout ] = useState<ReturnType<typeof setTimeout>>();
     const [ pageSearchQuery, setPageSearchQuery ] = useState('');
-    const [ pageSearchResults, setPageSearchResults ] = useState<Array<pageSerach>>([]);
+    const [ pageSearchResults, setPageSearchResults ] = useState<Array<pageSearchRes>>([]);
 
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
         setNotifications([{
@@ -49,38 +43,27 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
 
     const pageSearchAction = (value: string) => {
         // Search query and and set page search results
-        const query = `query {
-            page {
-                search_name (
-                    query: "${value}"
-                    full_slug: false
-                    allow_home: true
-                    type: "all"
-                )
-                {
-                    slug
-                    name
-                    _id
-                }
-            }
-        }`;
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((res) => {
-            if(res.data.data.page.search_name) {
+        searchPageName({
+            __args: {
+                query: value,
+                full_slug: false,
+                allow_home: true,
+                type: "all"
+            },
+            slug: true,
+            name: true,
+            _id: true
+        },
+        (response) => {
+            if(response.data.data.page.search_name) {
                 if(!mounted.current) return null;
-                setPageSearchResults(res.data.data.page.search_name);
+                setPageSearchResults(response.data.data.page.search_name);
             }
             else {
-                addNotification(formatLucidError(res.data.errors[0].message).message,'error');
+                addNotification(formatLucidError(response.data.errors[0].message).message,'error');
             }
-        })
-        .catch(() => {
+        },
+        (err) => {
             addNotification('An unexpected error occured while querying the pages!','error');
         })
     }

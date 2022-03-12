@@ -74,3 +74,9 @@ interface updateDataObjInterface {
     deleteGroups: Array<string>
     pageComponentDownloaded: Array<string>
 }
+
+interface pageSearchRes {
+    slug: mod_pageModel["slug"]
+    name: mod_pageModel["name"]
+    _id: mod_pageModel["_id"]
+}
