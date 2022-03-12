@@ -18,7 +18,7 @@ interface data_cont_conf_getSingleQuery {
                     min: boolean
                     max: boolean
                     default: boolean
-                }
+                } | boolean
             }
         }
     }
@@ -58,7 +58,7 @@ interface data_cont_conf_createSingleQuery {
                     max: boolean
                     min: boolean
                     default: boolean
-                }
+                } | boolean
             } 
         }
     }
@@ -93,7 +93,7 @@ interface data_cont_conf_updateSingleQuery {
                     max: boolean
                     min: boolean
                     default: boolean
-                }
+                } | boolean
             }
         }
     }

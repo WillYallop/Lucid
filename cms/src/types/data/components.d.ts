@@ -26,8 +26,8 @@ interface data_comp_getSingleComponentQuery {
                         max: boolean
                         min: boolean
                         default: boolean
-                    }
-                }
+                    } | boolean
+                } | boolean
             }
         }
     }
@@ -71,8 +71,8 @@ interface data_comp_getMultipleComponentQuery {
                         min: boolean
                         max: boolean
                         default: boolean
-                    }
-                } 
+                    } | boolean
+                } | boolean
             }
         }
     }
@@ -162,11 +162,11 @@ interface data_comp_ungregisteredComponentQuery {
                 unregistered: {
                     file_name: boolean
                     file_path: boolean
-                }
+                } | boolean
                 totals: {
                     unregistered: boolean
                     registered: boolean
-                }
+                } | boolean
             }
         }
     }

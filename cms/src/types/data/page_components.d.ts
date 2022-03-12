@@ -21,7 +21,7 @@ interface data_pagecomp_getSingleQuery {
                     date_added: boolean
                     description: boolean
                     date_modified: boolean
-                }
+                } | boolean
                 content_types: {
                     _id: boolean
                     name: boolean
@@ -31,22 +31,22 @@ interface data_pagecomp_getSingleQuery {
                         min: boolean
                         max: boolean
                         default: boolean
-                    }
-                }
+                    } | boolean
+                } | boolean
                 groups: {
                     _id: boolean
                     page_component_id: boolean
                     parent_group: boolean
                     parent_config_id: boolean
                     position: boolean
-                }
+                } | boolean
                 data: {
                     page_component_id: boolean
                     config_id: boolean
                     value: boolean
                     group_id: boolean
                     root: boolean
-                }
+                } | boolean
             }
         }
     }

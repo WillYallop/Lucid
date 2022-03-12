@@ -74,7 +74,7 @@ interface data_page_getSingleQuery {
                     twitter_creator: boolean
                     twitter_site: boolean
                     twitter_player: boolean
-                }
+                } | boolean
                 page_components: {
                     _id: boolean
                     position: boolean
@@ -83,8 +83,8 @@ interface data_page_getSingleQuery {
                         preview_url: boolean
                         file_path: boolean
                         name: boolean
-                    }
-                }
+                    } | boolean
+                } | boolean
             }
         }
     }
