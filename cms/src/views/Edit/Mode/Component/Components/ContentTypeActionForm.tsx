@@ -1,5 +1,4 @@
 import { ReactElement, useEffect, useState, useContext } from 'react';
-import axios from 'axios';
 // Components
 import SelectInput from '../../../../../components/Core/Inputs/SelectInput';
 import TextInput from '../../../../../components/Core/Inputs/TextInput';
@@ -9,7 +8,6 @@ import ExtendedFormRepeater from '../../../../../components/ContentTypes/Extende
 import ExtendedFormNumber from '../../../../../components/ContentTypes/ExtendedForms/Number';
 // Functions
 import formValidationHandler from "../../../../../functions/formValidationHandler";
-import getApiUrl from "../../../../../functions/getApiUrl";
 import validatorConfig from '../../../../../functions/validatorConfig';
 import formatLucidError from '../../../../../functions/formatLucidError';
 // Context

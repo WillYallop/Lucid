@@ -1,8 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import axios from 'axios';
 import { v1 as uuidv1 } from 'uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 // Components
 import PagePreview from './Components/PagePreview';
 import EditPageHeader from './Components/EditPageHeader';
@@ -18,11 +16,16 @@ import { ModalContext, PageNotificationContext } from "../../../../helper/Contex
 import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContext, defaultPageMarkupContextInt, pageMarkupContextInt } from './functions/PageContext';
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
-import getApiUrl, { cmdDevOrgin } from '../../../../functions/getApiUrl';
+import { cmdDevOrgin } from '../../../../functions/getApiUrl';
 import { savePageHandler, savePageComponentsHandler, deletePageComponentsHandler, saveGroupsHandler, saveFieldDataHandler, deleteGroupsHandler, saveSEOHandler } from './functions/savePageHandler';
 // Icons
-import { faTh, faEdit, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
+import { faTh, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
 import { faSearchengin } from '@fortawesome/free-brands-svg-icons';
+// data
+import { getSinglePage } from '../../../../data/page';
+import { getTemplates } from '../../../../data/template';
+import { generatePreview } from '../../../../data/generator';
+
 
 interface editPageProps {
     slug: string
@@ -44,7 +47,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const [ page, setPage ] = useState({} as mod_pageModel); // page PageContext
     const [ markupObj, setMarkupObj ] = useState(defaultPageMarkupContextInt.markupObj); // Page preview markup obj
     // Template
-    const [ templates, setTemplates ] = useState([]);
+    const [ templates, setTemplates ] = useState<Array<string>>([]);
     // Selected component
     const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component' | 'seo'>('preview')
     const [ selectedPageComponent, setSelectedPageComponent ] = useState({} as mod_page_componentModel);
@@ -62,103 +65,89 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // ---------------------------------------------------------------------/
     const getPageData = () => {
         setLoading(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: `query {
-                page {
-                    get_single(slug: "${ slug === 'homepage' ? '/' : slug }") {
-                        _id
-                        template
-                        slug
-                        path
-                        name
-                        type
-                        post_name
-                        has_parent
-                        parent_id
-                        date_created
-                        last_edited
-                        author
-                        is_homepage
-                        post_type_id
-                        seo {
-                            page_id
-                            title
-                            description
-                            canonical
-                            robots
-                            og_type
-                            og_title
-                            og_description
-                            og_image
-                            twitter_card
-                            twitter_title
-                            twitter_description
-                            twitter_image
-                            twitter_creator
-                            twitter_site
-                            twitter_player
-                        }
-                        page_components {
-                            _id
-                            position
-                            component {
-                                _id
-                                preview_url
-                                file_path
-                                name
-                            }
-                        }
-                    }
+        getSinglePage({
+            __args: {
+                slug: slug === 'homepage' ? '/' : slug
+            },
+            _id: true,
+            template: true,
+            slug: true,
+            path: true,
+            name: true,
+            type: true,
+            post_name: true,
+            has_parent: true,
+            parent_id: true,
+            date_created: true,
+            last_edited: true,
+            author: true,
+            is_homepage: true,
+            post_type_id: true,
+            seo: {
+                page_id: true,
+                title: true,
+                description: true,
+                canonical: true,
+                robots: true,
+                og_type: true,
+                og_title: true,
+                og_description: true,
+                og_image: true,
+                twitter_card: true,
+                twitter_title: true,
+                twitter_description: true,
+                twitter_image: true,
+                twitter_creator: true,
+                twitter_site: true,
+                twitter_player: true,
+            },
+            page_components: {
+                _id: true,
+                position: true,
+                component: {
+                    _id: true,
+                    preview_url: true,
+                    file_path: true,
+                    name: true,
                 }
-            }`
             }
-        })
-        .then((result) => {
-            const page: mod_pageModel = result.data.data.page.get_single || {};
+        },
+        (response) => {
+            const page: mod_pageModel = response.data.data.page.get_single || {};
             if(page) {
                 if(!mounted.current) return null;
                 setPage(page);
                 generatePagePreview('live', page);
             }
             else {
-                addNotification(formatLucidError(result.data.errors[0].message).message,'error');
+                addNotification(formatLucidError(response.data.errors[0].message).message,'error');
             }
             setLoading(false);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             setLoading(false);
             addNotification('there was an unexpected error while getting the page data.','error');
         })
     }
+
     const getAllTemplates = () => {
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `query {
-                    template {
-                        get_all
-                    }	
-                }`
-            }
-        })
-        .then((result) => {
-            const templates = result.data.data.template.get_all || [];
+        getTemplates({
+            __args: {}   
+        },
+        (response) => {
+            const templates = response.data.data.template.get_all || [];
             if(!mounted.current) return null;
             setTemplates(templates);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             console.log(err);
             addNotification('there was an unexpected error while getting the template data.','error');
-        });
+        })
     }
 
     const generatePagePreview = (mode: 'live' | 'provided', pageData?: mod_pageModel, pageComponentID?: mod_componentModel["_id"]) => {
         setLoading(true);
-        const pageComponentsArr: any = []; 
+        const pageComponentsArr: Array<mod_generatePreviewPageComponents> = []; 
         if(mode === 'live') {
             if(pageData !== undefined) {
                 pageData.page_components.forEach((pageComp) => {
@@ -196,43 +185,26 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             }
         }
 
-        // Generate the query strings
-        const queryObject: any = {
-            query: {
-                generator: {
-                    preview: {
-                        __args: {
-                            data_mode: mode,
-                            template: page.template || null,
-                            page_id: pageData !== undefined ? pageData._id : page._id,
-                            page_components: pageComponentsArr,
-                            location: window.location.origin === 'http://localhost:3000' ? cmdDevOrgin : window.location.origin
-                        },
-                        template: true,
-                        components: {
-                            _id: true,
-                            page_component_id: true,
-                            markup: true
-                        }
-                    }
-                }
+        generatePreview({
+            __args: {
+                data_mode: mode,
+                template: page.template || null,
+                page_id: pageData !== undefined ? pageData._id : page._id,
+                page_components: pageComponentsArr,
+                location: window.location.origin === 'http://localhost:3000' ? cmdDevOrgin : window.location.origin
+            },
+            template: true,
+            components: {
+                _id: true,
+                page_component_id: true,
+                markup: true
             }
-        };
-        const queryString = jsonToGraphQLQuery(queryObject, { pretty: true });
-
-        // send query
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: queryString
-            }
-        })
-        .then((result) => {
-            const data: pageMarkupContextInt["markupObj"] = result.data.data.generator.preview || {};
+        },
+        (response) => {
+            const data = response.data.data.generator.preview || {};
             if(mode === 'live') setMarkupObj(data);
             else {
-                // go through template, and components in this result.data obj and replace matching ones with new markup
+                // go through template, and components in this response.data obj and replace matching ones with new markup
                 markupObj.template = data.template;
                 for(let i = 0; i < data.components.length; i++) {
                     let findMatchCompIndex = markupObj.components.findIndex( x => x._id === data.components[i]._id && x.page_component_id === data.components[i].page_component_id)
@@ -242,8 +214,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 setMarkupObj({...markupObj});
             }
             setLoading(false);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             setLoading(false);
             addNotification('there was an unexpected error while generating the page','error');
         })
@@ -456,7 +428,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                 // Generate all of the queryies we need
                 const pageQuery = await savePageHandler(page, updatedData);
                 const seoQuery = await saveSEOHandler(page, updatedData);
-                console.log(seoQuery);
                 const pageComponentsQuery = await savePageComponentsHandler(page, updatedData);
                 const deletePageComponentQuery = await deletePageComponentsHandler(page, updatedData);
                 const groupQuery = await saveGroupsHandler(page, updatedData);

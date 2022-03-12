@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 // Context
 import { 
@@ -12,7 +11,6 @@ import TextareaInput from "../../../components/Core/Inputs/TextareaInput";
 import SelectInput from "../../../components/Core/Inputs/SelectInput";
 // Functions
 import formValidationHandler from "../../../functions/formValidationHandler";
-import getApiUrl from "../../../functions/getApiUrl";
 import validatorConfig from '../../../functions/validatorConfig';
 // data
 import { getUnregisteredComponents, saveSingleComponent } from '../../../data/components';
