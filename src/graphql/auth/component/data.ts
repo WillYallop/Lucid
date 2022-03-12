@@ -1,4 +1,4 @@
-import { componentController } from '../../../index';
+import * as componentController from '../../../controller/component';
 import { getAllContentTypeConfig } from '../content_type_config/data';
 
 // ------------------------------------ ------------------------------------

@@ -89,6 +89,7 @@ const updateSingle = async (_id: mod_componentModel["_id"], data: cont_comp_upda
                 // Update object and save
                 let newCompObj: mod_componentModel = merge(componentData[findCompIndex], data);
                 componentData[findCompIndex] = newCompObj;
+                componentData[findCompIndex].date_modified = new Date().toString();
                 await writeSingleFile('/config/components.json', 'json', componentData);
                 return componentData[findCompIndex]
             }
@@ -105,6 +106,40 @@ const updateSingle = async (_id: mod_componentModel["_id"], data: cont_comp_upda
                 code: 403,
                 origin: origin,
                 message: 'No paramaters passed to componentController.updateSingle() function!'
+            });
+        }
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Update components last modified data
+const updateLastModifiedDate = async (_id: mod_componentModel["_id"]): Promise<string> => {
+    try {
+        const origin = 'componentController.updateLastModifiedDate';
+        // Verify ID
+        await validate([
+            {
+                method: 'uuidVerify',
+                value: _id
+            }
+        ]);
+        // theme/components.json
+        let componentData: Array<mod_componentModel> = await getSingleFileContent('/config/components.json', 'json');
+        // Make sure it exists elseo throw
+        let findCompIndex = componentData.findIndex( x => x._id === _id );
+        if(findCompIndex != -1) {
+            const modifiedDate = new Date().toString();
+            componentData[findCompIndex].date_modified = modifiedDate;
+            await writeSingleFile('/config/components.json', 'json', componentData);
+            return modifiedDate
+        }
+        else {
+            throw __generateErrorString({
+                code: 404,
+                origin: origin,
+                message: `Cannot find component with ID: "${_id}" to update!`
             });
         }
     }
@@ -268,6 +303,7 @@ const getUnregistered = async (): Promise<cont_comp_getUnregisteredRes> => {
 export {
     saveSingle,
     updateSingle,
+    updateLastModifiedDate,
     deleteSingle,
     getSingleByID,
     getMultiple,
