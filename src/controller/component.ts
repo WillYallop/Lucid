@@ -1,4 +1,4 @@
-import { getSingleFileContent, writeSingleFile, listDirectoryFiles } from './theme';
+import { getSingleFileContent, writeSingleFile, listDirectoryFiles, deleteSingleFile } from './theme';
 import { __generateErrorString } from '../functions/shared';
 import validate from '../validator';
 import { v1 as uuidv1 } from 'uuid';
@@ -26,6 +26,7 @@ const deleteSingle = async (_id: mod_componentModel["_id"]) => {
             // Remove from array and write to file
             componentData.splice(componentIndex, 1);
             await writeSingleFile('/config/components.json', 'json', componentData);
+            await deleteSingleFile(`/config/content_types/${_id}.json`);
         }
         else {
             throw __generateErrorString({

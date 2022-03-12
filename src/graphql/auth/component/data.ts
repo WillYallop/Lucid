@@ -1,3 +1,4 @@
+import db from '../../../db';
 import * as componentController from '../../../controller/component';
 import { getAllContentTypeConfig } from '../content_type_config/data';
 
@@ -37,7 +38,10 @@ export const getMultiple = async(limit: number, skip: number) => {
 // Delete single
 export const deleteSingle = async(_id: mod_componentModel["_id"]) => {
     try {
+        // delete component registered config
         await componentController.deleteSingle(_id);
+        // delete all page components that use this component
+        await db.none('DELETE FROM page_components WHERE component_id=$1', _id);
         return {
             deleted: true
         }
