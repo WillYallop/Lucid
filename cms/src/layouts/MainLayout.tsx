@@ -1,12 +1,10 @@
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet } from "react-router-dom";
 // Components
 import Header from "../components/Layout/Header";
 import Navigation from "../components/Layout/Navigation/Navigation";
 import Modal from '../components/Modal/Modal';
 import LoadingIndicator from '../components/Layout/LoadingIndicator';
-// Functions
-import getApiUrl from "../functions/getApiUrl";
 // data
 import { utilityPing } from '../data/utility';
 

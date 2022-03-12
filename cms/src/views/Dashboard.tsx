@@ -1,45 +1,31 @@
 
 import { useState } from "react";
-import axios from 'axios';
 // Components
 import DefaultPage from "../components/Layout/DefaultPage";
-// fuctions
-import getApiUrl from "../functions/getApiUrl";
+// data
+import { generateSite } from '../data/generator';
+
 
 const Dashboard: React.FC = () => {
     
-    interface generateRes {
-        build_time: number
-        pages_built: number
-    }
     const [ siteBuilt, setSiteBuilt ] = useState(false);
-    const [ publishRes, setPublishRes ] = useState<generateRes>({} as generateRes);
+    const [ publishRes, setPublishRes ] = useState<mod_generateSite>({} as mod_generateSite);
 
     const publishSite = () => {
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: `query {
-                generator {
-                    site {
-                        build_time
-                        pages_built
-                    }
-                }
-            }`
-            }
-        })
-        .then((result) => {
-            const data: generateRes = result.data.data.generator.site || {};
+        generateSite({
+            __args: {},
+            build_time: true,
+            pages_built: true
+        },
+        (response) => {
+            const data: mod_generateSite = response.data.data.generator.site || {};
             setPublishRes(data);
             setSiteBuilt(true);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             console.log(err);
         })
     }
-
 
     return (
         <DefaultPage
