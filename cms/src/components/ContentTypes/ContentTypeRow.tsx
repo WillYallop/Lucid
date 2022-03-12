@@ -63,7 +63,7 @@ const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, d
                         { ContentTypeIcon }
                     </div>
                     <div className="textarea">
-                        <p className='bold'>{ contentType.name.replaceAll('_', ' ') }</p>
+                        <p className='bold'>{ contentType.name } - <span>{ contentType.name.toLowerCase().replaceAll(' ', '_') }</span></p>
                         <p>{ contentType.type }</p>
                     </div>
                 </div>

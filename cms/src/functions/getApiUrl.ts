@@ -1,4 +1,4 @@
-export const cmdDevOrgin = 'http://192.168.1.104:7344';
+export const cmdDevOrgin = 'http://192.168.1.103:7344';
 
 const getApiUrl = () => {
     const location = window.location;

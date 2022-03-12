@@ -1,4 +1,5 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 // Context
 import { 
@@ -40,6 +41,8 @@ interface editComponentProps {
 }
 
 const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
+
+    const navigate = useNavigate();
     const [ componentName, setComponentName ] = useState('');
     const { loadingState, setLoadingState } = useContext(LoadingContext);
 
@@ -201,8 +204,8 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         });
     }
 
-    // Delete component
-    const deleteComponent = (contentType__id: mod_contentTypesConfigModel["_id"]) => {
+    // Delete content type
+    const deleteContentType = (contentType__id: mod_contentTypesConfigModel["_id"]) => {
         setLoadingState(true);
         const query = `mutation
             {
@@ -253,7 +256,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             setLoadingState(false);
         })
     }
-    const openConfirmDeleteModal = (contentType__id: mod_contentTypesConfigModel["_id"]) => {
+    const confirmDeleteContentType = (contentType__id: mod_contentTypesConfigModel["_id"]) => {
         setModalState({
             ...modalState,
             state: true,
@@ -262,7 +265,57 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             size: 'small',
             element: <DeleteConfirmModal 
                         message={'are you sure you would like to delete this content type?'}
-                        action={() => deleteComponent(contentType__id)}/>
+                        action={() => deleteContentType(contentType__id)}/>
+        });
+    }
+
+    // Delete component
+    const deleteComponent = (component_id: mod_componentModel["_id"]) => {
+        setLoadingState(true);
+        const query = `mutation {
+            components {
+                delete_single (
+                    _id: "${component_id}"
+                )
+                {
+                    deleted
+                }
+            }
+        }`;
+        axios({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        })
+        .then((result) => {
+            const componentData = result.data.data.components.delete_single;
+            if(componentData) {
+                if(componentData.deleted) {
+                    navigate('/components');
+                }
+            }
+            else {
+                addNotification(formatLucidError(result.data.errors[0].message).message, 'error');
+            }
+            setLoadingState(false);
+        })
+        .catch((err) => {
+            addNotification(`there was an error while degregistering this component with an ID of"${component_id}"!`, 'error');
+            setLoadingState(false);
+        })
+    }
+    const confirmDeleteComponent = (component_id: mod_componentModel["_id"]) => {
+        setModalState({
+            ...modalState,
+            state: true,
+            title: 'confirmation',
+            body: '',
+            size: 'small',
+            element: <DeleteConfirmModal 
+                        message={'are you sure you would like to deregister this component?'}
+                        action={() => deleteComponent(component_id)}/>
         });
     }
 
@@ -305,7 +358,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                 icon={faPlus}/>
             <SidebarButton 
                 text="deregister"
-                action={() => { alert('deregister') }}
+                action={() => confirmDeleteComponent(_id)}
                 icon={faTrashAlt}
                 style={'warning'}/>
             <SidebarMeta 
@@ -355,7 +408,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                         key={x._id} 
                         contentType={x}
                         actionForm={openContentTypeActionModal}
-                        deleteCallback={openConfirmDeleteModal}
+                        deleteCallback={confirmDeleteContentType}
                         getChildren={getContentTypeChildren}/>);
                 }
             });
@@ -372,7 +425,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                     key={contentType._id} 
                     contentType={contentType}
                     actionForm={openContentTypeActionModal}
-                    deleteCallback={openConfirmDeleteModal}
+                    deleteCallback={confirmDeleteContentType}
                     getChildren={getContentTypeChildren}/>)
             }
         });
