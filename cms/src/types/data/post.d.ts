@@ -57,6 +57,38 @@ interface data_post_getSingleViaNameQueryRes {
 
 
 // -----------------------------------
+// update single
+interface data_post_updateSingleQuery {
+    query: {
+        post: {
+            update_single: {
+                __args: {
+                    _id: mod_postObject["_id"]
+                    name: mod_postObject["name"]
+                    old_name: mod_postObject["name"]
+                    template_path: mod_postObject["template_path"]
+                    page_id?: mod_pageModel["_id"]
+                }
+                _id: boolean
+                name: boolean
+                template_path: boolean
+            }
+        }
+    }
+}
+interface data_post_updateSingleQueryRes {
+    data: {
+        post: {
+            update_single: mod_postObject
+        }
+    }
+    errors: Array<{
+        message: string
+    }>
+}
+
+
+// -----------------------------------
 // get single by name
 interface data_post_saveSingleQuery {
     query: {

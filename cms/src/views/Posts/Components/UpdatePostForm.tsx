@@ -1,6 +1,4 @@
 import { useState, useContext, useEffect, ReactElement } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from 'axios';
 // Components
 import TextInput from "../../../components/Core/Inputs/TextInput";
 import SelectInput from "../../../components/Core/Inputs/SelectInput";
@@ -8,16 +6,14 @@ import SearchInput from "../../../components/Core/Inputs/SearchInput";
 // Context
 import { LoadingContext } from "../../../helper/Context";
 // Functions
-import getApiUrl from "../../../functions/getApiUrl";
 import validatorConfig from '../../../functions/validatorConfig';
 import formValidationHandler from "../../../functions/formValidationHandler";
 import formatLucidError from "../../../functions/formatLucidError";
+// data
+import { getTemplates } from '../../../data/template';
+import { getSinglePageByPostID, searchPageName } from '../../../data/page';
+import { updateSinglePost } from '../../../data/post';
 
-interface pageSerach {
-    slug: string
-    name: string
-    _id: string
-}
 
 interface updatePostTypeFormProps {
     _id: string
@@ -29,17 +25,15 @@ interface updatePostTypeFormProps {
 
 const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ _id, name, template, post_id, callback }) => {
 
-    const navigate = useNavigate();
-
     const { loadingState, setLoadingState } = useContext(LoadingContext);
 
-    const [ templates, setTemplates ] = useState([]);
+    const [ templates, setTemplates ] = useState<Array<string>>([]);
     const [ selectedTemplate, setSelectedTemplate ] = useState(template);
     const [ postName, setPostName ] = useState(name);
 
     const [ pageSearchQuery, setPageSearchQuery ] = useState('');
-    const [ pageSearchResults, setPageSearchResults ] = useState<Array<pageSerach>>([]);
-    const [ selectedPage, setSelectedPage ] = useState<pageSerach>({} as pageSerach);
+    const [ pageSearchResults, setPageSearchResults ] = useState<Array<pageSearchRes>>([]);
+    const [ selectedPage, setSelectedPage ] = useState<pageSearchRes>({} as pageSearchRes);
 
 
     // -------------------------------------------------------
@@ -47,59 +41,41 @@ const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ _id, name, temp
     // -------------------------------------------------------
     const getAllTemplates = () => {
         setLoadingState(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `query {
-                    template {
-                        get_all
-                    }	
-                }`
-            }
-        })
-        .then((result) => {
-            const templates = result.data.data.template.get_all || [];
+        getTemplates({
+            __args: {}
+        },
+        (response) => {
+            const templates = response.data.data.template.get_all || [];
             setTemplates(templates);
             setLoadingState(false);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             console.log(err);
             setLoadingState(false);
         })
     }
     const getAssignedPage = () => {
         setLoadingState(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `query {
-                    page {
-                        get_single_by_post_id (
-                            post_id: "${post_id}"
-                        ) 
-                        {
-                            _id
-                            name
-                            slug
-                        }
-                    }
-                }`
-            }
-        })
-        .then((result) => {
-            const page: pageSerach = result.data.data.page.get_single_by_post_id || {};
+        getSinglePageByPostID({
+            __args: {
+                post_id: post_id
+            },
+            _id: true,
+            name: true,
+            slug: true
+        },
+        (response) => {
+            const page: pageSearchRes = response.data.data.page.get_single_by_post_id || {};
             if(page) {
                 setSelectedPage(page);
                 setPageSearchQuery(page.name);
             }
             setLoadingState(false);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             console.log(err);
             setLoadingState(false);
-        })  
+        })
     }
 
     // 
@@ -110,7 +86,7 @@ const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ _id, name, temp
             setTemplates([]);
             setSelectedTemplate('');
             setPostName('');
-            setSelectedPage({} as pageSerach);
+            setSelectedPage({} as pageSearchRes);
         }
     }, []);
 
@@ -130,44 +106,33 @@ const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ _id, name, temp
 
 
     // Page search
-    const searchPageName = (value: string) => {
+    const searchPageNameHandler = (value: string) => {
         setLoadingState(true);
         // Search query and and set page search results
-        const query = `query {
-            page {
-                search_name (
-                    query: "${value}"
-                    full_slug: true
-                    allow_home: false
-                    type: "page"
-                )
-                {
-                    slug
-                    name
-                    _id
-                }
-            }
-        }`;
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((res) => {
-            if(res.data.data.page.search_name) {
-                setPageSearchResults(res.data.data.page.search_name);
+        searchPageName({
+            __args: {
+                query: value,
+                full_slug: true,
+                allow_home: false,
+                type: "page"
+            },
+            slug: true,
+            name: true,
+            _id: true
+        },
+        (response) => {
+            if(response.data.data.page.search_name) {
+                setPageSearchResults(response.data.data.page.search_name);
             }
             else {
                 setFormError({
                     error: true,
-                    message: formatLucidError(res.data.errors[0].message).message
+                    message: formatLucidError(response.data.errors[0].message).message
                 });
             }
             setLoadingState(false);
-        })
-        .catch(() => {
+        },
+        (err) => {
             setFormError({
                 error: true,
                 message: 'An unexpected error occured while querying the pages!'
@@ -176,7 +141,7 @@ const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ _id, name, temp
         })
     }
     const pageResultElements: Array<ReactElement> = [];
-    const selectPageLink = (page: pageSerach) => {
+    const selectPageLink = (page: pageSearchRes) => {
         setPageSearchQuery(page.name);
         setSelectedPage(page);
     }
@@ -199,41 +164,32 @@ const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ _id, name, temp
             e: e,
             onValidatePass: (fields) => {
                 setLoadingState(true);
-                const query = `mutation {
-                    post {
-                        update_single (
-                            _id: "${_id}"
-                            name: "${postName}"
-                            old_name: "${name}"
-                            template_path: "${selectedTemplate}"
-                            ${ selectedPage._id ? 'page_id: "'+ selectedPage._id +'"' : '' }
-                        )
-                        {
-                            name
-                        }
-                    }
-                }`;
-                // Save single component data
-                axios({
-                    url: getApiUrl(),
-                    method: 'post',
-                    data: {
-                        query: query
-                    }
-                })
-                .then((res) => {
-                    if(res.data.data.post.update_single) {
-                        window.location.href = `/posts/${res.data.data.post.update_single.name}`;
+                let queryObj: data_post_updateSingleQuery["query"]["post"]["update_single"]["__args"] = {
+                    _id: _id,
+                    name: postName,
+                    old_name: name,
+                    template_path: selectedTemplate,
+                }
+                if(selectedPage._id) queryObj.page_id = selectedPage._id
+                updateSinglePost({
+                    __args: queryObj,
+                    name: true,
+                    template_path: false,
+                    _id: false
+                },
+                (response) => {
+                    if(response.data.data.post.update_single) {
+                        window.location.href = `/posts/${response.data.data.post.update_single.name}`;
                     }
                     else {
                         setFormError({
                             error: true,
-                            message: formatLucidError(res.data.errors[0].message).message
+                            message: formatLucidError(response.data.errors[0].message).message
                         });
                     }
                     setLoadingState(false);
-                })
-                .catch((err) => {
+                },
+                (err) => {
                     setFormError({
                         error: true,
                         message: 'An unexpected error occured while saving the post type!'
@@ -295,7 +251,7 @@ const UpdatePostTypeForm: React.FC<updatePostTypeFormProps> = ({ _id, name, temp
                 }}
                 label={'assigned page'}
                 results={pageResultElements}
-                searchAction={searchPageName}
+                searchAction={searchPageNameHandler}
                 style={'--hide-seperator'}>
                 { selectedPage.name ? <div className="noteRow noteRow--no-margin-top">selected: {selectedPage.name}</div> : null }
             </SearchInput>

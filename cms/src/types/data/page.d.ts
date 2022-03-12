@@ -102,6 +102,35 @@ interface data_page_getSingleQueryRes {
 
 
 // -----------------------------------
+// get single page by post id
+interface data_page_getSingleByPostIDQuery {
+    query: {
+        page: {
+            get_single_by_post_id: {
+                __args: {
+                    post_id: mod_postObject["_id"]
+                }
+                _id: boolean
+                slug: boolean
+                name: boolean
+            }
+        }
+    }
+}
+interface data_page_getSingleByPostIDQueryRes {
+    data: {
+        page: {
+            get_single_by_post_id: pageSearchRes
+        }
+    }
+    errors: Array<{
+        message: string
+    }>
+}
+
+
+
+// -----------------------------------
 // delete single page
 interface data_page_deleteSingleQuery {
     query: {

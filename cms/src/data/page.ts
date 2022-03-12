@@ -101,6 +101,38 @@ export const getSinglePage = async (data: data_page_getSingleQuery["query"]["pag
 }
 
 // --------------------------------
+// Get single page by post id
+// --------------------------------
+export const getSinglePageByPostID = async (data: data_page_getSingleByPostIDQuery["query"]["page"]["get_single_by_post_id"], success: (res: AxiosResponse<data_page_getSingleByPostIDQueryRes, any>) => void, error: (err: any) => void) => {
+    try {
+        const queryObj: data_page_getSingleByPostIDQuery = {
+            query: {
+                page: {
+                    get_single_by_post_id: data
+                }
+            }
+        }
+        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
+        axios.request<data_page_getSingleByPostIDQueryRes>({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        })
+        .then((result) => {
+            success(result);
+        })
+        .catch((err) => {
+            error(err);
+        })
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// --------------------------------
 // Delete single pages
 // --------------------------------
 export const deleteSinglePage = async (data: data_page_deleteSingleQuery["query"]["page"]["delete_single"], success: (res: AxiosResponse<data_page_deleteSingleQueryRes, any>) => void, error: (err: any) => void) => {

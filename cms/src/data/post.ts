@@ -37,6 +37,39 @@ export const saveSinglePost = async (data: data_post_saveSingleQuery["query"]["p
 }
 
 
+// --------------------------------
+// Update single post
+// --------------------------------
+export const updateSinglePost = async (data: data_post_updateSingleQuery["query"]["post"]["update_single"], success: (res: AxiosResponse<data_post_updateSingleQueryRes, any>) => void, error: (err: any) => void) => {
+    try {
+        const queryObj: data_post_updateSingleQuery = {
+            query: {
+                post: {
+                    update_single: data
+                }
+            }
+        }
+        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
+        axios.request<data_post_updateSingleQueryRes>({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        })
+        .then((result) => {
+            success(result);
+        })
+        .catch((err) => {
+            error(err);
+        })
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+
 
 // --------------------------------
 // Get multiple posts
