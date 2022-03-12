@@ -11,6 +11,8 @@ import { faFile } from '@fortawesome/free-solid-svg-icons';
 import { ModalContext } from "../../../helper/Context";
 // Functions
 import getApiUrl from "../../../functions/getApiUrl";
+// data
+import { getMultiplePosts } from '../../../data/post';
 
 // Types
 interface cont_post_postDeclaration {
@@ -49,34 +51,22 @@ const NavigationPostLinks: React.FC = () => {
     }, []);
 
     const getAllPosts = () => {
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: `
-                query {
-                    post {
-                        get_multiple
-                        (
-                            all: true
-                        )
-                        {
-                            _id
-                            name
-                            template_path
-                        }
-                    }
-                }`
-            }
-        })
-        .then((result) => {
-            const allPosts: Array<cont_post_postDeclaration> = result.data.data.post.get_multiple || [];
+        getMultiplePosts({
+            __args: {
+                all: true
+            },
+            _id: true,
+            name: true,
+            template_path: true
+        },
+        (response) => {
+            const allPosts: Array<cont_post_postDeclaration> = response.data.data.post.get_multiple || [];
             setPosts((posts) => [
                 ...posts,
                 ...allPosts
             ]);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             console.log(err);
         })
     }
