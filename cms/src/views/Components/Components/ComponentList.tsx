@@ -69,7 +69,20 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
             description: true,
             preview_url: true,
             date_added: true,
-            file_path: true
+            file_path: true,
+            file_name: false,
+            date_modified: false,
+            content_types: {
+                _id: false,
+                name: false,
+                type: false,
+                parent: false,
+                config: {
+                    min: false,
+                    max: false,
+                    default: false,
+                }
+            }
         },
         (response) => {
             const allComponents: Array<componentData> = response.data.data.components.get_multiple || [];

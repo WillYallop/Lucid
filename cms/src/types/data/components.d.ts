@@ -59,7 +59,20 @@ interface data_comp_getMultipleComponentQuery {
                 description: boolean
                 preview_url: boolean
                 date_added: boolean
+                file_name: boolean
                 file_path: boolean
+                date_modified: boolean
+                content_types: {
+                    _id: boolean
+                    name: boolean
+                    type: boolean
+                    parent: boolean
+                    config: {
+                        min: boolean
+                        max: boolean
+                        default: boolean
+                    }
+                } 
             }
         }
     }
@@ -67,14 +80,7 @@ interface data_comp_getMultipleComponentQuery {
 interface data_comp_getMultipleComponentQueryRes {
     data: {
         components: {
-            get_multiple: Array<{
-                _id: mod_componentModel["_id"]
-                name: mod_componentModel["name"]
-                description: mod_componentModel["description"]
-                preview_url: mod_componentModel["preview_url"]
-                date_added: mod_componentModel["date_added"]
-                file_path: mod_componentModel["file_path"]
-            }>
+            get_multiple: Array<mod_componentModel>
         }
     }
     errors: Array<{
