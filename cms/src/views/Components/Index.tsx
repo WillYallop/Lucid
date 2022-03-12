@@ -1,6 +1,5 @@
 import { useState, useEffect, useContext } from "react";
 import axios from 'axios';
-
 // Context
 import { 
     PageNotificationContext, PageNotificationContextNoticationsObj,
@@ -18,6 +17,7 @@ import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
 import getApiUrl from "../../functions/getApiUrl";
 // Icons
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+
 
 interface unregisteredComponentsData {
     totals: {
@@ -121,6 +121,7 @@ const Components: React.FC = () => {
     //  Layout Expand - TODO - make persistent
     // -------------------------------------------------------
     const [ componentLayoutExpanded, setComponentLayoutExpanded ] = useState(false);
+
 
     // -------------------------------------------------------
     // 

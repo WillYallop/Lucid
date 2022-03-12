@@ -79,10 +79,9 @@ const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded, clickC
                         clickCallback === undefined ?
                         <div className="componentRow__standard__body__col layout__flex">
                             <NavLink to={`/edit/component/${component._id}`}>
-                                <CoreIcon icon={faEdit}/>
-                            </NavLink >
-                            <CoreIcon icon={faTrashAlt} style={'warning'}/>
-                    </div>
+                                <CoreIcon icon={faEdit} style={'transparent'}/>
+                            </NavLink>
+                        </div>
                         : null
                     }
                 </div>

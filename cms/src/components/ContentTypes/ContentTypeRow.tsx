@@ -11,17 +11,6 @@ interface contentTypeProps {
     deleteCallback: (contentType__id: mod_contentTypesConfigModel["_id"]) => void
     getChildren: (contentType__id: mod_contentTypesConfigModel["_id"]) => Array<ReactElement>
 }
-export interface mod_contentTypesConfigModel {
-    _id: string
-    name: string // this is the custom name the user gives to the content type
-    type: 'text' | 'email' | `rich_media` | 'number' | `range` | 'repeater' | 'select' | 'date' | 'media' | 'boolean' | 'json'
-    config: {
-        max?: string
-        min?: string
-        default?: string
-    }
-    parent: 'root' | mod_contentTypesConfigModel["_id"]
-}
 
 const ContentTypeRow: React.FC<contentTypeProps> = ({ contentType, actionForm, deleteCallback, getChildren }) => {
 

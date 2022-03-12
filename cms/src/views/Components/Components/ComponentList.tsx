@@ -1,13 +1,11 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import axios from 'axios';
 // Context
-import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext } from "../../../helper/Context";
+import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext, ModalContext } from "../../../helper/Context";
 // Components
 import ComponentRow from "./ComponentRow";
-import UtilityLoading from '../../../components/Ultility/Loading';
 // Functions
 import getApiUrl from "../../../functions/getApiUrl";
-import e from 'express';
 
 interface componentData {
     date_added: string
@@ -24,6 +22,7 @@ interface componentListProps {
 
 const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     const { loadingState, setLoadingState } = useContext(LoadingContext);
+
 
     // -------------------------------------------------------
     // Notification 
@@ -94,6 +93,12 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
         })
     }
 
+    // Load more
+    const loadmore = () => {
+        skip += components.length;
+        getAllComponents(skip, limit);
+    }
+
     // Create results array
     const componentRows: Array<ReactElement> = [];
     if(components.length) {
@@ -102,18 +107,14 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
         });
     } 
 
-    // Load more
-    const loadmore = () => {
-        skip += components.length;
-        getAllComponents(skip, limit);
-    }
-
+    
     return (
         <div className="con">
             { componentRows }
             { showLoadMore ? <button className='btnStyle1' onClick={loadmore}>load more</button> : null }
         </div>
     )
+
 }
 
 export default ComponentList;

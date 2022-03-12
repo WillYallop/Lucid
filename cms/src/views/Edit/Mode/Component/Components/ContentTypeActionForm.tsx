@@ -1,5 +1,4 @@
 import { ReactElement, useEffect, useState, useContext } from 'react';
-import { mod_contentTypesConfigModel } from '../../../../../components/ContentTypes/ContentTypeRow';
 import axios from 'axios';
 // Components
 import SelectInput from '../../../../../components/Core/Inputs/SelectInput';
@@ -15,6 +14,8 @@ import validatorConfig from '../../../../../functions/validatorConfig';
 import formatLucidError from '../../../../../functions/formatLucidError';
 // Context
 import { LoadingContext } from "../../../../../helper/Context";
+// data
+import { getSingleContentTypeConfig, createSingleContentTypeConfig, updateSingleContentTypeConfig } from "../../../../../data/contentTypeConfig";
 
 interface ContentTypeActionFormProps {
     component__id: string
@@ -77,42 +78,19 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
     // -------------------------------------------------------
     const getContentType = () => {
         setLoadingState(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `
-                query {
-                    content_type_config {
-                        get_single (
-                            component_id: "${component__id}"
-                            content_type_id: "${contentType__id}"
-                        )
-                        {
-                            _id
-                            name
-                            type
-                            parent
-                            config {
-                                min
-                                max
-                                default
-                            }
-                        }
-                    }
-                }`
-            }
-        })
-        .then((result) => {
-            const contentTypeData = result.data.data.content_type_config.get_single || {};
+        getSingleContentTypeConfig({
+            component_id: component__id,
+            content_type_id: contentType__id
+        },
+        (response) => {
+            const contentTypeData = response.data.data.content_type_config.get_single || {};
             setType(contentTypeData.type);
             setName(contentTypeData.name);
             setLoadingState(false);
             setTypeExtendedForm(contentTypeData.type, contentTypeData);
             setContentType(contentTypeData);
-        })
-        .catch((err) => {
-            console.log(err);
+        },
+        () => {
             setLoadingState(false);
         })
     }
@@ -144,58 +122,31 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
     // Actions
     // -------------------------------------------------------
     // Create
-    const createContentTypeAction = (configObj: string) => {
+    const createContentTypeAction = (configObj: mod_contentTypesConfigModel["config"]) => {
         setLoadingState(true);
-        // Query
-        const query = `
-            mutation {
-                content_type_config {
-                    create_single 
-                    (
-                        component_id: "${component__id}"
-                        content_type: {
-                            name: "${name}"
-                            type: "${type}"
-                            parent: "${contentType__id}"
-                            config: ${configObj}
-                        }
-                    )
-                    {
-                        _id
-                        name
-                        type
-                        parent
-                        config {
-                            max
-                            min
-                            default
-                        }
-                    }
-                }
-            }`;
-
-        console.log(query);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
+        createSingleContentTypeConfig({
+            component_id: component__id,
+            content_type: {
+                name: name,
+                type: type,
+                parent: contentType__id,
+                config: configObj
             }
-        })
-        .then((result) => {
-            const newContentType: mod_contentTypesConfigModel = result.data.data.content_type_config.create_single;
+        },
+        (response) => {
+            const newContentType: mod_contentTypesConfigModel = response.data.data.content_type_config.create_single;
             if(newContentType) {
                 successCallback(newContentType, actionType);
             }
             else {
                 setFormError({
                     error: true,
-                    message: formatLucidError(result.data.errors[0].message).message
+                    message: formatLucidError(response.data.errors[0].message).message
                 });
             }
             setLoadingState(false);
-        })
-        .catch((err) => {
+        },
+        () => {
             setFormError({
                 error: true,
                 message: 'An unexpected error occured when registering the components new content type!'
@@ -204,57 +155,32 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
         })
     }
     // Update
-    const updateContentTypeAction = (configObj: string) => {
+    const updateContentTypeAction = (configObj: mod_contentTypesConfigModel["config"]) => {
         setLoadingState(true);
-        const query = `mutation {
-                content_type_config {
-                    update_single
-                    (
-                        component_id: "${component__id}"
-                        content_type: {
-                            _id: "${contentType?._id}"
-                            name: "${name}"
-                            type: "${type}"
-                            parent: "${contentType.parent}"
-                            config: ${configObj}
-                        }
-                    ) 
-                    {
-                        _id
-                        name
-                        type
-                        parent
-                        config {
-                            max
-                            min
-                            default
-                        }
-                    }
-                }
+        updateSingleContentTypeConfig({
+            component_id: component__id,
+            content_type: {
+                _id: contentType?._id,
+                name: name,
+                type: type,
+                parent: contentType.parent,
+                config: configObj
             }
-        `;
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            const newContentType: mod_contentTypesConfigModel = result.data.data.content_type_config.update_single;
+        },
+        (response) => {
+            const newContentType: mod_contentTypesConfigModel = response.data.data.content_type_config.update_single;
             if(newContentType) {
                 successCallback(newContentType, actionType);
             }
             else {
                 setFormError({
                     error: true,
-                    message: formatLucidError(result.data.errors[0].message).message
+                    message: formatLucidError(response.data.errors[0].message).message
                 });
             }
             setLoadingState(false);
-        })
-        .catch((err) => {
-            console.log(err);
+        },
+        () => {
             setLoadingState(false);
             setFormError({
                 error: true,
@@ -271,13 +197,12 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
             e: e,
             onValidatePass: (fields) => {
                 // Generate the content type config object
-                let configObj = `{`;
+                let configObj: mod_contentTypesConfigModel["config"] = {};
                 for(let prop in fields) {
-                    if(prop != 'name' && prop != 'type') {
-                        configObj += `${prop}: "${fields[prop]}" `;
-                    }
+                    if(prop === 'max') configObj.max = fields[prop];
+                    if(prop === 'min') configObj.min = fields[prop];
+                    if(prop === 'default') configObj.default = fields[prop];
                 }
-                configObj += `}`;
                 // Perform query action
                 if(actionType === 'create') createContentTypeAction(configObj);
                 else updateContentTypeAction(configObj);

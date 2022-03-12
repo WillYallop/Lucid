@@ -127,9 +127,7 @@
                     }
                 }
                 .coreIcon {
-                    &:first-child {
-                        margin-right: rem(10);
-                    }
+        
                     @include smallMobile {
                         margin-top: rem(5);
                     }

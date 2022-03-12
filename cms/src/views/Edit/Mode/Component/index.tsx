@@ -1,6 +1,5 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
 // Context
 import { 
     PageNotificationContext, PageNotificationContextNoticationsObj, 
@@ -12,17 +11,18 @@ import DefaultPage from '../../../../components/Layout/DefaultPage';
 import SidebarMeta from "../../../../components/Layout/Sidebar/SidebarMeta";
 import SidebarButton from "../../../../components/Layout/Sidebar/SidebarBtn";
 import SidebarFormSubmit from "../../../../components/Layout/Sidebar/SidebarFormSubmit";
-import ContentTypeRow, { mod_contentTypesConfigModel } from '../../../../components/ContentTypes/ContentTypeRow';
-import CoreIcon from '../../../../components/Core/Icon';
+import ContentTypeRow from '../../../../components/ContentTypes/ContentTypeRow';
 import ComponentContentTypeActionForm from './Components/ContentTypeActionForm';
 import ComponentDataForm from './Components/ComponentDataForm';
 import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
 // Functions
-import getApiUrl from "../../../../functions/getApiUrl";
 import formatLucidError from '../../../../functions/formatLucidError';
 // Icons
 import { faSave, faTrashAlt, faPlus } from '@fortawesome/free-solid-svg-icons';
 import SidebarLayout from '../../../../components/Layout/Sidebar/SidebarLayout';
+// Data
+import { degrigisterComponent, getSingleComponent } from '../../../../data/components';
+import { deleteContentTypeConfig } from '../../../../data/contentTypeConfig';
 
 interface mod_componentModel {
     _id: string
@@ -96,40 +96,11 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     const [ component, setComponent ] = useState({} as mod_componentModel);
     const getComponentData = () => {
         setLoadingState(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `
-                query {
-                    components {
-                        get_single ( _id: "${_id}" ) {
-                            _id
-                            name
-                            file_name
-                            file_path
-                            description
-                            preview_url
-                            date_added
-                            date_modified
-                            content_types {
-                                _id
-                                name
-                                type
-                                parent
-                                config {
-                                    max
-                                    min
-                                    default
-                                }
-                            }
-                        }
-                    }
-                }`
-            }
-        })
-        .then((result) => {
-            const componentData = result.data.data.components.get_single || {};
+        getSingleComponent({
+            _id: _id
+        },
+        (response) => {
+            const componentData = response.data.data.components.get_single || {};
             if(!Object.keys(componentData).length) addNotification('there was an error getting your component!', 'error');
             setComponent({
                 ...component,
@@ -137,12 +108,11 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             });
             setComponentName(componentData.name);
             setLoadingState(false);
-        })
-        .catch((err) => {
-            console.log(err);
+        }, 
+        () => {
             addNotification('there was an error getting your component!', 'error');
             setLoadingState(false);
-        })
+        });
     }
 
     // Update data
@@ -205,57 +175,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     }
 
     // Delete content type
-    const deleteContentType = (contentType__id: mod_contentTypesConfigModel["_id"]) => {
-        setLoadingState(true);
-        const query = `mutation
-            {
-                content_type_config 
-                {
-                    delete_single 
-                    (
-                        component_id: "${_id}"
-                        content_type_id: "${contentType__id}"
-                    )
-                    {
-                        deleted
-                    }
-                }
-            }`;
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            const componentData = result.data.data.content_type_config.delete_single;
-            if(componentData) {
-                if(componentData.deleted) {
-                    // Add new content type to component data
-                    const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
-                    const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType__id );
-                    if(updatedIndex != -1) newContentTypeArr.splice(updatedIndex, 1);
-                    setComponent({
-                        ...component,
-                        ...{
-                            content_types: newContentTypeArr
-                        }
-                    });
-                    // Add success message
-                    addNotification(`you have successfully deleted the content type!`, 'success');
-                }
-            }
-            else {
-                addNotification(formatLucidError(result.data.errors[0].message).message, 'error');
-            }
-            setLoadingState(false);
-        })
-        .catch((err) => {
-            addNotification(`there was an error while deleting the content type with ID "${contentType__id}"!`, 'error');
-            setLoadingState(false);
-        })
-    }
     const confirmDeleteContentType = (contentType__id: mod_contentTypesConfigModel["_id"]) => {
         setModalState({
             ...modalState,
@@ -265,47 +184,43 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             size: 'small',
             element: <DeleteConfirmModal 
                         message={'are you sure you would like to delete this content type?'}
-                        action={() => deleteContentType(contentType__id)}/>
+                        action={() => {
+                            setLoadingState(true);
+                            deleteContentTypeConfig({
+                                component_id: _id,
+                                content_type_id: contentType__id
+                            },
+                            (response) => {
+                                const componentData = response.data.data.content_type_config.delete_single;
+                                if(componentData) {
+                                    if(componentData.deleted) {
+                                        // Add new content type to component data
+                                        const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
+                                        const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType__id );
+                                        if(updatedIndex != -1) newContentTypeArr.splice(updatedIndex, 1);
+                                        setComponent({
+                                            ...component,
+                                            ...{
+                                                content_types: newContentTypeArr
+                                            }
+                                        });
+                                        // Add success message
+                                        addNotification(`you have successfully deleted the content type!`, 'success');
+                                    }
+                                }
+                                else {
+                                    addNotification(formatLucidError(response.data.errors[0].message).message, 'error');
+                                }
+                                setLoadingState(false);
+                            },
+                            () => {
+                                addNotification(`there was an error while deleting the content type with ID "${contentType__id}"!`, 'error');
+                                setLoadingState(false);
+                            })
+                        }}/>
         });
     }
-
     // Delete component
-    const deleteComponent = (component_id: mod_componentModel["_id"]) => {
-        setLoadingState(true);
-        const query = `mutation {
-            components {
-                delete_single (
-                    _id: "${component_id}"
-                )
-                {
-                    deleted
-                }
-            }
-        }`;
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            const componentData = result.data.data.components.delete_single;
-            if(componentData) {
-                if(componentData.deleted) {
-                    navigate('/components');
-                }
-            }
-            else {
-                addNotification(formatLucidError(result.data.errors[0].message).message, 'error');
-            }
-            setLoadingState(false);
-        })
-        .catch((err) => {
-            addNotification(`there was an error while degregistering this component with an ID of"${component_id}"!`, 'error');
-            setLoadingState(false);
-        })
-    }
     const confirmDeleteComponent = (component_id: mod_componentModel["_id"]) => {
         setModalState({
             ...modalState,
@@ -315,7 +230,21 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             size: 'small',
             element: <DeleteConfirmModal 
                         message={'are you sure you would like to deregister this component?'}
-                        action={() => deleteComponent(component_id)}/>
+                        action={() => {
+                            setLoadingState(true);
+                            degrigisterComponent({
+                                _id: component_id
+                            },
+                            (result) => {
+                                if(result) if(result.data.data.components.delete_single.deleted) navigate('/components');
+                                else addNotification(formatLucidError(result.data.errors[0].message).message, 'error');
+                                setLoadingState(false);
+                            },
+                            () => {
+                                addNotification(`there was an error while degregistering this component with an ID of"${component_id}"!`, 'error');
+                                setLoadingState(false);
+                            });
+                        }}/>
         });
     }
 
