@@ -1,5 +1,4 @@
 import { ReactElement, useEffect, useContext, useState, useRef } from 'react';
-import axios from 'axios';
 import { v1 as uuidv1 } from 'uuid';
 // Components
 import CoreIcon from '../../../../../components/Core/Icon';
@@ -13,7 +12,9 @@ import { PageContext, UpdatedDataContext } from '../functions/PageContext';
 import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 // Functions
 import formatLucidError from '../../../../../functions/formatLucidError';
-import getApiUrl from '../../../../../functions/getApiUrl';
+// data
+import { getSinglePageComponent } from '../../../../../data/pageComponents';
+
 
 interface editPageComponentProps {
     page_component_id: mod_page_componentModel["_id"]
@@ -50,60 +51,52 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                 else throw new Error('this page cannot be found!');
             }
             else {
-                console.log('DONWLOAD PAGE COMPONENT!');
                 // Download page
-                axios({
-                    url: getApiUrl(),
-                    method: 'post',
-                    data: {
-                    query: `query {
-                        page_components {
-                            get_single(_id: "${page_component_id}") {
-                                _id
-                                component_id
-                                position
-                                component {
-                                    _id
-                                    name
-                                    preview_url
-                                    file_path
-                                    file_name
-                                    date_added
-                                    description
-                                    date_modified
-                                }
-                                content_types {
-                                    _id
-                                    name
-                                    type
-                                    parent
-                                    config {
-                                        min
-                                        max
-                                        default
-                                    }
-                                }
-                                groups {
-                                    _id
-                                    page_component_id
-                                    parent_group
-                                    parent_config_id
-                                    position
-                                }
-                                data {
-                                    page_component_id
-                                    config_id
-                                    value
-                                    group_id
-                                    root
-                                }
-                            }
+                getSinglePageComponent({
+                    __args: {
+                        _id: page_component_id
+                    },
+                    _id: true,
+                    component_id: true,
+                    position: true,
+                    component: {
+                        _id: true,
+                        name: true,
+                        preview_url: true,
+                        file_path: true,
+                        file_name: true,
+                        date_added: true,
+                        description: true,
+                        date_modified: true,
+                    },
+                    content_types: {
+                        _id: true,
+                        name: true,
+                        type: true,
+                        parent: true,
+                        config: {
+                            min: true,
+                            max: true,
+                            default: true,
                         }
-                    }`
+                    },
+                    groups: {
+                        _id: true,
+                        page_component_id: true,
+                        parent_group: true,
+                        parent_config_id: true,
+                        position: true,
+                    },
+                    data: {
+                        page_component_id: true,
+                        config_id: true,
+                        value: true,
+                        group_id: true,
+                        root: true,
                     }
-                })
-                .then((result) => {
-                    const pageComponent: mod_page_componentModel = result.data.data.page_components.get_single || {};
+                },
+                (response) => {
+                    const pageComponent: mod_page_componentModel = response.data.data.page_components.get_single || {};
                     if(pageComponent) {
                         if(!mounted.current) return null;
                         // update page
@@ -120,10 +113,10 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
 
                     }
                     else {
-                        addNotification(formatLucidError(result.data.errors[0].message).message,'error');
+                        addNotification(formatLucidError(response.data.errors[0].message).message,'error');
                     }
-                })
-                .catch((err) => {
+                },
+                (err) => {
                     addNotification('there was an unexpected error while getting the page data.','error');
                 })
             }
