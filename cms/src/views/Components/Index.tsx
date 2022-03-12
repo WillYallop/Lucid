@@ -17,6 +17,8 @@ import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
 import getApiUrl from "../../functions/getApiUrl";
 // Icons
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+// data
+import { getUnregisteredComponents } from '../../data/components';
 
 
 interface unregisteredComponentsData {
@@ -74,32 +76,11 @@ const Components: React.FC = () => {
     // Unregistered components
     // -------------------------------------------------------
     const [ unregisteredComponents, setUnregisteredComponents ] = useState<unregisteredComponentsData>(defaultUnregisteredComponents);
-    const getUnregisteredComponents = () => {
+    const getUnregisteredComponentsHandler = () => {
         setLoadingState(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: `
-                query {
-                    components {
-                        get_unregistered
-                        {
-                            unregistered {
-                                file_name
-                                file_path
-                            }
-                            totals {
-                                unregistered
-                                registered
-                            }
-                        }
-                    }
-                }`
-            }
-        })
-        .then((result) => {
-            const res: unregisteredComponentsData = result.data.data.components.get_unregistered || {};
+        getUnregisteredComponents({},
+        (response) => {
+            const res: unregisteredComponentsData = response.data.data.components.get_unregistered || {};
             setUnregisteredComponents(() => {
                 return {
                     ...unregisteredComponents,
@@ -110,9 +91,8 @@ const Components: React.FC = () => {
                 addNotification(`you have ${res.totals.unregistered} unregistered components!`, 'warning');
             }
             setLoadingState(false);
-        })
-        .catch((err) => {
-            console.log(err);
+        },
+        () => {
             addNotification('there was an error getting your unregistered components!', 'error');
         })
     }
@@ -127,7 +107,7 @@ const Components: React.FC = () => {
     // 
     // -------------------------------------------------------
     useEffect(() => {
-        getUnregisteredComponents();
+        getUnregisteredComponentsHandler();
         return () => {
             setUnregisteredComponents(defaultUnregisteredComponents);
             setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);

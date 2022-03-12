@@ -7,9 +7,9 @@ import getApiUrl from "../functions/getApiUrl";
 // --------------------------------
 // Get single component
 // --------------------------------
-export const getSingleComponent = async (data: data_comp_getSingeleComponentQueryArgs, success: (res: AxiosResponse<data_comp_getSingleComponentQueryRes, any>) => void, error: any) => {
+export const getSingleComponent = async (data: data_comp_getSingleComponentQueryArgs, success: (res: AxiosResponse<data_comp_getSingleComponentQueryRes, any>) => void, error: any) => {
     try {
-        const queryObj: data_comp_getSingeleComponentQuery = {
+        const queryObj: data_comp_getSingleComponentQuery = {
             query: {
                 components: {
                     get_single: {
@@ -39,6 +39,81 @@ export const getSingleComponent = async (data: data_comp_getSingeleComponentQuer
         }
         const query = jsonToGraphQLQuery(queryObj, { pretty: true });
         axios.request<data_comp_getSingleComponentQueryRes>({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        })
+        .then((result) => {
+            success(result);
+        })
+        .catch((err) => {
+            error(err);
+        })
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// --------------------------------
+// Get multiple components
+// --------------------------------
+export const getMultipleComponents = async (data: data_comp_getMultipleComponentQueryArgs, success: (res: AxiosResponse<data_comp_getMultipleComponentQueryRes, any>) => void, error: any) => {
+    try {
+        const queryObj: data_comp_getMultipleComponentQuery = {
+            query: {
+                components: {
+                    get_multiple: {
+                        __args: data,
+                        _id: true,
+                        name: true,
+                        description: true,
+                        preview_url: true,
+                        date_added: true,
+                        file_path: true
+                    } 
+                }
+            }
+        }
+        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
+        axios.request<data_comp_getMultipleComponentQueryRes>({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        })
+        .then((result) => {
+            success(result);
+        })
+        .catch((err) => {
+            error(err);
+        })
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// --------------------------------
+// Save single component
+// --------------------------------
+export const saveSingleComponent = async (data: data_comp_saveSingleComponentQueryArgs, success: (res: AxiosResponse<data_comp_saveSingleComponentQueryRes, any>) => void, error: any) => {
+    try {
+        const queryObj: data_comp_saveSingleComponentQuery = {
+            mutation: {
+                components: {
+                    save_single: {
+                        __args: data,
+                        _id: true
+                    }
+                }
+            }
+        }
+        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
+        axios.request<data_comp_saveSingleComponentQueryRes>({
             url: getApiUrl(),
             method: 'post',
             data: {
@@ -111,6 +186,48 @@ export const degrigisterComponent = async (data: data_comp_deregisterComponentQu
         }
         const query = jsonToGraphQLQuery(queryObj, { pretty: true });
         axios.request<data_comp_deregisterComponentQueryRes>({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        })
+        .then((result) => {
+            success(result);
+        })
+        .catch((err) => {
+            error(err);
+        })
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// --------------------------------
+// Get unregistered components
+// --------------------------------
+export const getUnregisteredComponents = async (data: data_comp_ungregisteredComponentQueryArgs, success:(res: AxiosResponse<data_comp_ungregisteredComponentQueryRes, any>) => void, error: any) => {
+    try {
+        const queryObj: data_comp_ungregisteredComponentQuery = {
+            query: {
+                components: {
+                    get_unregistered: {
+                        __args: data,
+                        unregistered: {
+                            file_name: true,
+                            file_path: true
+                        },
+                        totals: {
+                            unregistered: true,
+                            registered: true
+                        }
+                    }
+                }
+            }
+        }
+        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
+        axios.request<data_comp_ungregisteredComponentQueryRes>({
             url: getApiUrl(),
             method: 'post',
             data: {

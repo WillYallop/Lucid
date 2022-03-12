@@ -6,6 +6,9 @@ import { PageNotificationContext, PageNotificationContextNoticationsObj, Loading
 import ComponentRow from "./ComponentRow";
 // Functions
 import getApiUrl from "../../../functions/getApiUrl";
+// data
+import { getMultipleComponents } from '../../../data/components';
+
 
 interface componentData {
     date_added: string
@@ -57,28 +60,12 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
 
     const getAllComponents = (s: number, l: number) => {
         setLoadingState(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: `
-                query {
-                    components {
-                        get_multiple ( skip: ${s}, limit: ${l} )
-                        {
-                            _id
-                            name
-                            description
-                            preview_url
-                            date_added
-                            file_path
-                        }
-                    }
-                }`
-            }
-        })
-        .then((result) => {
-            const allComponents: Array<componentData> = result.data.data.components.get_multiple || [];
+        getMultipleComponents({
+            skip: s, 
+            limit: l
+        },
+        (response) => {
+            const allComponents: Array<componentData> = response.data.data.components.get_multiple || [];
             if(allComponents.length < limit) setShowLoadMore(false);
             else setShowLoadMore(true);
             setComponents((components) => [
@@ -86,8 +73,8 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
                 ...allComponents
             ]);
             setLoadingState(false);
-        })
-        .catch((err) => {
+        },
+        () => {
             addNotification('There was an error getting your components!', 'error');
             setLoadingState(false);
         })

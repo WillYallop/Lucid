@@ -14,6 +14,8 @@ import SelectInput from "../../../components/Core/Inputs/SelectInput";
 import formValidationHandler from "../../../functions/formValidationHandler";
 import getApiUrl from "../../../functions/getApiUrl";
 import validatorConfig from '../../../functions/validatorConfig';
+// data
+import { getUnregisteredComponents, saveSingleComponent } from '../../../data/components';
 
 
 const RegisterComponentForm: React.FC = () => {
@@ -47,43 +49,27 @@ const RegisterComponentForm: React.FC = () => {
     const [ descriptionValue, setDescriptionValue ] = useState('');
 
     // Get unregistered components
-    const getUnregisteredComponents = () => {
+    const getUnregisteredComponentsHandler = () => {
         setLoadingState(true);
-        // Save single component
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `
-                    query {
-                        components {
-                            get_unregistered {
-                                unregistered {
-                                    file_path
-                                }
-                            }
-                        }
-                    }`
-            }
-        })
-        .then((result) => {
-            let response = result.data.data.components.get_unregistered.unregistered;
-            if(response) {
+        getUnregisteredComponents({},
+        (response) => {
+            let res = response.data.data.components.get_unregistered.unregistered;
+            if(res) {
                 let arr: Array<string> = [];
-                response.forEach((pathObj:any) => {
-                    arr.push(pathObj.file_path);
+                res.forEach((pathObj) => {
+                    arr.push(pathObj.file_name);
                 });
                 setComponentPathOptions(arr);
             }
             else {
                 setFormError({
                     error: true,
-                    message: result.data.errors[0].message
+                    message: response.data.errors[0].message
                 });
             }
             setLoadingState(false);
-        })
-        .catch(() => {
+        },
+        () => {
             setFormError({
                 error: true,
                 message: 'An unexpected error occured while registering the components!'
@@ -101,29 +87,14 @@ const RegisterComponentForm: React.FC = () => {
             onValidatePass: (fields) => {
                 setLoadingState(true);
                 // Save single component
-                axios({
-                    url: getApiUrl(),
-                    method: 'post',
-                    data: {
-                      query: `
-                        mutation {
-                            components {
-                                save_single
-                                (
-                                    name: "${fields.comp_name}"
-                                    description: "${fields.comp_desc}"
-                                    file_path: "${fields.comp_path}"
-                                    image: ""
-                                )
-                                {
-                                    _id
-                                }
-                            }
-                        }`
-                    }
-                })
-                .then((result) => {
-                    let newCompData = result.data.data.components.save_single;
+                saveSingleComponent({
+                    name: fields.comp_name,
+                    description: fields.comp_desc,
+                    file_path: fields.comp_path,
+                    image: ""
+                },
+                (response) => {
+                    let newCompData = response.data.data.components.save_single;
                     if(newCompData) {
                         setModalState({
                             ...modalState,
@@ -134,12 +105,12 @@ const RegisterComponentForm: React.FC = () => {
                     else {
                         setFormError({
                             error: true,
-                            message: result.data.errors[0].message
+                            message: response.data.errors[0].message
                         });
                     }
                     setLoadingState(false);
-                })
-                .catch((err) => {
+                },
+                () => {
                     setFormError({
                         error: true,
                         message: 'An unexpected error occured when registering the component!'
@@ -165,7 +136,7 @@ const RegisterComponentForm: React.FC = () => {
     // 
     // -------------------------------------------------------
     useEffect(() => {
-        getUnregisteredComponents();
+        getUnregisteredComponentsHandler();
         return () => {
 
         }
