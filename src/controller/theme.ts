@@ -49,6 +49,21 @@ const getSingleFileContent = async (target: string, type: 'json') => {
     }
 }
 
+// Delete single file
+const deleteSingleFile = async (target: string) => {
+    try {
+        const directory = path.resolve(themeDir + target);
+        const checkFileExists = await verifyFileExists(target);
+        if(checkFileExists) {
+            fs.unlinkSync(directory);
+            return true;
+        } else return false;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
 // ------------------------------------ ------------------------------------
 //  Verify File Exists
 // ------------------------------------ ------------------------------------
@@ -95,5 +110,6 @@ export {
     getSingleFileContent,
     verifyFileExists,
     writeSingleFile,
-    listDirectoryFiles
+    listDirectoryFiles,
+    deleteSingleFile
 }

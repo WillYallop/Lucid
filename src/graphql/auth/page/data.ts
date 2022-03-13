@@ -3,18 +3,52 @@ import moment from 'moment';
 import { __updateSetQueryGen } from '../shared/functions';
 import { generateSlug } from "random-word-slugs";
 import validate from '../../../validator';
+import { getSinglePostTypeByName } from '../../../controller/posts';
+
+const path = require('path');
+const config = require(path.resolve("./lucid.config.js"));
 
 // Controllers
 import { getSingleSEO, saveSingleSEO } from '../seo/data';
 import { getAllPageComponents } from '../page_component/data';
-import { __generateErrorString } from '../../../controller/helper/shared';
+import { __generateErrorString } from '../../../functions/shared';
 
+export const __buildPageLivePath = async (page: mod_pageModel) => {
+    try {
+
+        // recursivly get parent
+        const getParentPath = async (_id: mod_pageModel["_id"], slug: mod_pageModel["slug"]) => {
+            // Query for parent slug
+            let res = await db.one('SELECT slug, has_parent, parent_id FROM pages WHERE _id=$1', _id);
+            slug = '/'+res.slug + slug;
+            if(res.has_parent) slug = await getParentPath(res.parent_id, slug);
+            return slug;
+        }
+
+        let path = '/'
+        if(!page.is_homepage) path += page.slug;
+        if(page.has_parent) {
+            path = await getParentPath(page.parent_id, path);
+        }
+        if(page.type === 'post') {
+            const postObj = await getSinglePostTypeByName(page.post_name);
+            // find post parent page
+            const parentPage = await db.oneOrNone('SELECT _id FROM pages WHERE post_type_id=$1', postObj._id);
+            if(parentPage) path = await getParentPath(parentPage._id, path);
+        }
+
+        return path;
+    }
+    catch(err) {
+        throw err;
+    }
+}
 
 // Get single page
 export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel["slug"]) => {
     try {
         let page_id;
-        let page;
+        let page: mod_pageModel;
         if(_id != undefined) {
             page_id = _id;
             page = await db.one('SELECT * FROM pages WHERE _id=$1', page_id);
@@ -33,6 +67,10 @@ export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel
         // Get SEO Object
         page.seo = await getSingleSEO(page_id);
         page.page_components = await getAllPageComponents(page_id);
+
+        // Build full slug
+        page.path = config.app_urL + await __buildPageLivePath(page);
+
         return page;
     }
     catch(err) {
@@ -120,9 +158,19 @@ export const saveSingle = async (data: cont_page_saveSingleInp) => {
             page_id: getPageRes._id,
             title: data.name,
             description: "",
+            canonical: "",
+            robots: "",
+            og_type: "",
             og_title: data.name,
             og_description: "",
-            og_image: ""
+            og_image: "",
+            twitter_card: "summary",
+            twitter_title: data.name,
+            twitter_description: "",
+            twitter_image: "",
+            twitter_creator: "",
+            twitter_site: "",
+            twitter_player: ""
         });
         return getPageRes;
     }
@@ -319,6 +367,20 @@ export const getSinglePageViaPostId = async (_id: cont_post_postDeclaration["_id
         // Get page
         let page = await db.one('SELECT * FROM pages WHERE post_type_id=$1', _id);
         return page;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Get page live url
+export const getPathLiveURL = async (_id: mod_pageModel["_id"]) => {
+    try {
+        const page = await db.one('SELECT is_homepage, has_parent, slug, type, parent_id, post_name FROM pages WHERE _id=$1', _id);
+        const path = await __buildPageLivePath(page);
+        return {
+            url: config.app_urL + path
+        }
     }
     catch(err) {
         throw err;

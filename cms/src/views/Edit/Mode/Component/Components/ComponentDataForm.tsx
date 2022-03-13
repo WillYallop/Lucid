@@ -3,13 +3,12 @@ import { useState, useContext } from 'react';
 import TextInput from '../../../../../components/Core/Inputs/TextInput';
 import TextareaInput from '../../../../../components/Core/Inputs/TextareaInput';
 // Functions
-import axios from 'axios';
-// Functions
 import formValidationHandler from "../../../../../functions/formValidationHandler";
-import getApiUrl from "../../../../../functions/getApiUrl";
 import validatorConfig from '../../../../../functions/validatorConfig';
 // Context
 import { LoadingContext } from "../../../../../helper/Context";
+// Data
+import { updateSingleComponent } from '../../../../../data/components';
 
 interface ComponentDataFormProps {
     component__id: string
@@ -49,33 +48,22 @@ const ComponentDataForm: React.FC<ComponentDataFormProps> = ({ component__id, na
             e: e,
             onValidatePass: (fields) => {
                 setLoadingState(true);
-                const query = `mutation {
-                    components {
-                        update_single (
-                            _id: "${component__id}"
-                            name: "${fields["comp_name"]}"
-                            description: "${fields["comp_desc"]}"
-                        )
-                        {
-                            _id
-                            name
-                            description
-                        }
-                    }
-                }`;
-                // Save single component data
-                axios({
-                    url: getApiUrl(),
-                    method: 'post',
-                    data: {
-                        query: query
-                    }
-                })
-                .then(() => {
+                // update component
+                updateSingleComponent({
+                    __args: {
+                        _id: component__id,
+                        name: fields["comp_name"],
+                        description: fields["comp_desc"]
+                    },
+                    _id: true,
+                    name: true,
+                    description: true
+                },
+                (response) => {
                     successCallback();
                     setLoadingState(false);
-                })
-                .catch(() => {
+                },
+                () => {
                     setFormError({
                         error: true,
                         message: 'An unexpected error occured while saving the component data!'

@@ -51,11 +51,14 @@ interface const_page_updatePageObj {
 
 
 // Update andd page component
-interface cont_page_addUpdatePageComponentInp {
-    _id?: mod_pageComponentsModel["_id"]
-    page_id: mod_pageModel["_id"] 
+interface cont_page_addPageComponentInp {
+    _id: mod_pageComponentsModel["_id"]
     component_id: mod_componentModel["_id"]
     position: mod_pageComponentsModel["position"]
+}
+interface cont_page_updatePageComponentInp {
+    _id: mod_pageComponentsModel["_id"]
+    position?: mod_pageComponentsModel["position"]
 }
 interface const_page_updatePageComponentUpdateObj {
     position?: mod_pageComponentsModel["position"]

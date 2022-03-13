@@ -1,7 +1,7 @@
-import { getSingleFileContent, writeSingleFile } from './theme';
+import { getSingleFileContent, writeSingleFile, deleteSingleFile } from './theme';
 import validate from '../validator';
 import { v1 as uuidv1 } from 'uuid';
-import { __generateErrorString } from './helper/shared';
+import { __generateErrorString } from '../functions/shared';
 import merge from 'lodash/merge';
 
 /*
@@ -216,6 +216,24 @@ const deleteSingle = async (componentID: mod_componentModel["_id"], contentTypeI
     }
 }
 
+// delete component content type file
+const unregister = async(componentID: mod_componentModel["_id"]): Promise<boolean> => {
+    try {
+        const origin = 'contentTypeConfigController.unregister';
+        await validate([
+            {
+                method: 'uuidVerify',
+                value: componentID
+            }
+        ]);
+        const unregisterRes = await deleteSingleFile(`/config/content_types/${componentID}.json`);
+        return unregisterRes;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
 // ------------------------------------ ------------------------------------
 // update single component content type
 // ------------------------------------ ------------------------------------
@@ -347,5 +365,6 @@ export {
     getAll,
     getSingle,
     deleteSingle,
+    unregister,
     updateSingle
 }

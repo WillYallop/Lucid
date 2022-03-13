@@ -21,10 +21,13 @@ import { ContentTypeConfigQuery } from './content_type_config/query';
 import { ContentTypeFieldsMutation } from './content_type_fields/mutation';
 // Page Component
 import { PageComponentMutation } from './page_component/mutation';
+import { PageComponentQuery } from './page_component/query';
 // Utility
 import { UtilityQuery } from './utility/query';
 // Templates
 import { TemplateQuery } from './template/query';
+// Generator
+import { GeneratorQuery } from './generator/query';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -64,6 +67,16 @@ const baseQuery = new GraphQLObjectType({
         template: {
             type: TemplateQuery,
             description: TemplateQuery.description,
+            resolve: () => { return {} }
+        },
+        page_components: {
+            type: PageComponentQuery,
+            description: PageComponentQuery.description,
+            resolve: () => { return {} }
+        },
+        generator: {
+            type: GeneratorQuery,
+            description: GeneratorQuery.description,
             resolve: () => { return {} }
         }
     }

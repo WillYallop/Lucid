@@ -1,14 +1,12 @@
+export const cmdDevOrgin = 'http://192.168.1.103:7344';
+
 const getApiUrl = () => {
-    let uri;
-    if(window.location.hostname === 'localhost') {
-        uri = `http://api.lucid.local/auth`;
+    const location = window.location;
+    if (location.origin === 'http://localhost:3000') {
+        return `${cmdDevOrgin}/api/v1`;
+    } else {
+        return `${location.protocol}//${location.hostname}${ location.port ? `:${location.port}` : '' }/api/v1`;
     }
-    else {
-        const location = window.location;
-        uri = `${location.protocol}//${location.hostname.replace('cms.', 'api.')}/auth`;
-        console.log(uri);
-    }
-    return uri;
 }
 
 export default getApiUrl;

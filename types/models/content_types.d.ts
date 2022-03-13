@@ -20,6 +20,7 @@ interface mod_pageComponentsModel {
     page_id: mod_pageModel["_id"]
     component_id: mod_componentModel["_id"]
     position: number
+    content_types: Array<mod_contentTypesConfigModel> 
     component?: mod_componentModel
     data: Array<mod_contentTypesDatabaseModel>
     groups: Array<mod_contentTypeFieldGroupModel>
@@ -31,6 +32,7 @@ interface mod_contentTypesDatabaseModel {
     config_id: mod_contentTypesConfigModel["_id"]
     group_id?: mod_contentTypeFieldGroupModel["_id"]
     value: any
+    root: boolean
 }
 
 interface mod_contentTypeFieldGroupModel {

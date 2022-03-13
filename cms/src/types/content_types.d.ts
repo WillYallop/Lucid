@@ -29,14 +29,15 @@ interface mod_pageComponentsModel {
 interface mod_contentTypesDatabaseModel {
     page_component_id: mod_pageComponentsModel["_id"] // component_id referes to the page_components tables _id - not the theme/config components ID
     config_id: mod_contentTypesConfigModel["_id"]
-    group_id?: mod_contentTypeFieldGroupModel["_id"]
+    group_id?: mod_contentTypeFieldGroupModel["_id"] | null
     value: any
+    root: boolean
 }
 
 interface mod_contentTypeFieldGroupModel {
     _id: string
     page_component_id: mod_pageComponentsModel["_id"]
-    parent_group?: mod_contentTypeFieldGroupModel["_id"]
-    parent_config_id: mod_contentTypesConfigModel["_id"]
+    parent_group?: mod_contentTypeFieldGroupModel["_id"] | null
+    parent_config_id?: mod_contentTypesConfigModel["_id"]
     position: number
 }

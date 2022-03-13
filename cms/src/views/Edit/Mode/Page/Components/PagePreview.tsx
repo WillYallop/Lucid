@@ -1,13 +1,16 @@
+import { useEffect, useState, useContext } from "react";
 // Components
-import { useEffect, useState } from "react";
 import WidthScrollBar from "./WidthScrollbar";
 import { useNavigate } from "react-router-dom";
+import UtilityLoading from "../../../../../components/Ultility/Loading";
+// Context
+import { PageMarkupContext, PageContext } from '../functions/PageContext';
 
 interface pagePreviewPops {
-    pageMarkup: string
+    loading: boolean
 }
 
-const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
+const PagePreview: React.FC<pagePreviewPops> = ({ loading }) => {
 
     const navigate = useNavigate();
 
@@ -16,14 +19,36 @@ const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
     // ---------------------------------------------------------------------/
     const iframeConID = 'iframeConID';
     const iframeID = 'sitePreviewFrame';
-
     
 
     // ---------------------------------------------------------------------/
     // - STATE -------------------------------------------------------------/
     // ---------------------------------------------------------------------/
-    const [ srcDoc, setSrcDoc ] = useState('');
+    const [ markup, setMarkup ] = useState('');
+    const { markupObj, setMarkupObj } = useContext(PageMarkupContext);
+    const { page, setPage } = useContext(PageContext);
 
+    // ---------------------------------------------------------------------/
+    // - DATA --------------------------------------------------------------/
+    // ---------------------------------------------------------------------/
+    const buildPageMarkup = () => {
+        if(markupObj != undefined && page != undefined) {
+            if(markupObj.template.length) {
+                let template: string = JSON.parse(markupObj.template);
+                let components = '';
+                if(page.page_components) {
+                    // Filter over components in their order
+                    page.page_components.sort((a,b) => a.position - b.position);
+                    page.page_components.forEach((pageComp) => {
+                        const findMarkup = markupObj.components.find( x => x.page_component_id === pageComp._id );
+                        if(findMarkup != undefined) components+=JSON.parse(findMarkup.markup);
+                    });
+                }
+                template = template.replace('<lucidPreviewAddComponents/>', components);
+                setMarkup(template);
+            }
+        }
+    }
 
 
     // ---------------------------------------------------------------------/
@@ -64,13 +89,13 @@ const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
 
     // Create
     useEffect(() => {
-        // Temp
-        setSrcDoc(pageMarkup);
+        buildPageMarkup();
 
         return () => {
             iframeLinkEventHandler('destroy');
+            setMarkup('');
         }
-    }, [pageMarkup]);
+    }, [markupObj]);
 
 
     return (
@@ -82,8 +107,15 @@ const PagePreview: React.FC<pagePreviewPops> = ({ pageMarkup }) => {
                 }}
                 iframeContainerID={iframeConID}/>
             <div id={iframeConID} className="iframeContainer">
-                <iframe id={iframeID} srcDoc={srcDoc} onLoad={() => { iframeLinkEventHandler('create') }}></iframe>
+                <iframe id={iframeID} srcDoc={markup} onLoad={() => { iframeLinkEventHandler('create') }}></iframe>
             </div>
+            {
+                loading ?
+                    <div className="pagePreviewLoadingCon">
+                        <UtilityLoading mode="transparent"/>
+                    </div>
+                : null
+            }
         </div>
     )
 }

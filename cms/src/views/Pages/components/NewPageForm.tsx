@@ -1,5 +1,4 @@
-import react, { useState, useContext, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 // Components
 import SelectInput from '../../../components/Core/Inputs/SelectInput';
@@ -8,22 +7,20 @@ import SearchInput from '../../../components/Core/Inputs/SearchInput';
 import SwitchInput from '../../../components/Core/Inputs/SwitchInput';
 // Functions
 import formValidationHandler from "../../../functions/formValidationHandler";
-import getApiUrl from "../../../functions/getApiUrl";
 import validatorConfig from '../../../functions/validatorConfig';
 import formatLucidError from '../../../functions/formatLucidError';
 // Context
 import { LoadingContext, ModalContext } from "../../../helper/Context";
+// data
+import { getTemplates } from '../../../data/template';
+import { getMultiplePosts } from '../../../data/post';
+import { searchPageName, saveSinglePage } from '../../../data/page';
 
-interface pageSerach {
-    slug: string
-    name: string
-    _id: string
-}
+
 interface postType {
     _id: string
     name: string
 }
-
 interface newPageFormProps {
     type: 'page' | 'post'
     post_name?: string
@@ -44,7 +41,7 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
     const { loadingState, setLoadingState } = useContext(LoadingContext);
     // Template
     const [ selectedTemplate, setSelectedTemplate ] = useState('');
-    const [ templates, setTemplates ] = useState([]);
+    const [ templates, setTemplates ] = useState<Array<string>>([]);
     // Name
     const [ pageName, setPageName ] = useState('');
     // Slug
@@ -54,8 +51,8 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
     // parent page
     const [ hasParentPage, setHasParentPage ] = useState(false);
     const [ pageSearchQuery, setPageSearchQuery ] = useState('');
-    const [ pageSearchResults, setPageSearchResults ] = useState<Array<pageSerach>>([]);
-    const [ selectedPage, setSelectedPage ] = useState<pageSerach>({} as pageSerach);
+    const [ pageSearchResults, setPageSearchResults ] = useState<Array<pageSearchRes>>([]);
+    const [ selectedPage, setSelectedPage ] = useState<pageSearchRes>({} as pageSearchRes);
     // post type
     const [ hasPostType, setHasPostType ] = useState(false);
     const [ postTypeResults, setPostTypeResults ] = useState<Array<postType>>([]);
@@ -68,50 +65,32 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
     // -------------------------------------------------------
     const getAllTemplates = () => {
         setLoadingState(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `query {
-                    template {
-                        get_all
-                    }	
-                }`
-            }
-        })
-        .then((result) => {
-            const templates = result.data.data.template.get_all || [];
+        getTemplates({
+            __args: {}
+        },
+        (response) => {
+            const templates = response.data.data.template.get_all || [];
             setTemplates(templates);
             setSelectedTemplate(templates[0]);
             setLoadingState(false);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             console.log(err);
             setLoadingState(false);
         })
     }
     const getAllPostTypes = () => {
         setLoadingState(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `query {
-                    post {
-                        get_multiple
-                        (
-                            all: true
-                        )
-                        {
-                            _id
-                            name
-                        }
-                    }
-                }`
-            }
-        })
-        .then((result) => {
-            const allPosts: Array<postType> = result.data.data.post.get_multiple || [];
+        getMultiplePosts({
+            __args: {
+                all: true
+            },
+            _id: true,
+            name: true,
+            template_path: false
+        },
+        (response) => {
+            const allPosts: Array<postType> = response.data.data.post.get_multiple || [];
             setPostTypeResults(allPosts);
             let postTypeArray: Array<string> = [];
             allPosts.forEach((post) => {
@@ -120,8 +99,8 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
             setPostTypeSelectOptions(postTypeArray)
             setSelectedPostType(allPosts[0]);
             setLoadingState(false);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             console.log(err);
             setLoadingState(false);
         })
@@ -142,44 +121,33 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
     }, []);
 
     // Page search
-    const searchPageName = (value: string) => {
+    const searchPageNameHandler = (value: string) => {
         setLoadingState(true);
         // Search query and and set page search results
-        const query = `query {
-            page {
-                search_name (
-                    query: "${value}"
-                    full_slug: true
-                    allow_home: false
-                    type: "page"
-                )
-                {
-                    slug
-                    name
-                    _id
-                }
-            }
-        }`;
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((res) => {
-            if(res.data.data.page.search_name) {
-                setPageSearchResults(res.data.data.page.search_name);
+        searchPageName({
+            __args: {
+                query: value,
+                full_slug: true,
+                allow_home: false,
+                type: "page"
+            },
+            slug: true,
+            name: true,
+            _id: true
+        },
+        (response) => {
+            if(response.data.data.page.search_name) {
+                setPageSearchResults(response.data.data.page.search_name);
             }
             else {
                 setFormError({
                     error: true,
-                    message: formatLucidError(res.data.errors[0].message).message
+                    message: formatLucidError(response.data.errors[0].message).message
                 });
             }
             setLoadingState(false);
-        })
-        .catch(() => {
+        },
+        (err) => {
             setFormError({
                 error: true,
                 message: 'An unexpected error occured while querying the pages!'
@@ -188,7 +156,7 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
         })
     }
     const pageResultElements: Array<React.ReactElement> = [];
-    const selectPageLink = (page: pageSerach) => {
+    const selectPageLink = (page: pageSearchRes) => {
         setPageSearchQuery(page.name);
         setSelectedPage(page);
     }
@@ -218,57 +186,54 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
             e: e,
             onValidatePass: (fields) => {
                 setLoadingState(true);
-                const query = `mutation {
-                    page {
-                        save_single (
-                            template: "${selectedTemplate}"
-                            slug: "${isHomePage ? '/' : pageSlug }"
-                            name: "${pageName}"
-                            type: "${type}"
-                            ${ type == 'post' && post_name ? 'post_name: "'+ post_name +'"' : '' }
-                            has_parent: ${hasParentPage && selectedPage ? true : false}
-                            ${ hasParentPage && selectedPage ? 'parent_id: "'+ selectedPage._id +'"' : '' }
-                            author: "ADMIN"
-                            is_homepage: ${isHomePage}
-                            ${ hasPostType && selectedPostType ? 'post_type_id: "'+ selectedPostType._id +'"' : '' }
-                        )
-                        {
-                            _id
-                        }
-                    }
-                }`;
-                // Save single component data
-                axios({
-                    url: getApiUrl(),
-                    method: 'post',
-                    data: {
-                        query: query
-                    }
-                })
-                .then((res) => {
-                    const pageRes = res.data.data.page.save_single;
+
+                const queryArgs: data_page_saveSingleQuery["query"]["page"]["save_single"]["__args"] = {
+                    template: selectedTemplate,
+                    slug: isHomePage ? '/' : pageSlug,
+                    name: pageName,
+                    type: type,
+                    author: "ADMIN",
+                    is_homepage: isHomePage,
+                    has_parent: hasParentPage && selectedPage ? true : false
+                }
+                if(type == 'post' && post_name) queryArgs.post_name = post_name;
+                if(hasParentPage && selectedPage) queryArgs.parent_id = selectedPage._id;
+                if(hasPostType && selectedPostType) queryArgs.post_type_id = selectedPostType._id;
+
+
+                saveSinglePage({
+                    __args: queryArgs,
+                    _id: true,
+                    slug: true
+                },
+                (response) => {
+                    const pageRes = response.data.data.page.save_single;
                     if(pageRes) {
                         setModalState({
                             ...modalState,
                             state: false
                         });
-                        navigate(`/edit/page/${pageRes._id}`);
+                        if(pageRes.slug === '/') navigate(`/edit/page/homepage`);
+                        else navigate(`/edit/page/${pageRes.slug}`);
                     }
                     else {
                         setFormError({
                             error: true,
-                            message: formatLucidError(res.data.errors[0].message).message 
+                            message: formatLucidError(response.data.errors[0].message).message 
                         });
                     }
                     setLoadingState(false);
-                })
-                .catch(() => {
+                },
+                (err) => {
                     setFormError({
                         error: true,
                         message: 'An unexpected error occured while saving the page!'
                     });
                     setLoadingState(false);
                 })
+
+
+
             },
             customValidation: [
                 {
@@ -331,7 +296,7 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
                                     }}
                                     described_by={'search for pages by their name, and select the one you wish to be the parent.'}
                                     results={pageResultElements}
-                                    searchAction={searchPageName}>
+                                    searchAction={searchPageNameHandler}>
                                     { selectedPage.name ? <div className="noteRow">selected: {selectedPage.name}</div> : null }
                                 </SearchInput>
                             : null

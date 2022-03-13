@@ -6,31 +6,47 @@ import { componentController, contentTypeController } from '../../../index';
 import { getPageComponentContentTypeData, getPageComponentsGroups } from '../content_type_fields/data';
 
 
-// Handle adding and updating a page component and its content types
-export const addAndUpdatePageComponent = async (pageComp: cont_page_addUpdatePageComponentInp) => {
+
+// Add multiple page components
+export const addMultiplePageComponents = async (pageComps: Array<cont_page_addPageComponentInp>, pageId: mod_pageModel["_id"]) => {
     try {
-
-        let savePageComponentRes: mod_pageComponentsModel;
-        // UPDATE
-        if(pageComp._id != undefined) {
-            // We can only update the position atm
-            let updatePageComponentObj: const_page_updatePageComponentUpdateObj = {};
-            if(pageComp.position != undefined) updatePageComponentObj.position = pageComp.position;
-            savePageComponentRes = await db.one(`UPDATE page_components SET ${__updateSetQueryGen(updatePageComponentObj)} WHERE _id='${pageComp._id}' RETURNING *`, updatePageComponentObj);
-        }   
-        // CREATE
-        else {
-            savePageComponentRes = await db.one('INSERT INTO page_components(page_id, component_id, position) VALUES(${page_id}, ${component_id}, ${position}) RETURNING *', {
-                page_id: pageComp.page_id, // reference will verify if this exists
-                component_id: pageComp.component_id,
-                position: pageComp.position
-            });
+        const savedPages = [];
+        if(pageComps.length > 0) {
+            for await (const pageComp of pageComps) {
+                const savePageRes = await db.one('INSERT INTO page_components(_id, page_id, component_id, position) VALUES(${_id}, ${page_id}, ${component_id}, ${position}) RETURNING *', {
+                    _id: pageComp._id,
+                    page_id: pageId,
+                    component_id: pageComp.component_id,
+                    position: pageComp.position
+                });
+                savedPages.push(savePageRes);
+            }   
+            // Update pages last edited stat
+            await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${pageId}'`);
         }
+        return savedPages;
+    }
+    catch(err) {
+        throw err;
+    }
+}
 
-        // Update pages last edited stat
-        await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${savePageComponentRes.page_id}'`);
-
-        return savePageComponentRes
+// Update multiple page components
+export const updateMultiplePageComponents = async (pageComps: Array<cont_page_updatePageComponentInp>, pageId: mod_pageModel["_id"]) => {
+    try {
+        const updatedPages = [];
+        if(pageComps.length > 0) {
+            for await (const pageComp of pageComps) {
+                // We can only update the position atm
+                let updatePageComponentObj: const_page_updatePageComponentUpdateObj = {};
+                if(pageComp.position != undefined) updatePageComponentObj.position = pageComp.position;
+                const updatePageRes = await db.one(`UPDATE page_components SET ${__updateSetQueryGen(updatePageComponentObj)} WHERE _id='${pageComp._id}' RETURNING *`, updatePageComponentObj);
+                updatedPages.push(updatePageRes);
+            }   
+            // Update pages last edited stat
+            await db.none(`UPDATE pages SET last_edited='${moment().format('YYYY-MM-DD HH:mm:ss')}' WHERE _id='${pageId}'`);
+        }
+        return updatedPages;
     }
     catch(err) {
         throw err;
@@ -84,7 +100,7 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
             }
         */
         // Get all page components
-        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1', page_id);
+        let pageComponents: Array<mod_pageComponentsModel> = await db.manyOrNone('SELECT * FROM page_components WHERE page_id=$1 ORDER BY position ASC', page_id);
         if(pageComponents.length) {
             const componentDataMap = new Map();
             for await(let pageComp of pageComponents) {
@@ -100,6 +116,7 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
                 // Assign component and get data
                 let componentDatas = componentDataMap.get(pageComp.component_id);
                 pageComp.component = componentDatas.component;
+                pageComp.content_types = componentDatas.content_types;
                 let data = await getPageComponentContentTypeData(pageComp._id);
                 pageComp.data = data;
                 let groups = await getPageComponentsGroups(pageComp._id);
@@ -107,6 +124,42 @@ export const getAllPageComponents = async (page_id: mod_pageModel["_id"]) => {
             }
         }
         return pageComponents;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Get single page component
+export const getSingle = async (_id: mod_pageComponentsModel["_id"]) => {
+    try {
+        const pageComponent: mod_pageComponentsModel = await db.oneOrNone('SELECT * FROM page_components WHERE _id=$1', _id);
+        let component = await componentController.getSingleByID(pageComponent.component_id);
+        let content_types = await contentTypeController.getAll(pageComponent.component_id);
+        // Assign component and get data
+        pageComponent.component = component;
+        pageComponent.content_types = content_types;
+        let data = await getPageComponentContentTypeData(pageComponent._id);
+        pageComponent.data = data;
+        let groups = await getPageComponentsGroups(pageComponent._id);
+        pageComponent.groups = groups;
+
+        return pageComponent;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Delete multiple corresponding page_component table rows
+export const deleteMultiplePageComponenets = async (ids: Array<mod_pageComponentsModel>) => {
+    try {
+        let response = [];
+        for await (const id of ids) {
+            await db.none('DELETE FROM page_components WHERE _id=$1', id);
+            response.push({ deleted: true });
+        }
+        return response;
     }
     catch(err) {
         throw err;

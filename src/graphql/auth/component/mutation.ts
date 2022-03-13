@@ -61,7 +61,6 @@ const updateSingleComponent: GraphQLFieldConfig<any, any, any> = {
 }
 
 
-
 // Mutation handler
 export const ComponentMutation = new GraphQLObjectType({
     name: 'ComponentMutation',

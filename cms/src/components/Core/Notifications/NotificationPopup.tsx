@@ -1,4 +1,4 @@
-import { ReactElement, useContext, useEffect } from "react";
+import { ReactElement, useContext } from "react";
 // Context
 import { PageNotificationContext } from "../../../helper/Context";
 
@@ -12,7 +12,7 @@ const NotificationPopup: React.FC = () => {
     notifications.forEach((notif) => {
         notificationElements.push(
             <div 
-                className="notificationPopupRow"
+                className={`notificationPopupRow ${notif.type}`}
                 key={notificationElements.length + 1}>
                 <p>{ notif.message }</p>
             </div>

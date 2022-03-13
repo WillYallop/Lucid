@@ -1,4 +1,5 @@
-import { contentTypeController } from '../../../index';
+import * as componentController from '../../../controller/component';
+import * as contentTypeController from '../../../controller/content_type_config';
 import { deleteAllPageComponentContentTypesField } from '../content_type_fields/data';
 
 // ------------------------------------ ------------------------------------
@@ -10,6 +11,7 @@ export const deleteSingleContentTypeConfig = async (componentID: mod_componentMo
     try {
         // Remove all instances of this content type from page components in the database
         deleteAllPageComponentContentTypesField(componentID, contentTypeID);
+        componentController.updateLastModifiedDate(componentID);
         await contentTypeController.deleteSingle(componentID, contentTypeID);
         return {
             deleted: true
@@ -24,6 +26,7 @@ export const deleteSingleContentTypeConfig = async (componentID: mod_componentMo
 export const createSingleContentTypeConfig = async (componentID: mod_componentModel["_id"], contentType: mod_contentTypesConfigModel) => {
     try {
         if(!contentType.parent) contentType.parent = 'root';
+        componentController.updateLastModifiedDate(componentID);
         let content_type = await contentTypeController.saveSingle(componentID, contentType);
         return content_type;
     }
@@ -38,6 +41,7 @@ export const updateSingleContentTypeConfig = async (componentID: mod_componentMo
         // Remove all instances of this content type from page components in the database
         // If the user edits anything about a component content type we lose data for it on pages that have this component to avoid potional issues
         deleteAllPageComponentContentTypesField(componentID, contentType._id);
+        componentController.updateLastModifiedDate(componentID);
         let content_type = await contentTypeController.updateSingle(componentID, contentType);
         return content_type;
     }

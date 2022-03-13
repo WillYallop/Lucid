@@ -1,13 +1,13 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
-import axios from 'axios';
 // Context
-import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext } from "../../../helper/Context";
+import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext, ModalContext } from "../../../helper/Context";
 // Components
 import ComponentRow from "./ComponentRow";
-import UtilityLoading from '../../../components/Ultility/Loading';
 // Functions
 import getApiUrl from "../../../functions/getApiUrl";
-import e from 'express';
+// data
+import { getMultipleComponents } from '../../../data/components';
+
 
 interface componentData {
     date_added: string
@@ -24,6 +24,7 @@ interface componentListProps {
 
 const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
     const { loadingState, setLoadingState } = useContext(LoadingContext);
+
 
     // -------------------------------------------------------
     // Notification 
@@ -58,28 +59,23 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
 
     const getAllComponents = (s: number, l: number) => {
         setLoadingState(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: `
-                query {
-                    components {
-                        get_multiple ( skip: ${s}, limit: ${l} )
-                        {
-                            _id
-                            name
-                            description
-                            preview_url
-                            date_added
-                            file_path
-                        }
-                    }
-                }`
-            }
-        })
-        .then((result) => {
-            const allComponents: Array<componentData> = result.data.data.components.get_multiple || [];
+        getMultipleComponents({
+            __args: {
+                skip: s, 
+                limit: l
+            },
+            _id: true,
+            name: true,
+            description: true,
+            preview_url: true,
+            date_added: true,
+            file_path: true,
+            file_name: false,
+            date_modified: false,
+            content_types: false
+        },
+        (response) => {
+            const allComponents: Array<componentData> = response.data.data.components.get_multiple || [];
             if(allComponents.length < limit) setShowLoadMore(false);
             else setShowLoadMore(true);
             setComponents((components) => [
@@ -87,11 +83,17 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
                 ...allComponents
             ]);
             setLoadingState(false);
-        })
-        .catch((err) => {
+        },
+        () => {
             addNotification('There was an error getting your components!', 'error');
             setLoadingState(false);
         })
+    }
+
+    // Load more
+    const loadmore = () => {
+        skip += components.length;
+        getAllComponents(skip, limit);
     }
 
     // Create results array
@@ -102,18 +104,14 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
         });
     } 
 
-    // Load more
-    const loadmore = () => {
-        skip += components.length;
-        getAllComponents(skip, limit);
-    }
-
+    
     return (
         <div className="con">
             { componentRows }
             { showLoadMore ? <button className='btnStyle1' onClick={loadmore}>load more</button> : null }
         </div>
     )
+
 }
 
 export default ComponentList;

@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from 'axios';
 // Context
 import { 
     PageNotificationContext, PageNotificationContextNoticationsObj,
-    ModalContext, LoadingContext
+    ModalContext
 } from "../../helper/Context";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
@@ -15,16 +14,11 @@ import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
 import UpdatePostTypeForm from "./Components/UpdatePostForm";
 import SidebarFormSubmit from "../../components/Layout/Sidebar/SidebarFormSubmit";
 // Functions
-import getApiUrl from "../../functions/getApiUrl";
 import formatLucidError from "../../functions/formatLucidError";
 // Icons
 import { faPlus, faSave } from '@fortawesome/free-solid-svg-icons';
-
-interface postType {
-    _id: string
-    name: string
-    template_path: string
-}
+// data
+import { getSinglePostViaName } from '../../data/post';
 
 const Pages: React.FC = () => {
 
@@ -37,7 +31,7 @@ const Pages: React.FC = () => {
     const [ allowSave, setAllowSave ] = useState(false);
     const [ pageLoaded, setPageLoaded ] = useState(false);
     const [ postNameParam, setPostNameParam ] = useState(post_name);
-    const [ post, setPost ] = useState<postType>({} as postType);
+    const [ post, setPost ] = useState<mod_postObject>({} as mod_postObject);
 
 
 
@@ -69,45 +63,37 @@ const Pages: React.FC = () => {
     // Set post template file
     const verifyPostType = () => {
         setPageLoaded(false);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `query {
-                    post {
-                        get_single_by_name (
-                            name: "${post_name}"
-                        ) 
-                        {
-                            _id
-                            name
-                            template_path
-                        }
-                    }
-                }`
-            }
-        })
-        .then((result) => {
-            const post: postType = result.data.data.post.get_single_by_name || undefined;
-            if(post) {
-                setPost(post);
-            }
-            else {
-                navigate(`/404`);
-                addNotification(formatLucidError(result.data.errors[0].message).message, 'error');
-            }
-            setPageLoaded(true);
-        })
-        .catch((err) => {
-            console.log(err);
-            setPageLoaded(true);
-        })
+        if(post_name != undefined) {
+            getSinglePostViaName({
+                __args: {
+                    name: post_name
+                },
+                _id: true,
+                name: true,
+                template_path: true
+            },
+            (response) => {
+                const post = response.data.data.post.get_single_by_name || undefined;
+                if(post) {
+                    setPost(post);
+                }
+                else {
+                    navigate(`/404`);
+                    addNotification(formatLucidError(response.data.errors[0].message).message, 'error');
+                }
+                setPageLoaded(true);
+            },
+            (err) => {
+                console.log(err);
+                setPageLoaded(true);
+            })
+        }
     }
     useEffect(() => {
         verifyPostType();
         return () => {
             setNotifications([]);
-            setPost({} as postType)
+            setPost({} as mod_postObject)
         }
     }, []);
 

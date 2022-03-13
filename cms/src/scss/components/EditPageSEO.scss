@@ -1,0 +1,142 @@
+.editPageCon {
+    .body {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        .searchResultPreviewCon {
+            width: 100%;
+            background-color: white;
+            padding: rem(20);
+            border-radius: rem(5);
+            .domain {
+                font-size: rem(14);
+                font-family: Arial, sans-serif;
+                color: #202124;
+            }
+            .title {
+                font-size: rem(20);
+                font-family: Arial, sans-serif;
+                margin: rem(5) 0;
+                color: #1a0dab;
+                max-width: 600px;
+            }
+            .description {
+                font-size: rem(14);
+                font-family: Arial, sans-serif;
+                color: #4d5156;
+                max-width: 600px;
+            }
+            h2 {
+                color: black;
+            }
+        }
+        .socialCardPreview {
+            width: 100%;
+            h3 {
+                color: white;
+                margin-bottom: rem(10);
+            }
+            margin-bottom: rem(10);
+            &:last-child {
+                margin-bottom: 0;
+            }
+            &.twitter {
+                .card {
+                    border-radius: rem(10);
+                    overflow: hidden;
+                    .domain {
+                        color: #A9B5BF !important;
+                    }
+                }
+            }
+            .card {
+                width: 100%;
+                &.noimage {
+                    display: flex;
+                    .blankImage {
+                        width: rem(100);
+                        min-width: rem(100);
+                        height: rem(100);
+                        background-color: #EFF3F6;
+                        border: 1px solid #E1E2E5;
+                    }
+                    .contentBlock {
+                        height: rem(100);
+                        .description {
+                            height: rem(36);
+                            overflow: hidden;
+                        }
+                    }
+                }
+                img {
+                    height: rem(200);
+                    width: 100%;
+                    object-fit: cover;
+                    display: block;
+                }
+                .contentBlock {
+                    width: 100%;
+                    background-color: #F2F3F5;
+                    padding: rem(10);
+                    border-top: 1px solid #E1E2E5;
+                    .domain {
+                        font-size: rem(14);
+                        font-family: Arial, sans-serif;
+                        color: #6F7070;
+                    }
+                    .title {
+                        font-size: rem(14);
+                        font-family: Arial, sans-serif;
+                        margin: rem(5) 0;
+                        color: #2D2D2D;
+                        font-weight: bold;
+                    }
+                    .description {
+                        font-size: rem(14);
+                        font-family: Arial, sans-serif;
+                        color: #6B6B6B;
+                        height: rem(18);
+                        overflow: hidden;
+                    }
+                }
+            }
+            .noPreview {
+                background-color: #F0F0F0;
+                height: rem(200);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                border-radius: rem(10);
+                text-align: center;
+                padding: rem(20);
+                p {
+                    color: rgb(83, 83, 83);
+                }
+            }
+        }
+        .mainContent {
+            width: calc(100% - rem(360));
+            margin-top: rem(20);
+            .buttonRow {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: rem(10);
+                button {
+                    width: calc(50% - rem(5));
+                }
+            }
+        }
+        .socialsSidebar {
+            width: rem(350);
+            margin-top: rem(20);
+        }
+        @media only screen and (max-width: 1300px) {
+            .mainContent {
+                width: 100%;
+            }
+            .socialsSidebar {
+                width: 100%;
+            }
+        }
+    }
+}

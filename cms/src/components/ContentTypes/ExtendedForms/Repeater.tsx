@@ -2,7 +2,6 @@
 import { useState } from "react";
 import SwitchInput from "../../Core/Inputs/SwitchInput";
 import NumberInput from "../../Core/Inputs/NumberInput";
-import { mod_contentTypesConfigModel } from '../ContentTypeRow';
 
 interface ExtendedFormRepeaterProps {
     config?: mod_contentTypesConfigModel["config"]

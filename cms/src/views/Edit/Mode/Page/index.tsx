@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import axios from 'axios';
 import { v1 as uuidv1 } from 'uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // Components
@@ -11,33 +10,26 @@ import CoreIcon from '../../../../components/Core/Icon';
 import NotificationPopup from '../../../../components/Core/Notifications/NotificationPopup';
 import EditPageComponent from './Components/EditPageComponent';
 import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
+import EditSEO from './Components/EditSEO/EditSEO';
 // Context
 import { ModalContext, PageNotificationContext } from "../../../../helper/Context";
+import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContext, defaultPageMarkupContextInt, pageMarkupContextInt } from './functions/PageContext';
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
-import getApiUrl from '../../../../functions/getApiUrl';
+import { cmdDevOrgin } from '../../../../functions/getApiUrl';
+import { savePageHandler, savePageComponentsHandler, deletePageComponentsHandler, saveGroupsHandler, saveFieldDataHandler, deleteGroupsHandler, saveSEOHandler } from './functions/savePageHandler';
 // Icons
-import { faTh, faEdit, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
+import { faTh, faTrashAlt, faAlignJustify } from '@fortawesome/free-solid-svg-icons';
 import { faSearchengin } from '@fortawesome/free-brands-svg-icons';
+// data
+import { getSinglePage } from '../../../../data/page';
+import { getTemplates } from '../../../../data/template';
+import { generatePreview } from '../../../../data/generator';
 
 
 interface editPageProps {
     slug: string
 }
-
-interface updateDataObjInterface {
-    template: boolean
-    addComponents: Array<string>
-    modifiedComponents: Array<string>
-    deleteComponents: Array<string>
-}
-const defaultUpdateDataObj: updateDataObjInterface = {
-    template: false,
-    addComponents: [],
-    modifiedComponents: [],
-    deleteComponents: []
-};
-
 
 const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
@@ -52,19 +44,19 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     const [ loading, setLoading ] = useState(true);
     const [ activeSlug, setActiveSlug ] = useState(slug);
     const [ canSave, setCanSave ] = useState(false); // Can save
-    const [ page, setPage ] = useState({} as mod_pageModel); // page
-    const [ pageMarkup, setPageMarkup ] = useState(''); // Page preview markup
+    const [ page, setPage ] = useState({} as mod_pageModel); // page PageContext
+    const [ markupObj, setMarkupObj ] = useState(defaultPageMarkupContextInt.markupObj); // Page preview markup obj
     // Template
-    const [ selectedTemplate, setSelectedTemplate ] = useState('');
-    const [ templates, setTemplates ] = useState([]);
+    const [ templates, setTemplates ] = useState<Array<string>>([]);
     // Selected component
-    const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component'>('preview')
+    const [ pageMode, setPageMode ] = useState<'preview' | 'edit_component' | 'seo'>('preview')
     const [ selectedPageComponent, setSelectedPageComponent ] = useState({} as mod_page_componentModel);
+    const [ selectedPageCompID, setSelectedPageCompID ] = useState('');
     const [ mouseYPos, setMouseYPos ] = useState(0);
     const [ dragTarget, setDragTarget ] = useState<HTMLElement>();
     // New data
     // Used to track and store data changes
-    const [ updatedData, setUpdateData ] = useState(defaultUpdateDataObj);
+    const [ updatedData, setUpdatedData ] = useState(defaultUpdateDataObj.updatedData);
 
 
 
@@ -73,114 +65,160 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // ---------------------------------------------------------------------/
     const getPageData = () => {
         setLoading(true);
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: `query {
-                page {
-                    get_single(slug: "${ slug === 'homepage' ? '/' : slug }") {
-                        _id
-                        template
-                        slug
-                        name
-                        type
-                        post_name
-                        has_parent
-                        parent_id
-                        date_created
-                        last_edited
-                        author
-                        is_homepage
-                        post_type_id
-                        seo {
-                            page_id
-                            title
-                            og_title
-                            description
-                            og_description
-                            og_image
-                        }
-                        page_components {
-                            _id
-                            component_id
-                            position
-                            component {
-                                preview_url
-                                file_path
-                                file_name
-                                date_added
-                                description
-                                date_modified
-                            }
-                            content_types {
-                                _id
-                                name
-                                type
-                                config {
-                                    min
-                                    max
-                                    default
-                                }
-                            }
-                            groups {
-                                _id
-                                page_component_id
-                                parent_group
-                                parent_config_id
-                                position
-                            }
-                            data {
-                                page_component_id
-                                config_id
-                                value
-                                group_id
-                            }
-                        }
-                    }
+        getSinglePage({
+            __args: {
+                slug: slug === 'homepage' ? '/' : slug
+            },
+            _id: true,
+            template: true,
+            slug: true,
+            path: true,
+            name: true,
+            type: true,
+            post_name: true,
+            has_parent: true,
+            parent_id: true,
+            date_created: true,
+            last_edited: true,
+            author: true,
+            is_homepage: true,
+            post_type_id: true,
+            seo: {
+                page_id: true,
+                title: true,
+                description: true,
+                canonical: true,
+                robots: true,
+                og_type: true,
+                og_title: true,
+                og_description: true,
+                og_image: true,
+                twitter_card: true,
+                twitter_title: true,
+                twitter_description: true,
+                twitter_image: true,
+                twitter_creator: true,
+                twitter_site: true,
+                twitter_player: true,
+            },
+            page_components: {
+                _id: true,
+                position: true,
+                component: {
+                    _id: true,
+                    preview_url: true,
+                    file_path: true,
+                    name: true,
                 }
-            }`
             }
-        })
-        .then((result) => {
-            const page: mod_pageModel = result.data.data.page.get_single || {};
+        },
+        (response) => {
+            const page: mod_pageModel = response.data.data.page.get_single || {};
             if(page) {
                 if(!mounted.current) return null;
                 setPage(page);
-                setSelectedTemplate(page.template);
+                generatePagePreview('live', page);
             }
             else {
-                addNotification(formatLucidError(result.data.errors[0].message).message,'error');
+                addNotification(formatLucidError(response.data.errors[0].message).message,'error');
             }
             setLoading(false);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             setLoading(false);
             addNotification('there was an unexpected error while getting the page data.','error');
         })
     }
     const getAllTemplates = () => {
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: `query {
-                    template {
-                        get_all
-                    }	
-                }`
-            }
-        })
-        .then((result) => {
-            const templates = result.data.data.template.get_all || [];
+        getTemplates({
+            __args: {}   
+        },
+        (response) => {
+            const templates = response.data.data.template.get_all || [];
             if(!mounted.current) return null;
             setTemplates(templates);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             console.log(err);
             addNotification('there was an unexpected error while getting the template data.','error');
-        });
+        })
     }
+    const generatePagePreview = (mode: 'live' | 'provided', pageData?: mod_pageModel, pageComponentID?: mod_componentModel["_id"]) => {
+        setLoading(true);
+        const pageComponentsArr: Array<mod_generatePreviewPageComponents> = []; 
+        if(mode === 'live') {
+            if(pageData !== undefined) {
+                pageData.page_components.forEach((pageComp) => {
+                    pageComponentsArr.push({
+                        _id: pageComp._id,
+                        component: {
+                            _id: pageComp.component._id,
+                            file_path: pageComp.component.file_path,
+                            name: pageComp.component.name
+                        }
+                    })
+                });
+            }
+        }
+        else if(mode === 'provided') {
+            if(pageComponentID !== undefined) {
+                // find matching page component
+                const findPageComp = page.page_components.find( x => x._id === pageComponentID );
+                if(findPageComp !== undefined && findPageComp.data !== undefined) {
+                    const dataArr = findPageComp.data.filter((data) => {
+                        if(typeof data.value === 'number') data.value = data.value.toString();
+                        return data;
+                    });
+                    pageComponentsArr.push({
+                        _id: findPageComp._id,
+                        component: {
+                            _id: findPageComp.component._id,
+                            file_path: findPageComp.component.file_path,
+                            name: findPageComp.component.name
+                        },
+                        groups: findPageComp.groups,
+                        data: dataArr
+                    });
+                }
+            }
+        }
+
+        generatePreview({
+            __args: {
+                data_mode: mode,
+                template: page.template || null,
+                page_id: pageData !== undefined ? pageData._id : page._id,
+                page_components: pageComponentsArr,
+                location: window.location.origin === 'http://localhost:3000' ? cmdDevOrgin : window.location.origin
+            },
+            template: true,
+            components: {
+                _id: true,
+                page_component_id: true,
+                markup: true
+            }
+        },
+        (response) => {
+            const data = response.data.data.generator.preview || {};
+            if(mode === 'live') setMarkupObj(data);
+            else {
+                // go through template, and components in this response.data obj and replace matching ones with new markup
+                markupObj.template = data.template;
+                for(let i = 0; i < data.components.length; i++) {
+                    let findMatchCompIndex = markupObj.components.findIndex( x => x._id === data.components[i]._id && x.page_component_id === data.components[i].page_component_id)
+                    if(findMatchCompIndex !== -1) markupObj.components[findMatchCompIndex] = data.components[i];
+                    else markupObj.components.push(data.components[i]);
+                }
+                setMarkupObj({...markupObj});
+            }
+            setLoading(false);
+        },
+        (err) => {
+            setLoading(false);
+            addNotification('there was an unexpected error while generating the page','error');
+        })
+    }
+    
 
     // -----------------------------------
     // Components
@@ -194,7 +232,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         const componentData: Array<mod_contentTypesDatabaseModel> = [];
 
         // Create data for content types with parents, recursivly
-        const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], parent_group_id?: string) => {
+        const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], parent_group_id?: string | null ) => {
             // Create a new group obj
             const groupObj: mod_contentTypeFieldGroupModel = {
                 _id: uuidv1(),
@@ -211,15 +249,17 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         page_component_id: newPageComponentID,
                         config_id: contentType._id,
                         value: contentType.config.default || '',
-                        group_id: groupObj._id
+                        group_id: groupObj._id,
+                        root: false
                     });
                 } 
                 else if(contentType.parent === _id && contentType.type === 'repeater') {
                     componentData.push({
                         page_component_id: newPageComponentID,
                         config_id: contentType._id,
-                        value: undefined,
-                        group_id: groupObj._id
+                        value: null,
+                        group_id: groupObj._id,
+                        root: false
                     });
                     addRepeaterChildrenGroups(contentType._id, groupObj._id);
                 }
@@ -233,17 +273,19 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     page_component_id: newPageComponentID,
                     config_id: contentType._id,
                     value: contentType.config.default || '',
-                    group_id: undefined
+                    group_id: null,
+                    root: true
                 });
             }
             else if(contentType.parent === 'root' && contentType.type === 'repeater') {
                 componentData.push({
                     page_component_id: newPageComponentID,
                     config_id: contentType._id,
-                    value: undefined,
-                    group_id: undefined
+                    value: null,
+                    group_id: null,
+                    root: true
                 });
-                addRepeaterChildrenGroups(contentType._id, undefined);
+                addRepeaterChildrenGroups(contentType._id, null);
             }
         });
 
@@ -273,131 +315,17 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
         // Update updatedData state
         updatedData.addComponents.push(newPageComponent._id);
-        setUpdateData(updatedData);
+        updatedData.pageComponentDownloaded.push(newPageComponent._id);
+        setUpdatedData(updatedData);
+        generatePagePreview('provided', undefined, newPageComponent._id);
 
         // set allow save
-        setCanSave(true);
+        setCanSaveState(true);
 
         setModalState({
             ...modalState,
             state: false
         });
-    }
-    // Update content type for selected page comp
-    const updateContentTypeData = (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => {
-        // Find the corresponding page component in the page object
-        const pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
-        if(pageComponent !== undefined) {
-            // find corresponding content type data fields
-            const dataObj = pageComponent.data.find( x => x.config_id === _id && x.group_id === group_id);
-            if(dataObj !== undefined) {
-                dataObj.value = data;
-                setSelectedPageComponent({
-                    ...pageComponent
-                });
-                // update updateData status
-                // if not a new component, add to modified components object
-                let findNewComp = updatedData.addComponents.findIndex( x => x === selectedPageComponent._id);
-                let findAlreadyModified = updatedData.modifiedComponents.findIndex( x => x === selectedPageComponent._id );
-                if(findNewComp === -1 && findAlreadyModified === -1) {
-                    updatedData.modifiedComponents.push(selectedPageComponent._id);
-                    setUpdateData({
-                        ...updatedData
-                    });
-                }
-                // set allow save
-                setCanSave(true);
-            }
-        }
-    }
-    // add new group for given repeater
-    const addRepeaterDataGroup = (content_type: mod_contentTypesConfigModel, repeaterGroupID: mod_contentTypesDatabaseModel["group_id"]) => {
-        if(content_type.type === 'repeater' ) {
-            const createGroup = () => {
-                // Make recurisve to handle repeater children in the block
-                // get all of the repeaters children, and create a new set of data for it!
-                const componentData: Array<mod_contentTypesDatabaseModel> = [];
-                const componentDataGroups: Array<mod_contentTypeFieldGroupModel> = [];
-
-                const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], group_id?: mod_contentTypesDatabaseModel["group_id"]) => {
-                    // Create a new group obj
-                    const groupObj: mod_contentTypeFieldGroupModel = {
-                        _id: uuidv1(),
-                        page_component_id: selectedPageComponent._id,
-                        parent_group: group_id,
-                        parent_config_id: _id,
-                        position: 1
-                    }
-                    componentDataGroups.push(groupObj);
-
-                    // add data for repeaters children
-                    selectedPageComponent.content_types?.forEach((contentType) => {
-                        if(contentType.parent === _id && contentType.type !== 'repeater') {
-                            componentData.push({
-                                page_component_id: selectedPageComponent._id,
-                                config_id: contentType._id,
-                                value: contentType.config.default || '',
-                                group_id: groupObj._id
-                            });
-                        } 
-                        else if(contentType.parent === _id && contentType.type === 'repeater') {
-                            componentData.push({
-                                page_component_id: selectedPageComponent._id,
-                                config_id: contentType._id,
-                                value: undefined,
-                                group_id: groupObj._id
-                            });
-                            addRepeaterChildrenGroups(contentType._id, groupObj._id);
-                        }
-                    });
-                }
-                addRepeaterChildrenGroups(content_type._id, repeaterGroupID)
-
-                // add new data to the selectedComponent and the page state
-                let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
-                if(pageComponent !== undefined) {
-                    pageComponent.groups = pageComponent.groups.concat(componentDataGroups);
-                    pageComponent.data = pageComponent.data.concat(componentData);
-                    setSelectedPageComponent({
-                        ...pageComponent
-                    });
-                }
-            }
-            // If the config max is defined, check the current amount of groups!
-            if(content_type.config.max !== undefined) {
-                // Filter all data that belongs to this content type
-                const contentTypeDataGroups = selectedPageComponent.groups.filter( x => x.parent_group === repeaterGroupID);
-                if(contentTypeDataGroups.length < parseInt(content_type.config.max)) createGroup();
-                else addNotification(`you have reached the maxium number of groups (${content_type.config.max}) for this field!`, 'warning');
-            }
-            else createGroup();
-        }
-    }
-    const deleteRepeaterGroup = (group_id?: mod_contentTypeFieldGroupModel["_id"]) => {
-        if(group_id !== undefined) {
-            // Delete the group ID
-            // Delete all page data with that group ID
-            // Delte any groups that have the group ID as its parent_group - and so on
-            let pageComponent = page.page_components.find( x => x._id === selectedPageComponent._id );
-            if(pageComponent !== undefined) {
-                const removeDataGroupIDs: Array<string> = [];
-                pageComponent.groups = pageComponent.groups.filter((group) => {
-                    if(group._id === group_id) removeDataGroupIDs.push(group_id);
-                    else if(group.parent_group === group_id) removeDataGroupIDs.push(group._id);
-                    else return group;
-                });
-                pageComponent.data = pageComponent.data.filter((data) => {
-                    if(data.group_id !== undefined) {
-                        const findGroupID = removeDataGroupIDs.find( x => x === data.group_id ); 
-                        if(!findGroupID) return data;
-                    }
-                    else return data;
-                });
-                setSelectedPageComponent({
-                    ...pageComponent
-                });
-            }
-        }
     }
     const deleteComponent = (page_component_id: mod_page_componentModel["_id"]) => {
         if(selectedPageComponent._id === page_component_id) {
@@ -410,13 +338,20 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         setPage({
             ...page
         });
+        // Remove from the markupObj
+        const markupCompIndex = markupObj.components.findIndex( x => x.page_component_id === page_component_id );
+        if(markupCompIndex !== -1) markupObj.components.splice(markupCompIndex, 1);
+        setMarkupObj({...markupObj});
+        generatePagePreview('provided', undefined, undefined);
+        // If its not a new component, add it to the updatedData object to track it and delete on save
         const findNewComponent = updatedData.addComponents.find( x => x === page_component_id);
         if(findNewComponent === undefined) {
             updatedData.deleteComponents.push(page_component_id);
-            setUpdateData({
+            setUpdatedData({
                 ...updatedData
             });
         }
+        updatePageComponentPositions();
     }
     // drag pos
     const componentDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
@@ -439,19 +374,27 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     else dropContainer.appendChild(dragTarget);
                 }
             }
-            for(let i = 0; i < dropContainer.children.length; i++) {
-                const child = dropContainer.children[i] as HTMLElement;
-                const compID = child.getAttribute('data-pagecomponentid');
-                if(compID) {
-                    page.page_components.find( x => {
-                        if( x._id === compID) x.position = i;
-                    });
-                }
-            }
-            setPage({
-                ...page
-            });
+            updatePageComponentPositions();
+            setMarkupObj({...markupObj}); // retrigger the buildPageMarkup function in the PagePreview component
         }
+    }
+    const updatePageComponentPositions = () => {
+        const dropContainer = document.querySelector('.componentsCon') as HTMLElement;
+        for(let i = 0; i < dropContainer.children.length; i++) {
+            const child = dropContainer.children[i] as HTMLElement;
+            const compID = child.getAttribute('data-pagecomponentid');
+            if(compID) {
+                page.page_components.find( x => {
+                    if( x._id === compID) x.position = i;
+                });
+            }
+        }
+        setPage({
+            ...page
+        });
+        updatedData.componentPositions = true;
+        setUpdatedData(updatedData);
+        setCanSaveState(true);
     }
     // -----------------------------------
     // Notifications
@@ -472,10 +415,32 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // ---------------------------------------------------------------------/
     // - Save --------------------------------------------------------------/
     // ---------------------------------------------------------------------/
-    const savePageData = () => {
-        checkEditComponentForErrors(() => {
-            addNotification('successfully saved the page!','success');
-        });
+    const setCanSaveState = (state: boolean) => {
+        if(state) window.onbeforeunload = (e) => "you have unsaved changes. these will be lost if you navigate away";
+        else window.onbeforeunload = null;
+        setCanSave(state);
+    }
+    const savePageData = async () => {
+        try {
+            checkForErrors(async () => {
+                // Generate all of the queryies we need
+                const pageQuery = await savePageHandler(page, updatedData);
+                const seoQuery = await saveSEOHandler(page, updatedData);
+                const pageComponentsQuery = await savePageComponentsHandler(page, updatedData);
+                const deletePageComponentQuery = await deletePageComponentsHandler(page, updatedData);
+                const groupQuery = await saveGroupsHandler(page, updatedData);
+                const deleteGroupQuery = await deleteGroupsHandler(page, updatedData);
+                const fieldDataQuery = await saveFieldDataHandler(page, updatedData);
+                setCanSaveState(false);
+                setUpdatedData(defaultUpdateDataObj.updatedData);
+                // Notification
+                addNotification(`your page has been saved successfully!`, 'success');
+            });
+        }
+        catch(err) {
+            console.log(err);
+            addNotification(`an unexpected error occured while saving the page!`, 'error');
+        }
     }
 
 
@@ -496,12 +461,13 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     onDrop={componentDrop}
                     draggable
                     onClick={(e) => {
-                        checkEditComponentForErrors(() => {
+                        checkForErrors(() => {
                             const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
                             allEditRows.forEach((ele) => ele.classList.remove('active'));
                             const target = e.target as HTMLTextAreaElement;
                             if(target) target.classList.add('active');
                             setSelectedPageComponent(page.page_components[i]);
+                            setSelectedPageCompID(page.page_components[i]._id)
                             setPageMode('edit_component');
                         });
                     }}>
@@ -544,9 +510,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // ---------------------------------------------------------------------/
     // - ALT ---------------------------------------------------------------/
     // ---------------------------------------------------------------------/
-    const checkEditComponentForErrors = (callback: () => void) => {
+    const checkForErrors = (callback: () => void) => {
         // Verify all fields meet their min and max configs
-        let editPageCompEle = document.querySelector('.editPageCompCon');
+        let editPageCompEle = document.querySelector('.editPageCon');
         if(editPageCompEle) {
             let invalidForms = editPageCompEle.querySelectorAll('.invalid');
             if(invalidForms.length) {
@@ -565,176 +531,151 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         mounted.current = true;
         getPageData();
         getAllTemplates();
-        
-        // Temp
-        setPageMarkup(`
-            <style>
-                .gridCon {
-                    display: grid;
-                    grid-template-columns: repeat(3, 1fr);
-                    gap: 20px;
-                }
-                .box {
-                    height: 200px;
-                    background-color: #1B1B1B;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    color: white;
-                    font-size: 30px;
-                }
-                @media only screen and (max-width: 700px) {
-                    .gridCon {
-                        grid-template-columns: repeat(2, 1fr);
-                    }
-                }
-                @media only screen and (max-width: 400px) {
-                    .gridCon {
-                        grid-template-columns: repeat(1, 1fr);
-                    }
-                }
-            </style>
-
-            <div>
-                <h1>Page</h1>
-                <a href="/about">About</a>           
-                <a href="https://williamyallop.com">William Yallop Portfolio</a> 
-            </div>
-            <div class="gridCon">
-                <div class="box">1</div>
-                <div class="box">2</div>
-                <div class="box">3</div>
-                <div class="box">4</div>
-                <div class="box">5</div>
-                <div class="box">6</div>
-                <div class="box">7</div>
-                <div class="box">8</div>
-                <div class="box">9</div>
-            </div>
-        `);
-
         return () => {
             mounted.current = false;
             setPage({} as mod_pageModel);
+            setUpdatedData(defaultUpdateDataObj.updatedData);
+            updatedData.pageComponentDownloaded = [];
             setLoading(true);
+            setCanSaveState(false);
             setActiveSlug(slug);
-            setSelectedTemplate('');
             setTemplates([]);
+            setPageMode('preview');
         }
     }, [slug]); 
 
     
 
     return (
-        <div className='pageEditCon' key={activeSlug}>
-            <NotificationPopup/>
-            <EditPageHeader 
-                pageName={page.name}
-                canSave={canSave}
-                saveCallback={savePageData}/>
-            <div className="sidebar">
-                {/* Title */}
-                <div className="row">
-                    <h1>{ page.name }</h1>
-                </div>
-                {/* Edit Page Data */}
-                <div className="row">
-                    {/* Page content */}
-                    <div className='editContentRow'>
-                        <div className="imgCon"><FontAwesomeIcon icon={faAlignJustify}/></div>
-                        <div className='mainCol'>
-                            <p>content</p>
-                            <div>
-                                {/* Edit this row */}
-                                <button className='btnStyleBlank' onClick={() => {  }}>
-                                    <CoreIcon icon={faEdit} style={'transparent'}/>
-                                </button>
-                            </div>
+        <PageContext.Provider value={{ page, setPage }}>
+            <UpdatedDataContext.Provider value={{ updatedData, setUpdatedData}}>
+                <div className='pageEditCon' key={activeSlug}>
+                    <NotificationPopup/>
+                    <EditPageHeader 
+                        pageName={page.name}
+                        canSave={canSave}
+                        saveCallback={savePageData}
+                        checkForErrors={checkForErrors}/>
+                    <div className="sidebar">
+                        {/* Title */}
+                        <div className="row">
+                            <h1>{ page.name }</h1>
                         </div>
-                    </div>
-                    {/* SEO */}
-                    <div className='editContentRow'>
-                        <div className="imgCon"><FontAwesomeIcon icon={faSearchengin}/></div>
-                        <div className='mainCol'>
-                            <p>seo</p>
-                            <div>
-                                {/* Edit this row */}
-                                <button className='btnStyleBlank' onClick={() => {  }}>
-                                    <CoreIcon icon={faEdit} style={'transparent'}/>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    {/* template */}
-                    { page.type === 'page' ? 
-                        <SelectInput 
-                            value={selectedTemplate}
-                            options={templates}
-                            id={"templateSelect"}
-                            name={"template"}
-                            required={true}
-                            errorMsg={"there was an unexpected error!"}
-                            updateValue={(value) => {
-                                setSelectedTemplate(value);
-                                setUpdateData({
-                                    ...updatedData,
-                                    template: true
+                        {/* Edit Page Data */}
+                        <div className="row">
+                            {/* SEO */}
+                            <div className='editContentRow' onClick={(e) => {
+                                checkForErrors(() => {
+                                    const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                                    allEditRows.forEach((ele) => ele.classList.remove('active'));
+                                    const target = e.target as HTMLTextAreaElement;
+                                    if(target) target.classList.add('active');
+                                    setPageMode('seo');
                                 });
-                                setCanSave(true);
-                            }}
-                            label="template"
-                            style={'--hide-seperator --no-margin-bottom'}/>
-                    : null }
-                </div>
-                {/* Page Components */}
-                <div className='row'>
-                    {/* Add component */}
-                    <button 
-                        className="btnStyle1"
-                        onClick={() => {
-                            setModalState({
-                                ...modalState,
-                                state: true,
-                                title: 'add component',
-                                size: 'standard',
-                                body: 'select a component bellow to add to your page',
-                                element: <ComponentListModal addComponentCallback={addComponent}/>
-                            });
-                        }}>
-                        add component
-                    </button>
-                    {
-                        pageComponents.length ?
-                            <div className="componentsCon">
-                                {/* Components */}
-                                { pageComponents }
+                            }}>
+                                <div className="imgCon"><FontAwesomeIcon icon={faSearchengin}/></div>
+                                <div className='mainCol'>
+                                    <p>seo</p>
+                                </div>
                             </div>
+                            {/* template */}
+                            { page.type === 'page' ? 
+                                <SelectInput 
+                                    value={page.template}
+                                    options={templates}
+                                    id={"templateSelect"}
+                                    name={"template"}
+                                    required={true}
+                                    errorMsg={"there was an unexpected error!"}
+                                    updateValue={(value) => {
+                                        page.template = value;
+                                        setPage({
+                                            ...page
+                                        })
+                                        setUpdatedData({
+                                            ...updatedData,
+                                            template: true
+                                        });
+                                        setCanSaveState(true);
+                                        generatePagePreview('provided', undefined, undefined);
+                                    }}
+                                    label="template"
+                                    style={'--hide-seperator --no-margin-bottom'}/>
+                            : null }
+                        </div>
+                        {/* Page Components */}
+                        <div className='row'>
+                            {/* Add component */}
+                            <button 
+                                className="btnStyle1"
+                                onClick={() => {
+                                    setModalState({
+                                        ...modalState,
+                                        state: true,
+                                        title: 'add component',
+                                        size: 'standard',
+                                        body: 'select a component bellow to add to your page',
+                                        element: <ComponentListModal addComponentCallback={addComponent}/>
+                                    });
+                                }}>
+                                add component
+                            </button>
+                            {
+                                pageComponents.length ?
+                                    <div className="componentsCon">
+                                        {/* Components */}
+                                        { pageComponents }
+                                    </div>
+                                : null
+                            }
+                        </div>
+                    </div>
+
+                    {/* Edit SEO page */}
+                    {
+                        pageMode === 'seo' ?
+                            <EditSEO                             
+                                exit={() => { 
+                                    // Success
+                                    const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                                    allEditRows.forEach((ele) => ele.classList.remove('active'));
+                                    setPageMode('preview'); 
+                                }}
+                                setCanSave={setCanSaveState}/>
                         : null
                     }
+
+                    {/* Page preview page */}
+                    {
+                        pageMode === 'preview' ?
+                            <PageMarkupContext.Provider value={{ markupObj, setMarkupObj }}>
+                                <PagePreview loading={loading}/>
+                            </PageMarkupContext.Provider>
+                        : null
+                    }
+
+                    {/* Edit component page */}
+                    {
+                        pageMode === 'edit_component' ?
+                            <EditPageComponent
+                                page_component_id={selectedPageCompID}
+                                setCanSave={setCanSaveState}
+                                addNotification={addNotification}
+                                generateComponent={generatePagePreview}
+                                exit={() => {
+                                    checkForErrors(() => {
+                                        // Success
+                                        const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                                        allEditRows.forEach((ele) => ele.classList.remove('active'));
+                                        setPageMode('preview');
+                                    });
+                                }}/> 
+                        : null
+                    }
+
                 </div>
-            </div>
-            {
-                pageMode === 'preview'
-                ?
-                <PagePreview
-                    pageMarkup={pageMarkup}/>
-                :
-                <EditPageComponent
-                    page_component={selectedPageComponent}
-                    exit={() => {
-                        checkEditComponentForErrors(() => {
-                            // Success
-                            const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
-                            allEditRows.forEach((ele) => ele.classList.remove('active'));
-                            setPageMode('preview');
-                            console.log('set cooldown to update page preview');
-                        });
-                    }}
-                    updateData={updateContentTypeData}
-                    addRepeaterGroup={addRepeaterDataGroup}
-                    deleteGroup={deleteRepeaterGroup}/> 
-            }
-        </div>
+            </UpdatedDataContext.Provider>
+        </PageContext.Provider>
     );
 }
 

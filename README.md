@@ -12,7 +12,6 @@ On top of the default liquid tags, we have a few of our own registered. Click th
 
 - [lucidScript](#lucidscript)
 - [lucidHead](#lucidHead)
-- [lucidSeo](#lucidSeo)
 - [lucidApp](#lucidApp)
 - [lucidFooter](#lucidFooter)
 
@@ -57,8 +56,6 @@ Example tag:
 ```
 
 ### lucidHead
-
-### lucidSeo
 
 ### lucidApp
 

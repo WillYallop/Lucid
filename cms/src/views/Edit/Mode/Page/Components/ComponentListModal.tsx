@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import axios from "axios";
 // Components
 import ComponentRow from '../../../../Components/Components/ComponentRow';
-// Fumction
-import getApiUrl from '../../../../../functions/getApiUrl';
+// data
+import { getMultipleComponents } from '../../../../../data/components';
 
 
 interface componentListModalProps {
@@ -20,49 +19,42 @@ const ComponentListModal: React.FC<componentListModalProps> = ({ addComponentCal
     const [ showLoadMore, setShowLoadMore ] = useState(false);
 
     const getAllComponents = (s: number, l: number) => {
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-              query: `
-                query {
-                    components {
-                        get_multiple ( skip: ${s}, limit: ${l} )
-                        {
-                            _id
-                            name
-                            file_name
-                            file_path
-                            description
-                            preview_url
-                            date_added
-                            date_modified
-                            content_types {
-                                _id
-                                name
-                                type
-                                parent
-                                config {
-                                    min
-                                    max
-                                    default
-                                }
-                            }
-                        }
-                    }
-                }`
+
+        getMultipleComponents({
+            __args: {
+                skip: s, 
+                limit: l
+            },
+            _id: true,
+            name: true,
+            file_name: true,
+            file_path: true,
+            description: true,
+            preview_url: true,
+            date_added: true,
+            date_modified: true,
+            content_types: {
+                _id: true,
+                name: true,
+                type: true,
+                parent: true,
+                config: {
+                    min: true,
+                    max: true,
+                    default: true,
+                }
             }
-        })
-        .then((result) => {
-            const allComponents: Array<mod_componentModel> = result.data.data.components.get_multiple || [];
+        },
+        (response) => {
+            const allComponents: Array<mod_componentModel> = response.data.data.components.get_multiple || [];
             if(allComponents.length < limit) setShowLoadMore(false);
             else setShowLoadMore(true);
             setComponents((components) => [
                 ...components,
                 ...allComponents
             ]);
-        })
-        .catch((err) => {
+        },
+        (err) => {
             // addNotification('There was an error getting your components!', 'error');
         })
     }

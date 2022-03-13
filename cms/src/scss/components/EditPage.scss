@@ -127,16 +127,41 @@
         width: calc(100% - rem(300));
         height: 100%;
         background-color: #2B2B2B;
+        position: relative;
+        .pagePreviewLoadingCon {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 3;
+        }
         .iframeContainer {
             width: 100%;
             min-width: rem(320);
             margin: 0 auto;
             background-color: rgb(58, 58, 58);
             height: calc(100% - rem(25) - $header_height);
+            z-index: 2;
             iframe {
                 width: 100%;
                 height: 100%;
             }
+        }
+    }
+    
+    .editPageCon {
+        width: calc(100% - rem(300));
+        height: calc(100% - rem(50));
+        padding: rem(20);
+        overflow-y: auto;
+        // Top header
+        .headerRow {
+            margin-top: 0;
+            margin-bottom: rem(10);
+        }
+        .body {
+            margin-top: rem(20);
         }
     }
 }

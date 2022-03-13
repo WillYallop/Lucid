@@ -17,6 +17,10 @@
             padding-left: rem(10);
             font-size: rem(14);
             line-height: rem(16);
+            span {
+               color: map-get($map: $text_colours, $key: _01_03); 
+               font-size: rem(13);
+            }
         }
     }
     .iconCol {
@@ -31,6 +35,7 @@
 .contentTypeRowBody {
     margin-left: rem(40);
     position: relative;
+    margin-bottom: rem(10);
     &::after {
         content: '';
         position: absolute;

@@ -1,14 +1,12 @@
 
 interface UtilityLoadingProps {
-    mode: 'light'|'dark'
+    mode: 'light'|'dark'|'transparent'
 }
 
 const UtilityLoading: React.FC<UtilityLoadingProps> = ({ mode }) => {
 
     return (
-        <div className={`loadingSkeleton ${mode}`}>
-
-        </div>
+        <div className={`loadingSkeleton ${mode}`}></div>
     )
 }
 

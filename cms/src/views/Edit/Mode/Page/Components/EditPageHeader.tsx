@@ -1,37 +1,34 @@
 import { useState, ReactElement, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 // Components
 import CoreIcon from '../../../../../components/Core/Icon';
 import SearchInput from "../../../../../components/Core/Inputs/SearchInput";
+import DeleteConfirmModal from '../../../../../components/Modal/DeleteConfirmModal';
 // Context
-import { PageNotificationContext } from "../../../../../helper/Context";
+import { PageNotificationContext, ModalContext } from "../../../../../helper/Context";
 // Icons
 import { faSignInAlt, faSave } from '@fortawesome/free-solid-svg-icons';
 // Functions 
-import getApiUrl from "../../../../../functions/getApiUrl";
 import formatLucidError from "../../../../../functions/formatLucidError";
-
-interface pageSerach {
-    slug: string
-    name: string
-    _id: string
-}
+// data
+import { searchPageName } from '../../../../../data/page';
 
 interface editPageHeaderProps {
     pageName: string
     canSave: boolean
     saveCallback: () => void
+    checkForErrors: (callback:() => void) => void
 }
 
-const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, saveCallback }) => {
+const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, saveCallback, checkForErrors }) => {
     const mounted = useRef(false);
     const navigate = useNavigate();
 
+    const { modalState, setModalState } = useContext(ModalContext);
     const { notifications, setNotifications } = useContext(PageNotificationContext);
     const [ notificationTimeout, setNotificationTimeout ] = useState<ReturnType<typeof setTimeout>>();
     const [ pageSearchQuery, setPageSearchQuery ] = useState('');
-    const [ pageSearchResults, setPageSearchResults ] = useState<Array<pageSerach>>([]);
+    const [ pageSearchResults, setPageSearchResults ] = useState<Array<pageSearchRes>>([]);
 
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
         setNotifications([{
@@ -47,38 +44,27 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
 
     const pageSearchAction = (value: string) => {
         // Search query and and set page search results
-        const query = `query {
-            page {
-                search_name (
-                    query: "${value}"
-                    full_slug: false
-                    allow_home: true
-                    type: "all"
-                )
-                {
-                    slug
-                    name
-                    _id
-                }
-            }
-        }`;
-        axios({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((res) => {
-            if(res.data.data.page.search_name) {
+        searchPageName({
+            __args: {
+                query: value,
+                full_slug: false,
+                allow_home: true,
+                type: "all"
+            },
+            slug: true,
+            name: true,
+            _id: true
+        },
+        (response) => {
+            if(response.data.data.page.search_name) {
                 if(!mounted.current) return null;
-                setPageSearchResults(res.data.data.page.search_name);
+                setPageSearchResults(response.data.data.page.search_name);
             }
             else {
-                addNotification(formatLucidError(res.data.errors[0].message).message,'error');
+                addNotification(formatLucidError(response.data.errors[0].message).message,'error');
             }
-        })
-        .catch(() => {
+        },
+        (err) => {
             addNotification('An unexpected error occured while querying the pages!','error');
         })
     }
@@ -89,9 +75,27 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
             <button className='pageSearchBtn'
                 type='button'
                 key={pageSearchResults[i]._id}
-                onClick={() => { 
-                    if(pageSearchResults[i].slug === '/') navigate(`/edit/page/homepage`);
-                    else navigate(`/edit/page/${pageSearchResults[i].slug}`);
+                onClick={(e) => { 
+                    checkForErrors(() => {
+                        const navigateAway = () => {
+                            if(pageSearchResults[i].slug === '/') navigate(`/edit/page/homepage`);
+                            else navigate(`/edit/page/${pageSearchResults[i].slug}`);
+                        }
+                        if(canSave) {
+                            e.stopPropagation();
+                            setModalState({
+                                ...modalState,
+                                state: true,
+                                title: 'confirmation',
+                                body: '',
+                                size: 'small',
+                                element: <DeleteConfirmModal 
+                                            btnText={['close', 'continue']}
+                                            message={'you have unsaved changes, these will be lost if navigate to a new page!'}
+                                            action={() => navigateAway()}/>
+                            });
+                        } else navigateAway();
+                    })
                  }}>
                 { pageSearchResults[i].name }<span> - {  pageSearchResults[i].slug }</span>
             </button>
@@ -107,7 +111,7 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
             setPageSearchQuery('');
             setPageSearchResults([]);
         }
-    }, [pageName])
+    }, [pageName, canSave])
 
     return (
         <header className="editPageHeader">
@@ -115,7 +119,24 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
             {/* Edit */}
             <button 
                 className='btnStyleBlank'
-                onClick={() => { navigate('/pages') }}>
+                onClick={(e) => { 
+                        if(canSave) {
+                            e.stopPropagation();
+                            setModalState({
+                                ...modalState,
+                                state: true,
+                                title: 'confirmation',
+                                body: '',
+                                size: 'small',
+                                element: <DeleteConfirmModal 
+                                            btnText={['close', 'continue']}
+                                            message={'you have unsaved changes, these will be lost if you continue!'}
+                                            action={() => navigate('/pages')}/>
+                            });
+                        } else {
+                            navigate('/pages');
+                        }
+                    }}>
                 <CoreIcon icon={faSignInAlt} style={'flip-horizontal'}/>
             </button>
 

@@ -23,7 +23,7 @@ Example posts.json file:
 import { getSingleFileContent, writeSingleFile } from './theme';
 import validate from '../validator';
 import { v1 as uuidv1 } from 'uuid';
-import { __convertStringLowerUnderscore, __generateErrorString } from './helper/shared';
+import { __convertStringLowerUnderscore, __generateErrorString } from '../functions/shared';
 import merge from 'lodash/merge';
 
 

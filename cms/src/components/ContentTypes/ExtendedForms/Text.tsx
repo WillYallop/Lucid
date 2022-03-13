@@ -3,7 +3,6 @@ import { useState } from "react";
 import SwitchInput from "../../Core/Inputs/SwitchInput";
 import TextInput from "../../Core/Inputs/TextInput";
 import NumberInput from "../../Core/Inputs/NumberInput";
-import { mod_contentTypesConfigModel } from '../ContentTypeRow';
 
 interface ExtendedFormTextProps {
     config?: mod_contentTypesConfigModel["config"]
