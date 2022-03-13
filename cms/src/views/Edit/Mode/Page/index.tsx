@@ -129,7 +129,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             addNotification('there was an unexpected error while getting the page data.','error');
         })
     }
-
     const getAllTemplates = () => {
         getTemplates({
             __args: {}   
@@ -144,7 +143,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             addNotification('there was an unexpected error while getting the template data.','error');
         })
     }
-
     const generatePagePreview = (mode: 'live' | 'provided', pageData?: mod_pageModel, pageComponentID?: mod_componentModel["_id"]) => {
         setLoading(true);
         const pageComponentsArr: Array<mod_generatePreviewPageComponents> = []; 
@@ -424,7 +422,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     }
     const savePageData = async () => {
         try {
-            checkEditComponentForErrors(async () => {
+            checkForErrors(async () => {
                 // Generate all of the queryies we need
                 const pageQuery = await savePageHandler(page, updatedData);
                 const seoQuery = await saveSEOHandler(page, updatedData);
@@ -463,7 +461,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     onDrop={componentDrop}
                     draggable
                     onClick={(e) => {
-                        checkEditComponentForErrors(() => {
+                        checkForErrors(() => {
                             const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
                             allEditRows.forEach((ele) => ele.classList.remove('active'));
                             const target = e.target as HTMLTextAreaElement;
@@ -512,9 +510,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // ---------------------------------------------------------------------/
     // - ALT ---------------------------------------------------------------/
     // ---------------------------------------------------------------------/
-    const checkEditComponentForErrors = (callback: () => void) => {
+    const checkForErrors = (callback: () => void) => {
         // Verify all fields meet their min and max configs
-        let editPageCompEle = document.querySelector('.editPageCompCon');
+        let editPageCompEle = document.querySelector('.editPageCon');
         if(editPageCompEle) {
             let invalidForms = editPageCompEle.querySelectorAll('.invalid');
             if(invalidForms.length) {
@@ -542,6 +540,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
             setCanSaveState(false);
             setActiveSlug(slug);
             setTemplates([]);
+            setPageMode('preview');
         }
     }, [slug]); 
 
@@ -555,7 +554,8 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                     <EditPageHeader 
                         pageName={page.name}
                         canSave={canSave}
-                        saveCallback={savePageData}/>
+                        saveCallback={savePageData}
+                        checkForErrors={checkForErrors}/>
                     <div className="sidebar">
                         {/* Title */}
                         <div className="row">
@@ -563,20 +563,15 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                         </div>
                         {/* Edit Page Data */}
                         <div className="row">
-                            {/* Page content */}
-                            <div className='editContentRow'>
-                                <div className="imgCon"><FontAwesomeIcon icon={faAlignJustify}/></div>
-                                <div className='mainCol'>
-                                    <p>page</p>
-                                </div>
-                            </div>
                             {/* SEO */}
                             <div className='editContentRow' onClick={(e) => {
-                                const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
-                                allEditRows.forEach((ele) => ele.classList.remove('active'));
-                                const target = e.target as HTMLTextAreaElement;
-                                if(target) target.classList.add('active');
-                                setPageMode('seo');
+                                checkForErrors(() => {
+                                    const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                                    allEditRows.forEach((ele) => ele.classList.remove('active'));
+                                    const target = e.target as HTMLTextAreaElement;
+                                    if(target) target.classList.add('active');
+                                    setPageMode('seo');
+                                });
                             }}>
                                 <div className="imgCon"><FontAwesomeIcon icon={faSearchengin}/></div>
                                 <div className='mainCol'>
@@ -668,7 +663,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
                                 addNotification={addNotification}
                                 generateComponent={generatePagePreview}
                                 exit={() => {
-                                    checkEditComponentForErrors(() => {
+                                    checkForErrors(() => {
                                         // Success
                                         const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
                                         allEditRows.forEach((ele) => ele.classList.remove('active'));

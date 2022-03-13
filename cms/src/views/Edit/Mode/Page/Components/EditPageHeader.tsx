@@ -17,9 +17,10 @@ interface editPageHeaderProps {
     pageName: string
     canSave: boolean
     saveCallback: () => void
+    checkForErrors: (callback:() => void) => void
 }
 
-const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, saveCallback }) => {
+const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, saveCallback, checkForErrors }) => {
     const mounted = useRef(false);
     const navigate = useNavigate();
 
@@ -75,26 +76,26 @@ const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, save
                 type='button'
                 key={pageSearchResults[i]._id}
                 onClick={(e) => { 
-                    const navigateAway = () => {
-                        if(pageSearchResults[i].slug === '/') navigate(`/edit/page/homepage`);
-                        else navigate(`/edit/page/${pageSearchResults[i].slug}`);
-                    }
-                    if(canSave) {
-                        e.stopPropagation();
-                        setModalState({
-                            ...modalState,
-                            state: true,
-                            title: 'confirmation',
-                            body: '',
-                            size: 'small',
-                            element: <DeleteConfirmModal 
-                                        btnText={['close', 'continue']}
-                                        message={'you have unsaved changes, these will be lost if navigate to a new page!'}
-                                        action={() => navigateAway()}/>
-                        });
-                    } else {
-                        navigateAway();
-                    }
+                    checkForErrors(() => {
+                        const navigateAway = () => {
+                            if(pageSearchResults[i].slug === '/') navigate(`/edit/page/homepage`);
+                            else navigate(`/edit/page/${pageSearchResults[i].slug}`);
+                        }
+                        if(canSave) {
+                            e.stopPropagation();
+                            setModalState({
+                                ...modalState,
+                                state: true,
+                                title: 'confirmation',
+                                body: '',
+                                size: 'small',
+                                element: <DeleteConfirmModal 
+                                            btnText={['close', 'continue']}
+                                            message={'you have unsaved changes, these will be lost if navigate to a new page!'}
+                                            action={() => navigateAway()}/>
+                            });
+                        } else navigateAway();
+                    })
                  }}>
                 { pageSearchResults[i].name }<span> - {  pageSearchResults[i].slug }</span>
             </button>
