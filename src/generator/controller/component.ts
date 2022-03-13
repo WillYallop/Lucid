@@ -20,7 +20,24 @@ const engine = new Liquid({
     strictFilters: false
 });
 
-
+const __typeDependentDataTransform = async (type: mod_contentTypesConfigModel["type"], value: any) => {
+    try {
+        switch(type) {
+            case 'number': {
+                return parseInt(value);
+            }
+            case 'text': {
+                return value;
+            }
+            case 'media': {
+                // conert media ID into an image or video object 
+            }
+        }
+    }
+    catch(err) {
+        throw err;
+    }
+}
 
 const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
     try {
@@ -49,7 +66,7 @@ const __generateComponentDataObj = async (data: gen_componentCompilerProps) => {
                     const contentType = data.content_types.find( x => x._id === field.config_id );
                     if(contentType !== undefined) {
                         if(contentType.type != 'repeater') {
-                            groupObj[__convertStringLowerUnderscore(contentType.name)] = field.value; // TODO - atm these are potentially all strings, and will need updating to their corresponding content type
+                            groupObj[__convertStringLowerUnderscore(contentType.name)] = await __typeDependentDataTransform(contentType.type, field.value);
                         }
                         else {
                             const repeaterArray = await buildRepeaterArray(contentType._id, group._id);
