@@ -6,10 +6,10 @@ interface largeComponentRowProps {
     component: mod_componentModel
 }
 
-const LargeComponentRow: React.FC<largeComponentRowProps> = ({ component }) => {
+const ComponentRowBanner: React.FC<largeComponentRowProps> = ({ component }) => {
     if(component != undefined) {
         return (
-            <div className='largeComponentRow'>
+            <div className='componentRowBanner blockCon'>
                 <div className="imgCon">
                     {
                         component.preview_url ?
@@ -32,4 +32,4 @@ const LargeComponentRow: React.FC<largeComponentRowProps> = ({ component }) => {
     }
 }
 
-export default LargeComponentRow;
+export default ComponentRowBanner;

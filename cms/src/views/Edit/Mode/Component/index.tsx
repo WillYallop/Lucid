@@ -15,6 +15,7 @@ import ContentTypeRow from '../../../../components/ContentTypes/ContentTypeRow';
 import ComponentContentTypeActionForm from './Components/ContentTypeActionForm';
 import ComponentDataForm from './Components/ComponentDataForm';
 import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
+import ComponentRowBanner from '../../../../components/Components/ComponentRowBanner';
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 // Icons
@@ -393,8 +394,10 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             title={`edit - ${componentName}`}
             body="manage your components fields and content types!"
             sidebar={sidebar}>
+            <ComponentRowBanner component={component}/>
             {/* Content Types */}
             <section>
+                <h2>content types</h2>
                 { contentTypeRows }
             </section>
         </DefaultPage>

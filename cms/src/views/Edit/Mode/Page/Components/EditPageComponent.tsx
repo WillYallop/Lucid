@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useContext, useState, useRef } from 'react';
 import { v1 as uuidv1 } from 'uuid';
 // Components
 import CoreIcon from '../../../../../components/Core/Icon';
-import LargeComponentRow from './LargeComponentRow';
+import ComponentRowBanner from '../../../../../components/Components/ComponentRowBanner';
 import ContentTypeFieldText from './ContentTypeFields/Text';
 import ContentTypeFieldNumber from './ContentTypeFields/Number';
 import ContentTypeFieldRepeater from './ContentTypeFields/Repeater';
@@ -372,7 +372,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                 </div>
     
                 {/* Component Row */}
-                <LargeComponentRow component={pageComponent.component}/>
+                <ComponentRowBanner component={pageComponent.component}/>
     
                 {/* Content Type Fields */}
                 <h2>component fields</h2>
