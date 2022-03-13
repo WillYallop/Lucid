@@ -146,7 +146,8 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                             getGroups={getRepeaterGroups} 
                             deleteGroup={deleteRepeaterGroup}
                             addRepeaterGroup={addRepeaterDataGroup} 
-                            data={data}/>;
+                            data={data}
+                            totalGroups={totalGroups}/>;
                     }
                 }
             }
@@ -168,6 +169,13 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
             });
         });
         return results;
+    }
+    const totalGroups = (config_id: mod_contentTypesConfigModel["_id"], group_id?: mod_contentTypesDatabaseModel["group_id"]) => {
+        let total = 0;
+        pageComponent.groups.filter((group) => {
+            if(group.parent_group === group_id && group.parent_config_id === config_id) total++;
+        });
+        return total;
     }
     // Update content type for selected page comp
     const updateContentTypeData = (_id: mod_contentTypesConfigModel["_id"], group_id: mod_contentTypesDatabaseModel["group_id"], data: mod_contentTypesDatabaseModel["value"]) => {
@@ -330,7 +338,8 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                                     getGroups={getRepeaterGroups} 
                                     deleteGroup={deleteRepeaterGroup}
                                     addRepeaterGroup={addRepeaterDataGroup} 
-                                    data={correspondingData}/>
+                                    data={correspondingData}
+                                    totalGroups={totalGroups}/>
                             );
                         }
                         break;

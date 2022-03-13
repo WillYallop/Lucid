@@ -1,4 +1,4 @@
-import { ReactElement, useContext } from "react";
+import { ReactElement, useContext, useState } from "react";
 import { ModalContext } from "../../../../../../helper/Context";
 // Components
 import CoreIcon from '../../../../../../components/Core/Icon';
@@ -9,12 +9,13 @@ import { faPlus, faTrashAlt, faGripLines } from '@fortawesome/free-solid-svg-ico
 interface contentTypeFieldRepeaterProps {
     content_type: mod_contentTypesConfigModel
     getGroups: (repeater_id: mod_contentTypesConfigModel["_id"], group_id?: mod_contentTypesDatabaseModel["group_id"]) => { [key: string]: Array<ReactElement> }
+    totalGroups: (repeater_id: mod_contentTypesConfigModel["_id"], group_id?: mod_contentTypesDatabaseModel["group_id"]) => number
     addRepeaterGroup: (content_type: mod_contentTypesConfigModel, parent_group_id: mod_contentTypesDatabaseModel["group_id"]) => void
     data: mod_contentTypesDatabaseModel
     deleteGroup: (group_id?: mod_contentTypeFieldGroupModel["_id"]) => void
 }
 
-const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ content_type, getGroups, addRepeaterGroup, data, deleteGroup }) => {
+const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ content_type, getGroups, addRepeaterGroup, data, deleteGroup, totalGroups }) => {
 
     const { modalState, setModalState } = useContext(ModalContext);
 
@@ -65,7 +66,7 @@ const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ con
             <div className="contentTypeFieldCon repeaterType blockCon">
                 <div>
                     <p>{content_type.name} - repeater</p>
-                    <p className="subTitle">max groups: { content_type.config.max ? content_type.config.max : 'unlimited' }</p>
+                    <p className="subTitle">groups: { totalGroups(content_type._id, data.group_id) } { content_type.config.max ? '/' + content_type.config.max : '' }</p>
                 </div>
                 <div>
                     <button
