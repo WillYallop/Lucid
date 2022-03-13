@@ -5,18 +5,39 @@ import { generateSlug } from "random-word-slugs";
 import validate from '../../../validator';
 import { getSinglePostTypeByName } from '../../../controller/posts';
 
+const path = require('path');
+const config = require(path.resolve("./lucid.config.js"));
+
 // Controllers
 import { getSingleSEO, saveSingleSEO } from '../seo/data';
 import { getAllPageComponents } from '../page_component/data';
 import { __generateErrorString } from '../../../functions/shared';
 
-export const __buildPageLivePath = async (_id: mod_pageModel["_id"], slug: mod_pageModel["slug"]) => {
+export const __buildPageLivePath = async (page: mod_pageModel) => {
     try {
-        // Query for parent slug
-        let res = await db.one('SELECT slug, has_parent, parent_id FROM pages WHERE _id=$1', _id);
-        slug = '/'+res.slug + slug;
-        if(res.has_parent) slug = await __buildPageLivePath(res.parent_id, slug);
-        return slug;
+
+        // recursivly get parent
+        const getParentPath = async (_id: mod_pageModel["_id"], slug: mod_pageModel["slug"]) => {
+            // Query for parent slug
+            let res = await db.one('SELECT slug, has_parent, parent_id FROM pages WHERE _id=$1', _id);
+            slug = '/'+res.slug + slug;
+            if(res.has_parent) slug = await getParentPath(res.parent_id, slug);
+            return slug;
+        }
+
+        let path = '/'
+        if(!page.is_homepage) path += page.slug;
+        if(page.has_parent) {
+            path = await getParentPath(page.parent_id, path);
+        }
+        if(page.type === 'post') {
+            const postObj = await getSinglePostTypeByName(page.post_name);
+            // find post parent page
+            const parentPage = await db.oneOrNone('SELECT _id FROM pages WHERE post_type_id=$1', postObj._id);
+            if(parentPage) path = await getParentPath(parentPage._id, path);
+        }
+
+        return path;
     }
     catch(err) {
         throw err;
@@ -48,17 +69,7 @@ export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel
         page.page_components = await getAllPageComponents(page_id);
 
         // Build full slug
-        page.path = '/';
-        if(!page.is_homepage) page.path += page.slug;
-        if(page.has_parent) {
-            page.path = await __buildPageLivePath(page.parent_id, page.path);
-        }
-        if(page.type === 'post') {
-            const postObj = await getSinglePostTypeByName(page.post_name);
-            // find post parent page
-            const parentPage = await db.oneOrNone('SELECT _id FROM pages WHERE post_type_id=$1', postObj._id);
-            if(parentPage) page.path = await __buildPageLivePath(parentPage._id, page.path);
-        }
+        page.path = config.app_urL + await __buildPageLivePath(page);
 
         return page;
     }
@@ -356,6 +367,20 @@ export const getSinglePageViaPostId = async (_id: cont_post_postDeclaration["_id
         // Get page
         let page = await db.one('SELECT * FROM pages WHERE post_type_id=$1', _id);
         return page;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Get page live url
+export const getPathLiveURL = async (_id: mod_pageModel["_id"]) => {
+    try {
+        const page = await db.one('SELECT is_homepage, has_parent, slug, type, parent_id, post_name FROM pages WHERE _id=$1', _id);
+        const path = await __buildPageLivePath(page);
+        return {
+            url: config.app_urL + path
+        }
     }
     catch(err) {
         throw err;

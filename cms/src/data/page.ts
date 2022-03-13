@@ -195,3 +195,35 @@ export const searchPageName = async (data: data_page_searchNameQuery["query"]["p
         throw err;
     }
 }
+
+// --------------------------------
+// Get page live url
+// --------------------------------
+export const getPageLiveURL = async (data: data_page_getLiveURLQuery["query"]["page"]["get_live_url"], success: (res: AxiosResponse<data_page_getLiveURLQueryRes, any>) => void, error: (err: any) => void) => {
+    try {
+        const queryObj: data_page_getLiveURLQuery = {
+            query: {
+                page: {
+                    get_live_url: data
+                }
+            }
+        }
+        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
+        axios.request<data_page_getLiveURLQueryRes>({
+            url: getApiUrl(),
+            method: 'post',
+            data: {
+                query: query
+            }
+        })
+        .then((result) => {
+            success(result);
+        })
+        .catch((err) => {
+            error(err);
+        })
+    }
+    catch(err) {
+        throw err;
+    }
+}

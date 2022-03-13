@@ -1,4 +1,3 @@
-import * as fs from 'fs-extra';
 import { getSingleFileContent, writeSingleFile, deleteSingleFile } from './theme';
 import validate from '../validator';
 import { v1 as uuidv1 } from 'uuid';

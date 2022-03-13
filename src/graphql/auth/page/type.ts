@@ -77,7 +77,6 @@ export const Page = new GraphQLObjectType({
 
 
 
-
 // Multiple Pages
 export const MultiplePages = new GraphQLObjectType({
     name: 'MultiplePagesModel',
@@ -214,6 +213,18 @@ export const BasicPage = new GraphQLObjectType({
         post_type_id: {
             type: GraphQLID,
             description: 'Assigned if the page has a post type'
+        }
+    })
+});
+
+// Get page url
+export const GetPageURLResType = new GraphQLObjectType({
+    name: 'GetPageURLResType',
+    description: 'Get the pages url',
+    fields: () => ({
+        url: {
+            type: GraphQLString,
+            description: 'The pages url'
         }
     })
 });

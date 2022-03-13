@@ -1,7 +1,7 @@
 // KEY: data_utility_
 
 // -----------------------------------
-// get multiple pages
+// ping api
 interface data_utility_pingQuery {
     query: {
         utility: {

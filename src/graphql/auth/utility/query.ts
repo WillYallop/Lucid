@@ -1,4 +1,4 @@
-import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean } from 'graphql';
+import { GraphQLFieldConfig, GraphQLObjectType } from 'graphql';
 import { PingType } from './type';
 
 // Ping

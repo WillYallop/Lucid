@@ -20,44 +20,23 @@ interface PageListProps {
 }
 
 const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
+
     const { loadingState, setLoadingState } = useContext(LoadingContext);
-
-    // -------------------------------------------------------
-    // Modal 
-    // -------------------------------------------------------
     const { modalState, setModalState } = useContext(ModalContext);
-
-    // -------------------------------------------------------
-    // Notification 
-    // -------------------------------------------------------
     const { notifications, setNotifications } = useContext(PageNotificationContext);
-    const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
-            ...array,
-            {
-                message: message,
-                type: type
-            }
-        ]);
-    }
-
-    // -------------------------------------------------------
-    // Components
-    // -------------------------------------------------------
     let [ skip, limit ] = [ 0 , 50 ];
     const [ pages, setPages ] = useState<Array<mod_pageModel>>([]);
     const [ showLoadMore, setShowLoadMore ] = useState(false);
 
-    // First load
-    useEffect(() => {
-        getAllPages(skip, limit);
-        return () => {
-            setPages([]);
-            setShowLoadMore(true);
-            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
-        }
-    }, []);
+    // -------------------------------------------------------
+    // Notification 
+    // -------------------------------------------------------
 
+
+    // -------------------------------------------------------
+    // Fuctions
+    // -------------------------------------------------------
+    // get all page data
     const getAllPages = (s: number, l: number) => {
         setLoadingState(true);
         getMultiplePages({
@@ -89,7 +68,7 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
             setLoadingState(false);
         })
     }
-
+    // open confirm delte page modal
     const openConfirmDeleteModal = (_id: mod_pageModel["_id"]) => {
         setModalState({
             ...modalState,
@@ -102,6 +81,7 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
                         action={() => deletePage(_id)}/>
         });
     }
+    // delete page
     const deletePage = (_id: mod_pageModel["_id"]) => {
         setLoadingState(true);
         deleteSinglePage({
@@ -134,6 +114,21 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
             setLoadingState(false);
         })
     }
+    // add notifications
+    const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
+        setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
+            ...array,
+            {
+                message: message,
+                type: type
+            }
+        ]);
+    }
+    // Load more
+    const loadmore = () => {
+        skip += pages.length;
+        getAllPages(skip, limit);
+    }
 
     // -------------------------------------------------------
     // Recursive render helper
@@ -156,11 +151,15 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
     });
 
 
-    // Load more
-    const loadmore = () => {
-        skip += pages.length;
+    // First load
+    useEffect(() => {
         getAllPages(skip, limit);
-    }
+        return () => {
+            setPages([]);
+            setShowLoadMore(true);
+            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
+        }
+    }, []);
 
 
     if(loadingState && !pages.length) {
@@ -192,9 +191,9 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
             return (
                 <div className='blockCon'>
                     <IllustrationMessage 
-                    img={noDataIllustration}
-                    title={`no ${type}s found`}
-                    body={'you can add a new page through the add button on the sidebar'}/>
+                        img={noDataIllustration}
+                        title={`no ${type}s found`}
+                        body={'you can add a new page through the add button on the sidebar'}/>
                 </div>
             )
         }

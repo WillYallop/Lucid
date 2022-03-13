@@ -2,6 +2,9 @@ import { NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // Icons
 import { faHome } from '@fortawesome/free-solid-svg-icons';
+// data
+import { getPageLiveURL } from '../../data/page';
+
 
 interface PageRowProps {
     page: mod_pageModel
@@ -23,6 +26,26 @@ const PageRow: React.FC<PageRowProps> = ({ page, getChildren, deleteCallback }) 
         } else return null;
     }
 
+    const navigateToPage = () => {
+        if(!page.path) {
+            getPageLiveURL({
+                __args: {
+                    _id: page._id
+                },
+                url: true
+            },
+            (response) => {
+                const { url } = response.data.data.page.get_live_url || '';
+                window.open(url, '_blank');
+                page.path = url;
+            },
+            (err) => {
+                console.log(err);
+            })
+        } else window.open(page.path, '_blank');
+    }
+
+
     return (
         <>
             <div className="blockCon pageRow">
@@ -34,7 +57,7 @@ const PageRow: React.FC<PageRowProps> = ({ page, getChildren, deleteCallback }) 
                                 <NavLink to={ page.slug == '/' ? `/edit/page/homepage` : `/edit/page/${page.slug}`} className={(navData) => navData.isActive ? "active" : "" }>edit</NavLink>
                             </li>
                             <li>
-                                <a href="#" target={'_blank'}>visit</a>
+                                <a onClick={navigateToPage}>visit page</a>
                             </li>
                             <li>
                                 <button className="delete" onClick={() => deleteCallback(page._id)}>delete</button>

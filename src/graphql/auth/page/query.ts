@@ -1,7 +1,7 @@
-import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean } from 'graphql';
+import { GraphQLFieldConfig, GraphQLList, GraphQLObjectType, GraphQLNonNull, GraphQLString, GraphQLInt, GraphQLBoolean, GraphQLID } from 'graphql';
 // @ts-ignore: Unreachable code error
-import { Page, MultiplePages, PageSearchRes, BasicPage } from './type';
-import { getSingle, getMultiple, pageSearch, getSinglePageViaPostId } from './data';
+import { Page, MultiplePages, PageSearchRes, BasicPage, GetPageURLResType } from './type';
+import { getSingle, getMultiple, pageSearch, getSinglePageViaPostId, getPathLiveURL } from './data';
 
 // Get single pages
 const getSinglePage: GraphQLFieldConfig<any, any, any> = {
@@ -57,6 +57,18 @@ const searchPagePostId: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
+// get page live url
+const getLiveURLQuery: GraphQLFieldConfig<any, any, any> = {
+    type: GetPageURLResType,
+    description: GetPageURLResType.description,
+    args: {
+        _id: { type: GraphQLNonNull(GraphQLID) }
+    },
+    resolve: (_, args) => {
+        return getPathLiveURL(args._id);
+    }
+}
+
 export const PageQuery = new GraphQLObjectType({
     name: 'PageQuery',
     description: 'The page base query',
@@ -65,6 +77,7 @@ export const PageQuery = new GraphQLObjectType({
         get_multiple: getMultiplePages,
 
         search_name: serachPageName,
-        get_single_by_post_id: searchPagePostId
+        get_single_by_post_id: searchPagePostId,
+        get_live_url: getLiveURLQuery
     }
 })

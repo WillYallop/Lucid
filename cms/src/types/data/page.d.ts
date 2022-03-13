@@ -227,3 +227,32 @@ interface data_page_saveSingleQueryRes {
         message: string
     }>
 }
+
+
+// -----------------------------------
+// get live url
+interface data_page_getLiveURLQuery {
+    query: {
+        page: {
+            get_live_url: {
+                __args: {
+                    _id: mod_pageModel["_id"]
+                }
+                url: boolean
+            }
+        }
+    }
+}
+interface data_page_getLiveURLQueryRes {
+    data: {
+        page: {
+            get_live_url: {
+                url: string
+            }
+        }
+    }
+    errors: Array<{
+        message: string
+    }>
+}
+
