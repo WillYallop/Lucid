@@ -15,7 +15,7 @@
             }
         }
         padding-top: $header_height;
-        padding-left: calc($navigation_width + rem(10));
+        padding-left: $navigation_width;
         @include mobile {
             padding-left: 0;
         }

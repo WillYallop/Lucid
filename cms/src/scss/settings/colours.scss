@@ -1,13 +1,13 @@
 
 $accent_colours: (
     // Main accent
-    _01_01: #C5EFCB,
-    _01_02: darken(#C5EFCB, 10%),
-    _01_03: #181D19, // accent colour
+    _01_01: #1A1641,
+    _01_02: #171337,
+    _01_03: #FFFFFF, // accent colour
 
-    _03_01: #758173, //secondary accent
-    _03_02: darken(#758173, 10%),
-    _03_03: #E2E4E1, // contrast
+    _03_01: #DFE4EA, //secondary accent
+    _03_02: darken(#DFE4EA, 10%),
+    _03_03: #28292A, // contrast
 
     // Status colours
     _02_01: #ED254E, // error
@@ -16,27 +16,28 @@ $accent_colours: (
 );
 
 $section_colours: (
-    _01_01: #1B1B1B, // Header / Nav Bg
-    _01_02: #272727, // _01_01 contrast
+    _01_01: #FFFFFF, // Header / Nav Bg
+    _01_02: #E6E6E6, // _01_01 contrast
 
-    _02_01: #1B1B1B, // Content con bg
-    _02_02: #272727, // _02_01 contrast
+    _02_01: #FFFFFF, // Content con bg
+    _02_02: #E6E6E6, // _02_01 contrast
 
-    _03_01: #161616, // background
+    _03_01: #F4F6F9, // background
 
-    _04_01: #2B2B2B, // input
+    _04_01: #FFFFFF, // input
 
     // Loading
-    _05_01: #1D1D1D, // Loading dark
-    _05_02: #F1F1F1 // Loading light
+    _05_01: #E6E6E6, // Loading dark
+    _05_02: #E6E6E6 // Loading light
 );
 
 $text_colours: (
     // Light
-    _01_01: #F6F6F6, // title
-    _01_02: #CECECE, // body
-    _01_03: #a5a5a5,
+    _01_01: #28292A, // title
+    _01_02: #3C3D3F, // body
+    _01_03: #9F9F9F,
+    _01_04: #535353, // nav link
     // Dark
-    _02_01: #070707, // title
-    _02_02: #4E4E4E // body
+    _02_01: #FFFFFF, // title
+    _02_02: #b9b9b9 // body
 );

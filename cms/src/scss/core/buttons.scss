@@ -17,7 +17,8 @@ button {
     }
     border-radius: rem(5);
     width: 100%;
-    padding: rem(5) $padding;
+    padding: 0 $padding;
+    height: rem(40);
     border: 1px solid map-get($map: $accent_colours, $key: _01_01);
     cursor: pointer;
     color: map-get($map: $text_colours, $key: _02_01);
@@ -33,6 +34,9 @@ button {
     }
     &--small {
         width: auto;
+    }
+    &--thin {
+        height: rem(35);
     }
     &--danger {
         background-color: transparent;
