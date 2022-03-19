@@ -1,15 +1,16 @@
 .defaultPageCon {
     width: 100%;
     .header {
-        margin: $padding;
-        border-bottom: $border_style;
-        padding-bottom: rem(10);
+        padding: $padding;
+        padding-bottom: calc($padding * 2);
+        background-color: map-get($map: $section_colours, $key: _02_03);
     }
     .content {
         display: flex;
         justify-content: space-between;
         padding: 0 $padding $padding;
         flex-wrap: wrap-reverse;
+        margin-top: rem(-15);
         &.hasSidebar {
             .main {
                 width: calc(100% - rem(320));

@@ -8,14 +8,16 @@
         font-size: rem(14);
         color: map-get($map: $text_colours, $key: _01_01);
         span {
-            color: map-get($map: $text_colours, $key: _01_02);
+            color: map-get($map: $text_colours, $key: _01_03);
+            font-weight: normal;
         }
     }
     &__textarea {
         padding-right: rem(20);
     }
     &__action-row {
-        
+        font-size: rem(14);
+        color: map-get($map: $text_colours, $key: _01_02);
         ul {
             li {
                 display: inline-block;
@@ -33,6 +35,7 @@
                     cursor: pointer;
                     display: block;
                     padding: 0;
+                    font-weight: normal;
                     background-color: transparent;
                     color: map-get($map: $text_colours, $key: _01_02);
                     &:hover {
@@ -46,7 +49,7 @@
         }
     }
     &__status-icon {
-        color: map-get($map: $accent_colours, $key: _03_01);
+        color: map-get($map: $accent_colours, $key: _01_01);
     }
 }
 
