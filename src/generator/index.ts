@@ -18,7 +18,7 @@ import { __generateErrorString } from "../functions/shared";
 const generatePreview = async (config: gen_generatePreviewConfig) => {
     try {
         // Get live page data
-        const pageLiveData: mod_pageModel = await getSinglePage(config.page_id);
+        const pageLiveData: mod_pageModel = await getSinglePage(false, config.page_id);
 
         // Response object
         const markupRes: {
@@ -110,7 +110,7 @@ const generateSite = async () => {
             // For each page, build out its data and generate its page
             for await(const { _id } of pageIDs) {
                 // page components
-                const pageData: mod_pageModel = await getSinglePage(_id);
+                const pageData: mod_pageModel = await getSinglePage(false, _id);
     
                 // Build out the component data array
                 const componentData: Array<gen_componentCompilerProps> = [];

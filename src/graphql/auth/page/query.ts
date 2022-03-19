@@ -12,7 +12,7 @@ const getSinglePage: GraphQLFieldConfig<any, any, any> = {
         slug: { type: GraphQLString }
     },
     resolve: (_, args) => {
-        return getSingle(args._id, args.slug);
+        return getSingle(true, args._id, args.slug);
     }
 }
 

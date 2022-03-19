@@ -45,7 +45,7 @@ export const __buildPageLivePath = async (page: mod_pageModel) => {
 }
 
 // Get single page
-export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel["slug"]) => {
+export const getSingle = async (appendAppUrl: boolean, _id?: mod_pageModel["_id"], slug?: mod_pageModel["slug"]) => {
     try {
         let page_id;
         let page: mod_pageModel;
@@ -69,7 +69,7 @@ export const getSingle = async (_id?: mod_pageModel["_id"], slug?: mod_pageModel
         page.page_components = await getAllPageComponents(page_id);
 
         // Build full slug
-        page.path = config.app_urL + await __buildPageLivePath(page);
+        page.path = appendAppUrl ? config.app_urL : ''  + await __buildPageLivePath(page);
 
         return page;
     }
@@ -246,7 +246,7 @@ export const updateSingle = async (_id: mod_pageModel["_id"], data: cont_page_up
         }
 
         // Get page
-        let page = await getSingle(_id);
+        let page = await getSingle(true, _id);
         return page;
 
     }
