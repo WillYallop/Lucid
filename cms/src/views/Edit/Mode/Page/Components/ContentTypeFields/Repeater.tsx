@@ -52,7 +52,7 @@ const ContentTypeFieldRepeater: React.FC<contentTypeFieldRepeaterProps> = ({ con
                         { groups[groupID] } 
                     </div>
                     <div className="subActionBar">
-                        <button className="btnStyleBlank delete" onClick={() => openConfirmDeleteModal(groupID)}>delete</button>
+                        <button className="btnStyleBlank delete" onClick={() => openConfirmDeleteModal(groupID)}>delete group</button>
                     </div>
                 </div>
             ));

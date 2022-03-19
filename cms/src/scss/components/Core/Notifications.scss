@@ -28,12 +28,13 @@
 
 .notificationPopup {
     position: absolute;
-    top: rem(40);
+    bottom: rem(20);
     right: rem(20);
     left: rem(20);
     padding: 0 rem(20);
     z-index: 10;
     .notificationPopupRow {
+        box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.16);
         &.error { border-bottom: rem(5) solid map-get($map: $accent_colours, $key: _02_01); }
         &.warning { border-bottom: rem(5) solid map-get($map: $accent_colours, $key: _02_01); }
         &.success { border-bottom: rem(5) solid map-get($map: $accent_colours, $key: _02_03); }
@@ -46,7 +47,7 @@
         animation: fadeIn;
         animation-duration: 0.3s;
         p {
-            color: map-get($map: $text_colours, $key: _02_01);
+            color: map-get($map: $text_colours, $key: _01_01);
             font-size: rem(14);
         }
         @keyframes fadeIn {

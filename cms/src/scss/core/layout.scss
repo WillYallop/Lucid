@@ -47,8 +47,16 @@
     &--margin-top {
         margin-top: rem(10);
     }
+    &--no-top-radius {
+        border-radius: 0 0 rem(5) rem(5);
+    }
+    &--large-bot-margin {
+        margin-bottom: rem(10);
+        &:last-child {
+            margin-bottom: 0;
+        }
+    }
     &__row-style {
-        border: $border_style;
         padding: rem(10);
         margin-bottom: rem(10);
         border-radius: rem(5);

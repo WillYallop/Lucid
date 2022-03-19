@@ -1,6 +1,6 @@
 .widthScrollbar {
     height: rem(25);
-    background-color: map-get($map: $accent_colours, $key: _03_01);
+    background-color: map-get($map: $accent_colours, $key: _01_01);
     left: 0;
     position: relative;
     z-index: 2;
@@ -30,9 +30,9 @@
         bottom: 0;
         padding: 0;
         width: rem(20);
-        background-color: map-get($map: $accent_colours, $key: _01_01);
+        background-color: white;
         z-index: 3;
-        color: map-get($map: $accent_colours, $key: _03_02);
+        color: map-get($map: $accent_colours, $key: _01_01);
         &.left {
             left: 0;
             // border-radius: rem(5) 0 0 rem(5);
@@ -59,7 +59,7 @@
             display: block;
             width: rem(1);
             height: rem(15);
-            background-color: rgb(102, 110, 101);
+            background-color: #484567;
         }
     }
 }

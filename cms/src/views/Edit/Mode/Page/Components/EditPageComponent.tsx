@@ -1,15 +1,15 @@
 import { ReactElement, useEffect, useContext, useState, useRef } from 'react';
 import { v1 as uuidv1 } from 'uuid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // Components
 import CoreIcon from '../../../../../components/Core/Icon';
-import ComponentRowBanner from '../../../../../components/Components/ComponentRowBanner';
 import ContentTypeFieldText from './ContentTypeFields/Text';
 import ContentTypeFieldNumber from './ContentTypeFields/Number';
 import ContentTypeFieldRepeater from './ContentTypeFields/Repeater';
 // Context
 import { PageContext, UpdatedDataContext } from '../functions/PageContext';
 // Icons
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSignInAlt, faTh } from '@fortawesome/free-solid-svg-icons';
 // Functions
 import formatLucidError from '../../../../../functions/formatLucidError';
 // data
@@ -369,23 +369,34 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
         return (
             <div className="editPageCon">
                 {/* Header */}
-                <div className="headerRow">
+                <div className="pagePreviewRow">
                     <button
                         className={`btnStyle3`} 
                         onClick={exit}>
                         <CoreIcon 
                             icon={faSignInAlt}
                             style={'flip-horizontal'}/>
-                        <p>page preview</p>
+                        page preview
                     </button>
                 </div>
-    
-                {/* Component Row */}
-                <ComponentRowBanner component={pageComponent.component}/>
-    
-                {/* Content Type Fields */}
-                <h2>component fields</h2>
-                { contentTypeFields }
+                <div className="editHeaderRow componentData">
+                    <div className="imgCon">
+                        {
+                            pageComponent.component?.preview_url ?
+                            <img src={pageComponent.component.preview_url}/>
+                            : 
+                            <FontAwesomeIcon icon={faTh}/>
+                        }
+                    </div>
+                    <div className='textarea'>
+                        <h2>{ pageComponent.component?.name }</h2>
+                        { pageComponent.component?.description ? <p>{ pageComponent.component?.description }</p> : null }
+                    </div>
+                </div>
+                <div className="editCompBody">
+                    {/* Content Type Fields */}
+                    { contentTypeFields }
+                </div>
             </div>
         )
     }

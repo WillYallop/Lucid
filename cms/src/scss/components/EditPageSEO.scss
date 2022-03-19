@@ -6,8 +6,9 @@
         .searchResultPreviewCon {
             width: 100%;
             background-color: white;
-            padding: rem(20);
+            padding: rem(15);
             border-radius: rem(5);
+            margin-bottom: rem(10);
             .domain {
                 font-size: rem(14);
                 font-family: Arial, sans-serif;
@@ -33,7 +34,6 @@
         .socialCardPreview {
             width: 100%;
             h3 {
-                color: white;
                 margin-bottom: rem(10);
             }
             margin-bottom: rem(10);
@@ -57,8 +57,7 @@
                         width: rem(100);
                         min-width: rem(100);
                         height: rem(100);
-                        background-color: #EFF3F6;
-                        border: 1px solid #E1E2E5;
+                        background-color: map-get($map: $accent_colours, $key: _03_01);
                     }
                     .contentBlock {
                         height: rem(100);
@@ -76,9 +75,8 @@
                 }
                 .contentBlock {
                     width: 100%;
-                    background-color: #F2F3F5;
+                    background-color: #ffffff;
                     padding: rem(10);
-                    border-top: 1px solid #E1E2E5;
                     .domain {
                         font-size: rem(14);
                         font-family: Arial, sans-serif;
@@ -115,8 +113,12 @@
             }
         }
         .mainContent {
-            width: calc(100% - rem(360));
-            margin-top: rem(20);
+            width: calc(100% - rem(370));
+            .editSeoBlockHeader {
+                border-radius: rem(5) rem(5) 0 0;
+                background-color: map-get($map: $accent_colours, $key: _03_01);
+                padding: rem(10);
+            }
             .buttonRow {
                 display: flex;
                 justify-content: space-between;
@@ -128,7 +130,6 @@
         }
         .socialsSidebar {
             width: rem(350);
-            margin-top: rem(20);
         }
         @media only screen and (max-width: 1300px) {
             .mainContent {

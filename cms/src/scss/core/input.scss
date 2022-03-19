@@ -24,8 +24,8 @@
         &--select {
             appearance: none;
             background-image:
-                linear-gradient(45deg, transparent 50%, map-get($map: $accent_colours, $key: _01_01) 50%),
-                linear-gradient(135deg, map-get($map: $accent_colours, $key: _01_01) 50%, transparent 50%),
+                linear-gradient(45deg, transparent 50%, map-get($map: $section_colours, $key: _04_03) 50%),
+                linear-gradient(135deg, map-get($map: $section_colours, $key: _04_03) 50%, transparent 50%),
                 linear-gradient(to right, map-get($section_colours, _04_01), map-get($section_colours, _04_01) );
             background-position:
                 calc(100% - 20px) calc(1em + 2px),
@@ -38,8 +38,8 @@
             background-repeat: no-repeat;
             &:focus {
                 background-image:
-                    linear-gradient(45deg, map-get($map: $accent_colours, $key: _01_01) 50%, transparent 50%),
-                    linear-gradient(135deg, transparent 50%, map-get($map: $accent_colours, $key: _01_01) 50%),
+                    linear-gradient(45deg, map-get($map: $section_colours, $key: _04_03) 50%, transparent 50%),
+                    linear-gradient(135deg, transparent 50%, map-get($map: $section_colours, $key: _04_03) 50%),
                     linear-gradient(to right, map-get($section_colours, _04_01), map-get($section_colours, _04_01));
                 background-position:
                     calc(100% - 15px) 1em,
@@ -113,7 +113,7 @@
         bottom: rem(10);
         top: rem(5);
         background-color: transparent;
-        color: map-get($map: $accent_colours, $key: _01_01);
+        color: map-get($map: $section_colours, $key: _04_03);
         width: rem(40);
         border-radius: 0 rem(5) rem(5) 0;
         display: flex;
