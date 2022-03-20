@@ -187,7 +187,7 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
             onValidatePass: (fields) => {
                 setLoadingState(true);
 
-                const queryArgs: data_page_saveSingleQuery["query"]["page"]["save_single"]["__args"] = {
+                const queryArgs: data_page_saveSingleQuery["mutation"]["page"]["save_single"]["__args"] = {
                     template: selectedTemplate,
                     slug: isHomePage ? '/' : pageSlug,
                     name: pageName,

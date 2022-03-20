@@ -7,10 +7,10 @@ import getApiUrl from "../functions/getApiUrl";
 // --------------------------------
 // Save single page
 // --------------------------------
-export const saveSinglePage = async (data: data_page_saveSingleQuery["query"]["page"]["save_single"], success: (res: AxiosResponse<data_page_saveSingleQueryRes, any>) => void, error: (err: any) => void) => {
+export const saveSinglePage = async (data: data_page_saveSingleQuery["mutation"]["page"]["save_single"], success: (res: AxiosResponse<data_page_saveSingleQueryRes, any>) => void, error: (err: any) => void) => {
     try {
         const queryObj: data_page_saveSingleQuery = {
-            query: {
+            mutation: {
                 page: {
                     save_single: data
                 }
@@ -135,10 +135,10 @@ export const getSinglePageByPostID = async (data: data_page_getSingleByPostIDQue
 // --------------------------------
 // Delete single pages
 // --------------------------------
-export const deleteSinglePage = async (data: data_page_deleteSingleQuery["query"]["page"]["delete_single"], success: (res: AxiosResponse<data_page_deleteSingleQueryRes, any>) => void, error: (err: any) => void) => {
+export const deleteSinglePage = async (data: data_page_deleteSingleQuery["mutation"]["page"]["delete_single"], success: (res: AxiosResponse<data_page_deleteSingleQueryRes, any>) => void, error: (err: any) => void) => {
     try {
         const queryObj: data_page_deleteSingleQuery = {
-            query: {
+            mutation: {
                 page: {
                     delete_single: data
                 }

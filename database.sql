@@ -1,7 +1,9 @@
-CREATE DATABASE lucid_cms;
-
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION fuzzystrmatch;
+
+CREATE TABLE config (
+    account_created boolean NOT NULL DEFAULT false
+);
 
 CREATE TABLE pages (
     _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
@@ -40,8 +42,6 @@ CREATE TABLE page_seo (
     twitter_site VARCHAR NOT NULL,
     twitter_player VARCHAR NOT NULL
 );
-
-
 
 
 -- Menues
@@ -103,14 +103,3 @@ CREATE TABLE component_content_type_repeater (
     config_id uuid NOT NUll,
     root BOOLEAN NOT NULL
 );
-
-
-
--- MORE TO COME
-
-
-DELETE FROM page_components;
-DELETE FROM content_type_field_group;
-DELETE FROM component_content_type_text;
-DELETE FROM component_content_type_repeater;
-DELETE FROM component_content_type_number;
