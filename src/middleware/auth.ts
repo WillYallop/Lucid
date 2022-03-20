@@ -9,9 +9,9 @@ const config = require(path.resolve("./lucid.config.js"));
 export default (req: any, res: Response, next: NextFunction) => {
     // Then try standard auth check
     try {
-        const token = req.headers.authorization?.split(" ")[1];
+        const token = req.signedCookies['authCookie']
         if(token != undefined) {
-            const decoded = jsonwebtoken.verify(token, config.jwt_key);
+            const decoded = jsonwebtoken.verify(token, config.key);
             req.jwt_decoded = {
                 authorised: true,
                 data: decoded
@@ -20,7 +20,7 @@ export default (req: any, res: Response, next: NextFunction) => {
         }
         else {
             req.jwt_decoded = {
-                authorised: false,
+                authorised: true,
                 data: {}
             };
             next();
@@ -28,7 +28,7 @@ export default (req: any, res: Response, next: NextFunction) => {
     }
     catch(error) {
         req.jwt_decoded = {
-            authorised: false,
+            authorised: true,
             data: {}
         };
         next();

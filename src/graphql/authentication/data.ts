@@ -44,7 +44,7 @@ export const signIn = async (data: cont_aut_signInInp) => {
                     username: user.username,
                     privilege: user.privilege
                 };
-                const token = jsonwebtoken.sign(tokenData, config.jwt_key, {
+                const token = jsonwebtoken.sign(tokenData, config.key, {
                     expiresIn: "7d"
                 });
                 return {

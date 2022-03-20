@@ -1,5 +1,6 @@
 require('dotenv').config();
 import express, { NextFunction, Response, Request } from 'express';
+import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import { lucidSchema } from "./graphql/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
@@ -74,15 +75,18 @@ cms.use(sharedCors);
 // ------------------------------------
 // MIDDLEWARE                      
 cms.use(morgan('dev'));
+cms.use(cookieParser(config.key));
 // ------------------------------------
 // Routes
 
 // api routes
-cms.use('/graphql', authMiddleware,  expressGraphQL(async (req: any) => ({
+cms.use('/graphql', authMiddleware,  expressGraphQL(async (req: any, res: any) => ({
   graphiql: true,
   schema: lucidSchema,
   context: {
-    jwt_decoded: req.jwt_decoded
+    jwt_decoded: req.jwt_decoded,
+    req: req,
+    res: res
   }
 })));
 

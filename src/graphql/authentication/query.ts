@@ -10,11 +10,24 @@ const signInQueryFunction: GraphQLFieldConfig<any, any, any> = {
         username: { type: GraphQLNonNull(GraphQLString) },
         password: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
-        return signIn({
+    resolve: async (_, args, { res, jwt_decoded }) => {
+        const signInRes = await signIn({
             username: args.username,
             password: args.password
-        })
+        });
+        // auth cookie
+        res.cookie('authCookie', signInRes?.token, {
+            maxAge: 86400000 * 7,
+            httpOnly: true,
+            signed: true
+        });
+        // signed in state cookie
+        res.cookie('signedIn', signInRes?.success, {
+            maxAge: 86400000 * 7, 
+            httpOnly: false, 
+            signed: false
+        });
+        return signInRes;
     }
 }
 
