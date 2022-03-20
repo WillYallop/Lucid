@@ -40,9 +40,9 @@ const saveMultipleGroupFields: GraphQLFieldConfig<any, any, any> = {
             )
         }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return saveMultipleGroups(args.groups);
+            return await saveMultipleGroups(args.groups);
         }
         else throw __generateErrorString({
             code: 401,
@@ -58,9 +58,9 @@ const deleteMultipeGroupFields: GraphQLFieldConfig<any, any, any> = {
     args: {
         groups_ids: { type: GraphQLList(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return deleteMultipleGroups(args.groups_ids);
+            return await deleteMultipleGroups(args.groups_ids);
         }
         else throw __generateErrorString({
             code: 401,
@@ -110,9 +110,9 @@ const saveMultipleFieldData: GraphQLFieldConfig<any, any, any> = {
             )
         }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return saveMultipleFields(args.page_id, args.fields_data);
+            return await saveMultipleFields(args.page_id, args.fields_data);
         }
         else throw __generateErrorString({
             code: 401,

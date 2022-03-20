@@ -20,9 +20,9 @@ const getSingleContentType: GraphQLFieldConfig<any, any, any> = {
         component_id: { type: GraphQLNonNull(GraphQLID) },
         content_type_id: { type: GraphQLNonNull(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getSingleContentTypeConfig(args.component_id, args.content_type_id);
+            return await getSingleContentTypeConfig(args.component_id, args.content_type_id);
         }
         else throw __generateErrorString({
             code: 401,

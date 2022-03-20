@@ -48,7 +48,8 @@ export const __buildPageLivePath = async (page: mod_pageModel) => {
 export const getSingle = async (appendAppUrl: boolean, _id?: mod_pageModel["_id"], slug?: mod_pageModel["slug"]) => {
     try {
         let page_id;
-        let page: mod_pageModel;
+        let page: mod_pageModel = {} as mod_pageModel;
+
         if(_id != undefined) {
             page_id = _id;
             page = await db.one('SELECT * FROM pages WHERE _id=$1', page_id);
@@ -64,6 +65,7 @@ export const getSingle = async (appendAppUrl: boolean, _id?: mod_pageModel["_id"
                 message: `You must call the function with either the "_id" or the "slug" paramater!`
             });
         }
+
         // Get SEO Object
         page.seo = await getSingleSEO(page_id);
         page.page_components = await getAllPageComponents(page_id);

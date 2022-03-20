@@ -13,9 +13,9 @@ const deleteSinglePage: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return deleteSingle(args._id);
+            return await deleteSingle(args._id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -40,9 +40,9 @@ const saveSinglePage: GraphQLFieldConfig<any, any, any> = {
         is_homepage: { type: GraphQLNonNull(GraphQLBoolean) },
         post_type_id: { type: GraphQLID }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return saveSingle(args);
+            return await saveSingle(args);
         }
         else throw __generateErrorString({
             code: 401,
@@ -65,9 +65,9 @@ const updateSinglePage: GraphQLFieldConfig<any, any, any> = {
         is_homepage: { type: GraphQLBoolean },
         post_type_id: { type: GraphQLID }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return updateSingle(args._id, {
+            return await updateSingle(args._id, {
                 template: args.template,
                 slug: args.slug,
                 name: args.name,

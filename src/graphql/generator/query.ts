@@ -17,9 +17,9 @@ const genPreview: GraphQLFieldConfig<any, any, any> = {
         page_components: { type: GraphQLNonNull(GraphQLList(GeneratePreviewPageComponentsInputModel)) },
         location: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve: (_, args, { jwt_decoded })  => {
+    resolve: async (_, args, { jwt_decoded })  => {
         if(jwt_decoded.authorised) {
-            return generator('preview', {
+            return await generator('preview', {
                 data_mode: args.data_mode,
                 template: args.template,
                 page_id: args.page_id,
@@ -38,9 +38,9 @@ const genPreview: GraphQLFieldConfig<any, any, any> = {
 const genSite: GraphQLFieldConfig<any, any, any> = {
     type: GeneratorSiteOutputModel,
     description: GeneratorSiteOutputModel.description,
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return generator('site');
+            return await generator('site');
         }
         else throw __generateErrorString({
             code: 401,

@@ -30,9 +30,9 @@ const updateSingleSEOMutation: GraphQLFieldConfig<any, any, any> = {
         twitter_player: { type: GraphQLString }
 
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return updateSingleSEO(args.page_id, {
+            return await updateSingleSEO(args.page_id, {
                 title: args.title,
                 description: args.description,
                 canonical: args.canonical,

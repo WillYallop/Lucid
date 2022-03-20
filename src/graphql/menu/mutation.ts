@@ -14,9 +14,9 @@ const deleteMenuField: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return deleteMenu(args._id);
+            return await deleteMenu(args._id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -33,9 +33,9 @@ const createMenuField: GraphQLFieldConfig<any, any, any> = {
     args: {
         name: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return createMenu(args.name);
+            return await createMenu(args.name);
         }
         else throw __generateErrorString({
             code: 401,
@@ -53,9 +53,9 @@ const updateMenuField: GraphQLFieldConfig<any, any, any> = {
         _id: { type: GraphQLNonNull(GraphQLID) },
         name: { type: GraphQLString }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return updateMenu(args._id, args.name);
+            return await updateMenu(args._id, args.name);
         }
         else throw __generateErrorString({
             code: 401,
@@ -73,9 +73,9 @@ const deleteMenuItemField: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return deleteMenuItem(args._id);
+            return await deleteMenuItem(args._id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -95,9 +95,9 @@ const addMenuItemField: GraphQLFieldConfig<any, any, any> = {
         blank: { type: GraphQLNonNull(GraphQLBoolean) },
         text: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return addMenuItem({
+            return await addMenuItem({
                 menu_id: args.menu_id,
                 page_id: args.page_id,
                 blank: args.blank,
@@ -122,9 +122,9 @@ const updateMenuItemField: GraphQLFieldConfig<any, any, any> = {
         blank: { type: GraphQLBoolean },
         text: { type: GraphQLString }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return updateMenuItem(args._id, {
+            return await updateMenuItem(args._id, {
                 page_id: args.page_id,
                 blank: args.blank,
                 text: args.text

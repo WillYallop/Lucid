@@ -12,9 +12,9 @@ const singlePost: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getSingle(args._id);
+            return await getSingle(args._id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -31,9 +31,9 @@ const singlePostByName: GraphQLFieldConfig<any, any, any> = {
     args: {
         name: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getSingleByName(args.name);
+            return await getSingleByName(args.name);
         }
         else throw __generateErrorString({
             code: 401,
@@ -52,9 +52,9 @@ const getMultiplePost: GraphQLFieldConfig<any, any, any> = {
         skip: { type: GraphQLInt },
         all: { type: GraphQLBoolean }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getMultiple(args.limit, args.skip, args.all);
+            return await getMultiple(args.limit, args.skip, args.all);
         }
         else throw __generateErrorString({
             code: 401,

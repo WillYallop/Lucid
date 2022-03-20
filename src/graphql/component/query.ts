@@ -15,9 +15,9 @@ const getSingleComponent: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getSingle(args._id);
+            return await getSingle(args._id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -35,9 +35,9 @@ const getMultipleComponents: GraphQLFieldConfig<any, any, any> = {
         limit: { type: GraphQLNonNull(GraphQLInt) },
         skip: { type: GraphQLNonNull(GraphQLInt) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getMultiple(args.limit, args.skip);
+            return await getMultiple(args.limit, args.skip);
         }
         else throw __generateErrorString({
             code: 401,
@@ -51,9 +51,9 @@ const getMultipleComponents: GraphQLFieldConfig<any, any, any> = {
 const getUnregisteredComponentsField: GraphQLFieldConfig<any, any, any> = {
     type: UnregisteredComponentsFieldType,
     description: 'Get unregistered components',
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getUnregistered();
+            return await getUnregistered();
         }
         else throw __generateErrorString({
             code: 401,

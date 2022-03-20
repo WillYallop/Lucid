@@ -13,9 +13,9 @@ const getSinglePage: GraphQLFieldConfig<any, any, any> = {
         _id: { type: GraphQLString },
         slug: { type: GraphQLString }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getSingle(true, args._id, args.slug);
+            return await getSingle(true, args._id, args.slug);
         }
         else throw __generateErrorString({
             code: 401,
@@ -35,9 +35,9 @@ const getMultiplePages: GraphQLFieldConfig<any, any, any> = {
         limit: { type: GraphQLNonNull(GraphQLInt) },
         skip: { type: GraphQLNonNull(GraphQLInt) }
     },
-    resolve: (_, args, { jwt_decoded })  => {
+    resolve: async (_, args, { jwt_decoded })  => {
         if(jwt_decoded.authorised) {
-            return getMultiple(args.type, args.post_name, args.limit, args.skip);
+            return await getMultiple(args.type, args.post_name, args.limit, args.skip);
         }
         else throw __generateErrorString({
             code: 401,
@@ -57,9 +57,9 @@ const serachPageName: GraphQLFieldConfig<any, any, any> = {
         allow_home: { type: GraphQLNonNull(GraphQLBoolean) },
         type: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return pageSearch(args.query, args.full_slug, args.allow_home, args.type);
+            return await pageSearch(args.query, args.full_slug, args.allow_home, args.type);
         }
         else throw __generateErrorString({
             code: 401,
@@ -75,9 +75,9 @@ const searchPagePostId: GraphQLFieldConfig<any, any, any> = {
     args: {
         post_id: { type: GraphQLNonNull(GraphQLString) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getSinglePageViaPostId(args.post_id);
+            return await getSinglePageViaPostId(args.post_id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -94,9 +94,9 @@ const getLiveURLQuery: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getPathLiveURL(args._id);
+            return await getPathLiveURL(args._id);
         }
         else throw __generateErrorString({
             code: 401,

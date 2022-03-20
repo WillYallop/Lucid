@@ -7,9 +7,9 @@ import { __generateErrorString } from '../../functions/shared';
 const getAllTemplates: GraphQLFieldConfig<any, any, any> = {
     type: GraphQLList(GraphQLString),
     description: 'Get all templates post',
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getAll();
+            return await getAll();
         }
         else throw __generateErrorString({
             code: 401,

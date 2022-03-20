@@ -11,9 +11,9 @@ const getSinglePageComponent: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return getSingle(args._id);
+            return await getSingle(args._id);
         }
         else throw __generateErrorString({
             code: 401,

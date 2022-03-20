@@ -13,9 +13,9 @@ const deleteSinglePost: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return deleteSingle(args._id);
+            return await deleteSingle(args._id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -33,9 +33,9 @@ const saveSinglePost: GraphQLFieldConfig<any, any, any> = {
         template_path: { type: GraphQLNonNull(GraphQLString) },
         page_id: { type: GraphQLID }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return saveSingle(args.name, args.template_path, args.page_id);
+            return await saveSingle(args.name, args.template_path, args.page_id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -55,9 +55,9 @@ const updateSinglePost: GraphQLFieldConfig<any, any, any> = {
         template_path: { type: GraphQLString },
         page_id: { type: GraphQLID }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return updateSingle(args._id, {
+            return await updateSingle(args._id, {
                 name: args.name,
                 old_name: args.old_name,
                 template_path: args.template_path,

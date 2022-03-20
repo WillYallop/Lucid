@@ -23,9 +23,9 @@ const deleteContentType: GraphQLFieldConfig<any, any, any> = {
         component_id: { type: GraphQLNonNull(GraphQLID) },
         content_type_id: { type: GraphQLNonNull(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return deleteSingleContentTypeConfig(args.component_id, args.content_type_id);
+            return await deleteSingleContentTypeConfig(args.component_id, args.content_type_id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -69,9 +69,9 @@ const createContentType: GraphQLFieldConfig<any, any, any> = {
             )
         }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return createSingleContentTypeConfig(args.component_id, args.content_type);
+            return await createSingleContentTypeConfig(args.component_id, args.content_type);
         }
         else throw __generateErrorString({
             code: 401,
@@ -118,9 +118,9 @@ const updateContentType: GraphQLFieldConfig<any, any, any> = {
             )
         }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return updateSingleContentTypeConfig(args.component_id, args.content_type);
+            return await updateSingleContentTypeConfig(args.component_id, args.content_type);
         }
         else throw __generateErrorString({
             code: 401,

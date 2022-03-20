@@ -21,9 +21,9 @@ const deleteSingleComponent: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return deleteSingle(args._id);
+            return await deleteSingle(args._id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -42,9 +42,9 @@ const saveSingleComponent: GraphQLFieldConfig<any, any, any> = {
         file_path: { type: GraphQLNonNull(GraphQLString) },
         image: { type: GraphQLString }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return saveSingle(args)
+            return await saveSingle(args)
         }
         else throw __generateErrorString({
             code: 401,
@@ -64,7 +64,7 @@ const updateSingleComponent: GraphQLFieldConfig<any, any, any> = {
         preview_url: { type: GraphQLString },
         fields: { type: GraphQLList(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
             let updateObj: cont_comp_updateSingleInp = {};
             // Build out the validate object
@@ -72,7 +72,7 @@ const updateSingleComponent: GraphQLFieldConfig<any, any, any> = {
                 // @ts-ignore: Unreachable code error
                 if(key != '_id') updateObj[key] = value;
             }
-            return updateSingle(args._id, updateObj);
+            return await updateSingle(args._id, updateObj);
         }
         else throw __generateErrorString({
             code: 401,

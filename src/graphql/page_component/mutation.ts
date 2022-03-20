@@ -36,9 +36,9 @@ const addMultiple: GraphQLFieldConfig<any, any, any> = {
             )
         }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return addMultiplePageComponents(args.page_components, args.page_id);
+            return await addMultiplePageComponents(args.page_components, args.page_id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -72,9 +72,9 @@ const updateMultiple: GraphQLFieldConfig<any, any, any> = {
             )
         }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return updateMultiplePageComponents(args.page_components, args.page_id);
+            return await updateMultiplePageComponents(args.page_components, args.page_id);
         }
         else throw __generateErrorString({
             code: 401,
@@ -90,9 +90,9 @@ const deleteMultiple: GraphQLFieldConfig<any, any, any> = {
     args: {
         page_component_ids: { type: GraphQLList(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return deleteMultiplePageComponenets(args.page_component_ids);
+            return await deleteMultiplePageComponenets(args.page_component_ids);
         }
         else throw __generateErrorString({
             code: 401,
@@ -107,9 +107,9 @@ const deleteSingle: GraphQLFieldConfig<any, any, any> = {
     args: {
         _id: { type: GraphQLNonNull(GraphQLID) }
     },
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
-            return deletePageComponent(args.page_components_id)
+            return await deletePageComponent(args.page_components_id)
         }
         else throw __generateErrorString({
             code: 401,

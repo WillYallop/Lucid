@@ -6,7 +6,7 @@ import { __generateErrorString } from '../../functions/shared';
 const ping: GraphQLFieldConfig<any, any, any> = {
     type: PingType,
     description: 'Ping',
-    resolve: (_, args, { jwt_decoded }) => {
+    resolve: async (_, args, { jwt_decoded }) => {
         if(jwt_decoded.authorised) {
             return {
                 recieved: true
