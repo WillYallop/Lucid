@@ -1,12 +1,7 @@
-export const cmdDevOrgin = 'http://192.168.1.104:7344';
+export const cmdDevOrgin = '';
 
 const getApiUrl = () => {
-    const location = window.location;
-    if (location.origin === 'http://localhost:3000') {
-        return `${cmdDevOrgin}/graphql`;
-    } else {
-        return `${location.protocol}//${location.hostname}${ location.port ? `:${location.port}` : '' }/graphql`;
-    }
+    return `/graphql`;
 }
 
 export default getApiUrl;

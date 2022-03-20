@@ -1,4 +1,4 @@
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes,  Route } from "react-router-dom";
 // Context
 import { 
@@ -24,13 +24,12 @@ import MainLayout from './layouts/MainLayout';
 import BasicLayout from './layouts/BasicLayout';
 
 
-const App: React.FC = () => {
+const App: React.FC = ({}) => {
 
   // Modal State
   const [ loadingState, setLoadingState ] = useState(defaultLoadingContext.loadingState);
   const [modalState, setModalState] = useState(defaultModalState.modalState);
   const [ notifications, setNotifications ] = useState(defaultPageNotificationState.notifications);
-
 
 
   return (
