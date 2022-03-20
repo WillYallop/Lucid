@@ -6,3 +6,4 @@
 /// <reference path="./models/content_types.d.ts" />
 /// <reference path="./models/page.d.ts" />
 /// <reference path="./models/menu.d.ts" />
+/// <reference path="./models/user.d.ts" />

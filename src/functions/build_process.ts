@@ -3,6 +3,7 @@ import clc from 'cli-color';
 import ip from 'ip';
 import { QueryFile } from 'pg-promise';
 import db from '../db';
+import { createUser } from '../graphql/authentication/data';
 
 const path = require('path');
 const config = require(path.resolve("./lucid.config.js"));
@@ -35,8 +36,26 @@ const builtDatabase = () => {
             if(!exists) {
                 const dbQueryFilePath = path.resolve(__dirname, '../../database.sql');
                 const dbQueryFile = new QueryFile(dbQueryFilePath, {minify: true});
-                db.none(dbQueryFile);
+                await db.none(dbQueryFile);
+                console.log((clc.green('-------------------------------------------------------------------------------------')));
+                console.log('');
                 console.log((clc.green('Initialised the database!')));
+                console.log('');
+                const createUserRes = await createUser({
+                    username: 'admin',
+                    password: 'password',
+                    privilege: 1
+                });
+                if(createUserRes.created) {
+                    console.log((clc.green('-------------------------------------------------------------------------------------')));
+                    console.log('');
+                    console.log((clc.green('Created default user. Dont forget to change the password before going to production!')));
+                    console.log('');
+                    console.log((clc.green(clc.bold("USERNAME: admin"))));
+                    console.log((clc.green(clc.bold("PASSWORD: password"))));
+                    console.log('');
+                    console.log((clc.green('-------------------------------------------------------------------------------------')));
+                }
             }
         })
         .catch((error: any) => {

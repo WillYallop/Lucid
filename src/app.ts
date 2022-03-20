@@ -1,7 +1,7 @@
 require('dotenv').config();
-import express from 'express';
+import express, { NextFunction, Response, Request } from 'express';
 import morgan from 'morgan';
-import { privateSchema } from "./graphql/auth/schema";
+import { lucidSchema } from "./graphql/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 const path = require('path');
 const config = require(path.resolve('./lucid.config.js'));
@@ -9,7 +9,7 @@ const config = require(path.resolve('./lucid.config.js'));
 const themeDir = path.resolve(config.directories.theme);
 // Middleware
 import checkDBConnection from './middleware/check_db_connection';
-
+import authMiddleware from './middleware/auth';
 
 // ------------------------------------
 // CORS                               |
@@ -78,10 +78,15 @@ cms.use(morgan('dev'));
 // Routes
 
 // api routes
-cms.use('/api/v1', expressGraphQL({
+cms.use('/api/v1', authMiddleware,  expressGraphQL(async (req: any) => ({
   graphiql: true,
-  schema: privateSchema
-}));
+  schema: lucidSchema,
+  context: {
+    jwt_decoded: req.jwt_decoded
+  }
+})));
+
+
 // cdn routes
 cms.use('/cdn', (req, res, next) => {
   res.send('THIS WILL BE THE CDN');

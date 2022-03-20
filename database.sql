@@ -1,6 +1,13 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE EXTENSION fuzzystrmatch;
 
+CREATE TABLE users (
+    _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR NOT NULL,
+    privilege INT NOT NULL
+);
+
 CREATE TABLE config (
     account_created boolean NOT NULL DEFAULT false
 );

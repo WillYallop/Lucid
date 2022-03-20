@@ -1,4 +1,3 @@
-import * as fs from 'fs-extra';
 import db from '../db';
 // Generator controllers
 import componentCompiler from './controller/component';
@@ -9,7 +8,7 @@ import assetsHandler from './controller/assets';
 import savePageHandler from './controller/save';
 import sitemapHandler from './controller/sitemap';
 // Data
-import { getSingle as getSinglePage } from '../graphql/auth/page/data';
+import { getSingle as getSinglePage } from '../graphql/page/data';
 import { getAll as getAllContentTypes } from '../controller/content_type_config';
 // Helpers
 import { __generateErrorString } from "../functions/shared";
