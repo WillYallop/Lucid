@@ -12,7 +12,8 @@
   "files": [
     "./dist",
     "./cms",
-    "./types"
+    "./types",
+    "./templates"
   ],
   "types": "./types/index.d.ts",
   "repository": {
