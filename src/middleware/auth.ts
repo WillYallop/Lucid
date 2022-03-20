@@ -10,7 +10,6 @@ export default (req: any, res: Response, next: NextFunction) => {
     // Then try standard auth check
     try {
         const token = req.headers.authorization?.split(" ")[1];
-        console.log(token);
         if(token != undefined) {
             const decoded = jsonwebtoken.verify(token, config.jwt_key);
             req.jwt_decoded = {

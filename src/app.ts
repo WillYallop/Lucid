@@ -78,7 +78,7 @@ cms.use(morgan('dev'));
 // Routes
 
 // api routes
-cms.use('/api/v1', authMiddleware,  expressGraphQL(async (req: any) => ({
+cms.use('/graphql', authMiddleware,  expressGraphQL(async (req: any) => ({
   graphiql: true,
   schema: lucidSchema,
   context: {
