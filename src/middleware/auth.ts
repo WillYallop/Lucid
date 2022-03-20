@@ -16,21 +16,21 @@ export default (req: any, res: Response, next: NextFunction) => {
                 authorised: true,
                 data: decoded
             };
-            next();
+            return next();
         }
         else {
             req.jwt_decoded = {
-                authorised: true,
+                authorised: false,
                 data: {}
             };
-            next();
+            return next();
         }
     }
     catch(error) {
         req.jwt_decoded = {
-            authorised: true,
+            authorised: false,
             data: {}
         };
-        next();
+        return next();
     }
 }

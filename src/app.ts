@@ -80,7 +80,7 @@ cms.use(cookieParser(config.key));
 // Routes
 
 // api routes
-cms.use('/graphql', authMiddleware,  expressGraphQL(async (req: any, res: any) => ({
+cms.use('/graphql', authMiddleware, expressGraphQL(async (req: any, res: any) => ({
   graphiql: true,
   schema: lucidSchema,
   context: {

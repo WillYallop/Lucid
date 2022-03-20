@@ -3,12 +3,13 @@ import db from '../db';
 const path = require('path');
 
 // Check database connection middleware
-export default (req: Request, res: Response, next: NextFunction) => {
-    db.connect()
-    .then((obj: any) => {
-        next();
-    })
-    .catch((error: any) => {
+export default async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const connection = await db.connect();
+        connection.done();
+        return next();
+    }
+    catch(err) {
         res.sendFile(path.join(__dirname, '../../templates/connect_db.html'));
-    });
+    }
 }
