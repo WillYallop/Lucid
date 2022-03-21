@@ -1,0 +1,18 @@
+.authLayoutCon {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    .mainCon {
+        width: 100%;
+        max-width: rem(800);
+    }
+    .imgCon {
+        width: calc(100% - rem(800));
+        height: 100%;
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+}

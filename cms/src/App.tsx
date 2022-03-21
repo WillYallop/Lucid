@@ -22,7 +22,7 @@ import Error404 from './views/404/Index';
 // Components
 import MainLayout from './layouts/MainLayout';
 import BasicLayout from './layouts/BasicLayout';
-
+import AuthLayout from './layouts/AuthLayout';
 
 const App: React.FC = ({}) => {
 
@@ -40,7 +40,7 @@ const App: React.FC = ({}) => {
           <Router>
             <Routes>
 
-                <Route element={<BasicLayout/>}>
+                <Route element={<AuthLayout/>}>
                   <Route path="/signin" element={<SignIn/>}></Route>
                 </Route>
 
