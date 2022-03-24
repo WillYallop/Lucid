@@ -1,8 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-// Functions
-import getApiUrl from "../functions/getApiUrl";
-
+import { queryFunction } from './index';
 
 // --------------------------------
 // Ping API
@@ -16,20 +13,7 @@ export const utilityPing = async (data: data_utility_pingQuery["query"]["utility
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_utility_pingQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
