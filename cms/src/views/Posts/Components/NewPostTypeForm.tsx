@@ -231,7 +231,7 @@ const NewPostTypeForm: React.FC<newPostTypeFormInterface> = ({ callback }) => {
                         <p>onces this has been created, you will not be able to edit its name!</p>
                     </div>
       
-                    <input className="btnStyle1 btnStyle1--small" type="submit" value="add post type"/>
+                    <input className="btnStyle1 btnStyle1--auto-width" type="submit" value="add post type"/>
                 </div>
             </form>
         </div>

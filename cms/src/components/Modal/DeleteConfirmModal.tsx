@@ -26,8 +26,8 @@ const DeleteConfirmModal: React.FC<deleteConfirmModalProps> = ({ message, action
             <div className="footer">
                     <div className="textarea"></div>
                     <div className="doubleBtnCon">
-                        <button className="btnStyle1  btnStyle1--small" onClick={closeModal}>{ btnText ? btnText[0] : 'close' }</button>
-                        <button className="btnStyle1 btnStyle1--small btnStyle1--delete" onClick={() => {
+                        <button className="btnStyle1  btnStyle1--auto-width" onClick={closeModal}>{ btnText ? btnText[0] : 'close' }</button>
+                        <button className="btnStyle1 btnStyle1--auto-width btnStyle1--delete" onClick={() => {
                             action();
                             closeModal();
                         }}>{ btnText ? btnText[1] : 'delete' }</button>

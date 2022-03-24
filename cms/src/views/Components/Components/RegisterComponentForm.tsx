@@ -199,7 +199,7 @@ const RegisterComponentForm: React.FC = () => {
                     <div className="textarea">
                         <p>after registering a component you will be taken to the component editor page. Here you will be able to configure its fields and more.</p>
                     </div>
-                    <input className="btnStyle1 btnStyle1--small" type="submit" value="register" />
+                    <input className="btnStyle1 btnStyle1--auto-width" type="submit" value="register" />
                 </div>
             </form>
 

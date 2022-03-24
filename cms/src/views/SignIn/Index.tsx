@@ -4,6 +4,7 @@ import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { useNavigate } from "react-router-dom";
 // Functions
 import getApiUrl from "../../functions/getApiUrl";
+import formValidationHandler from "../../functions/formValidationHandler";
 // Components
 import TextInput from '../../components/Core/Inputs/TextInput';
 
@@ -47,27 +48,41 @@ const SignIn: React.FC = () => {
         })
     }
 
-    return (
-        <div>
-            <h1>sign in</h1>
-            <TextInput
-                value={username}
-                id={"usernameInp"}
-                name={"username"}
-                label={"username"}
-                required={true}
-                errorMsg={``}
-                updateValue={setUsername}/>
-            <TextInput
-                value={password}
-                id={"passwordInp"}
-                label={"password"}
-                name={"password"}
-                required={true}
-                errorMsg={``}
-                updateValue={setPassword}/>
 
-            <button onClick={singIn}>sign in</button>
+    const validateForm = (e: React.FormEvent) => {
+        formValidationHandler({
+            e: e,
+            onValidatePass: (fields) => {
+                console.log(fields);
+            }
+        })
+    }
+
+
+    return (
+        <div className="signInCon">
+            <h1>sign in</h1>
+            <p className="authP">sign in to get access and manage your website</p>
+            <form onSubmit={validateForm} noValidate={true}>
+                <TextInput
+                    value={username}
+                    id={"usernameInp"}
+                    name={"username"}
+                    label={"username"}
+                    required={true}
+                    errorMsg={`make sure to enter your username correctly`}
+                    updateValue={setUsername} />
+                <TextInput
+                    value={password}
+                    id={"passwordInp"}
+                    label={"password"}
+                    name={"password"}
+                    required={true}
+                    errorMsg={`you must enter your password`}
+                    updateValue={setPassword}
+                    password={true}/>
+                <input className='btnStyle1 btnStyle1--auto-width btnStyle1--min-width' type={'submit'} value={'sign in'}></input>
+            </form>
         </div>
     );
 }

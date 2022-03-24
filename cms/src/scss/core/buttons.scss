@@ -22,7 +22,7 @@ button {
     border: 1px solid map-get($map: $accent_colours, $key: _01_01);
     cursor: pointer;
     color: map-get($map: $text_colours, $key: _02_01);
-    font-size: rem(14);
+    font-size: rem(16) !important;
     line-height: rem(16);
     &--not-active {
         background-color: transparent;
@@ -32,8 +32,11 @@ button {
             color: map-get($map: $text_colours, $key: _02_01);
         }
     }
-    &--small {
+    &--auto-width {
         width: auto;
+    }
+    &--min-width {
+        min-width: rem(160);
     }
     &--thin {
         height: rem(35);
