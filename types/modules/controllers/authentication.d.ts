@@ -10,3 +10,10 @@ interface cont_aut_signInInp {
     username: usr_userModel["username"]
     password: usr_userModel["password"]
 }
+
+interface cont_aut_firstSignInInp {
+    _id: usr_userModel["_id"]
+    username: usr_userModel["username"]
+    password: usr_userModel["password"]
+    email: usr_userModel["email"]
+}

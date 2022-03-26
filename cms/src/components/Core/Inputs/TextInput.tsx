@@ -13,9 +13,11 @@ interface textInputProps {
     style?: '--no-margin' | '--hide-seperator' | '--no-margin-bottom' | 'dropdown-open'
     password?: boolean
     updateValue: (value: string) => void
+    autocomplete?: string
+    type?: string
 }
 
-const TextInput: React.FC<textInputProps> = ({ label, value, id, name, password, required, errorMsg, updateValue, described_by, max, min, pattern, style, children }) => {
+const TextInput: React.FC<textInputProps> = ({ label, value, id, name, password, required, errorMsg, updateValue, described_by, max, min, pattern, style, children, autocomplete, type }) => {
 
     const onChange = (e: React.ChangeEvent<HTMLInputElement>)=> {
         const newValue = e.target.value;
@@ -35,14 +37,15 @@ const TextInput: React.FC<textInputProps> = ({ label, value, id, name, password,
                 aria-describedby={`${id}-described-by`} 
                 className={`inputStyle ${ style ? style : '' }`} 
                 value={value} 
-                type={password ? 'password' : 'text'} 
+                type={type ? type : 'text'} 
                 name={name} 
                 id={id} 
                 required={required} 
                 onChange={onChange}
                 maxLength={max}
                 minLength={min}
-                pattern={pattern}/>
+                pattern={pattern}
+                autoComplete={ autocomplete ? autocomplete : '' } />
             <div className="inputError">
                 <p>{ errorMsg }</p>
             </div>

@@ -52,4 +52,10 @@
     .btnStyle1 {
         margin-top: rem(40);
     }
+    .errorMsgRow {
+        margin-top: rem(10);
+        p {
+            color: map-get($map: $accent_colours, $key: _02_01);
+        }
+    }
 }

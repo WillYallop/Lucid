@@ -2,6 +2,7 @@ import {GraphQLObjectType, GraphQLSchema} from 'graphql';
 
 // Authentication
 import { AuthenticationQuery } from './authentication/query';
+import { AuthenticationMutation } from './authentication/mutation';
 // Components
 import { ComponentQuery } from './component/query';
 import { ComponentMutation } from './component/mutation';
@@ -93,6 +94,11 @@ const baseMutation = new GraphQLObjectType({
     name: 'Mutation',
     description: 'The base mutation',
     fields: {
+        authentication: {
+            type: AuthenticationMutation,
+            description: AuthenticationMutation.description,
+            resolve: () => { return {} }
+        },
         components: {
             type: ComponentMutation,
             description: ComponentMutation.description,

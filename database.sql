@@ -3,13 +3,11 @@ CREATE EXTENSION fuzzystrmatch;
 
 CREATE TABLE users (
     _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    defualt_details boolean NOT NULL DEFAULT true,
     username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR NOT NULL,
+    email VARCHAR,
     privilege INT NOT NULL
-);
-
-CREATE TABLE config (
-    account_created boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE pages (

@@ -32,7 +32,7 @@ const builtDatabase = () => {
         db.connect()
         .then(async (obj: any) => {
             // Check to see if the database has been built already.
-            const { exists } = await db.oneOrNone("SELECT EXISTS ( SELECT FROM pg_tables WHERE schemaname='public' AND tablename='config' )");
+            const { exists } = await db.oneOrNone("SELECT EXISTS ( SELECT FROM pg_tables WHERE schemaname='public' AND tablename='users' )");
             if(!exists) {
                 const dbQueryFilePath = path.resolve(__dirname, '../../database.sql');
                 const dbQueryFile = new QueryFile(dbQueryFilePath, {minify: true});

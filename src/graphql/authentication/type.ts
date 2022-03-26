@@ -1,5 +1,5 @@
 
-import { GraphQLBoolean, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
+import { GraphQLBoolean, GraphQLID, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
 
 export const SignInType = new GraphQLObjectType({
     name: 'SignInType',
@@ -9,9 +9,25 @@ export const SignInType = new GraphQLObjectType({
             type: GraphQLNonNull(GraphQLBoolean),
             description: 'If we should sign in or not'
         },
-        token: {
-            type: GraphQLString,
-            description: 'The JWT'
+        defualt_details: {
+            type: GraphQLBoolean,
+            description: 'Has the user update the default details yet'
+        },
+        _id: {
+            type: GraphQLID,
+            description: 'The users ID'
         }
     })
 });
+
+export const firstSignInUpdateType = new GraphQLObjectType({
+    name: 'firstSignInUpdateType',
+    description: 'The sign in update details type',
+    fields: () => ({
+        success: {
+            type: GraphQLNonNull(GraphQLBoolean),
+            description: 'If we should sign in or not'
+        }
+    })
+});
+

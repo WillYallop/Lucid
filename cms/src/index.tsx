@@ -17,7 +17,6 @@ const checkSignedInState = () => {
 // For GET requests
 axios.interceptors.request.use(
   (req) => {
-    console.log(req);
     checkSignedInState();
     return req;
   },
