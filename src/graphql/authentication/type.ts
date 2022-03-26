@@ -31,3 +31,13 @@ export const firstSignInUpdateType = new GraphQLObjectType({
     })
 });
 
+export const SignOutType = new GraphQLObjectType({
+    name: 'SignOutType',
+    description: 'The sign out type',
+    fields: () => ({
+        success: {
+            type: GraphQLNonNull(GraphQLBoolean),
+            description: 'If we should sign in or not'
+        }
+    })
+});

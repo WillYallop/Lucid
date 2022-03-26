@@ -1,8 +1,8 @@
 import { GraphQLFieldConfig, GraphQLNonNull, GraphQLObjectType, GraphQLString } from 'graphql';
-import { SignInType } from './type';
+import { SignInType, SignOutType } from './type';
 import { signIn } from './data';
 
-// Ping
+// Sign in
 const signInQueryFunction: GraphQLFieldConfig<any, any, any> = {
     type: SignInType,
     description: SignInType.description,
@@ -46,10 +46,24 @@ const signInQueryFunction: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
+const signOutQueryFunction: GraphQLFieldConfig<any, any, any> = {
+    type: SignOutType,
+    description: SignOutType.description,
+    resolve: async (_, args, { res, jwt_decoded }) => {
+        res.clearCookie("authCookie");
+        res.clearCookie("signedIn");
+        res.clearCookie("userID");
+        return {
+            success: true
+        }
+    }
+}
+
 export const AuthenticationQuery = new GraphQLObjectType({
     name: 'AuthenticationQuery',
     description: 'The authentication base query',
     fields: {
-        sign_in: signInQueryFunction
+        sign_in: signInQueryFunction,
+        sign_out: signOutQueryFunction
     }
 })

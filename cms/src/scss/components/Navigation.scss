@@ -43,6 +43,7 @@
                         width: 100%;
                         display: flex;
                         align-items: center;
+                        cursor: pointer;
                         .coreIcon {
                             margin-right: rem(10);
                             color: map-get($map: $text_colours, $key: _01_04);

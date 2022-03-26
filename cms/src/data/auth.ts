@@ -38,3 +38,22 @@ export const signInAndUpdate = async (data: data_auth_signInAndUpdateQuery["muta
         throw err;
     }
 }
+
+// --------------------------------
+// sign out
+// --------------------------------
+export const signOut = async (data: data_auth_signOutQuery["query"]["authentication"]["sign_out"], success: (res: AxiosResponse<data_auth_signOutQueryRes, any>) => void, error: (err: any) => void) => {
+    try {
+        const queryObj: data_auth_signOutQuery = {
+            query: {
+                authentication: {
+                    sign_out: data
+                }
+            }
+        }
+        queryFunction(queryObj, success, error);
+    }
+    catch(err) {
+        throw err;
+    }
+}

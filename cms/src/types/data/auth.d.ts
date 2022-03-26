@@ -61,3 +61,30 @@ interface data_auth_signInAndUpdateQueryRes {
         message: string
     }>
 }
+
+// -----------------------------------
+// sign out
+interface data_auth_signOutQuery {
+    query: {
+        authentication: {
+            sign_out: {
+                __args: {
+    
+                }
+                success: boolean
+            }
+        }
+    }
+}
+interface data_auth_signOutQueryRes {
+    data: {
+        authentication: {
+            sign_out: {
+                success: boolean
+            }
+        }
+    }
+    errors: Array<{
+        message: string
+    }>
+}

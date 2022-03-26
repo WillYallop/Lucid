@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 // Components
 import CoreIcon from "../../Core/Icon";
 import NavigationPostLinks from "./PostsLinks";
 // Icons
-import { faTachometerAlt, faFile, faPhotoVideo, faThLarge, faPalette, faCog } from '@fortawesome/free-solid-svg-icons';
+import { faTachometerAlt, faFile, faPhotoVideo, faThLarge, faPalette, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 // data
 import { generateSite } from '../../../data/generator';
+import { signOut } from '../../../data/auth';
 
 interface NavigationProps {
     showNav: boolean
@@ -17,6 +19,8 @@ const Navigation: React.FC<NavigationProps> = ({ showNav, toggleNav }) => {
 
     const [ siteBuilt, setSiteBuilt ] = useState(false);
     const [ publishRes, setPublishRes ] = useState<mod_generateSite>({} as mod_generateSite);
+
+    const navigate = useNavigate();
 
     const publishSite = () => {
         generateSite({
@@ -33,6 +37,21 @@ const Navigation: React.FC<NavigationProps> = ({ showNav, toggleNav }) => {
         (err) => {
             console.log(err);
         })
+    }
+
+    const signOutHandler = () => {
+        signOut({
+            __args: {},
+            success: true
+        },
+        (response) => {
+            if(response.data.data.authentication.sign_out.success) {
+                navigate('/signin');
+            }
+        },
+        (err) => {
+            console.log(err);
+        });
     }
 
     return (
@@ -78,6 +97,13 @@ const Navigation: React.FC<NavigationProps> = ({ showNav, toggleNav }) => {
                                     <CoreIcon icon={faCog} style={'transparent'}/> settings
                                 </NavLink >
                             </li>
+                            <span className="seperator"></span>
+                            <li className="navItem">
+                                <a onClick={signOutHandler}>
+                                    <CoreIcon icon={faSignOutAlt} style={'transparent'}/> sign out
+                                </a>
+                            </li>
+
                         </ul>
                     </nav>
                 </div>

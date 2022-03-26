@@ -2,7 +2,7 @@ import { GraphQLFieldConfig, GraphQLID, GraphQLNonNull, GraphQLObjectType, Graph
 import { firstSignInUpdateType } from './type';
 import { firstSignInUpdateDetails } from './data';
 
-// Ping
+// sign in and update
 const signInUpdateQueryFunction: GraphQLFieldConfig<any, any, any> = {
     type: firstSignInUpdateType,
     description: firstSignInUpdateType.description,

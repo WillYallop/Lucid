@@ -1,6 +1,4 @@
 import react, { useState } from 'react';
-import axios, { AxiosResponse } from 'axios';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
 import { useNavigate } from "react-router-dom";
 // Functions
 import getApiUrl from "../../functions/getApiUrl";
