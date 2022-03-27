@@ -163,7 +163,7 @@
             width: 100%;
             min-width: rem(320);
             margin: 0 auto;
-            background-color: rgb(58, 58, 58);
+            background-color: map-get($map: $section_colours, $key: _03_01);
             height: calc(100% - rem(25) - $header_height);
             z-index: 2;
             iframe {

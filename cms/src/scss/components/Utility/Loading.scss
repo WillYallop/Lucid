@@ -39,10 +39,10 @@
     background-color: map-get($map: $section_colours, $key: _05_02);
     &::after {
       background-image: linear-gradient(90deg, 
-      rgba(232, 232, 232, 0) 0, 
-      rgba(232, 232, 232, 1) 20%, 
-      rgba(232, 232, 232, 1) 60%, 
-      rgba(232, 232, 232, 0));
+      rgba(207, 213, 219, 0) 0, 
+      rgba(207, 213, 219, 1) 20%, 
+      rgba(207, 213, 219, 1) 60%, 
+      rgba(207, 213, 219, 0));
     }
   }
   &.transparent {

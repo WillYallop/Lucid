@@ -42,7 +42,7 @@ const EditSEO: React.FC<editSEOProps> = ({ exit, setCanSave }) => {
                     <EditMetaOG setCanSave={setCanSave}/>
                 </div>
                 {/* socials sidebar */}
-                <div className="socialsSidebar">
+                <div className="socialsSidebar blockCon">
                     <FacebookCardPreview />
                     <TwitterCardPreview />
                 </div>

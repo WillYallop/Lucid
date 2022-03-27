@@ -49,13 +49,13 @@ const NumberInput: React.FC<numberInputProps> = ({ label, value, id, name, requi
                 children 
             ?
                 <> 
-                    { described_by ?  <p className="describedBy">{describedBy}</p> : null }
+                    { described_by ?  <div className="describedBy">{describedBy}</div> : null }
                     { children } 
                     <span className="speratorRow"></span>
                 </> 
             : 
                 <> 
-                    { described_by ? <><p className="describedBy">{describedBy}</p><span className="speratorRow"></span></> : null }
+                    { described_by ? <><div className="describedBy">{describedBy}</div><span className="speratorRow"></span></> : null }
                 </> 
             }
         </div>

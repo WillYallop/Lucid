@@ -32,6 +32,12 @@ button {
             color: map-get($map: $text_colours, $key: _02_01);
         }
     }
+    &--not-active-alt {
+        opacity: 0.5;
+        &:hover {
+            opacity: 1;
+        }
+    }
     &--auto-width {
         width: auto;
     }

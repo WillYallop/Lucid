@@ -3,6 +3,7 @@
         display: flex;
         justify-content: space-between;
         flex-wrap: wrap;
+        align-items: flex-start;
         .searchResultPreviewCon {
             width: 100%;
             background-color: white;
@@ -42,7 +43,7 @@
             }
             &.twitter {
                 .card {
-                    border-radius: rem(10);
+                    border-radius: rem(5);
                     overflow: hidden;
                     .domain {
                         color: #A9B5BF !important;
@@ -51,6 +52,8 @@
             }
             .card {
                 width: 100%;
+                border-radius: rem(5);
+                overflow: hidden;
                 &.noimage {
                     display: flex;
                     .blankImage {
@@ -75,7 +78,7 @@
                 }
                 .contentBlock {
                     width: 100%;
-                    background-color: #ffffff;
+                    background-color: map-get($map: $section_colours, $key: _02_03);
                     padding: rem(10);
                     .domain {
                         font-size: rem(14);
@@ -99,12 +102,12 @@
                 }
             }
             .noPreview {
-                background-color: #F0F0F0;
+                background-color: map-get($map: $accent_colours, $key: _03_01);
                 height: rem(200);
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                border-radius: rem(10);
+                border-radius: rem(5);
                 text-align: center;
                 padding: rem(20);
                 p {
@@ -122,9 +125,14 @@
             .buttonRow {
                 display: flex;
                 justify-content: space-between;
-                margin-bottom: rem(10);
                 button {
-                    width: calc(50% - rem(5));
+                    width: 50%;
+                    &:first-child {
+                        border-radius: rem(5) 0 0 0;
+                    }
+                    &:last-child {
+                        border-radius: 0 rem(5) 0 0;
+                    }
                 }
             }
         }

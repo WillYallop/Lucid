@@ -72,7 +72,7 @@ const SearchInput: React.FC<searchInputProps> = ({ label, value, id, name, error
                     onKeyPress={handleKeyPress}
                     aria-describedby={`${id}-described-by`}
                     className={`inputStyle ${ style ? style : '' } ${ showDropdown ? 'dropdown-open' : '' }`}
-                    value={value}
+                    value={value ? value : ''}
                     type="text"
                     name={name}
                     id={id}
@@ -118,13 +118,13 @@ const SearchInput: React.FC<searchInputProps> = ({ label, value, id, name, error
                 children 
             ?
                 <> 
-                    { described_by ?  <p className="describedBy">{describedBy}</p> : null }
+                    { described_by ?  <div className="describedBy">{describedBy}</div> : null }
                     { children } 
                     <span className={`speratorRow ${ style ? style : '' }`}></span>
                 </> 
             : 
                 <> 
-                    { described_by ? <><p className="describedBy">{describedBy}</p><span className={`speratorRow ${ style ? style : '' }`}></span></> : null }
+                    { described_by ? <><div className="describedBy">{describedBy}</div><span className={`speratorRow ${ style ? style : '' }`}></span></> : null }
                 </> 
             }
         </div>

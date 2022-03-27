@@ -36,7 +36,7 @@ const TextInput: React.FC<textInputProps> = ({ label, value, id, name, password,
             <input 
                 aria-describedby={`${id}-described-by`} 
                 className={`inputStyle ${ style ? style : '' }`} 
-                value={value} 
+                value={value ? value : ''} 
                 type={type ? type : 'text'} 
                 name={name} 
                 id={id} 
@@ -53,13 +53,13 @@ const TextInput: React.FC<textInputProps> = ({ label, value, id, name, password,
                 children 
             ?
                 <> 
-                    { described_by ? <p className="describedBy">{describedBy}</p> : null }
+                    { described_by ? <div className="describedBy">{describedBy}</div> : null }
                     { children } 
                     <span className={`speratorRow ${ style ? style : '' }`}></span>
                 </> 
             : 
                 <> 
-                    { described_by ? <><p className="describedBy">{describedBy}</p><span className={`speratorRow ${ style ? style : '' }`}></span></> : null }
+                    { described_by ? <><div className="describedBy">{describedBy}</div><span className={`speratorRow ${ style ? style : '' }`}></span></> : null }
                 </> 
             }
         </div>

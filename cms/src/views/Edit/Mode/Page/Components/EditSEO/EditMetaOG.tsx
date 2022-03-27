@@ -19,17 +19,12 @@ const EditMetaOG: React.FC<editOGProps> = ({ setCanSave }) => {
 
     return (
         <>
-            <div className="editSeoBlockHeader">
-                <h3>social tags</h3>
+            {/* Tab select row */}
+            <div className="buttonRow">
+                <button className={`btnStyle1 ${ tab !== 'og' ? 'btnStyle1--not-active' : '' }`} onClick={() => { setTab('og') }}>open graph</button>
+                <button className={`btnStyle1 ${ tab !== 'twitter' ? 'btnStyle1--not-active-alt' : '' }`}  onClick={() => { setTab('twitter') }}>twitter</button>
             </div>
             <div className="blockCon blockCon--no-top-radius blockCon--large-bot-margin">
-                
-                {/* Tab select row */}
-                <div className="buttonRow">
-                    <button className={`btnStyle1 ${ tab !== 'og' ? 'btnStyle1--not-active' : '' }`} onClick={() => { setTab('og') }}>open graph</button>
-                    <button className={`btnStyle1 ${ tab !== 'twitter' ? 'btnStyle1--not-active' : '' }`}  onClick={() => { setTab('twitter') }}>twitter</button>
-                </div>
-
                 {
                     tab === 'og' ?
                     <>

@@ -1,7 +1,7 @@
 .targetTextLengthBar {
     width: 100%;
     height: rem(6);
-    background-color: #4D4D4D;
+    background-color: map-get($map: $accent_colours, $key: _03_02);;
     border-radius: 0 0 rem(5) rem(5);
     margin-top: rem(-10);
     z-index: 2;

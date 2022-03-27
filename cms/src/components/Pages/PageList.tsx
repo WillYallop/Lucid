@@ -166,22 +166,22 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
         return (
             <div className="con">
                 <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
+                    <UtilityLoading mode="light"/>
                 </div>
                 <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
+                    <UtilityLoading mode="light"/>
                 </div>
                 <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
+                    <UtilityLoading mode="light"/>
                 </div>
                 <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
+                    <UtilityLoading mode="light"/>
                 </div>
                 <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
+                    <UtilityLoading mode="light"/>
                 </div>
                 <div className="blockCon loading">
-                    <UtilityLoading mode="dark"/>
+                    <UtilityLoading mode="light"/>
                 </div>
             </div>
         )
