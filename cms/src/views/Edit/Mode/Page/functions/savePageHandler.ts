@@ -396,7 +396,7 @@ export const saveFieldDataHandler = async (page: mod_pageModel, updateConfig: up
                             break;
                         }
                         case 'number': {
-                            if(!obj.value) obj.value = contentType.config.default;
+                            if(obj.value !== 0 && !obj.value) obj.value = contentType.config.default;
                             obj.value = obj.value.toString();
                             break;
                         }
