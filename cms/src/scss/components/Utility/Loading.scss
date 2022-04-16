@@ -69,17 +69,15 @@
   bottom: rem(20);
   right: rem(20);
   z-index: 12;
-  animation: rotate 1s infinite;
+  height: rem(40);
+  width: rem(40);
+  background-color: map-get($map: $accent_colours, $key: _01_01);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   img {
-    height: 50px;
-    width: 50px;
-  }
-  @keyframes rotate {
-      0% {
-        transform: rotate(0);
-      }
-      100% {
-        transform: rotate(360deg);
-      }
+    height: 20px;
+    width: 20px;
   }
 }
