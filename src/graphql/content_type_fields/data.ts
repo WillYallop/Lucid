@@ -1,5 +1,6 @@
 import db from '../../db';
 import moment from 'moment';
+import { getSingle } from '../../controller/content_type_config';
 import { __updateSetQueryGen } from '../shared/functions';
 
 
@@ -150,21 +151,30 @@ export const saveMultipleFields = async (page_id: mod_pageModel["_id"], fields_d
 // DELETE ALL INSTANCES OF CONTENT TYPE FOR PAGE COMPONENT
 export const deleteAllPageComponentContentTypesField = async (componentID: mod_componentModel["_id"], contentTypeID: mod_contentTypesConfigModel["_id"]) => {
     try {
-        let pageComponents = await db.manyOrNone('SELECT _id FROM page_components WHERE component_id=$1', componentID);
-        for await(const pageComp of pageComponents) {
-            console.log(`DELETE FROM component_content_type_text WHERE page_component_id=${pageComp._id} AND config_id=${contentTypeID}`);
-            db.none('DELETE FROM component_content_type_text WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
-                page_component_id: pageComp._id,
-                config_id: contentTypeID
-            });
-            db.none('DELETE FROM component_content_type_number WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
-                page_component_id: pageComp._id,
-                config_id: contentTypeID
-            });
-            db.none('DELETE FROM component_content_type_repeater WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
-                page_component_id: pageComp._id,
-                config_id: contentTypeID
-            });
+        const contentType = await getSingle(componentID, contentTypeID);
+        switch(contentType.type) {
+            case 'text': {
+                db.none('DELETE FROM component_content_type_text WHERE config_id=${config_id}', {
+                    config_id: contentTypeID
+                });
+                break;
+            }
+            case 'repeater': {
+                db.none('DELETE FROM component_content_type_repeater WHERE config_id=${config_id}', {
+                    config_id: contentTypeID
+                });
+                // Delete all groups that have the repeaters group id
+                db.none('DELETE FROM content_type_field_group WHERE parent_config_id=${parent_config_id}', {
+                    parent_config_id: contentTypeID
+                });
+                break;
+            }
+            case 'number': {
+                db.none('DELETE FROM component_content_type_number WHERE config_id=${config_id}', {
+                    config_id: contentTypeID
+                });
+                break;
+            }
         }
     }
     catch(err) {

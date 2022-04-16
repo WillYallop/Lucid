@@ -188,6 +188,8 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
             pageCompData.data = pageCompData.data.concat(componentData);
             pageCompData.groups = pageCompData.groups.concat(componentDataGroups);
             setPageComponent(pageCompData);
+
+            
             setPageReady(true);
         }
     }
@@ -200,7 +202,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
             if(findIfDownloaded !== undefined) {
                 // Find component in the page state
                 const pageComp = page?.page_components.find( x => x._id === page_component_id );
-                if(pageComp != undefined) createMissingData(pageComponent);
+                if(pageComp != undefined) createMissingData(pageComp);
                 else throw new Error('this page cannot be found!');
             }
             else {
