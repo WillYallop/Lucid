@@ -12,7 +12,6 @@ import { PageContext, UpdatedDataContext } from '../functions/pageContext';
 import { faSignInAlt, faTh } from '@fortawesome/free-solid-svg-icons';
 // Functions
 import formatLucidError from '../../../../../functions/formatLucidError';
-import { buildPageCompData } from '../functions/pageComponentData';
 // data
 import { getSinglePageComponent } from '../../../../../data/pageComponents';
 
