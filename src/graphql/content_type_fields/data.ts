@@ -152,6 +152,7 @@ export const deleteAllPageComponentContentTypesField = async (componentID: mod_c
     try {
         let pageComponents = await db.manyOrNone('SELECT _id FROM page_components WHERE component_id=$1', componentID);
         for await(const pageComp of pageComponents) {
+            console.log(`DELETE FROM component_content_type_text WHERE page_component_id=${pageComp._id} AND config_id=${contentTypeID}`);
             db.none('DELETE FROM component_content_type_text WHERE page_component_id=${page_component_id} AND config_id=${config_id}', {
                 page_component_id: pageComp._id,
                 config_id: contentTypeID
