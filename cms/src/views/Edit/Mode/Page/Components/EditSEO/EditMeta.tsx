@@ -4,7 +4,7 @@ import TextInput from "../../../../../../components/Core/Inputs/TextInput";
 import TextareaInput from '../../../../../../components/Core/Inputs/TextareaInput';
 import TargetTextLengthBar from './TargetTextLengthBar';
 // Context
-import { PageContext, UpdatedDataContext } from '../../functions/PageContext';
+import { PageContext, UpdatedDataContext } from '../../functions/pageContext';
 
 interface editMetaProps {
     setCanSave: (state: boolean) => void

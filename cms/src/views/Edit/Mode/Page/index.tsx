@@ -13,7 +13,7 @@ import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal'
 import EditSEO from './Components/EditSEO/EditSEO';
 // Context
 import { ModalContext, PageNotificationContext } from "../../../../helper/Context";
-import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContext, defaultPageMarkupContextInt, pageMarkupContextInt } from './functions/PageContext';
+import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContext, defaultPageMarkupContextInt, pageMarkupContextInt } from './functions/pageContext';
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import { cmdDevOrgin } from '../../../../functions/getApiUrl';
@@ -232,7 +232,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         const componentData: Array<mod_contentTypesDatabaseModel> = [];
 
         // Create data for content types with parents, recursivly
-        const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], parent_group_id?: string | null ) => {
+        const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], parent_group_id?: string | null) => {
             // Create a new group obj
             const groupObj: mod_contentTypeFieldGroupModel = {
                 _id: uuidv1(),

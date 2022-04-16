@@ -5,7 +5,7 @@ import TextareaInput from '../../../../../../components/Core/Inputs/TextareaInpu
 import SelectInput from '../../../../../../components/Core/Inputs/SelectInput';
 import TargetTextLengthBar from './TargetTextLengthBar';
 // Context
-import { PageContext, UpdatedDataContext } from '../../functions/PageContext';
+import { PageContext, UpdatedDataContext } from '../../functions/pageContext';
 
 interface editOGProps {
     setCanSave: (state: boolean) => void

@@ -1,6 +1,6 @@
 import {  useContext, useState } from 'react';
 
-import { PageContext } from '../../functions/PageContext';
+import { PageContext } from '../../functions/pageContext';
 
 const TwitterCardPreview: React.FC = () => {
 

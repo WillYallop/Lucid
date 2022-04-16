@@ -5,7 +5,7 @@ import { queryFunction } from './index';
 // --------------------------------
 // Get single page component
 // --------------------------------
-export const getSinglePageComponent = async (data: data_pagecomp_getSingleQuery["query"]["page_components"]["get_single"], success: (res: AxiosResponse<data_pagecomp_getSingleQueryRes, any>) => void, error: (err: any) => void) => {
+export const getSinglePageComponent = (data: data_pagecomp_getSingleQuery["query"]["page_components"]["get_single"], success: (res: AxiosResponse<data_pagecomp_getSingleQueryRes, any>) => void, error: (err: any) => void) => {
     try {
         const queryObj: data_pagecomp_getSingleQuery = {
             query: {
