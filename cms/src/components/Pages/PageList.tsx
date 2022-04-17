@@ -1,6 +1,7 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
+import { useToasts } from 'react-toast-notifications';
 // Context
-import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext, ModalContext } from "../../helper/Context";
+import { LoadingContext, ModalContext } from "../../helper/Context";
 // Components
 import PageRow from "./PageRow";
 import DeleteConfirmModal from '../Modal/DeleteConfirmModal';
@@ -21,9 +22,9 @@ interface PageListProps {
 
 const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
 
+    const { addToast } = useToasts();
     const { loadingState, setLoadingState } = useContext(LoadingContext);
     const { modalState, setModalState } = useContext(ModalContext);
-    const { notifications, setNotifications } = useContext(PageNotificationContext);
     let [ skip, limit ] = [ 0 , 50 ];
     const [ pages, setPages ] = useState<Array<mod_pageModel>>([]);
     const [ showLoadMore, setShowLoadMore ] = useState(false);
@@ -116,13 +117,9 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
     }
     // add notifications
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
-            ...array,
-            {
-                message: message,
-                type: type
-            }
-        ]);
+        addToast(message, {
+            appearance: type
+        });
     }
     // Load more
     const loadmore = () => {
@@ -157,7 +154,6 @@ const PageList: React.FC<PageListProps> = ({ type, post_name }) => {
         return () => {
             setPages([]);
             setShowLoadMore(true);
-            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
         }
     }, []);
 

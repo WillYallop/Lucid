@@ -1,6 +1,7 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
+import { useToasts } from 'react-toast-notifications';
 // Context
-import { PageNotificationContext, PageNotificationContextNoticationsObj, LoadingContext, ModalContext } from "../../../helper/Context";
+import { LoadingContext, ModalContext } from "../../../helper/Context";
 // Components
 import ComponentRow from "./ComponentRow";
 // Functions
@@ -23,21 +24,17 @@ interface componentListProps {
 }
 
 const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
-    const { loadingState, setLoadingState } = useContext(LoadingContext);
 
+    const { addToast } = useToasts();
+    const { loadingState, setLoadingState } = useContext(LoadingContext);
 
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
-    const { notifications, setNotifications } = useContext(PageNotificationContext);
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
-            ...array,
-            {
-                message: message,
-                type: type
-            }
-        ]);
+        addToast(message, {
+            appearance: type
+        });
     }
 
     // -------------------------------------------------------
@@ -53,7 +50,6 @@ const ComponentList: React.FC<componentListProps> = ({ expanded }) => {
         return () => {
             setComponents([]);
             setShowLoadMore(true);
-            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
         }
     }, []);
 

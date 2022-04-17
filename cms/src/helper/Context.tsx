@@ -28,25 +28,6 @@ export const defaultModalState = {
 export const ModalContext = createContext<Partial<ModalContextInterface>>(defaultModalState);
 
 
-
-// ---------------------------------------
-// Page Notifications
-// ---------------------------------------
-interface PageNotificationContextInterface {
-    notifications: Array<PageNotificationContextNoticationsObj>,
-    setNotifications?: any
-}
-export interface PageNotificationContextNoticationsObj {
-    message: string
-    type: 'error' | 'warning' | 'success'
-}
-export const defaultPageNotificationState = { 
-    notifications: []
-}
-export const PageNotificationContext = createContext<Partial<PageNotificationContextInterface>>(defaultPageNotificationState);
-
-
-
 // ---------------------------------------
 // Loading State
 // ---------------------------------------

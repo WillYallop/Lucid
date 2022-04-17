@@ -1,11 +1,12 @@
 import { useState, ReactElement, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { useToasts } from 'react-toast-notifications';
 // Components
 import CoreIcon from '../../../../../components/Core/Icon';
 import SearchInput from "../../../../../components/Core/Inputs/SearchInput";
 import DeleteConfirmModal from '../../../../../components/Modal/DeleteConfirmModal';
 // Context
-import { PageNotificationContext, ModalContext } from "../../../../../helper/Context";
+import { ModalContext } from "../../../../../helper/Context";
 // Icons
 import { faSignInAlt, faSave } from '@fortawesome/free-solid-svg-icons';
 // Functions 
@@ -21,25 +22,19 @@ interface editPageHeaderProps {
 }
 
 const EditPageHeader: React.FC<editPageHeaderProps> = ({ pageName, canSave, saveCallback, checkForErrors }) => {
+    
     const mounted = useRef(false);
+    const { addToast } = useToasts();
     const navigate = useNavigate();
 
     const { modalState, setModalState } = useContext(ModalContext);
-    const { notifications, setNotifications } = useContext(PageNotificationContext);
-    const [ notificationTimeout, setNotificationTimeout ] = useState<ReturnType<typeof setTimeout>>();
     const [ pageSearchQuery, setPageSearchQuery ] = useState('');
     const [ pageSearchResults, setPageSearchResults ] = useState<Array<pageSearchRes>>([]);
 
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications([{
-            message: message,
-            type: type
-        }]);
-        if(notificationTimeout != undefined) clearTimeout(notificationTimeout);
-        setNotificationTimeout(setTimeout(() => {
-            notifications?.pop();
-            setNotifications(notifications);
-        }, 5000));
+        addToast(message, {
+            appearance: type
+        });
     }
 
     const pageSearchAction = (value: string) => {

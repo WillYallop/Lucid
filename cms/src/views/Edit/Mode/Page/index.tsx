@@ -1,18 +1,18 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { v1 as uuidv1 } from 'uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useToasts } from 'react-toast-notifications';
 // Components
 import PagePreview from './Components/PagePreview';
 import EditPageHeader from './Components/EditPageHeader';
 import SelectInput from '../../../../components/Core/Inputs/SelectInput';
 import ComponentListModal from './Components/ComponentListModal';
 import CoreIcon from '../../../../components/Core/Icon';
-import NotificationPopup from '../../../../components/Core/Notifications/NotificationPopup';
 import EditPageComponent from './Components/EditPageComponent';
 import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
 import EditSEO from './Components/EditSEO/EditSEO';
 // Context
-import { ModalContext, PageNotificationContext } from "../../../../helper/Context";
+import { ModalContext } from "../../../../helper/Context";
 import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContext, defaultPageMarkupContextInt, pageMarkupContextInt } from './functions/pageContext';
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
@@ -34,13 +34,12 @@ interface editPageProps {
 const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
     const mounted = useRef(false);
+    const { addToast } = useToasts();
 
     // ---------------------------------------------------------------------/
     // - STATE -------------------------------------------------------------/
     // ---------------------------------------------------------------------/
     const { modalState, setModalState } = useContext(ModalContext);
-    const { notifications, setNotifications } = useContext(PageNotificationContext);
-    const [ notificationTimeout, setNotificationTimeout ] = useState<ReturnType<typeof setTimeout>>();
     const [ loading, setLoading ] = useState(true);
     const [ activeSlug, setActiveSlug ] = useState(slug);
     const [ canSave, setCanSave ] = useState(false); // Can save
@@ -399,15 +398,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // -----------------------------------
     // Notifications
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications([{
-            message: message,
-            type: type
-        }]);
-        if(notificationTimeout !== undefined) clearTimeout(notificationTimeout);
-        setNotificationTimeout(setTimeout(() => {
-            notifications?.pop();
-            setNotifications(notifications);
-        }, 5000));
+        addToast(message, {
+            appearance: type
+        });
     }
 
 
@@ -550,7 +543,6 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         <PageContext.Provider value={{ page, setPage }}>
             <UpdatedDataContext.Provider value={{ updatedData, setUpdatedData}}>
                 <div className='pageEditCon' key={activeSlug}>
-                    <NotificationPopup/>
                     <EditPageHeader 
                         pageName={page.name}
                         canSave={canSave}

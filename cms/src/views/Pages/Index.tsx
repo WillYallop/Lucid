@@ -1,9 +1,7 @@
 import React, { useContext, useState } from "react";
+import { useToasts } from 'react-toast-notifications';
 // Context
-import { 
-    PageNotificationContext, PageNotificationContextNoticationsObj,
-    ModalContext
-} from "../../helper/Context";
+import { ModalContext } from "../../helper/Context";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
 import PageList from "../../components/Pages/PageList";
@@ -14,18 +12,15 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Pages: React.FC = () => {
 
+    const { addToast } = useToasts();
+
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
-    const { notifications, setNotifications } = useContext(PageNotificationContext);
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
-            ...array,
-            {
-                message: message,
-                type: type
-            }
-        ]);
+        addToast(message, {
+            appearance: type
+        });
     }
 
     // -------------------------------------------------------

@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext } from "react";
+import { useToasts } from 'react-toast-notifications';
 // Context
 import { 
-    PageNotificationContext, PageNotificationContextNoticationsObj,
     ModalContext,
     LoadingContext
 } from "../../helper/Context";
@@ -40,20 +40,17 @@ const defaultUnregisteredComponents: unregisteredComponentsData = {
 
 
 const Components: React.FC = () => {
+
+    const { addToast } = useToasts();
     const { loadingState, setLoadingState } = useContext(LoadingContext);
 
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
-    const { notifications, setNotifications } = useContext(PageNotificationContext);
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
-            ...array,
-            {
-                message: message,
-                type: type
-            }
-        ]);
+        addToast(message, {
+            appearance: type
+        });
     }
 
     // -------------------------------------------------------
@@ -119,7 +116,6 @@ const Components: React.FC = () => {
         getUnregisteredComponentsHandler();
         return () => {
             setUnregisteredComponents(defaultUnregisteredComponents);
-            setNotifications((array: Array<PageNotificationContextNoticationsObj>) => []);
         }
     }, []);
 

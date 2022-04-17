@@ -8,6 +8,7 @@ import LoadingIndicator from '../components/Layout/LoadingIndicator';
 // data
 import { utilityPing } from '../data/utility';
 
+
 const MainLayout: React.FC = () => {
     // Navigation State
     const [navigationState, toggleNavigation] = useState(false);

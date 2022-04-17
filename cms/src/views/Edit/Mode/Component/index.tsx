@@ -1,8 +1,8 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useToasts } from 'react-toast-notifications';
 // Context
 import { 
-    PageNotificationContext, PageNotificationContextNoticationsObj, 
     ModalContext,
     LoadingContext
 } from "../../../../helper/Context";
@@ -42,6 +42,7 @@ interface editComponentProps {
 
 const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
+    const { addToast } = useToasts();
     const navigate = useNavigate();
     const [ componentName, setComponentName ] = useState('');
     const { loadingState, setLoadingState } = useContext(LoadingContext);
@@ -49,15 +50,10 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
-    const { notifications, setNotifications } = useContext(PageNotificationContext);
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
-            ...array,
-            {
-                message: message,
-                type: type
-            }
-        ]);
+        addToast(message, {
+            appearance: type
+        });
     }
 
     // -------------------------------------------------------
@@ -287,7 +283,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     useEffect(() => {
         getComponentData();
         return () => {
-            setNotifications([]);
             setComponent({} as mod_componentModel);
             // Close modal
             setModalState({
