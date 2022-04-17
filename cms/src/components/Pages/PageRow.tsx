@@ -50,7 +50,7 @@ const PageRow: React.FC<PageRowProps> = ({ page, getChildren, deleteCallback }) 
         <>
             <div className="blockCon pageRow">
                 <div className="pageRow__textarea">
-                    <p className="title">{ page.name } - <span>{ page.slug }</span></p>
+                    <p className="title">{ page.name }<span> - { page.slug }</span></p>
                     <div className="pageRow__action-row">
                         <ul>
                             <li>

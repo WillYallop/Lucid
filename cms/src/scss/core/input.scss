@@ -15,7 +15,7 @@
         font-size: rem(14);
         font-family: 'Be Vietnam Pro', sans-serif;
         background-color: map-get($map: $section_colours, $key: _04_01);
-        border: 1px solid map-get($map: $section_colours, $key: _04_01);
+        border: 1px solid map-get($map: $section_colours, $key: _04_02);
         color: map-get($map: $text_colours, $key: _01_01);
         &:focus {
             outline: none;
@@ -24,9 +24,9 @@
         &--select {
             appearance: none;
             background-image:
-                linear-gradient(45deg, transparent 50%, black 50%),
-                linear-gradient(135deg, black 50%, transparent 50%),
-                linear-gradient(to right, map-get($accent_colours, _01_01), map-get($accent_colours, _01_01) );
+                linear-gradient(45deg, transparent 50%, map-get($map: $section_colours, $key: _04_03) 50%),
+                linear-gradient(135deg, map-get($map: $section_colours, $key: _04_03) 50%, transparent 50%),
+                linear-gradient(to right, map-get($section_colours, _04_01), map-get($section_colours, _04_01) );
             background-position:
                 calc(100% - 20px) calc(1em + 2px),
                 calc(100% - 15px) calc(1em + 2px),
@@ -38,9 +38,9 @@
             background-repeat: no-repeat;
             &:focus {
                 background-image:
-                    linear-gradient(45deg, black 50%, transparent 50%),
-                    linear-gradient(135deg, transparent 50%, black 50%),
-                    linear-gradient(to right, map-get($accent_colours, _01_02), map-get($accent_colours, _01_02));
+                    linear-gradient(45deg, map-get($map: $section_colours, $key: _04_03) 50%, transparent 50%),
+                    linear-gradient(135deg, transparent 50%, map-get($map: $section_colours, $key: _04_03) 50%),
+                    linear-gradient(to right, map-get($section_colours, _04_01), map-get($section_colours, _04_01));
                 background-position:
                     calc(100% - 15px) 1em,
                     calc(100% - 20px) 1em,
@@ -112,29 +112,28 @@
         right: 0;
         bottom: rem(10);
         top: rem(5);
-        background-color: map-get($map: $accent_colours, $key: _01_01);
-        color: map-get($map: $accent_colours, $key: _01_03);
+        background-color: transparent;
+        color: map-get($map: $section_colours, $key: _04_03);
         width: rem(40);
         border-radius: 0 rem(5) rem(5) 0;
         display: flex;
         justify-content: center;
         align-items: center;
         cursor: pointer;
-        &:hover {
-            background-color: map-get($map: $accent_colours, $key: _01_02);
-        }
     }
     .searchDropdown {
         position: absolute;
         top: rem(45);
         left: 0;
         right: 0;
-        background-color: #eeeeee;
-        border: rem(1) solid #dddddd;
+        background-color: map-get($map: $section_colours, $key: _04_01);;
+        border: rem(1) solid map-get($map: $accent_colours, $key: _01_01);
+        border-top: none;
         border-radius: 0 0 rem(5) rem(5);
-        color: map-get($map: $text_colours, $key: _01_02);
+        color: map-get($map: $text_colours, $key: _01_01);
         overflow: hidden;
         z-index: 2;
+        box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.05);
         .pageSearchBtn {
             @include animate;
             transition-property: background-color;
@@ -142,15 +141,15 @@
             display: block;
             padding: rem(5);
             text-align: left;
-            color: map-get($map: $text_colours, $key: _02_01);
+            color: map-get($map: $text_colours, $key: _01_01);
             border-bottom: rem(1) solid #dddddd;
-            background-color: #eeeeee;
+            background-color: map-get($map: $section_colours, $key: _04_01);;
             font-size: rem(14);
             span {
-                color: map-get($map: $text_colours, $key: _02_02);
+                color: map-get($map: $text_colours, $key: _01_02);
             }
             &:hover {
-                background-color: darken(#e0e0e0, 5%);
+                background-color: rgba($color: #000000, $alpha: 0.05);
             }
             &:last-child {
                 border-bottom: none;
@@ -159,7 +158,7 @@
         .noData {
             padding: rem(10);
             font-size: rem(14);
-            color: map-get($map: $text_colours, $key: _02_01);
+            color: map-get($map: $text_colours, $key: _01_01);
         }
     }
     &.invalid {
@@ -174,7 +173,7 @@
     width: 50px;
     height: 26px;
     background-color: map-get($map: $section_colours, $key: _02_01);
-    border: 1px solid map-get($map: $section_colours, $key: _02_02);
+    border: 1px solid map-get($map: $section_colours, $key: _04_02);
     border-radius: rem(20);
     position: relative;
     cursor: pointer;
@@ -185,18 +184,18 @@
         left: rem(2);
         top: rem(2);
         bottom: rem(2);
-        background-color: white;
-        border: 1px solid #C1C1C1;
+        background-color: #e0e0e0;
+        border: 1px solid #d1d1d1;
         border-radius: 50%;
         width: rem(20);
     }
     &.active {
         background-color:  map-get($map: $accent_colours, $key: _01_01);
-        border: 1px solid darken($color: map-get($map: $accent_colours, $key: _01_01), $amount: 10%);
+        border: 1px solid map-get($map: $accent_colours, $key: _01_01);
         &::after {
             left: rem(26);
-            border: 1px solid darken($color: map-get($map: $accent_colours, $key: _01_01), $amount: 10%);
-            background-color: map-get($map: $accent_colours, $key: _03_02);
+            border: 1px solid white;
+            background-color: white;
         }
     }
 }
@@ -226,7 +225,7 @@
 }
 
 .headerRow {
-    border-bottom: $border_style;
+    // border-bottom: $border_style;
     padding-bottom: rem(10);
     margin-top: rem(15);
     margin-bottom: rem(5);

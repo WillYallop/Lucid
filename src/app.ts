@@ -1,14 +1,16 @@
 require('dotenv').config();
-import express from 'express';
+import express, { NextFunction, Response, Request } from 'express';
+import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
-import { privateSchema } from "./graphql/auth/schema";
+import { lucidSchema } from "./graphql/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
-
 const path = require('path');
 const config = require(path.resolve('./lucid.config.js'));
 // Directories
 const themeDir = path.resolve(config.directories.theme);
-
+// Middleware
+import checkDBConnection from './middleware/check_db_connection';
+import authMiddleware from './middleware/auth';
 
 // ------------------------------------
 // CORS                               |
@@ -37,25 +39,20 @@ const sharedCors = (req: any, res: any, next: any) => {
 }
 
 
-
 // ------------------------------------
 // APP                                |
 // ------------------------------------
 const app = express();
-
 // ------------------------------------
 // CORS         
 app.use(sharedCors);
-
 // ------------------------------------
 // MIDDLEWARE                      
 app.use(morgan('dev'));
-
 // ------------------------------------
 // Routes
 app.use('/', express.static(path.resolve(`${config.build}/app`), { extensions: ['html'] }));
 app.use('/assets', express.static(path.resolve(`${config.build}/assets`)));
-
 // ------------------------------------
 // ERROR HANDLING
 app.use((req, res, next) => {
@@ -72,33 +69,36 @@ app.use((error:any, req:any, res:any, next:any) => {
 // CMS                                |
 // ------------------------------------
 const cms = express();
-
 // ------------------------------------
 // CORS         
 cms.use(sharedCors);
-
 // ------------------------------------
 // MIDDLEWARE                      
 cms.use(morgan('dev'));
-
+cms.use(cookieParser(config.key));
 // ------------------------------------
 // Routes
 
 // api routes
-cms.use('/api/v1', expressGraphQL({
+cms.use('/graphql', authMiddleware, expressGraphQL(async (req: any, res: any) => ({
   graphiql: true,
-  schema: privateSchema
-}));
+  schema: lucidSchema,
+  context: {
+    jwt_decoded: req.jwt_decoded,
+    req: req,
+    res: res
+  }
+})));
+
 
 // cdn routes
 cms.use('/cdn', (req, res, next) => {
-    res.send('THIS WILL BE THE CDN');
+  res.send('THIS WILL BE THE CDN');
 });
 cms.use('/app-assets', express.static(path.resolve(`${config.build}/assets`)));
-
 /// cms react route
-cms.use(express.static(path.join(__dirname, "..",  "cms", "build")));
-cms.use((req, res, next) => {
+cms.use(checkDBConnection, express.static(path.join(__dirname, "..",  "cms", "build")));
+cms.use(checkDBConnection, (req, res, next) => {
   res.sendFile(path.join(__dirname, "..", "cms", "build", "index.html"));
 });
 
@@ -116,6 +116,5 @@ cms.use((error:any, req:any, res:any, next:any) => {
     }
   });
 });
-
 
 export default { app: app, cms: cms };

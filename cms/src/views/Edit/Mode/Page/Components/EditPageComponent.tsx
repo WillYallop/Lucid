@@ -1,15 +1,15 @@
 import { ReactElement, useEffect, useContext, useState, useRef } from 'react';
 import { v1 as uuidv1 } from 'uuid';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 // Components
 import CoreIcon from '../../../../../components/Core/Icon';
-import ComponentRowBanner from '../../../../../components/Components/ComponentRowBanner';
 import ContentTypeFieldText from './ContentTypeFields/Text';
 import ContentTypeFieldNumber from './ContentTypeFields/Number';
 import ContentTypeFieldRepeater from './ContentTypeFields/Repeater';
 // Context
-import { PageContext, UpdatedDataContext } from '../functions/PageContext';
+import { PageContext, UpdatedDataContext } from '../functions/pageContext';
 // Icons
-import { faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSignInAlt, faTh } from '@fortawesome/free-solid-svg-icons';
 // Functions
 import formatLucidError from '../../../../../functions/formatLucidError';
 // data
@@ -38,16 +38,171 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
     // - FUNCTIONS ---------------------------------------------------------/
     // ---------------------------------------------------------------------/
 
+
+    const setCanSavePageComponent = (pageCompID: mod_pageComponentsModel["_id"]) => {
+        if(updatedData != undefined) {
+            // update updateData status
+            // if not a new component, add to modified components object
+            let findNewComp = updatedData.addComponents.findIndex( x => x === pageCompID);
+            let findAlreadyModified = updatedData.modifiedComponents.findIndex( x => x === pageCompID);
+            if(findNewComp === -1 && findAlreadyModified === -1) {
+                updatedData.modifiedComponents.push(pageCompID);
+                setUpdatedData({
+                    ...updatedData
+                });
+            }
+            // set allow save
+            setCanSave(true);
+        }
+    }
+    
+    // Handle adding in missing data and groups. Needed for if a user updates a components content types, where that component is already used in a page.
+    const createMissingData = (pageCompData: mod_page_componentModel) => {
+        // for config types at root, if not a repeater, check if they have data
+        if(pageCompData.content_types) {
+
+            // Build component data
+            const componentDataGroups: Array<mod_contentTypeFieldGroupModel> = [];
+            const componentData: Array<mod_contentTypesDatabaseModel> = [];
+
+            // Check repeater children groups for missing data
+            const checkRepeaterChildren = (contentTypeID: mod_contentTypesConfigModel["_id"], buildGroup: boolean, parentGroupID?: string | null) => {
+                // check for content types that dont have data
+                if(!buildGroup) {
+                    // Get all children content types
+                    const childrenContentTypes = pageCompData.content_types.filter((ct) => {
+                        if(ct.parent === contentTypeID) return ct;
+                    });
+                    const groups = pageCompData.groups.filter((group) => {
+                        if(group.parent_config_id === contentTypeID) return group;
+                    });
+                    // find all instances of these content types in the data array
+                    for(let i = 0; i < childrenContentTypes.length; i++) {
+                        const childCT = childrenContentTypes[i];
+                        const cTData = pageCompData.data.filter((data) => {
+                            if(data.config_id === childCT._id) return data;
+                        });
+                        if(cTData.length === 0) {
+                            // for each group in this repeater, add the data
+                            // If this is a repeater, call this function recursivly.
+                            for(let gi = 0; gi < groups.length; gi++) {
+                                if(childCT.type !== 'repeater')  {
+                                    componentData.push({
+                                        page_component_id: pageCompData._id,
+                                        config_id: childCT._id,
+                                        value: childCT.config.default || '',
+                                        group_id: groups[gi]._id,
+                                        root: false
+                                    });
+                                }
+                                else {
+                                    componentData.push({
+                                        page_component_id: pageCompData._id,
+                                        config_id: childCT._id,
+                                        value: null,
+                                        group_id: groups[gi]._id,
+                                        root: false
+                                    });
+                                    checkRepeaterChildren(childCT._id, true, groups[gi]._id);
+                                }
+                            } 
+                        }
+                    }
+                }
+                // build group and data for all of the repeaters children content types
+                else {
+                    const groupObj: mod_contentTypeFieldGroupModel = {
+                        _id: uuidv1(),
+                        page_component_id: pageCompData._id,
+                        parent_group: parentGroupID,
+                        parent_config_id: contentTypeID,
+                        position: 1
+                    }
+                    componentDataGroups.push(groupObj);
+                    // add data for repeaters children
+                    pageCompData.content_types.forEach((contentType) => {
+                        if(contentType.parent === contentTypeID && contentType.type !== 'repeater') {
+                            componentData.push({
+                                page_component_id: pageCompData._id,
+                                config_id: contentType._id,
+                                value: contentType.config.default || '',
+                                group_id: groupObj._id,
+                                root: false
+                            });
+                        } 
+                        else if(contentType.parent === contentTypeID && contentType.type === 'repeater') {
+                            componentData.push({
+                                page_component_id: pageCompData._id,
+                                config_id: contentType._id,
+                                value: null,
+                                group_id: groupObj._id,
+                                root: false
+                            });
+                            checkRepeaterChildren(contentType._id, true, groupObj._id);
+                        }
+                    });
+                }
+            }
+
+            // Create root data if missing
+            for(let i = 0; i < pageCompData.content_types.length; i++) {
+                const contentType = pageCompData.content_types[i];
+                
+                // For root content types that are not repeaters
+                if(contentType.parent === 'root' && contentType.type !== 'repeater') {
+                    // Check if we have data
+                    const dataInd = pageCompData.data.findIndex( x => x.config_id === contentType._id);
+                    if(dataInd === -1) {
+                        componentData.push({
+                            page_component_id: pageCompData._id,
+                            config_id: contentType._id,
+                            value: contentType.config.default || '',
+                            group_id: null,
+                            root: true
+                        });
+                    }
+                }
+                // For all repeaters
+                else if(contentType.parent === 'root' && contentType.type === 'repeater') {
+                    let buildEntireGroup = false;
+                    // Check the repeater has data
+                    // If the repeater doesnt have data, we can assume its children doesnt either
+                    const dataInd = pageCompData.data.findIndex( x => x.config_id === contentType._id);
+                    if(dataInd === -1) {
+                        buildEntireGroup = true;
+                        componentData.push({
+                            page_component_id: pageCompData._id,
+                            config_id: contentType._id,
+                            value: null,
+                            group_id: null,
+                            root: true
+                        });
+                    }
+                    checkRepeaterChildren(contentType._id, buildEntireGroup, null);
+                }
+                else continue;
+
+            }
+
+            if(componentData.length || componentDataGroups.length) setCanSavePageComponent(pageCompData["_id"]);
+            pageCompData.data = pageCompData.data.concat(componentData);
+            pageCompData.groups = pageCompData.groups.concat(componentDataGroups);
+            setPageComponent(pageCompData);
+
+            
+            setPageReady(true);
+        }
+    }
+
     // Donwload the page component, if it doesnt have data already
     const setPageComponentHandler = () => {
         if(updatedData !== undefined && page !== undefined) {
             // Check if the page component ID exists in updatedData.pageComponentDownloaded
             const findIfDownloaded = updatedData.pageComponentDownloaded.find( x => x === page_component_id );
-            console.log(updatedData);
             if(findIfDownloaded !== undefined) {
                 // Find component in the page state
                 const pageComp = page?.page_components.find( x => x._id === page_component_id );
-                if(pageComp != undefined) setPageComponent(pageComp);
+                if(pageComp != undefined) createMissingData(pageComp);
                 else throw new Error('this page cannot be found!');
             }
             else {
@@ -109,8 +264,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                             updatedData.pageComponentDownloaded.push(page_component_id);
                         }
                         // update selected
-                        setPageComponent(pageComponent);
-
+                        createMissingData(pageComponent);
                     }
                     else {
                         addNotification(formatLucidError(response.data.errors[0].message).message,'error');
@@ -118,11 +272,12 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                 },
                 (err) => {
                     addNotification('there was an unexpected error while getting the page data.','error');
-                })
+                });
             }
         }
-        setPageReady(true);
     }
+
+
     // Get repeater groups
     const getRepeaterGroups = (config_id: mod_contentTypesConfigModel["_id"], group_id?: mod_contentTypesDatabaseModel["group_id"]) => {
         const results: { [key: string]: Array<ReactElement> } = {};
@@ -190,18 +345,7 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                     setPageComponent({
                         ...findPageComponent
                     });
-                    // update updateData status
-                    // if not a new component, add to modified components object
-                    let findNewComp = updatedData.addComponents.findIndex( x => x === pageComponent._id);
-                    let findAlreadyModified = updatedData.modifiedComponents.findIndex( x => x === pageComponent._id );
-                    if(findNewComp === -1 && findAlreadyModified === -1) {
-                        updatedData.modifiedComponents.push(pageComponent._id);
-                        setUpdatedData({
-                            ...updatedData
-                        });
-                    }
-                    // set allow save
-                    setCanSave(true);
+                    setCanSavePageComponent(pageComponent._id);
                 }
             }
         }
@@ -310,27 +454,23 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
 
 
     const contentTypeFields: Array<React.ReactElement> = [];
-    if(pageComponent !== undefined && pageComponent.content_types != undefined) {
+    if(pageComponent !== undefined && pageComponent.content_types !== undefined) {
         for(let i = 0; i < pageComponent.content_types.length; i++) {
             const contentType = pageComponent.content_types[i];
             // Find corresponding data
             const correspondingData = pageComponent.data.find( x => x.config_id === contentType._id);
             if(contentType.parent === 'root') {
-                switch(contentType.type) {
-                    case 'text': {
-                        if(correspondingData != undefined) {
+                if(correspondingData !== undefined) {
+                    switch(contentType.type) {
+                        case 'text': {
                             contentTypeFields.push(<ContentTypeFieldText key={contentType._id} content_type={contentType} updateData={updateContentTypeData} data={correspondingData}/>)
+                            break;
                         }
-                        break;
-                    }
-                    case 'number': {
-                        if(correspondingData != undefined) {
+                        case 'number': {
                             contentTypeFields.push(<ContentTypeFieldNumber key={contentType._id} content_type={contentType} updateData={updateContentTypeData}  data={correspondingData}/>);
+                            break;
                         }
-                        break;
-                    }
-                    case 'repeater': {
-                        if(correspondingData != undefined) {
+                        case 'repeater': {
                             contentTypeFields.push(
                                 <ContentTypeFieldRepeater 
                                     key={contentType._id} 
@@ -341,8 +481,8 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
                                     data={correspondingData}
                                     totalGroups={totalGroups}/>
                             );
+                            break;
                         }
-                        break;
                     }
                 }
             }
@@ -369,23 +509,34 @@ const EditPageComponent: React.FC<editPageComponentProps> = ({ page_component_id
         return (
             <div className="editPageCon">
                 {/* Header */}
-                <div className="headerRow">
+                <div className="pagePreviewRow">
                     <button
                         className={`btnStyle3`} 
                         onClick={exit}>
                         <CoreIcon 
                             icon={faSignInAlt}
                             style={'flip-horizontal'}/>
-                        <p>page preview</p>
+                        page preview
                     </button>
                 </div>
-    
-                {/* Component Row */}
-                <ComponentRowBanner component={pageComponent.component}/>
-    
-                {/* Content Type Fields */}
-                <h2>component fields</h2>
-                { contentTypeFields }
+                <div className="editHeaderRow componentData">
+                    <div className="imgCon">
+                        {
+                            pageComponent.component?.preview_url ?
+                            <img src={pageComponent.component.preview_url}/>
+                            : 
+                            <FontAwesomeIcon icon={faTh}/>
+                        }
+                    </div>
+                    <div className='textarea'>
+                        <h2>{ pageComponent.component?.name }</h2>
+                        { pageComponent.component?.description ? <p>{ pageComponent.component?.description }</p> : null }
+                    </div>
+                </div>
+                <div className="editCompBody">
+                    {/* Content Type Fields */}
+                    { contentTypeFields }
+                </div>
             </div>
         )
     }

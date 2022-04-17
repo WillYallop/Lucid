@@ -133,7 +133,7 @@ interface data_page_getSingleByPostIDQueryRes {
 // -----------------------------------
 // delete single page
 interface data_page_deleteSingleQuery {
-    query: {
+    mutation: {
         page: {
             delete_single: {
                 __args: {
@@ -192,7 +192,7 @@ interface data_page_searchNameQueryRes {
 // -----------------------------------
 // save single page
 interface data_page_saveSingleQuery {
-    query: {
+    mutation: {
         page: {
             save_single: {
                 __args: {

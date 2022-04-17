@@ -18,33 +18,33 @@ const EditSEO: React.FC<editSEOProps> = ({ exit, setCanSave }) => {
     return (
         <div className="editPageCon">
             {/* Header */}
-            <div className="headerRow">
+            <div className="pagePreviewRow">
                 <button
                     className={`btnStyle3`} 
                     onClick={exit}>
                     <CoreIcon 
                         icon={faSignInAlt}
                         style={'flip-horizontal'}/>
-                    <p>page preview</p>
+                    page preview
                 </button>
             </div>
+            <div className="topRow"></div>
             {/* Body */}
             <div className="body">
-                {/* Search Result preview */}
-                <SearchResultPreview/>
+
                 {/* main content */}
                 <div className="mainContent">
+                    {/* Search Result preview */}
+                    <SearchResultPreview/>
                     {/* meta */}
                     <EditMeta setCanSave={setCanSave}/>
                     {/* socials meta */}
                     <EditMetaOG setCanSave={setCanSave}/>
                 </div>
                 {/* socials sidebar */}
-                <div className="socialsSidebar">
-                    <div className='blockCon'>
-                        <FacebookCardPreview />
-                        <TwitterCardPreview />
-                    </div>
+                <div className="socialsSidebar blockCon">
+                    <FacebookCardPreview />
+                    <TwitterCardPreview />
                 </div>
                 
             </div>

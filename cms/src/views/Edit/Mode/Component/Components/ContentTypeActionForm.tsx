@@ -300,9 +300,9 @@ const ContentTypeActionForm: React.FC<ContentTypeActionFormProps> = ({ component
                     {
                         actionType === 'create'
                         ? 
-                        <input className="btnStyle1 btnStyle1--small" type="submit" value="create"/>
+                        <input className="btnStyle1 btnStyle1--auto-width" type="submit" value="create"/>
                         : 
-                        <input className="btnStyle1 btnStyle1--small" type="submit" value="update"/>
+                        <input className="btnStyle1 btnStyle1--auto-width" type="submit" value="update"/>
                     }
                 </div>
             </form>

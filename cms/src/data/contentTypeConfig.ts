@@ -1,7 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-// Functions
-import getApiUrl from "../functions/getApiUrl";
+import { queryFunction } from './index';
 
 
 
@@ -17,20 +15,7 @@ export const getSingleContentTypeConfig = async (data: data_cont_conf_getSingleQ
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_cont_conf_getSingleQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -50,20 +35,7 @@ export const createSingleContentTypeConfig = async (data: data_cont_conf_createS
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_cont_conf_createSingleQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -83,20 +55,7 @@ export const updateSingleContentTypeConfig = async (data: data_cont_conf_updateS
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_cont_conf_updateSingleQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -116,20 +75,7 @@ export const deleteContentTypeConfig = async (data: data_cont_conf_deleteQuery["
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_cont_conf_deleteQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;

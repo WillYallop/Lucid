@@ -1,10 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useToasts } from 'react-toast-notifications';
 // Context
-import { 
-    PageNotificationContext, PageNotificationContextNoticationsObj,
-    ModalContext
-} from "../../helper/Context";
+import { ModalContext } from "../../helper/Context";
 // Components
 import DefaultPage from "../../components/Layout/DefaultPage";
 import PageList from "../../components/Pages/PageList";
@@ -24,6 +22,7 @@ const Pages: React.FC = () => {
 
     const navigate = useNavigate();
     const { post_name } = useParams();
+    const { addToast } = useToasts();
 
     // -------------------------------------------------------
     // State
@@ -38,15 +37,10 @@ const Pages: React.FC = () => {
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
-    const { notifications, setNotifications } = useContext(PageNotificationContext);
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
-            ...array,
-            {
-                message: message,
-                type: type
-            }
-        ]);
+        addToast(message, {
+            appearance: type
+        });
     }
 
     // -------------------------------------------------------
@@ -92,7 +86,6 @@ const Pages: React.FC = () => {
     useEffect(() => {
         verifyPostType();
         return () => {
-            setNotifications([]);
             setPost({} as mod_postObject)
         }
     }, []);

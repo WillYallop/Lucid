@@ -1,49 +1,43 @@
-
-import { useState } from "react";
+import { useToasts } from 'react-toast-notifications';
 // Components
 import DefaultPage from "../components/Layout/DefaultPage";
-// data
-import { generateSite } from '../data/generator';
-
 
 const Dashboard: React.FC = () => {
-    
-    const [ siteBuilt, setSiteBuilt ] = useState(false);
-    const [ publishRes, setPublishRes ] = useState<mod_generateSite>({} as mod_generateSite);
 
-    const publishSite = () => {
-        generateSite({
-            __args: {},
-            build_time: true,
-            pages_built: true
-        },
-        (response) => {
-            const data: mod_generateSite = response.data.data.generator.site || {};
-            setPublishRes(data);
-            setSiteBuilt(true);
-        },
-        (err) => {
-            console.log(err);
-        })
-    }
+    const { addToast } = useToasts();
 
     return (
         <DefaultPage
         title="dashboard"
         body="welcome to Lucid!">
 
-            
+            <button
+            onClick={() => {
+                addToast('This is an example success notification!', {
+                    appearance: 'success'
+                });
+            }}>
+                ADD SUCCESS
+            </button>
 
-            <button className="btnStyle1" onClick={publishSite}>Publish Site</button>
-            { 
-                siteBuilt ?
-                    <>
-                        <p>Build duration: { publishRes.build_time }</p>
-                        <p>Pages built: { publishRes.pages_built }</p>
-                        <a href="http://lucid.local/" target="_blank">Vist website</a>
-                    </>
-                : null 
-            }
+            <button
+            onClick={() => {
+                addToast('This is an example error notification!', {
+                    appearance: 'error'
+                });
+            }}>
+                ADD ERROR
+            </button>
+
+            <button
+            onClick={() => {
+                addToast('This is an example warning notification!', {
+                    appearance: 'warning'
+                });
+            }}>
+                ADD WARNING
+            </button>
+
         </DefaultPage>
     );
 }

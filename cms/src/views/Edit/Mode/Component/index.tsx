@@ -1,8 +1,8 @@
 import React, { useContext, ReactElement, useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
+import { useToasts } from 'react-toast-notifications';
 // Context
 import { 
-    PageNotificationContext, PageNotificationContextNoticationsObj, 
     ModalContext,
     LoadingContext
 } from "../../../../helper/Context";
@@ -15,7 +15,6 @@ import ContentTypeRow from '../../../../components/ContentTypes/ContentTypeRow';
 import ComponentContentTypeActionForm from './Components/ContentTypeActionForm';
 import ComponentDataForm from './Components/ComponentDataForm';
 import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
-import ComponentRowBanner from '../../../../components/Components/ComponentRowBanner';
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 // Icons
@@ -43,6 +42,7 @@ interface editComponentProps {
 
 const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
+    const { addToast } = useToasts();
     const navigate = useNavigate();
     const [ componentName, setComponentName ] = useState('');
     const { loadingState, setLoadingState } = useContext(LoadingContext);
@@ -50,15 +50,10 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     // -------------------------------------------------------
     // Notification 
     // -------------------------------------------------------
-    const { notifications, setNotifications } = useContext(PageNotificationContext);
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications((array: Array<PageNotificationContextNoticationsObj>) => [
-            ...array,
-            {
-                message: message,
-                type: type
-            }
-        ]);
+        addToast(message, {
+            appearance: type
+        });
     }
 
     // -------------------------------------------------------
@@ -140,6 +135,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     // Update data
     // Update description 
     const updateComponentDescription = (value: string) => {
+        component.date_modified = new Date().toString();
         setComponent({
             ...component,
             ...{
@@ -150,6 +146,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     }
     // Update name
     const updateComponentName = (value: string) => {
+        component.date_modified = new Date().toString();
         setComponent({
             ...component,
             ...{
@@ -165,6 +162,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
         if(actionType === 'create') {
             // Add new content type to component data
             newContentTypeArr.push(contentType);
+            component.date_modified = new Date().toString();
             setComponent({
                 ...component,
                 ...{
@@ -179,6 +177,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
             const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType._id );
             if(updatedIndex != -1) {
                 newContentTypeArr[updatedIndex] = contentType;
+                component.date_modified = new Date().toString();
                 setComponent({
                     ...component,
                     ...{
@@ -223,6 +222,7 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
                                         const newContentTypeArr: Array<mod_contentTypesConfigModel> = component.content_types || [];
                                         const updatedIndex = newContentTypeArr.findIndex( x => x._id === contentType__id );
                                         if(updatedIndex != -1) newContentTypeArr.splice(updatedIndex, 1);
+                                        component.date_modified = new Date().toString();
                                         setComponent({
                                             ...component,
                                             ...{
@@ -283,7 +283,6 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
     useEffect(() => {
         getComponentData();
         return () => {
-            setNotifications([]);
             setComponent({} as mod_componentModel);
             // Close modal
             setModalState({
@@ -391,13 +390,11 @@ const EditComponent: React.FC<editComponentProps> = ({ _id }) => {
 
     return (
         <DefaultPage
-            title={`edit - ${componentName}`}
-            body="manage your components fields and content types!"
+            title={`${componentName}`}
+            body="configure the component with the content type fields you want it to have"
             sidebar={sidebar}>
-            <ComponentRowBanner component={component}/>
             {/* Content Types */}
             <section>
-                <h2>content types</h2>
                 { contentTypeRows }
             </section>
         </DefaultPage>

@@ -17,11 +17,12 @@ button {
     }
     border-radius: rem(5);
     width: 100%;
-    padding: rem(5) $padding;
+    padding: 0 $padding;
+    height: rem(40);
     border: 1px solid map-get($map: $accent_colours, $key: _01_01);
     cursor: pointer;
     color: map-get($map: $text_colours, $key: _02_01);
-    font-size: rem(14);
+    font-size: rem(16) !important;
     line-height: rem(16);
     &--not-active {
         background-color: transparent;
@@ -31,8 +32,20 @@ button {
             color: map-get($map: $text_colours, $key: _02_01);
         }
     }
-    &--small {
+    &--not-active-alt {
+        opacity: 0.5;
+        &:hover {
+            opacity: 1;
+        }
+    }
+    &--auto-width {
         width: auto;
+    }
+    &--min-width {
+        min-width: rem(160);
+    }
+    &--thin {
+        height: rem(35);
     }
     &--danger {
         background-color: transparent;

@@ -1,7 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-// Functions
-import getApiUrl from "../functions/getApiUrl";
+import { queryFunction } from './index';
 
 
 // --------------------------------
@@ -16,20 +14,7 @@ export const getSingleComponent = async (data: data_comp_getSingleComponentQuery
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_comp_getSingleComponentQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -48,20 +33,7 @@ export const getMultipleComponents = async (data: data_comp_getMultipleComponent
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_comp_getMultipleComponentQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -80,20 +52,7 @@ export const saveSingleComponent = async (data: data_comp_saveSingleComponentQue
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_comp_saveSingleComponentQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -112,20 +71,7 @@ export const updateSingleComponent = async (data: data_comp_updateComponentQuery
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_comp_updateComponentQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -144,20 +90,7 @@ export const degrigisterComponent = async (data: data_comp_deregisterComponentQu
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_comp_deregisterComponentQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -176,20 +109,7 @@ export const getUnregisteredComponents = async (data: data_comp_ungregisteredCom
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_comp_ungregisteredComponentQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;

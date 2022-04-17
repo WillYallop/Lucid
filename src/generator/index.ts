@@ -1,4 +1,3 @@
-import * as fs from 'fs-extra';
 import db from '../db';
 // Generator controllers
 import componentCompiler from './controller/component';
@@ -9,7 +8,7 @@ import assetsHandler from './controller/assets';
 import savePageHandler from './controller/save';
 import sitemapHandler from './controller/sitemap';
 // Data
-import { getSingle as getSinglePage } from '../graphql/auth/page/data';
+import { getSingle as getSinglePage } from '../graphql/page/data';
 import { getAll as getAllContentTypes } from '../controller/content_type_config';
 // Helpers
 import { __generateErrorString } from "../functions/shared";
@@ -18,7 +17,7 @@ import { __generateErrorString } from "../functions/shared";
 const generatePreview = async (config: gen_generatePreviewConfig) => {
     try {
         // Get live page data
-        const pageLiveData: mod_pageModel = await getSinglePage(config.page_id);
+        const pageLiveData: mod_pageModel = await getSinglePage(false, config.page_id);
 
         // Response object
         const markupRes: {
@@ -110,7 +109,7 @@ const generateSite = async () => {
             // For each page, build out its data and generate its page
             for await(const { _id } of pageIDs) {
                 // page components
-                const pageData: mod_pageModel = await getSinglePage(_id);
+                const pageData: mod_pageModel = await getSinglePage(false, _id);
     
                 // Build out the component data array
                 const componentData: Array<gen_componentCompilerProps> = [];

@@ -4,7 +4,7 @@ import WidthScrollBar from "./WidthScrollbar";
 import { useNavigate } from "react-router-dom";
 import UtilityLoading from "../../../../../components/Ultility/Loading";
 // Context
-import { PageMarkupContext, PageContext } from '../functions/PageContext';
+import { PageMarkupContext, PageContext } from '../functions/pageContext';
 
 interface pagePreviewPops {
     loading: boolean

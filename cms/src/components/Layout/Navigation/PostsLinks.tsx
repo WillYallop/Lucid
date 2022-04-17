@@ -86,7 +86,7 @@ const NavigationPostLinks: React.FC = () => {
         let ele = (
             <li className="navItem" key={post._id}>
                 <NavLink to={linkTarget} className={(navData) => navData.isActive ? "active" : "" }>
-                    <CoreIcon icon={faFile}/> { post.name.replace('_', ' ') }
+                    <CoreIcon icon={faFile} style={'transparent'}/> { post.name.replace('_', ' ') }
                 </NavLink>
             </li>
         );
@@ -96,7 +96,7 @@ const NavigationPostLinks: React.FC = () => {
     return (
         <div className="pagesSubSection">
             { postLinks }
-            <button className="btnStyle1" onClick={() => openModal()}>new post type</button>
+            <button className="btnStyle1 btnStyle1--thin" onClick={() => openModal()}>new post type</button>
         </div>
     )
 }

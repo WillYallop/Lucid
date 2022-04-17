@@ -13,9 +13,9 @@
     justify-content: space-between;
     border-bottom: 1px solid map-get($map: $section_colours, $key: _01_02);
     .logoLink {
-        height: rem(25);
+        height: rem(20);
         img {
-            height: rem(25);
+            height: rem(20);
         }
     }
     .toggleNavBtn {

@@ -1,7 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-// Functions
-import getApiUrl from "../functions/getApiUrl";
+import { queryFunction } from './index';
 
 
 // --------------------------------
@@ -16,20 +14,7 @@ export const saveSinglePost = async (data: data_post_saveSingleQuery["query"]["p
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_post_saveSingleQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -49,20 +34,7 @@ export const updateSinglePost = async (data: data_post_updateSingleQuery["query"
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_post_updateSingleQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -83,20 +55,7 @@ export const getMultiplePosts = async (data: data_post_getMultipleQuery["query"]
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_post_getMultipleQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;
@@ -116,20 +75,7 @@ export const getSinglePostViaName = async (data: data_post_getSingleViaNameQuery
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_post_getSingleViaNameQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;

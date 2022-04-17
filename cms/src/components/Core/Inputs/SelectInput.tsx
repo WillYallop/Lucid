@@ -39,13 +39,13 @@ const SelectInput: React.FC<textareaInputProps> = ({ label, value, id, name, req
                 children 
             ?
                 <> 
-                    { described_by ?  <p className="describedBy">{describedBy}</p> : null }
+                    { described_by ?  <div className="describedBy">{describedBy}</div> : null }
                     { children } 
                     <span className={`speratorRow ${ style ? style : '' }`}></span>
                 </> 
             : 
                 <> 
-                    { described_by ? <><p className="describedBy">{describedBy}</p><span className={`speratorRow ${ style ? style : '' }`}></span></> : null }
+                    { described_by ? <><div className="describedBy">{describedBy}</div><span className={`speratorRow ${ style ? style : '' }`}></span></> : null }
                 </> 
             }
         </div>

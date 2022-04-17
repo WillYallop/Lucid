@@ -1,6 +1,4 @@
-import React, { useState } from 'react';
-// Components
-import NotificationSection from '../Core/Notifications/NotificationSection';
+import React from 'react';
 
 interface DefaultPageProps {
     title: string
@@ -12,8 +10,6 @@ const DefaultPage: React.FC<DefaultPageProps> = ({ title, body, sidebar, childre
 
     return (
         <div className="defaultPageCon">
-            {/* Notification Section */}
-            <NotificationSection />
             {/* Header Row */}
             <div className="header">
                 <h1>{ title }</h1>

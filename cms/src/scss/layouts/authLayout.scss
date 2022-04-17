@@ -1,0 +1,61 @@
+.authLayoutCon {
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    .bodyCon {
+        width: 100%;
+        height: 100vh;
+        overflow-y: auto;
+        max-width: rem(800);
+        overflow-y: auto;
+        header {
+            padding: rem(30);
+            img {
+                height: rem(20);
+            }
+        }
+        .mainCon {
+            width: 100%;
+            min-height: calc(100% - 82px);
+            display: flex;
+            align-items: center;
+            .inner {
+                padding: rem(30);
+                max-width: rem(510);
+                width: 100%;
+                margin:  auto;
+                height: 100%;
+            }
+        }
+    }
+
+    .imgCon {
+        width: calc(100% - rem(800));
+        height: 100%;
+        img {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+        }
+    }
+}
+
+.signInCon {
+    h1 {
+        font-size: rem(24);
+        line-height: rem(26);
+        font-weight: 500;
+    }
+    .authP {
+        margin: rem(10) 0 rem(40);
+    }
+    .btnStyle1 {
+        margin-top: rem(40);
+    }
+    .errorMsgRow {
+        margin-top: rem(10);
+        p {
+            color: map-get($map: $accent_colours, $key: _02_01);
+        }
+    }
+}

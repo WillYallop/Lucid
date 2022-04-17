@@ -1,19 +1,19 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { v1 as uuidv1 } from 'uuid';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useToasts } from 'react-toast-notifications';
 // Components
 import PagePreview from './Components/PagePreview';
 import EditPageHeader from './Components/EditPageHeader';
 import SelectInput from '../../../../components/Core/Inputs/SelectInput';
 import ComponentListModal from './Components/ComponentListModal';
 import CoreIcon from '../../../../components/Core/Icon';
-import NotificationPopup from '../../../../components/Core/Notifications/NotificationPopup';
 import EditPageComponent from './Components/EditPageComponent';
 import DeleteConfirmModal from '../../../../components/Modal/DeleteConfirmModal';
 import EditSEO from './Components/EditSEO/EditSEO';
 // Context
-import { ModalContext, PageNotificationContext } from "../../../../helper/Context";
-import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContext, defaultPageMarkupContextInt, pageMarkupContextInt } from './functions/PageContext';
+import { ModalContext } from "../../../../helper/Context";
+import { PageContext, UpdatedDataContext, defaultUpdateDataObj, PageMarkupContext, defaultPageMarkupContextInt, pageMarkupContextInt } from './functions/pageContext';
 // Functions
 import formatLucidError from '../../../../functions/formatLucidError';
 import { cmdDevOrgin } from '../../../../functions/getApiUrl';
@@ -34,13 +34,12 @@ interface editPageProps {
 const EditPage: React.FC<editPageProps> = ({ slug }) => {
 
     const mounted = useRef(false);
+    const { addToast } = useToasts();
 
     // ---------------------------------------------------------------------/
     // - STATE -------------------------------------------------------------/
     // ---------------------------------------------------------------------/
     const { modalState, setModalState } = useContext(ModalContext);
-    const { notifications, setNotifications } = useContext(PageNotificationContext);
-    const [ notificationTimeout, setNotificationTimeout ] = useState<ReturnType<typeof setTimeout>>();
     const [ loading, setLoading ] = useState(true);
     const [ activeSlug, setActiveSlug ] = useState(slug);
     const [ canSave, setCanSave ] = useState(false); // Can save
@@ -232,7 +231,7 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         const componentData: Array<mod_contentTypesDatabaseModel> = [];
 
         // Create data for content types with parents, recursivly
-        const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], parent_group_id?: string | null ) => {
+        const addRepeaterChildrenGroups = (_id: mod_contentTypesConfigModel["_id"], parent_group_id?: string | null) => {
             // Create a new group obj
             const groupObj: mod_contentTypeFieldGroupModel = {
                 _id: uuidv1(),
@@ -399,15 +398,9 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
     // -----------------------------------
     // Notifications
     const addNotification = (message: string, type: 'error' | 'warning' | 'success') => {
-        setNotifications([{
-            message: message,
-            type: type
-        }]);
-        if(notificationTimeout !== undefined) clearTimeout(notificationTimeout);
-        setNotificationTimeout(setTimeout(() => {
-            notifications?.pop();
-            setNotifications(notifications);
-        }, 5000));
+        addToast(message, {
+            appearance: type
+        });
     }
 
 
@@ -550,85 +543,90 @@ const EditPage: React.FC<editPageProps> = ({ slug }) => {
         <PageContext.Provider value={{ page, setPage }}>
             <UpdatedDataContext.Provider value={{ updatedData, setUpdatedData}}>
                 <div className='pageEditCon' key={activeSlug}>
-                    <NotificationPopup/>
                     <EditPageHeader 
                         pageName={page.name}
                         canSave={canSave}
                         saveCallback={savePageData}
                         checkForErrors={checkForErrors}/>
                     <div className="sidebar">
-                        {/* Title */}
-                        <div className="row">
-                            <h1>{ page.name }</h1>
-                        </div>
-                        {/* Edit Page Data */}
-                        <div className="row">
-                            {/* SEO */}
-                            <div className='editContentRow' onClick={(e) => {
-                                checkForErrors(() => {
-                                    const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
-                                    allEditRows.forEach((ele) => ele.classList.remove('active'));
-                                    const target = e.target as HTMLTextAreaElement;
-                                    if(target) target.classList.add('active');
-                                    setPageMode('seo');
-                                });
-                            }}>
-                                <div className="imgCon"><FontAwesomeIcon icon={faSearchengin}/></div>
-                                <div className='mainCol'>
-                                    <p>seo</p>
-                                </div>
+                        <div className="sideBarInner">
+                            {/* Title */}
+                            <div className="row">
+                                <h1>{ page.name }</h1>
                             </div>
-                            {/* template */}
-                            { page.type === 'page' ? 
-                                <SelectInput 
-                                    value={page.template}
-                                    options={templates}
-                                    id={"templateSelect"}
-                                    name={"template"}
-                                    required={true}
-                                    errorMsg={"there was an unexpected error!"}
-                                    updateValue={(value) => {
-                                        page.template = value;
-                                        setPage({
-                                            ...page
-                                        })
-                                        setUpdatedData({
-                                            ...updatedData,
-                                            template: true
-                                        });
-                                        setCanSaveState(true);
-                                        generatePagePreview('provided', undefined, undefined);
-                                    }}
-                                    label="template"
-                                    style={'--hide-seperator --no-margin-bottom'}/>
-                            : null }
-                        </div>
-                        {/* Page Components */}
-                        <div className='row'>
-                            {/* Add component */}
-                            <button 
-                                className="btnStyle1"
-                                onClick={() => {
-                                    setModalState({
-                                        ...modalState,
-                                        state: true,
-                                        title: 'add component',
-                                        size: 'standard',
-                                        body: 'select a component bellow to add to your page',
-                                        element: <ComponentListModal addComponentCallback={addComponent}/>
+                            <div className="seperator"></div>
+                            {/* Edit Page Data */}
+                            <div className="row">
+                                <p className='rowTitle'>page</p>
+                                {/* SEO */}
+                                <div className='editContentRow' onClick={(e) => {
+                                    checkForErrors(() => {
+                                        const allEditRows = document.querySelectorAll('.editContentRow') as NodeListOf<HTMLElement>;
+                                        allEditRows.forEach((ele) => ele.classList.remove('active'));
+                                        const target = e.target as HTMLTextAreaElement;
+                                        if(target) target.classList.add('active');
+                                        setPageMode('seo');
                                     });
                                 }}>
-                                add component
-                            </button>
-                            {
-                                pageComponents.length ?
-                                    <div className="componentsCon">
-                                        {/* Components */}
-                                        { pageComponents }
+                                    <div className="imgCon"><FontAwesomeIcon icon={faSearchengin}/></div>
+                                    <div className='mainCol'>
+                                        <p>seo</p>
                                     </div>
-                                : null
-                            }
+                                </div>
+                                {/* template */}
+                                { page.type === 'page' ? 
+                                    <SelectInput 
+                                        value={page.template}
+                                        options={templates}
+                                        id={"templateSelect"}
+                                        name={"template"}
+                                        required={true}
+                                        errorMsg={"there was an unexpected error!"}
+                                        updateValue={(value) => {
+                                            page.template = value;
+                                            setPage({
+                                                ...page
+                                            })
+                                            setUpdatedData({
+                                                ...updatedData,
+                                                template: true
+                                            });
+                                            setCanSaveState(true);
+                                            generatePagePreview('provided', undefined, undefined);
+                                        }}
+                                        label=""
+                                        style={'--hide-seperator --no-margin-bottom'}/>
+                                : null }
+                            </div>
+                            <div className="seperator"></div>
+                            {/* Page Components */}
+                            <div className='row'>
+                                <p className='rowTitle'>components</p>
+                                {
+                                    pageComponents.length ?
+                                        <div className="componentsCon">
+                                            {/* Components */}
+                                            { pageComponents }
+                                        </div>
+                                    : null
+                                }
+                            </div>
                         </div>
+                        {/* Add component */}
+                        <button 
+                            className="addCompBtn btnStyle1"
+                            onClick={() => {
+                                setModalState({
+                                    ...modalState,
+                                    state: true,
+                                    title: 'add component',
+                                    size: 'standard',
+                                    body: 'select a component bellow to add to your page',
+                                    element: <ComponentListModal addComponentCallback={addComponent}/>
+                                });
+                            }}>
+                            add component
+                        </button>
                     </div>
 
                     {/* Edit SEO page */}

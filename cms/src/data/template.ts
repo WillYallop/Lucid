@@ -1,8 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { jsonToGraphQLQuery } from 'json-to-graphql-query';
-// Functions
-import getApiUrl from "../functions/getApiUrl";
-
+import { queryFunction } from './index';
 
 // --------------------------------
 // Get multiple pages
@@ -16,20 +13,7 @@ export const getTemplates = async (data: data_template_getAllQuery["query"]["tem
                 }
             }
         }
-        const query = jsonToGraphQLQuery(queryObj, { pretty: true });
-        axios.request<data_template_getAllQueryRes>({
-            url: getApiUrl(),
-            method: 'post',
-            data: {
-                query: query
-            }
-        })
-        .then((result) => {
-            success(result);
-        })
-        .catch((err) => {
-            error(err);
-        })
+        queryFunction(queryObj, success, error);
     }
     catch(err) {
         throw err;

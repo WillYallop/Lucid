@@ -48,9 +48,9 @@ const ComponentRow: React.FC<ComponentRowProps> = ({ component, expanded, clickC
                         clickCallback === undefined ?
                         <div className="buttonCon">
                             <NavLink to={`/edit/component/${component._id}`}>
-                                <button className="btnStyle1 btnStyle1--small">edit</button>
+                                <button className="btnStyle1 btnStyle1--auto-width">edit</button>
                             </NavLink >
-                            <button className="btnStyle1 btnStyle1--small btnStyle1--danger">deregister</button>
+                            <button className="btnStyle1 btnStyle1--auto-width btnStyle1--danger">deregister</button>
                         </div>
                         : null
                     }

@@ -386,8 +386,21 @@ export const saveFieldDataHandler = async (page: mod_pageModel, updateConfig: up
                         value: fieldData.value,
                         root: fieldData.root
                     }
-                    if(typeof fieldData.value === 'number') obj.value = obj.value.toString();
-                    if(obj.type === 'repeater') delete obj.value;
+                    switch(obj.type) {
+                        case 'text': {
+
+                            break;
+                        }
+                        case 'repeater': {
+                            delete obj.value;
+                            break;
+                        }
+                        case 'number': {
+                            if(obj.value !== 0 && !obj.value) obj.value = contentType.config.default;
+                            obj.value = obj.value.toString();
+                            break;
+                        }
+                    }
                     if(fieldData.group_id != undefined) obj.group_id = fieldData.group_id;
                     queryObject.mutation.content_type_field.save_multiple_fields.__args.fields_data.push(obj);
                 }

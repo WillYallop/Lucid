@@ -1,10 +1,10 @@
-import React, { ReactElement, useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes,  Route } from "react-router-dom";
+import { ToastProvider } from 'react-toast-notifications';
 // Context
 import { 
   LoadingContext, defaultLoadingContext,
-  ModalContext, defaultModalState,
-  defaultPageNotificationState, PageNotificationContext 
+  ModalContext, defaultModalState
 } from './helper/Context';
 // Views
 import Dashboard from './views/Dashboard';
@@ -15,33 +15,32 @@ import Components from "./views/Components/Index";
 import Style from "./views/Style/Index";
 import Settings from "./views/Settings/Index";
 import Edit from './views/Edit';
-
 import SignIn from './views/SignIn/Index';
-
 import Error404 from './views/404/Index';
 // Components
 import MainLayout from './layouts/MainLayout';
 import BasicLayout from './layouts/BasicLayout';
+import AuthLayout from './layouts/AuthLayout';
 
-
-const App: React.FC = () => {
+const App: React.FC = ({}) => {
 
   // Modal State
   const [ loadingState, setLoadingState ] = useState(defaultLoadingContext.loadingState);
-  const [modalState, setModalState] = useState(defaultModalState.modalState);
-  const [ notifications, setNotifications ] = useState(defaultPageNotificationState.notifications);
-
+  const [ modalState, setModalState ] = useState(defaultModalState.modalState);
 
 
   return (
     <LoadingContext.Provider value={{ loadingState, setLoadingState }}>
       <ModalContext.Provider value={{ modalState, setModalState }}>
-        <PageNotificationContext.Provider value={{ notifications, setNotifications }}>
+        <ToastProvider 
+          placement='bottom-right'
+          newestOnTop={true}
+          autoDismiss={true}>
 
           <Router>
             <Routes>
 
-                <Route element={<BasicLayout/>}>
+                <Route element={<AuthLayout/>}>
                   <Route path="/signin" element={<SignIn/>}></Route>
                 </Route>
 
@@ -67,7 +66,7 @@ const App: React.FC = () => {
             </Routes>
           </Router>
           
-        </PageNotificationContext.Provider>
+        </ToastProvider>
       </ModalContext.Provider>
     </LoadingContext.Provider>
   );

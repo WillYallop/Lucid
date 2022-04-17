@@ -2,7 +2,7 @@ import { useContext } from "react";
 // Context
 import { LoadingContext } from "../../helper/Context";
 // Assets
-import logo from '../../assets/logoIcon.svg';
+import loadingGif from '../../assets/loadingInd.gif';
 
 const LoadingIndicator: React.FC = () => {
 
@@ -11,7 +11,7 @@ const LoadingIndicator: React.FC = () => {
     if(loadingState) {
         return (
             <div className="loadingIndCon">
-                <img src={logo}/>
+                <img src={loadingGif} />
             </div>
         )
     }

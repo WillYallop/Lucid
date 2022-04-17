@@ -1,6 +1,6 @@
 {
   "name": "lucid",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "Lucid is a fully functioning CMS with static site generation, liquid templating, themes and media CDN.",
   "main": "./dist/index.js",
   "keywords": [
@@ -12,7 +12,8 @@
   "files": [
     "./dist",
     "./cms",
-    "./types"
+    "./types",
+    "./templates"
   ],
   "types": "./types/index.d.ts",
   "repository": {
@@ -26,11 +27,14 @@
   "author": "William Yallop",
   "license": "ISC",
   "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
     "@types/cli-color": "^2.0.2",
+    "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.13",
     "@types/fs-extra": "^9.0.13",
     "@types/ip": "^1.1.0",
     "@types/jest": "^27.4.0",
+    "@types/jsonwebtoken": "^8.5.8",
     "@types/lodash": "^4.14.178",
     "@types/moment": "^2.13.0",
     "@types/morgan": "^1.9.3",
@@ -47,11 +51,14 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "fs-extra": "^10.0.0",
     "graphql": "^15.8.0",
     "ip": "^1.1.5",
+    "jsonwebtoken": "^8.5.1",
     "liquidjs": "^9.32.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
