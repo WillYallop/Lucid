@@ -1,4 +1,5 @@
 import fileUpload from 'express-fileupload';
+import sizeOf from 'buffer-image-size';
 import optimiseImage from './optimise_image';
 import store from './store';
 
@@ -41,7 +42,11 @@ export default async (file: fileUpload.UploadedFile) => {
                 let width = undefined;
                 let height = undefined;
                 // if its an image type that we dont optimise, work out the width and height.
-                if(file.mimetype === 'image/gif') width = 10, height = 10;
+                if(file.mimetype === 'image/gif') {
+                    const dimensions = sizeOf(file.data);
+                    width = dimensions.width; 
+                    height = dimensions.height;
+                }
                 // store file
                 const storeResponse = await store([{
                     data: file.data,
@@ -68,7 +73,6 @@ export default async (file: fileUpload.UploadedFile) => {
         }
     }
     catch(err) {
-        console.log(err);
         throw err;
     }
 }

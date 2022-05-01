@@ -55,7 +55,6 @@ export default async (file: fileUpload.UploadedFile) => {
         };
     }
     catch(err) {
-        console.log(err);
         throw err;
     }
 }

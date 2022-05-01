@@ -27,6 +27,7 @@
   "author": "William Yallop",
   "license": "ISC",
   "devDependencies": {
+    "@aws-sdk/types": "^3.78.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cli-color": "^2.0.2",
     "@types/cookie-parser": "^1.4.2",
@@ -53,7 +54,9 @@
   },
   "dependencies": {
     "@squoosh/lib": "^0.4.0",
+    "aws-sdk": "^2.1125.0",
     "bcrypt": "^5.0.1",
+    "buffer-image-size": "^0.6.4",
     "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
