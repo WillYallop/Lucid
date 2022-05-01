@@ -19,18 +19,14 @@ export default (req: any, res: Response, next: NextFunction) => {
             return next();
         }
         else {
-            req.jwt_decoded = {
-                authorised: false,
-                data: {}
-            };
-            return next();
+            return res.status(401).json({
+                message: 'Auth failed'
+            });
         }
     }
     catch(error) {
-        req.jwt_decoded = {
-            authorised: false,
-            data: {}
-        };
-        return next();
+        return res.status(401).json({
+            message: 'Auth failed'
+        });
     }
 }

@@ -2,6 +2,7 @@ require('dotenv').config();
 import express, { NextFunction, Response, Request } from 'express';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
+import fileUpload from 'express-fileupload';
 import { lucidSchema } from "./graphql/schema";
 const expressGraphQL = require('express-graphql').graphqlHTTP;
 const path = require('path');
@@ -10,7 +11,9 @@ const config = require(path.resolve('./lucid.config.js'));
 const themeDir = path.resolve(config.directories.theme);
 // Middleware
 import checkDBConnection from './middleware/check_db_connection';
-import authMiddleware from './middleware/auth';
+import authMiddleware from './middleware/graphql_auth';
+// routes
+import mediaRouter from './media/routes';
 
 // ------------------------------------
 // CORS                               |
@@ -76,6 +79,11 @@ cms.use(sharedCors);
 // MIDDLEWARE                      
 cms.use(morgan('dev'));
 cms.use(cookieParser(config.key));
+cms.use(fileUpload({
+  useTempFiles : false,
+  limits: { fileSize: 4 * 1024 * 1024 },
+}));
+cms.use(express.json());
 // ------------------------------------
 // Routes
 
@@ -95,6 +103,8 @@ cms.use('/graphql', authMiddleware, expressGraphQL(async (req: any, res: any) =>
 cms.use('/cdn', (req, res, next) => {
   res.send('THIS WILL BE THE CDN');
 });
+cms.use('/api/media', mediaRouter);
+
 cms.use('/app-assets', express.static(path.resolve(`${config.build}/assets`)));
 /// cms react route
 cms.use(checkDBConnection, express.static(path.join(__dirname, "..",  "cms", "build")));

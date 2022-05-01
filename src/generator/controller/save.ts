@@ -7,7 +7,6 @@ const tempGenDir =  path.resolve('./temp/generate');
 const distDir = path.resolve(`${config.build}/app`);
 
 // Handles writing the page data to the app dist
-
 export default async (pages: gen_builtPagesMap): Promise<boolean> => {
     try {
         createBuildDir();

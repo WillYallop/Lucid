@@ -15,9 +15,11 @@ export const createBuildDir = () => {
         const buildDir = path.resolve(distDir);
         const appDir = path.resolve(`${distDir}/app`);
         const assetDir = path.resolve(`${distDir}/assets`);
+        const cdnDir = path.resolve(`${distDir}/cdn`);
         if(!fs.existsSync(buildDir)) { fs.mkdirSync(buildDir); }
         if(!fs.existsSync(appDir)) { fs.mkdirSync(appDir); }
         if(!fs.existsSync(assetDir)) { fs.mkdirSync(assetDir); }
+        if(!fs.existsSync(cdnDir)) { fs.mkdirSync(cdnDir); }
     }
     catch(err) {
         throw err;

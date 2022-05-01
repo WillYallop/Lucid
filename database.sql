@@ -10,6 +10,19 @@ CREATE TABLE users (
     privilege INT NOT NULL
 );
 
+CREATE TABLE media (
+    _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
+    location VARCHAR NOT NULL,
+    key VARCHAR NOT NULL,
+    alt VARCHAR,
+    width INT,
+    height INT,
+    uploaded timestamp NOT NULL,
+    modified timestamp NOT NULL,
+    types json,
+    title VARCHAR
+);
+
 CREATE TABLE pages (
     _id uuid PRIMARY KEY DEFAULT uuid_generate_v1(),
     template VARCHAR(255) NOT NULL,

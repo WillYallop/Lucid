@@ -409,7 +409,7 @@ const NewPageForm: React.FC<newPageFormProps> = ({ type, post_name, post_templat
                     <div className="textarea">
                         <p>you will be redirected to page once it has been created!</p>
                     </div>
-                    <input className="btnStyle1 btnStyle1--auto-width" type="submit" value="add page"/>
+                    <input className="btnStyle1 btnStyle1--small" type="submit" value="add page"/>
                 </div>
             </form>
         </div>
