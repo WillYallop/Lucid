@@ -1,5 +1,18 @@
 // Key: med_
 
+interface UploadedFile {
+    name: string;
+    mv(path: string, callback: (err: any) => void): void;
+    mv(path: string): Promise<void>;
+    encoding: string;
+    mimetype: string;
+    data: Buffer;
+    tempFilePath: string;
+    truncated: boolean;
+    size: number;
+    md5: string;
+}
+
 interface med_uploadMediaRouteBody {
     object_key: string
     title: mod_mediaModel["title"]
@@ -30,4 +43,9 @@ interface med_saveMediaDoc {
     uploaded: mod_mediaModel["uploaded"]
     modified: mod_mediaModel["modified"]
     title: mod_mediaModel["title"]
+}
+
+interface med_fileHandlerDataInp {
+    file: UploadedFile
+    media_doc?: mod_mediaModel
 }

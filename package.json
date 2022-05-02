@@ -27,7 +27,6 @@
   "author": "William Yallop",
   "license": "ISC",
   "devDependencies": {
-    "@aws-sdk/types": "^3.78.0",
     "@types/bcrypt": "^5.0.0",
     "@types/cli-color": "^2.0.2",
     "@types/cookie-parser": "^1.4.2",

@@ -8,7 +8,7 @@ const path = require('path');
 const config = require(path.resolve("./lucid.config.js"));
 const cdnDir = path.resolve(`${config.build}/cdn`);
 
-const storeWithS3 = async (data: Buffer, key: string, mime: mod_validMimes | string) => {
+const storeWithS3 = (data: Buffer, key: string, mime: mod_validMimes | string) => {
     try {
         const params = {
             Bucket: config.storage.aws.bucket,
@@ -21,7 +21,6 @@ const storeWithS3 = async (data: Buffer, key: string, mime: mod_validMimes | str
             if (err) {
               throw(err);
             }
-            console.log(data);
         });
     }
     catch(err) {
@@ -29,7 +28,7 @@ const storeWithS3 = async (data: Buffer, key: string, mime: mod_validMimes | str
     }
 }
 
-const storeWidthFS = async (data: Buffer, name: string) => {
+const storeWidthFS = (data: Buffer, name: string) => {
     try {
        fs.writeFileSync(`${cdnDir}/${name}`, data);
     }
@@ -38,9 +37,9 @@ const storeWidthFS = async (data: Buffer, name: string) => {
     }
 }
 
-export default async (files: Array<med_storeInp>) => {
+export default async (files: Array<med_storeInp>, updateKey?: mod_mediaModel["key"]) => {
     try {
-        const key = uuidv1();
+        const key = updateKey || uuidv1();
         const types: mod_mediaModel["types"]["data"] = [];
 
         if(config.storage.location === 'local') {

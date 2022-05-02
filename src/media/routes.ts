@@ -4,8 +4,9 @@ const router = express.Router();
 import checkDBConnection from '../middleware/check_db_connection';
 import authMiddleware from '../middleware/auth';
 
-import { uploadMedia } from './index';
+import { uploadMedia, updateSingleMedia } from './index';
 
 router.post('/upload', checkDBConnection, uploadMedia);
+router.post('/update/:id', checkDBConnection, updateSingleMedia);
 
 export default router;
