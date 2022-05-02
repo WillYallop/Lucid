@@ -5,6 +5,7 @@ import { __updateSetQueryGen } from "../shared/functions";
 import moment from 'moment';
 import deleteMediaHandler from '../../media/controllers/delete'; 
 
+// Update single media
 export const updateSingleMedia = async (_id: mod_mediaModel["_id"], data: med_updateSingleMediaData) => {
     try {
         if(!_id) throw __generateErrorString({
@@ -50,12 +51,13 @@ export const updateSingleMedia = async (_id: mod_mediaModel["_id"], data: med_up
     }
 }
 
+// Delete single media
 export const deleteSingleMedia = async (_id: mod_mediaModel["_id"]) => {
     try {
         if(!_id) throw __generateErrorString({
             code: 400,
             message: 'no media _id provided!',
-            origin: 'updateSingleMedia'
+            origin: 'deleteSingleMedia'
         });
         // delete doc in db
         const mediaDoc: mod_mediaModel = await db.one('DELETE FROM media WHERE _id=$1 RETURNING *', _id);
@@ -66,5 +68,37 @@ export const deleteSingleMedia = async (_id: mod_mediaModel["_id"]) => {
     }
     catch(err) {
 
+    }
+}
+
+// Get single media
+export const getSingleMedia = async (_id: mod_mediaModel["_id"]) => {
+    try {
+        if(!_id) throw __generateErrorString({
+            code: 400,
+            message: 'no media _id provided!',
+            origin: 'getSingleMedia'
+        });
+        let mediaDoc = await db.one('SELECT * FROM media WHERE _id=$1', _id);
+        mediaDoc.types = mediaDoc.types.data;
+        return mediaDoc;
+    }
+    catch(err) {
+        throw err;
+    }
+}
+
+// Get multiple media
+export const getMultipleMediaDocs = async (limit: number, skip: number) => {
+    try {
+        const queryStr = 'SELECT * FROM media' + ` LIMIT ${limit} OFFSET ${skip}`;
+        const mediaDocs = await db.manyOrNone(queryStr);
+        mediaDocs.map((doc: any) => {
+            doc.types = doc.types.data;
+        });
+        return mediaDocs;
+    } 
+    catch (err) {
+        throw err;
     }
 }

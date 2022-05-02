@@ -50,7 +50,7 @@ export const MediaMutations = new GraphQLObjectType({
     name: 'MediaMutations',
     description: 'The media fields base mutation',
     fields: {
-        update_single_media: updateSingleMediaRoute,
-        delete_single_media: deleteSingleMediaRoute
+        update_single: updateSingleMediaRoute,
+        delete_single: deleteSingleMediaRoute
     }
 })

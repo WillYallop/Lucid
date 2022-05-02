@@ -33,7 +33,7 @@ import { TemplateQuery } from './template/query';
 import { GeneratorQuery } from './generator/query';
 // Media
 import { MediaMutations } from './media/mutation';
-
+import { MediaQuery } from './media/query';
 
 const baseQuery = new GraphQLObjectType({
     name: 'Query',
@@ -87,6 +87,11 @@ const baseQuery = new GraphQLObjectType({
         generator: {
             type: GeneratorQuery,
             description: GeneratorQuery.description,
+            resolve: () => { return {} }
+        },
+        media: {
+            type: MediaQuery,
+            description: MediaQuery.description,
             resolve: () => { return {} }
         }
     }

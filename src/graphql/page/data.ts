@@ -81,7 +81,7 @@ export const getSingle = async (appendAppUrl: boolean, _id?: mod_pageModel["_id"
 }
 
 // Get multiple pages
-export const getMultiple = async (type: mod_pageModel["type"], post_name: mod_pageModel["post_name"],  limit: number, skip: number) => {
+export const getMultiple = async (type: mod_pageModel["type"], post_name: mod_pageModel["post_name"], limit: number, skip: number) => {
     try {
         let pages: any;
         if(type === 'post') {
