@@ -31,5 +31,12 @@ export default {
     },
     page_slug: {
         string: `[a-z\-\/]{1,255}`
+    },
+    // Media
+    media_title: {
+        regex: /^[A-Za-z \-\!,?._'"@]{0,60}$/
+    },
+    media_alt: {
+        regex:  /^[A-Za-z \-\!,?._'@]{0,200}$/
     }
 }

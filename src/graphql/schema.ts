@@ -31,6 +31,8 @@ import { UtilityQuery } from './utility/query';
 import { TemplateQuery } from './template/query';
 // Generator
 import { GeneratorQuery } from './generator/query';
+// Media
+import { MediaMutations } from './media/mutation';
 
 
 const baseQuery = new GraphQLObjectType({
@@ -137,6 +139,11 @@ const baseMutation = new GraphQLObjectType({
         menu: {
             type: MenuMutation,
             description: MenuMutation.description,
+            resolve: () => { return {} }
+        },
+        media: {
+            type: MediaMutations,
+            description: MediaMutations.description,
             resolve: () => { return {} }
         }
     }

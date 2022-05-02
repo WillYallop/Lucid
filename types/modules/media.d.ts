@@ -49,3 +49,14 @@ interface med_fileHandlerDataInp {
     file: UploadedFile
     media_doc?: mod_mediaModel
 }
+
+// updateSingleMedia
+interface med_updateSingleMediaData {
+    title?: mod_mediaModel["title"]
+    alt?: mod_mediaModel["alt"]
+}
+interface med_updateSingleMediUpdateObj {
+    title?: mod_mediaModel["title"]
+    alt?: mod_mediaModel["alt"]
+    modified: mod_mediaModel["modified"]
+}

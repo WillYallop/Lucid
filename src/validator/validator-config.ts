@@ -10,5 +10,8 @@ export default {
     menu_linkText: /^[A-Za-z \-\!,?._'"@]{0,200}$/,
     // Page
     page_name: /^[A-Za-z \-\!?_@]{2,255}$/,
-    page_slug: /^[a-z\-\/]{1,255}$/
+    page_slug: /^[a-z\-\/]{1,255}$/,
+    // Media
+    media_title: /^[A-Za-z \-\!,?._'"@]{0,60}$/,
+    media_alt: /^[A-Za-z \-\!,?._'@]{0,200}$/
 }

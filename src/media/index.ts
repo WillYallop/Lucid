@@ -93,9 +93,9 @@ export const updateSingleMedia = async (req: any, res: Response) => {
                 modified: moment().format('YYYY-MM-DD HH:mm:ss'),
                 title: file.name
             }
-            const updatePageRes = await db.one(`UPDATE media SET ${__updateSetQueryGen(updateObj)} WHERE _id='${id}' RETURNING *`, updateObj);
+            const updateMediaDocRes = await db.one(`UPDATE media SET ${__updateSetQueryGen(updateObj)} WHERE _id='${id}' RETURNING *`, updateObj);
             res.status(200).json({
-                updated: updatePageRes
+                updated: updateMediaDocRes
             });
         } 
         else throw new Error('there was an unexpected error updating this file');

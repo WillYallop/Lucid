@@ -175,6 +175,31 @@ const validateField = async (field: vali_validateFieldObj) => {
                     }
                     break;
                 }
+                // Media
+                case 'media_title': {
+                    let regex = new RegExp(validatorConfig.media_title);
+                    let res = regex.test(field.value);
+                    if(!res) {
+                        throw __generateErrorString({
+                            code: 403,
+                            origin: origin,
+                            message: `Media title: "${field.value}" does not meet the criteria: "${validatorConfig.media_title}".`
+                        });
+                    }
+                    break;
+                }
+                case 'media_alt': {
+                    let regex = new RegExp(validatorConfig.media_alt);
+                    let res = regex.test(field.value);
+                    if(!res) {
+                        throw __generateErrorString({
+                            code: 403,
+                            origin: origin,
+                            message: `Media alt: "${field.value}" does not meet the criteria: "${validatorConfig.media_alt}".`
+                        });
+                    }
+                    break;
+                }
             }
         } 
         else {
