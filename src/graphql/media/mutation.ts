@@ -1,7 +1,7 @@
 import { GraphQLFieldConfig, GraphQLNonNull, GraphQLString, GraphQLID, GraphQLObjectType, GraphQLInt, GraphQLList, GraphQLInputObjectType, GraphQLBoolean } from 'graphql';
 import { DeleteResType } from '../shared/type';
 import { MediaDatabaseModel } from './type';
-import { updateSingleMedia } from './data';
+import { updateSingleMedia, deleteSingleMedia } from './data';
 import { __generateErrorString } from '../../functions/shared';
 
 
@@ -28,10 +28,29 @@ const updateSingleMediaRoute: GraphQLFieldConfig<any, any, any> = {
     }
 }
 
+const deleteSingleMediaRoute: GraphQLFieldConfig<any, any, any> = {
+    type: DeleteResType,
+    description: 'Delete single media doc',
+    args: {
+        _id: { type: GraphQLNonNull(GraphQLID) }
+    },
+    resolve: async (_, args, { jwt_decoded }) => {
+        if(jwt_decoded.authorised) {
+            return await deleteSingleMedia(args._id);
+        }
+        else throw __generateErrorString({
+            code: 401,
+            message: 'you are not authorised to use this field',
+            origin: 'deleteSingleMediaRoute'
+        })
+    }
+}
+
 export const MediaMutations = new GraphQLObjectType({
     name: 'MediaMutations',
     description: 'The media fields base mutation',
     fields: {
-        update_single_media: updateSingleMediaRoute
+        update_single_media: updateSingleMediaRoute,
+        delete_single_media: deleteSingleMediaRoute
     }
 })

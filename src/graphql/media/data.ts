@@ -3,6 +3,7 @@ import { __generateErrorString } from "../../functions/shared";
 import db from "../../db";
 import { __updateSetQueryGen } from "../shared/functions";
 import moment from 'moment';
+import deleteMediaHandler from '../../media/controllers/delete'; 
 
 export const updateSingleMedia = async (_id: mod_mediaModel["_id"], data: med_updateSingleMediaData) => {
     try {
@@ -46,5 +47,24 @@ export const updateSingleMedia = async (_id: mod_mediaModel["_id"], data: med_up
     }
     catch(err) {
         throw err;
+    }
+}
+
+export const deleteSingleMedia = async (_id: mod_mediaModel["_id"]) => {
+    try {
+        if(!_id) throw __generateErrorString({
+            code: 400,
+            message: 'no media _id provided!',
+            origin: 'updateSingleMedia'
+        });
+        // delete doc in db
+        const mediaDoc: mod_mediaModel = await db.one('DELETE FROM media WHERE _id=$1 RETURNING *', _id);
+        await deleteMediaHandler(mediaDoc.key, mediaDoc.types.data, mediaDoc.location);
+        return {
+            deleted: true
+        }
+    }
+    catch(err) {
+
     }
 }
