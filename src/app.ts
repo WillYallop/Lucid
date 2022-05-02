@@ -13,7 +13,7 @@ const themeDir = path.resolve(config.directories.theme);
 import checkDBConnection from './middleware/check_db_connection';
 import authMiddleware from './middleware/graphql_auth';
 // routes
-import mediaRouter from './media/routes';
+import mediaRouter from './api/v1/routes/media';
 
 // ------------------------------------
 // CORS                               |
@@ -98,14 +98,10 @@ cms.use('/graphql', authMiddleware, expressGraphQL(async (req: any, res: any) =>
   }
 })));
 
-
 // cdn routes
-cms.use('/cdn', (req, res, next) => {
-  res.send('THIS WILL BE THE CDN');
-});
-cms.use('/api/media', mediaRouter);
-
+cms.use('/cdn', express.static(path.resolve(`${config.build}/cdn`)));
 cms.use('/app-assets', express.static(path.resolve(`${config.build}/assets`)));
+cms.use('/api/v1/media', mediaRouter);
 /// cms react route
 cms.use(checkDBConnection, express.static(path.join(__dirname, "..",  "cms", "build")));
 cms.use(checkDBConnection, (req, res, next) => {

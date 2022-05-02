@@ -75,8 +75,6 @@ export const updateSingleMedia = async (req: any, res: Response) => {
         const mediaDoc = await db.one('SELECT * FROM media WHERE _id=$1', id);
         if(!mediaDoc) throw new Error(`cannot find media document with _id of "${id}"!`);
 
-        console.log(mediaDoc);
-  
         const fileUpdateRes = await fileHandler('updateSingle', {
             file: file,
             media_doc: mediaDoc
