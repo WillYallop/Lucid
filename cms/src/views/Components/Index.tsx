@@ -12,8 +12,6 @@ import SidebarMeta from "../../components/Layout/Sidebar/SidebarMeta";
 import SidebarButton from "../../components/Layout/Sidebar/SidebarBtn";
 import RegisterComponentForm from "./Components/RegisterComponentForm";
 import SidebarLayout from "../../components/Layout/Sidebar/SidebarLayout";
-// Functions
-import getApiUrl from "../../functions/getApiUrl";
 // Icons
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 // data

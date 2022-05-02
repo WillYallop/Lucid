@@ -72,6 +72,9 @@ button {
     &--margin-left {
         margin-left: rem(10);
     }
+    &--small {
+        width: auto;
+    }
 }
 .btnStyle2 {
     background-color: map-get($map: $accent_colours, $key: _01_01);
