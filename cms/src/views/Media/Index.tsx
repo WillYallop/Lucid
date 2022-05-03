@@ -25,9 +25,9 @@ const Media: React.FC = () => {
 
     return (
         <DefaultPage
-        title="media library"
-        body="upload and manage your media"
-        sidebar={<MediaSidebar addMediaModalToggle={openAddComponentModal}/>}>
+            title="media library"
+            body="upload and manage your media"
+            sidebar={<MediaSidebar addMediaModalToggle={openAddComponentModal}/>}>
            
         </DefaultPage>
     );

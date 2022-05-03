@@ -50,9 +50,9 @@ const Pages: React.FC = () => {
 
     return (
         <DefaultPage
-        title="pages"
-        body="create and manage all of your pages!"
-        sidebar={siderbar}>
+            title="pages"
+            body="create and manage all of your pages!"
+            sidebar={siderbar}>
             <PageList
                 type={'page'}/>
         </DefaultPage>

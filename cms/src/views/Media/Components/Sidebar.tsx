@@ -12,12 +12,10 @@ const MediaSidebar: React.FC<MediaSidebarProps> = ({ addMediaModalToggle }) => {
     
 
     return (
-        <div className="blockCon">
-            <SidebarButton 
-                text="add media"
-                action={addMediaModalToggle}
-                icon={faPlus}/>
-        </div>
+        <SidebarButton 
+            text="add media"
+            action={addMediaModalToggle}
+            icon={faPlus}/>
     )
 }
 
